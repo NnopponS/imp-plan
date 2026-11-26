@@ -1,3 +1,4 @@
+import {startMatch} from './start-match'
 import {test,expect} from '@playwright/test'
 const colors=['Teal','Amber','Plum']
 const name=(n:number)=>colors[Math.floor(n/4)]+' '+(n%4+1)
@@ -26,7 +27,7 @@ test('Secret Code room hides attempts, charges time, and accepts the unique mobi
   await guest.getByLabel('Nickname').fill('Solver')
   await guest.getByRole('button',{name:'Join party'}).click()
   await guest.getByRole('button',{name:'Ready up'}).click()
-  await host.getByRole('button',{name:'Start match'}).click()
+  await startMatch(host)
   const clues=await guest.getByRole('region',{name:'Clue sheet'}).getByRole('listitem').allTextContents()
   expect(clues.length).toBeGreaterThanOrEqual(6)
   const found:number[][]=[]

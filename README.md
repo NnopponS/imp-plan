@@ -24,3 +24,6 @@ The hero, twenty-four playable-game renders, and 3-second motion vignette are or
 ffmpeg -framerate 12 -i art-source-renders/motion/%04d.png -vf hqdn3d=2:1.5:4:3 -c:v libvpx-vp9 -crf 32 -b:v 0 -pix_fmt yuv420p -an public/art/arena-motion.webm
 ```
 The committed web assets mean Blender is **not** required to run or build the site. Three static season URLs are generated during `npm run build`, each with its own title, canonical link, and sitemap entry.
+
+## Choosing a table
+Each season has its own playable gallery and its own index of upcoming challenges. Before starting, the host gets a rules briefing with an animated diagram and one numbered token per occupied seat; bots use brass markers. The timer doesn't run during the briefing. Reduced-motion settings disable the entrance and diagram animations. Games that support bots offer Easy, Standard and Hard strategies, all evaluated offline. Human-only puzzles do not show a bot setting.

@@ -5,15 +5,17 @@ import {spotStart,spotView,spotPlay,spotScore,spotClosed,spotWindow,type Spot} f
 import {fragmentStart,fragmentView,fragmentNeed,type FragmentCount,type Fragments} from './fragments'
 import {pyramidStart,pyramidAnswer,pyramidView,pyramidRounds,type Pyramid} from './pyramid'
 import {codeStart,codeClosed,codeMove,codeScores,codeView,type CodeLock} from './code-lock'
-import {equationStart,equationPlay,equationView,equationBot,type Equations} from './equations'
+import {equationStart,equationPlay,equationView,equationBot,equationMarks,equationPool,type Equations} from './equations'
 import {divineInit,divinePlay,divineView,magicCheck,type Divine,type DivineSide} from './divine'
-import {grassBot,grassRank,grassStart,grassStep,isGrass,type Grass,type GrassGame} from './grass'
+import {canPlace,footprint,grassBot,grassRank,grassStart,grassStep,isGrass,orient,placeCode,square,type Grass,type GrassGame} from './grass'
 import {baghActions,baghInit,baghStep,type Bagh} from './bagh'
-import {buyer,candidates,contactAction,guessAction,initSecret,secretScore,secretStep,secretView,type Secret} from './secret'
-import {balance,compare,makeMancala,plant,sow,total,type Mancala} from './mancala'
+import {buyer,candidates,clue,contactAction,guessAction,initSecret,secretScore,secretStep,secretView,type Secret} from './secret'
+import {balance,compare,makeMancala,pitType,plant,sow,total,type Mancala} from './mancala'
 import {puzzleRounds,countRectangles,hexLines,isPuzzle,puzzle as makePuzzle,type PuzzleGame} from './puzzles'
 import {deal,lowestUnique,tourRoute,tourLegal,type Card,type TourSize} from './season-two'
 export type Game='blind'|'morris'|'auction'|'point'|'remove'|'knight'|PuzzleGame|GrassGame|'mancala'|'bagh'|'secret'|'divine'|'equations'|'codeLock'|'pyramid'|'fragments'|'spot'|'scale'|'fence'|'tower'
+export const botLevels=['easy','normal','hard'] as const
+export type BotLevel=typeof botLevels[number]
 export const titles={blind:'Blind Gomoku',morris:'Nine Men’s Morris',auction:'Time Auction',point:'Point Gomoku',remove:'Remove One',knight:'Knight’s Tour',hex:'Hexagon',rectangles:'Count the Rectangles',cubes:'Count the Cubes',exile:'Exile Rectangle Counting',mancala:'Balance Mancala',bagh:'Bagh Chal',secret:'Secret Number',grass1:'Laying Grass',grass3:'Lay the Grass',divine:'Divine Test',equations:'Equation Lights',codeLock:'Secret Code',pyramid:'Equation Pyramid',fragments:'Fragments of Memory',spot:'Spot the Difference',scale:'Scale Game',fence:'Loop Fence Puzzle',tower:'Word Tower'}
 export const tutorials={
  tower:'Build distinct words from the given theme. Read each column from top to bottom and use every letter. Take turns to add, return or swap up to two tiles. The team has four minutes or a shared turn limit.',
@@ -380,7 +382,76 @@ export function view(g:State,seat:string){
  return {puzzle,tower:g.tower?towerView(g.tower,g.done):null,fence:g.fence?fenceView(g.fence,seat,g.done):null,scale:g.scale?scaleView(g.scale,g.done):null,spot:g.spot?spotView(g.spot,seat,g.done):null,fragments:g.fragments?fragmentView(g.fragments,g.round,g.done):null,pyramid:g.pyramid?pyramidView(g.pyramid,seat):null,codeLock:g.codeLock?codeView(g.codeLock,g.seats.indexOf(seat),g.done):null,equations:g.equations?equationView(g.equations,g.seats.indexOf(seat)):null,divine:g.divine?divineView(g.divine,seat):null,grass:g.grass,bagh:g.bagh,secret:g.secret?secretView(g.secret,g.seats.indexOf(seat),g.done):null,mancala:g.mancala,game:g.game,seats:g.seats,board:g.board.map(v=>g.game==='blind'&&!g.done&&v?'?':v),turn:g.seats[g.turn],capture:g.capture,done:g.done,winner:g.winner,round:g.round,deadline:simultaneous(g.game)?g.deadline:null,mine:g.bids[seat]??null,submitted:Object.keys(g.bids).length,credits:g.credits,scores:scores.map(s=>s/720720),last:g.last,legal:legal(g,seat),hand:g.game==='remove'&&!g.done?g.hands[seat]??[]:[],path:g.game==='knight'?g.paths[seat]??[]:[],size:g.size,closed:g.closed,reveal:g.reveal}
 }
 export type GameView=ReturnType<typeof view>
-export function botAction(v:GameView,seat:string,observed:number[]=[],seed=0):Action|undefined{
+/** Uses the current seat's view, public move order, and a dedicated policy seed.
+ * The policy never receives the seed used to deal hidden information. */
+export function botAction(v:GameView,seat:string,observed:number[]=[],seed=0,level:BotLevel='normal'):Action|undefined{
+ if(v.done||!v.seats.includes(seat))return
+ if(level==='normal')return normalBotAction(v,seat,observed,seed)
+ const index=v.seats.indexOf(seat)
+ const rng=botRandom(seed^Math.imul(index+1,0x9e3779b9)^Math.imul(v.round,0x85ebca6b)^(v.bagh?.turns??v.mancala?.placements??observed.length))
+ if(v.equations)return v.turn===seat?equationPolicy(v.equations,seed^index,level,rng):undefined
+ if(v.grass)return grassPolicy(v.grass,index,level,rng)
+ if(v.secret){
+  if(v.secret.phase!=='guess')return normalBotAction(v,seat,observed,seed)
+  if(v.secret.locked)return
+  if(level==='easy'){
+   const options=candidates(v.secret.clues.slice(-1))
+   return guessAction(options[Math.floor(rng()*options.length)]??1,null,null)
+  }
+  return secretAdvanced(v.secret.clues)
+ }
+ if(v.game==='auction'){
+  if(v.mine!==null)return
+  const budget=v.credits[index]
+  const cap=Math.min(15000,budget)
+  const baseline=normalBid(budget,v.round)
+  if(level==='easy')return Math.floor(baseline*(.33+.32*rng()))
+  const bids=v.credits.filter((_,i)=>i!==index).map(n=>normalBid(n,v.round))
+  if(v.round===8)return cap
+  const target=Math.max(...bids)+1
+  // Don't exhaust the bank to chase another player on a low-value lot.
+  const reserveCap=Math.ceil(budget*(reward(v.round)>=4?.48:.18))
+  return Math.min(cap,reserveCap,target)
+ }
+ if(!v.legal.length)return
+ if(level==='easy'&&['blind','morris','point','remove','bagh','mancala'].includes(v.game)){
+  return v.legal[Math.floor(rng()*v.legal.length)]
+ }
+ if(v.game==='remove')return removeAdvanced(v,rng)
+ if(v.bagh)return bestAction(v.legal,a=>{
+  const next=baghStep(v.bagh!,index,a)!
+  const score=(board:Bagh)=>{
+   if(board.captured>=5)return index===1?10000:-10000
+   const replies=baghActions(board,1)
+   if(!replies.length)return index===1?-10000:10000
+   const tigerScore=100*board.captured+replies.length
+   return index===1?tigerScore:-tigerScore
+  }
+  const replies=baghActions(next,1-index)
+  if(next.captured>=5||index===0&&!replies.length||index===1&&!next.banked&&!replies.length)return 60000
+  const worst=replies.length?Math.min(...replies.map(b=>score(baghStep(next,1-index,b)!))):score(next)
+  return worst*5+score(next)
+ })
+ if(v.mancala)return mancalaAdvanced(v.mancala,index,v.legal)
+ if(v.game==='blind'){
+  const remembered=v.board.map<string>(mark=>mark?'?':'')
+  observed.forEach((point,k)=>{if(remembered[point])remembered[point]=v.seats[k%2]})
+  const rival=v.seats[1-index]
+  const projected={...v,board:remembered}
+  return bestAction(v.legal,a=>{
+   const i=a as number
+   return Number(connectsFive(remembered,i,seat))*1000000+Number(connectsFive(remembered,i,rival))*100000+
+    2*blindWeight(i,projected,seat)+blindWeight(i,projected,rival)
+  })
+ }
+ if(v.game==='point')return bestAction(v.legal,a=>{
+  const i=a as number
+  return 100*pointGain(v.board,i,seat)+93*pointGain(v.board,i,v.seats[1-index])+pointWeight(i,v,seat)
+ })
+ if(v.game==='morris')return bestAction(v.legal,a=>morrisAdvanced(a,v,seat))
+ return
+}
+function normalBotAction(v:GameView,seat:string,observed:number[],seed:number):Action|undefined{
  if(v.equations)return !v.done&&v.turn===seat?equationBot(v.equations,seed^v.seats.indexOf(seat)):undefined
  if(v.grass)return grassBot(v.grass,v.seats.indexOf(seat))
  if(v.game==='remove'){
@@ -425,7 +496,7 @@ export function botAction(v:GameView,seat:string,observed:number[]=[],seed=0):Ac
  if(v.game==='auction'){
   if(v.mine!==null||v.done)return
   const balance=v.credits[v.seats.indexOf(seat)]??0
-  return Math.min(15000,balance,Math.ceil(balance/(9-v.round)*(reward(v.round)/3)))
+  return normalBid(balance,v.round)
  }
  if(v.game==='point'){
   return [...v.legal].sort((i,j)=>pointWeight(j as number,v,seat)-pointWeight(i as number,v,seat))[0]
@@ -434,6 +505,175 @@ export function botAction(v:GameView,seat:string,observed:number[]=[],seed=0):Ac
   const remembered=[...v.board]; observed.forEach((point,k)=>{remembered[point]=v.seats[k%2]===seat?seat:'?'});const mem={...v,board:remembered};return [...v.legal].sort((a,b)=>blindWeight(b as number,mem,seat)-blindWeight(a as number,mem,seat))[0]
  }
  return [...v.legal].sort((a,b)=>morrisWeight(b,v,seat)-morrisWeight(a,v,seat))[0]
+}
+const normalBid=(budget:number,round:number)=>Math.min(15000,budget,Math.ceil(budget/(9-round)*(reward(round)/3)))
+function botRandom(seed:number){
+ let x=seed>>>0
+ return ()=>{x=(Math.imul(x,1664525)+1013904223)>>>0;return x/4294967296}
+}
+function bestAction<T>(options:readonly T[],score:(candidate:T)=>number):T|undefined{
+ let leader:T|undefined,best=-Infinity
+ for(const a of options){const n=score(a);if(leader===undefined||n>best){leader=a;best=n}}
+ return leader
+}
+function connectsFive(board:string[],i:number,seat:string){
+ const x=i%15,y=Math.floor(i/15)
+ return axis.some(([dx,dy])=>{
+  let run=1
+  for(const sign of [-1,1])for(let k=1;k<5;k++){
+   const px=x+k*dx*sign,py=y+k*dy*sign
+   if(px<0||px>=15||py<0||py>=15||board[py*15+px]!==seat)break
+   run++
+  }
+  return run>=5
+ })
+}
+const axis=[[1,0],[0,1],[1,1],[1,-1]]
+function pointGain(board:string[],i:number,seat:string){
+ let score=0
+ for(const [dx,dy] of axis){
+  const side=(sign:number)=>{
+   let n=0
+   for(let k=1;k<13;k++){
+    const x=i%13+sign*dx*k,y=Math.floor(i/13)+sign*dy*k
+    if(x<0||x>12||y<0||y>12||board[y*13+x]!==seat)break
+    n++
+   }
+   return n
+  }
+  const a=side(-1),b=side(1),length=a+b+1
+  score+=length===3?1:length===4?2:length>=5&&a<5&&b<5?5:0
+ }
+ return score
+}
+function morrisAdvanced(a:BoardAction,v:GameView,seat:string){
+ const board=[...v.board], other=v.seats.find(s=>s!==seat)!
+ const i=typeof a==='number'?a:a.to
+ if(v.capture)board[i]=''
+ else{
+  if(typeof a==='object')board[a.from]=''
+  board[i]=seat
+ }
+ const lineScore=(player:string,rival:string)=>mills.reduce((score,m)=>{
+  if(m.some(j=>board[j]===rival))return score
+  const n=m.filter(j=>board[j]===player).length
+  return score+[0,1,14,0][n]
+ },0)
+ const newMill=!v.capture&&inMill(board,i)
+ return Number(newMill)*100+lineScore(seat,other)-2*lineScore(other,seat)+morrisWeight(a,v,seat)/100
+}
+function mancalaAdvanced(s:Mancala,seat:number,legal:BoardAction[]){
+ const n=s.points.length,len=s.pits.length
+ if(s.placements<n*4)return bestAction(legal,a=>{
+  const i=a as number
+  const landingType=pitType((i+s.pits[i].length+1)%len,len)
+  return (landingType===3?14:landingType===4?-12:s.points[seat][landingType]===balance(s.points[seat])?5:0)-4*s.pits[i].length
+ })
+ const value=(state:Mancala)=>{
+  const mine=state.points[seat],others=state.points.filter((_,i)=>seat!==i)
+  return 100*(balance(mine)-Math.max(...others.map(balance)))+2*total(mine)-Math.max(...others.map(total))
+ }
+ return bestAction(legal,a=>{
+  const after=sow(s,a as number,seat)!
+  const next=(seat+1)%n
+  const replies=after.pits.flatMap((p,i)=>p.includes(next)?[sow(after,i,next)]:[]).filter((x):x is Mancala=>x!==null)
+  return 2*value(after)+(replies.length?Math.min(...replies.map(value)):value(after))
+ })
+}
+function removeAdvanced(v:GameView,rng:()=>number){
+ const ids=new Set(v.hand.map(c=>c.id))
+ const deck=Array.from({length:Math.max(8,v.seats.length+2)*4},(_,i)=>i).filter(i=>!ids.has(i))
+ const score=[0,0]
+ for(let trial=0;trial<96;trial++){
+  const sample=[...deck],others:number[]=[]
+  // Draw plausible competing hands from the known deck, not the actual deal.
+  for(let k=0;k<(v.seats.length-1)*2;k++){
+   const j=k+Math.floor(rng()*(sample.length-k))
+   ;[sample[k],sample[j]]=[sample[j],sample[k]]
+   if(k%2===1)others.push(Math.floor(Math.min(sample[k],sample[k-1])/4)+1)
+  }
+  for(let a=0;a<2;a++){
+   const keep=v.hand[1-a].value
+   if(lowestUnique([...others,keep])===keep&&!others.includes(keep))score[a]++
+  }
+ }
+ return score[0]===score[1]?(v.hand[0].value<=v.hand[1].value?1:0):Number(score[1]>score[0])
+}
+function grassPolicy(s:Grass,seat:number,level:Exclude<BotLevel,'normal'>,rng:()=>number){
+ if(s.done||s.phase!=='draft'||s.order[s.position]!==seat)return grassBot(s,seat)
+ const w=s.width
+ const adjacent=(i:number)=>[i%w>0?i-1:-1,i%w<w-1?i+1:-1,i>=w?i-w:-1,i+w<s.board.length?i+w:-1].filter(j=>j>=0)
+ const edges=[...new Set(s.board.flatMap((v,i)=>v===seat?adjacent(i).filter(j=>s.board[j]===-1):[]))]
+ const seen=new Set<number>()
+ let chosen:number|undefined,best=-Infinity
+ const shift=Math.floor(rng()*s.tiles.length)
+ for(let j=0;j<s.tiles.length;j++){
+  const k=(j+shift)%s.tiles.length,tile=s.tiles[k]
+  if(tile.taken)continue
+  for(let t=0;t<8;t++)for(const [x,y] of orient(tile.shape,t))for(const border of edges){
+   if(border%w<x)continue
+   const anchor=border-y*w-x
+   if(anchor<0)continue
+   const code=placeCode(k,t,anchor)
+   if(seen.has(code))continue
+   seen.add(code)
+   const cells=footprint(s,k,t,anchor)
+   if(!canPlace(s,seat,cells))continue
+   if(level==='easy')return code
+   const board=s.board.slice()
+   for(const cell of cells)board[cell]=seat
+   const area=cells.length,side=square(board,w,seat)
+   const contact=cells.reduce((n,cell)=>n+adjacent(cell).filter(i=>s.board[i]===seat).length,0)
+   const bonus=cells.some(i=>s.markers[i])?tile.bonus:0
+   const value=s.mode==='grass1'?100*side+8*area+contact:32*(area+bonus)+3*side+contact/10
+   if(value>best){best=value;chosen=code}
+  }
+ }
+ return chosen??grassBot(s,seat)
+}
+function secretAdvanced(clues:ReturnType<typeof secretView>['clues']){
+ const bySeat=new Map<number,typeof clues>()
+ for(const c of clues)bySeat.set(c.other,[...(bySeat.get(c.other)??[]),c])
+ const options=candidates(clues)
+ const numbers=Array.from({length:100},(_,i)=>i+1)
+ if(!options.length)return guessAction(1,null,null)
+ const posterior=options.map(own=>{
+  const pairs=[...bySeat.entries()].map(([other,cs])=>({other,numbers:numbers.filter(n=>n!==own&&cs.every(c=>clue(c.ticket,own,n)===c.result))}))
+  return {own,pairs,weight:pairs.reduce((w,p)=>w*p.numbers.length,1)}
+ })
+ const most=bestAction(posterior,p=>p.weight)!
+ const guesses=[...bySeat.keys()].flatMap(other=>{
+  const weights=new Map<number,number>()
+  for(const p of posterior){
+   const ns=p.pairs.find(x=>x.other===other)?.numbers??[]
+   for(const n of ns)weights.set(n,(weights.get(n)??0)+p.weight/ns.length)
+  }
+  const best=bestAction([...weights],x=>x[1])
+  return best&&best[1]*3>posterior.reduce((sum,p)=>sum+p.weight,0)?[[other,best[0],best[1]] as const]:[]
+ }).sort((a,b)=>b[2]-a[2]||a[0]-b[0])
+ const pick=(i:number):[number,number]|null=>guesses[i]?[guesses[i][0],guesses[i][1]]:null
+ return guessAction(most.own,pick(0),pick(1))
+}
+function equationPolicy(v:ReturnType<typeof equationView>,seed:number,level:Exclude<BotLevel,'normal'>,rng:()=>number){
+ if(v.phase!=='guess')return equationBot(v,seed)
+ const options=equationPool()
+ const tried=new Set(v.rows.map(row=>row.guess))
+ const advance=Math.floor(rng()*options.length)
+ const pool=Array.from({length:options.length},(_,i)=>options[(i+advance)%options.length]).filter(x=>!tried.has(x))
+ if(level==='easy')return pool[0]
+ const possible=pool.filter(s=>v.rows.every(row=>equationMarks(s,row.guess).every((mark,i)=>mark===row.marks[i])))
+ if(possible.length<3)return possible[0]??equationBot(v,seed)
+ const stride=Math.max(1,Math.floor(possible.length/128))
+ const answers=possible.filter((_,i)=>i%stride===0).slice(0,128)
+ const choices=possible.filter((_,i)=>i%Math.max(1,Math.floor(possible.length/18))===0).slice(0,18)
+ return bestAction(choices,guess=>{
+  const buckets=new Map<string,number>()
+  for(const answer of answers){
+   const key=equationMarks(answer,guess).join()
+   buckets.set(key,(buckets.get(key)??0)+1)
+  }
+  return -[...buckets.values()].reduce((sum,size)=>sum+size*size,0)
+ })
 }
 function blindWeight(i:number,v:GameView,seat:string){
  const x=i%15,y=Math.floor(i/15);let weight=14-Math.abs(x-7)-Math.abs(y-7)

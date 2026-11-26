@@ -1,3 +1,4 @@
+import {startMatch} from './start-match'
 import {test,expect} from '@playwright/test'
 test('spots differences by touch and keyboard across zoom and rotation',async({browser,baseURL})=>{
  const ctx=await browser.newContext({viewport:{width:360,height:780},hasTouch:true,isMobile:true})
@@ -7,7 +8,7 @@ test('spots differences by touch and keyboard across zoom and rotation',async({b
   await page.goto(baseURL!+'season/3/')
   await page.getByLabel('Nickname').fill('Inspector')
   await page.getByRole('button',{name:/Practice Spot the Difference/}).click()
-  await page.getByRole('button',{name:'Start match'}).click()
+  await startMatch(page)
   const game=page.getByRole('region',{name:'Spot the Difference'})
   await game.getByText('Compare by region (text and keyboard)').click()
   const rows=await game.locator('.spot-list>div').all()

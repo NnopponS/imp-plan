@@ -1,3 +1,4 @@
+import {startMatch} from './start-match'
 import {test,expect} from '@playwright/test'
 test('two isolated browser contexts play a duel, resume, and rematch',async({browser,baseURL})=>{
  const first=await browser.newContext(),second=await browser.newContext({viewport:{width:390,height:844},hasTouch:true})
@@ -13,7 +14,7 @@ test('two isolated browser contexts play a duel, resume, and rematch',async({bro
  await g.getByRole('button',{name:'Join party'}).click()
  await expect(g.getByRole('button',{name:'Ready up'})).toBeVisible({timeout:12000}).catch(async e=>{console.log('Guest room:',await g.locator('main').innerText());throw e});await g.getByRole('button',{name:'Ready up'}).click()
  await expect(h.getByText('Guest', {exact:true})).toBeVisible()
- await h.getByRole('button',{name:'Start match'}).click()
+ await startMatch(h)
  await expect(h.getByText('Your turn')).toBeVisible()
  for(let i=1;i<=4;i++){
   await h.getByRole('button',{name:'Row 1, column '+i+', open',exact:true}).click()
@@ -38,13 +39,13 @@ test('mobile keyboard flow and two playable offline engines',async({page})=>{
  const name=page.getByLabel('Nickname');await name.focus();await page.keyboard.type('Practice')
  await page.getByRole('button',{name:'Solo practice'}).click()
  await page.getByLabel('Game').selectOption('morris')
- await page.getByRole('button',{name:'Start match'}).click()
+ await startMatch(page)
  await expect(page.getByRole('button',{name:'Point 1, open',exact:true})).toHaveAttribute('aria-disabled','false')
  const p=page.getByRole('button',{name:'Point 1, open',exact:true});await p.focus();await page.keyboard.press('Enter')
  await expect(page.getByRole('button',{name:'Point 1, Practice',exact:true})).toBeVisible()
  page.once('dialog',d=>d.accept());await page.getByRole('button',{name:'Return to lobby'}).click()
  await page.getByLabel('Game').selectOption('auction')
- await page.getByRole('button',{name:'Start match'}).click()
+ await startMatch(page)
  for(let i=1;i<=8;i++){
   await expect(page.getByText('Sealed round '+i+' / 8')).toBeVisible()
   await page.getByRole('button',{name:'Pass'}).click()

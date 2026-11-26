@@ -1,3 +1,4 @@
+import {startMatch} from './start-match'
 import {test,expect} from '@playwright/test'
 
 test('Fragments of Memory recalls the hidden gallery through all 24 questions',async({browser,baseURL})=>{
@@ -9,7 +10,7 @@ test('Fragments of Memory recalls the hidden gallery through all 24 questions',a
   await page.getByLabel('Nickname').fill('Curator')
   await page.getByRole('button',{name:/Practice Fragments of Memory/}).click()
   await page.getByLabel('Questions').selectOption('24')
-  await page.getByRole('button',{name:'Start match'}).click()
+  await startMatch(page)
   const scene=page.getByRole('figure',{name:'Study exhibit'})
   await scene.getByText('Text version of exhibit').click()
   const truth=(await scene.locator('details p').textContent())!.match(/^Label: (\w+)\. Clock: ([\d:]+)\.$/)!

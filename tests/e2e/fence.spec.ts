@@ -1,3 +1,4 @@
+import {startMatch} from './start-match'
 import {expect,test} from '@playwright/test'
 import {solveFence} from '../../src/fence'
 
@@ -8,7 +9,7 @@ test('Loop Fence solves a private 5×5 board via mobile touch and keyboard',asyn
   await page.goto(baseURL!+'season/3/')
   await page.getByLabel('Nickname').fill('Surveyor')
   await page.getByRole('button',{name:/Practice Loop Fence Puzzle/}).click()
-  await page.getByRole('button',{name:'Start match'}).click()
+  await startMatch(page)
   const board=page.getByRole('region',{name:'Loop Fence board'})
   await board.getByText('Read clues as text').click()
   const rows=await board.locator('details li').allTextContents()

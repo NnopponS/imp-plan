@@ -1,3 +1,4 @@
+import {startMatch} from './start-match'
 import {test,expect} from '@playwright/test'
 import {pyramidChoices,pyramidFraction,fractionLabel} from '../../src/pyramid'
 
@@ -17,7 +18,7 @@ test('Equation Pyramid completes all eight rounds with keyboard and touch',async
   await page.goto(baseURL!+'season/2/')
   await page.getByLabel('Nickname').fill('Builder')
   await page.getByRole('button',{name:/Practice Equation Pyramid/}).click()
-  await page.getByRole('button',{name:'Start match'}).click()
+  await startMatch(page)
   for(let j=1;j<=8;j++){
    await expect(page.getByText(`Puzzle ${j} / 8`,{exact:true})).toBeVisible()
    const tiles=page.getByRole('group',{name:'Pyramid tiles'}).getByRole('button')

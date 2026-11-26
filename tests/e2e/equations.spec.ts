@@ -1,3 +1,4 @@
+import {startMatch} from './start-match'
 import {test,expect} from '@playwright/test'
 
 test('Equation Lights keeps equations private and gives the guest a final response on mobile',async({browser,baseURL})=>{
@@ -13,7 +14,7 @@ test('Equation Lights keeps equations private and gives the guest a final respon
   await v.getByLabel('Nickname').fill('Challenger')
   await v.getByRole('button',{name:'Join party'}).click()
   await v.getByRole('button',{name:'Ready up'}).click()
-  await h.getByRole('button',{name:'Start match'}).click()
+  await startMatch(h)
   await expect(v.getByText('Waiting for the other player to lock an equation.')).toBeVisible()
   await h.getByLabel('Secret equation').fill('12+13=26')
   await expect(h.getByRole('button',{name:'Lock equation'})).toBeDisabled()
@@ -43,7 +44,7 @@ test('Equation Lights practice adds a bot that locks and takes a legal turn',asy
  await page.goto('./season/3/')
  await page.getByLabel('Nickname').fill('Solver')
  await page.getByRole('button',{name:/Practice Equation Lights/}).click()
- await page.getByRole('button',{name:'Start match'}).click()
+ await startMatch(page)
  await page.getByLabel('Secret equation').fill('12+13=25')
  await page.getByRole('button',{name:'Lock equation'}).click()
  await page.getByLabel('Your guess').fill('20+30=50')

@@ -1,10 +1,11 @@
+import {startMatch} from './start-match'
 import {test,expect} from '@playwright/test'
 test('Balance Mancala starts with a bot, completes setup and supports previewing and sowing a pit',async({page})=>{
  await page.goto('./season/2/')
  await page.getByLabel('Nickname').fill('Sower')
  await page.getByRole('button',{name:/Practice Balance Mancala/}).click()
  await expect(page.getByText('Bot 1',{exact:true})).toBeVisible()
- await page.getByRole('button',{name:'Start match'}).click()
+ await startMatch(page)
  const pits=page.getByRole('group',{name:'Mancala pits'})
  await expect(pits.getByRole('button')).toHaveCount(9)
  for(let i=0;i<4;i++){
@@ -22,7 +23,7 @@ test('Count the Cubes uses three angles and inspectable layers, accepts five ans
  await page.goto('./season/3/')
  await page.getByLabel('Nickname').fill('Counter')
  await page.getByRole('button',{name:/Practice Count the Cubes/}).click()
- await page.getByRole('button',{name:'Start match'}).click()
+ await startMatch(page)
  for(let i=1;i<=5;i++){
   await expect(page.getByText('Stack '+i+' / 5')).toBeVisible()
   await page.getByRole('button',{name:'Back',exact:true}).click()

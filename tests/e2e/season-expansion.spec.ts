@@ -1,3 +1,4 @@
+import {startMatch} from './start-match'
 import {test,expect} from '@playwright/test'
 test('Bagh Chal solo opens a role-swapping match and responds to goat placement on mobile',async({page})=>{
  await page.setViewportSize({width:390,height:844})
@@ -5,7 +6,7 @@ test('Bagh Chal solo opens a role-swapping match and responds to goat placement 
  await page.getByLabel('Nickname').fill('Goat keeper')
  await page.getByRole('button',{name:/Practice Bagh Chal/}).click()
  await expect(page.getByText('Bot 1',{exact:true})).toBeVisible()
- await page.getByRole('button',{name:'Start match'}).click()
+ await startMatch(page)
  await expect(page.getByText('FAN MODE · Round 1 of 2')).toBeVisible()
  await expect(page.getByText(/You play goats/)).toBeVisible()
  await page.getByRole('button',{name:'Row 2, column 3, open'}).click()
@@ -17,7 +18,7 @@ test('Secret Number requires contact agreement and opens a private clue notebook
  await page.getByLabel('Nickname').fill('Decoder')
  await page.getByRole('button',{name:/Practice Secret Number/}).click()
  await expect(page.getByText('Bot 2',{exact:true})).toBeVisible()
- await page.getByRole('button',{name:'Start match'}).click()
+ await startMatch(page)
  await expect(page.getByText('Contact 1 / 4')).toBeVisible()
  const offer=page.getByRole('button',{name:/^Accept .* from Bot/}).first()
  await offer.click()

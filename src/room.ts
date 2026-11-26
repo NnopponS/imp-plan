@@ -1,7 +1,7 @@
 import {isGrass} from './grass'
 import {isPuzzle} from './puzzles'
 import {z} from 'zod'
-import {start,move,schedule,view,timeout,botAction,isDuel,minSeats,simultaneous,type State,type Game,type GameView} from './engine'
+import {start,move,schedule,view,timeout,botAction,botLevels,isDuel,minSeats,simultaneous,type State,type Game,type GameView} from './engine'
 const codeAlphabet='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
 export const roomCode=()=>Array.from(crypto.getRandomValues(new Uint8Array(6)),x=>codeAlphabet[x&31]).join('')
 export const validCode=(x:string)=>/^[A-HJ-NP-Z2-9]{6}$/.test(x)
@@ -14,7 +14,7 @@ export function nickname(value:string):string|null{
  const n=[...new Intl.Segmenter('en',{granularity:'grapheme'}).segment(s)].length
  return n>=1&&n<=24?s:null
 }
-const settings=z.strictObject({game:z.enum(['blind','morris','auction','point','remove','knight','hex','rectangles','mancala','cubes','bagh','secret','grass1','grass3','exile','divine','equations','codeLock','pyramid','fragments','spot','scale','fence','tower']),seconds:z.number().int().min(10).max(900),size:z.union([z.literal(5),z.literal(6),z.literal(8)]).optional(),closed:z.boolean().optional(),divineSide:z.union([z.literal(3),z.literal(5),z.literal(7)]).optional(),divineHard:z.boolean().optional(),fragmentStrict:z.boolean().optional(),fragmentCount:z.union([z.literal(8),z.literal(12),z.literal(16),z.literal(24)]).optional(),capacity:z.number().int().min(2).max(16),locked:z.boolean()})
+const settings=z.strictObject({game:z.enum(['blind','morris','auction','point','remove','knight','hex','rectangles','mancala','cubes','bagh','secret','grass1','grass3','exile','divine','equations','codeLock','pyramid','fragments','spot','scale','fence','tower']),seconds:z.number().int().min(10).max(900),size:z.union([z.literal(5),z.literal(6),z.literal(8)]).optional(),closed:z.boolean().optional(),divineSide:z.union([z.literal(3),z.literal(5),z.literal(7)]).optional(),divineHard:z.boolean().optional(),fragmentStrict:z.boolean().optional(),fragmentCount:z.union([z.literal(8),z.literal(12),z.literal(16),z.literal(24)]).optional(),capacity:z.number().int().min(2).max(16),locked:z.boolean(),botLevel:z.enum(botLevels).optional()})
 const schema=z.discriminatedUnion('kind',[
  z.strictObject({kind:z.literal('ready')}),
  z.strictObject({kind:z.literal('config'),settings}),
@@ -29,7 +29,7 @@ const schema=z.discriminatedUnion('kind',[
 export type Command=z.infer<typeof schema>
 export type Settings=z.infer<typeof settings>
 export const humanOnly=(g:Game)=>g==='knight'||g==='divine'||g==='codeLock'||g==='pyramid'||g==='fragments'||g==='spot'||g==='scale'||g==='fence'||g==='tower'||isPuzzle(g)
-export const defaults:Settings={game:'blind',seconds:25,capacity:16,locked:false}
+export const defaults:Settings={game:'blind',seconds:25,capacity:16,locked:false,botLevel:'normal'}
 const wire=z.discriminatedUnion('type',[
  z.strictObject({version:z.literal(1),type:z.literal('hello'),name:z.string().max(160),token:z.string().regex(/^[a-f0-9]{32}$/).optional()}),
  z.strictObject({version:z.literal(1),type:z.literal('command'),epoch:z.string().length(32),match:z.string().max(32),seq:z.number().int().positive().max(1e8),request:z.string().length(32),rev:z.number().int().nonnegative(),command:schema}),
@@ -56,6 +56,7 @@ export class Host{
  fixtures:Fixture[]=[]
  chat:Chat[]=[]
  private botDue=0
+ private botSeed=0
  private seats:PrivateSeat[]
  private requests=new Map<string,Map<string,string|null>>()
  private lastChat=new Map<string,number>()
@@ -142,9 +143,10 @@ export class Host{
    if(c.settings.game==='grass1'&&this.seats.length>12)return 'Laying Grass seats up to twelve players.'
    const changes=c.settings
    const seconds=changes.game==='fence'||changes.game==='tower'?240:changes.game==='scale'?300:changes.game==='spot'?90:changes.game==='fragments'?20:changes.game==='pyramid'?45:changes.game==='codeLock'?180:changes.game==='divine'?(this.settings.game!=='divine'?600:Math.max(60,changes.seconds)):changes.game==='knight'?Math.max(180,Math.min(480,changes.seconds)):changes.game==='hex'?20:changes.game==='rectangles'?45:changes.game==='cubes'?25:changes.game==='exile'?90:changes.game==='secret'&&this.settings.game!=='secret'?90:Math.min(90,changes.seconds)
-   this.settings={...changes,capacity:Math.min(changes.capacity,changes.game==='mancala'?8:changes.game==='grass1'?12:16),seconds,closed:changes.size===5||!changes.size?false:changes.closed}
+   const changedGame=changes.game!==this.settings.game
+   this.settings={...changes,botLevel:changes.botLevel??'normal',capacity:Math.min(changes.capacity,changes.game==='mancala'?8:changes.game==='grass1'?12:16),seconds,closed:changes.size===5||!changes.size?false:changes.closed}
    if(this.solo){
-    this.seats=this.seats.filter(s=>!s.bot)
+    if(changedGame)this.seats=this.seats.filter(s=>!s.bot)
     for(let i=this.seats.length;i<minSeats(changes.game);i++)this.addBot()
    }
    return null
@@ -173,9 +175,11 @@ export class Host{
  }
  private begin(){
   this.match=id()
+  const [gameSeed,botSeed]=crypto.getRandomValues(new Uint32Array(2))
+  this.botSeed=botSeed
   const {game,seconds,size,closed,divineSide,divineHard,fragmentStrict,fragmentCount}=this.settings
   const seats=isDuel(game)?this.fixtures[this.fixture].sides:this.seats.map(s=>s.id)
-  this.setGame(start(game,seats,seconds*1000,this.clock(),{seed:crypto.getRandomValues(new Uint32Array(1))[0],size,closed,divineSide,divineHard,fragmentStrict,fragmentCount,solo:this.solo}))
+  this.setGame(start(game,seats,seconds*1000,this.clock(),{seed:gameSeed,size,closed,divineSide,divineHard,fragmentStrict,fragmentCount,solo:this.solo}))
  }
  private setGame(g:State){
   if(!this.game||isGrass(g.game)||isDuel(g.game)||g.round!==this.game.round)this.botDue=this.clock()+650
@@ -190,7 +194,7 @@ export class Host{
   let g=timeout(past,now)
   if(g===past&&now>=this.botDue){
    for(const s of this.seats.filter(s=>s.bot&&g.seats.includes(s.id))){
-    const a=botAction(view(g,s.id),s.id,g.publicMoves,g.seed)
+    const a=botAction(view(g,s.id),s.id,g.publicMoves,this.botSeed,this.settings.botLevel)
     if(a!==undefined){const result=move(g,s.id,a,now);if(result){g=result;if(g.done||g.round!==past.round||!simultaneous(g.game))break}}
    }
   }

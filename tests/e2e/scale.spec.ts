@@ -1,3 +1,4 @@
+import {startMatch} from './start-match'
 import {expect,test} from '@playwright/test'
 import {calibration,scaleNames} from '../../src/scale'
 
@@ -14,7 +15,7 @@ test('two players solve the shared scale with ternary observations and rotating 
   await guest.getByLabel('Nickname').fill('Mina')
   await guest.getByRole('button',{name:'Join party'}).click()
   await guest.getByRole('button',{name:'Ready up'}).click()
-  await host.getByRole('button',{name:'Start match'}).click()
+  await startMatch(host)
   const bench=(p:typeof host)=>p.getByRole('region',{name:'Scale Game bench'})
   const ref=Number((await bench(host).getByText(/Brass: \d+ units/).innerText()).match(/\d+/)![0])
   const options=(await bench(host).getByText(/Possible weights:/).innerText()).split('Possible weights: ')[1].match(/\d+/g)!.map(Number)

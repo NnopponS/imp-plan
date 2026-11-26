@@ -1,3 +1,4 @@
+import {startMatch} from './start-match'
 import {test,expect} from '@playwright/test'
 for(const [season,title] of [[1,'Laying Grass'],[3,'Lay the Grass']] as const){
  test(title+' opens its own draft and places a tile on mobile',async({page})=>{
@@ -5,7 +6,7 @@ for(const [season,title] of [[1,'Laying Grass'],[3,'Lay the Grass']] as const){
   await page.goto('./season/'+season+'/')
   await page.getByLabel('Nickname').fill('Gardener')
   await page.getByRole('button',{name:'Practice '+title}).click()
-  await page.getByRole('button',{name:'Start match'}).click()
+  await startMatch(page)
   if(season===3)await page.getByRole('button',{name:'Ready to draft'}).click()
   await expect(page.getByText(/Gardener drafts next/)).toBeVisible()
   const grid=page.getByRole('group',{name:'Territory board'})

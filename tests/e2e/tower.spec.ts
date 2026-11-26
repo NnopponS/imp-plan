@@ -1,3 +1,4 @@
+import {startMatch} from './start-match'
 import {test,expect} from '@playwright/test'
 import {towerPacks} from '../../src/tower'
 const signature=(s:string)=>s.split('').sort().join('')
@@ -22,7 +23,7 @@ test('Word Tower passes control between two browsers and clears a complete tower
   await guest.getByLabel('Nickname').fill('Bee')
   await guest.getByRole('button',{name:'Join party'}).click()
   await guest.getByRole('button',{name:'Ready up'}).click()
-  await host.getByRole('button',{name:'Start match'}).click()
+  await startMatch(host)
   const board=(page:typeof host)=>page.getByRole('region',{name:'Word Tower workshop'})
   const tray=(page:typeof host)=>board(page).getByLabel('Letter tray')
   const theme=(await board(host).getByText(/3 words · /).innerText()).split(' · ')[1] as keyof typeof towerPacks

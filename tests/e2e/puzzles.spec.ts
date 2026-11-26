@@ -1,3 +1,4 @@
+import {startMatch} from './start-match'
 import {test,expect} from '@playwright/test'
 import {countRectangles} from '../../src/puzzles'
 test('play four rectangle rounds on mobile and start a rematch',async({page})=>{
@@ -6,7 +7,7 @@ test('play four rectangle rounds on mobile and start a rematch',async({page})=>{
  await page.getByLabel('Nickname').fill('Puzzle fan')
  await page.getByRole('button',{name:/Practice Count the Rectangles/}).click()
  await expect(page.getByLabel('Game')).toHaveValue('rectangles')
- await page.getByRole('button',{name:'Start match'}).click()
+ await startMatch(page)
  for(let n=1;n<=4;n++){
   await expect(page.getByText('Grid '+n+' / 4')).toBeVisible()
   const grid=page.getByRole('group',{name:'Rectangle grid'})
@@ -31,7 +32,7 @@ test('hex launches into a 19-tile study phase without a visible target',async({p
  await page.getByLabel('Nickname').fill('Puzzle fan')
  await page.getByRole('button',{name:/Practice Hexagon/}).click()
  await expect(page.getByLabel('Game')).toHaveValue('hex')
- await page.getByRole('button',{name:'Start match'}).click()
+ await startMatch(page)
  await expect(page.getByRole('button',{name:/^Tile \d+, value \d+$/})).toHaveCount(19)
  await expect(page.getByText(/Study the board/)).toBeVisible()
  await expect(page.getByText('Target sum')).toHaveCount(0)
@@ -51,7 +52,7 @@ test('two players complete the three Exile grids with private answers including 
   await v.getByLabel('Nickname').fill('Guest')
   await v.getByRole('button',{name:'Join party'}).click()
   await v.getByRole('button',{name:'Ready up'}).click()
-  await h.getByRole('button',{name:'Start match'}).click()
+  await startMatch(h)
   for(let n=1;n<=3;n++){
    await expect(v.getByText('Grid '+n+' / 3')).toBeVisible()
    const tiles=v.getByRole('group',{name:'Rectangle grid'}).getByRole('button')
@@ -81,7 +82,7 @@ test('Divine Test solves with keyboard at a phone viewport and keeps its fixed t
  await page.getByRole('button',{name:/Practice Divine Test/}).click()
  await expect(page.getByLabel('Time limit')).toHaveValue('600')
  await page.getByLabel('Square size').selectOption('3')
- await page.getByRole('button',{name:'Start match'}).click()
+ await startMatch(page)
  await expect(page.getByText('Every line: 15')).toBeVisible()
  const grid=page.getByRole('region',{name:'Magic square grid'})
  const tiles=grid.getByRole('button')
