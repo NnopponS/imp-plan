@@ -1,0 +1,2 @@
+# Mind Arena
+Keep authentication out of this product. Do not add any deployed backend, analytics, paid network service or embedded credentials. Author original assets and prose. Do not enable broadcast mode without reviewed, complete rule evidence. Treat the browser host as authoritative but not trusted by adversarial players. Add changed behavior to executable tests, and distinguish live PeerJS testing from local signaling.

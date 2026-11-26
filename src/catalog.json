@@ -1,0 +1,851 @@
+[
+  {
+    "id": "S1-01",
+    "season": 1,
+    "title": "The Virus Game",
+    "category": "Main D1",
+    "counts": "6–16 native",
+    "genre": "Social deduction",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%28%EC%8B%9C%EC%A6%8C%201%29/1%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": null
+  },
+  {
+    "id": "S1-02",
+    "season": 1,
+    "title": "Cooperative Puzzle",
+    "category": "Prize D1",
+    "counts": "1–16",
+    "genre": "Spatial/cooperative",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%28%EC%8B%9C%EC%A6%8C%201%29/1%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": null
+  },
+  {
+    "id": "S1-03",
+    "season": 1,
+    "title": "Rules Race",
+    "category": "Main D2",
+    "counts": "3–16",
+    "genre": "Race/negotiation",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%28%EC%8B%9C%EC%A6%8C%201%29/2%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": null
+  },
+  {
+    "id": "S1-04",
+    "season": 1,
+    "title": "Fragments of Memory",
+    "category": "Prize D2",
+    "counts": "1–16",
+    "genre": "Memory/cooperative",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%28%EC%8B%9C%EC%A6%8C%201%29/2%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": "fragments"
+  },
+  {
+    "id": "S1-05",
+    "season": 1,
+    "title": "Secret Number",
+    "category": "Main D3",
+    "counts": "3–16",
+    "genre": "Logic/negotiation",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%28%EC%8B%9C%EC%A6%8C%201%29/3%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": "secret"
+  },
+  {
+    "id": "S1-06",
+    "season": 1,
+    "title": "Word Tower",
+    "category": "Prize D3",
+    "counts": "1–16",
+    "genre": "Word puzzle",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%28%EC%8B%9C%EC%A6%8C%201%29/3%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": "tower"
+  },
+  {
+    "id": "S1-07",
+    "season": 1,
+    "title": "Zoo",
+    "category": "Main D4",
+    "counts": "3–12",
+    "genre": "Auction/shared board",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%28%EC%8B%9C%EC%A6%8C%201%29/4%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": null
+  },
+  {
+    "id": "S1-08",
+    "season": 1,
+    "title": "Scale Game",
+    "category": "Prize D4",
+    "counts": "1–16",
+    "genre": "Logic/cooperative",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%28%EC%8B%9C%EC%A6%8C%201%29/4%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": "scale"
+  },
+  {
+    "id": "S1-09",
+    "season": 1,
+    "title": "Laying Grass",
+    "category": "Main D5",
+    "counts": "2–12",
+    "genre": "Polyomino territory",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%28%EC%8B%9C%EC%A6%8C%201%29/5%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": "grass1"
+  },
+  {
+    "id": "S1-10",
+    "season": 1,
+    "title": "Montage",
+    "category": "Prize D5",
+    "counts": "1–16",
+    "genre": "Visual memory",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%28%EC%8B%9C%EC%A6%8C%201%29/5%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": null
+  },
+  {
+    "id": "S1-11",
+    "season": 1,
+    "title": "Equation High-Low",
+    "category": "Main D6",
+    "counts": "2–8",
+    "genre": "Arithmetic/poker",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%28%EC%8B%9C%EC%A6%8C%201%29/6%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": null
+  },
+  {
+    "id": "S1-12",
+    "season": 1,
+    "title": "Four-Player Three in a Row",
+    "category": "Prize D6",
+    "counts": "3–4",
+    "genre": "Hidden-role board",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%28%EC%8B%9C%EC%A6%8C%201%29/6%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": null
+  },
+  {
+    "id": "S1-13",
+    "season": 1,
+    "title": "Blind Gomoku",
+    "category": "Secret chamber",
+    "counts": "Duel (1–2 with bot)",
+    "genre": "Memory/board",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%28%EC%8B%9C%EC%A6%8C%201%29/5%EC%9D%BC%EC%B0%A8",
+      "https://www.springfieldspringfield.co.uk/view_episode_scripts.php?episode=s01e10&tv-show=the-devils-plan-2023"
+    ],
+    "game": "blind"
+  },
+  {
+    "id": "S1-14",
+    "season": 1,
+    "title": "Nine Men's Morris",
+    "category": "Final D7",
+    "counts": "Duel",
+    "genre": "Board",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%28%EC%8B%9C%EC%A6%8C%201%29/7%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": "morris"
+  },
+  {
+    "id": "S1-15",
+    "season": 1,
+    "title": "Hexagon",
+    "category": "Final D7",
+    "counts": "1–16",
+    "genre": "Memory/arithmetic",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%28%EC%8B%9C%EC%A6%8C%201%29/7%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": "hex"
+  },
+  {
+    "id": "S1-16",
+    "season": 1,
+    "title": "Dice Poker",
+    "category": "Unplayed final slot",
+    "counts": "2–8",
+    "genre": "Explicit fan-only",
+    "original": "unaired",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%28%EC%8B%9C%EC%A6%8C%201%29/7%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": null
+  },
+  {
+    "id": "S1-17",
+    "season": 1,
+    "title": "Prison puzzle",
+    "category": "Hidden/side challenge",
+    "counts": "1–16",
+    "genre": "Spatial",
+    "original": "partial",
+    "sources": [
+      "https://en.wikipedia.org/wiki/The_Devil%27s_Plan"
+    ],
+    "game": null
+  },
+  {
+    "id": "S1-18",
+    "season": 1,
+    "title": "Piece / Secret Chamber Unlock",
+    "category": "Hidden",
+    "counts": "1–16",
+    "genre": "Escape puzzle",
+    "original": "partial",
+    "sources": [
+      "https://en.wikipedia.org/wiki/The_Devil%27s_Plan",
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%28%EC%8B%9C%EC%A6%8C%201%29/5%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": null
+  },
+  {
+    "id": "S2-01",
+    "season": 2,
+    "title": "Crooked Cops / Corrupt Police",
+    "category": "Main D1",
+    "counts": "6–16",
+    "genre": "Hidden movement",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EC%8A%A4%EB%A3%B8/1%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": null
+  },
+  {
+    "id": "S2-02",
+    "season": 2,
+    "title": "Remove One",
+    "category": "Prison D1",
+    "counts": "3–16",
+    "genre": "Simultaneous selection",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EC%8A%A4%EB%A3%B8/1%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": "remove"
+  },
+  {
+    "id": "S2-03",
+    "season": 2,
+    "title": "Unknown",
+    "category": "Main D2",
+    "counts": "2–16",
+    "genre": "Inductive rule discovery",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EC%8A%A4%EB%A3%B8/2%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": null
+  },
+  {
+    "id": "S2-04",
+    "season": 2,
+    "title": "Time Auction",
+    "category": "Prison D2",
+    "counts": "2–16",
+    "genre": "Time strategy",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EC%8A%A4%EB%A3%B8/2%EC%9D%BC%EC%B0%A8",
+      "https://quoridorgame.com/en/season/3/"
+    ],
+    "game": "auction"
+  },
+  {
+    "id": "S2-05",
+    "season": 2,
+    "title": "Halloween Monster",
+    "category": "Main D3",
+    "counts": "3–16",
+    "genre": "Alliance/resource strategy",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EC%8A%A4%EB%A3%B8/3%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": null
+  },
+  {
+    "id": "S2-06",
+    "season": 2,
+    "title": "Sniper Hold'em",
+    "category": "Prison D3",
+    "counts": "2–8",
+    "genre": "Poker",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EC%8A%A4%EB%A3%B8/3%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": null
+  },
+  {
+    "id": "S2-07",
+    "season": 2,
+    "title": "Treasure Island",
+    "category": "Main D4",
+    "counts": "2–16",
+    "genre": "Navigation/auction",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EC%8A%A4%EB%A3%B8/4%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": null
+  },
+  {
+    "id": "S2-08",
+    "season": 2,
+    "title": "Triple Dice",
+    "category": "Prison D4",
+    "counts": "2–8",
+    "genre": "Dice/prediction",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EC%8A%A4%EB%A3%B8/4%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": null
+  },
+  {
+    "id": "S2-09",
+    "season": 2,
+    "title": "Balance Mancala",
+    "category": "Main D5",
+    "counts": "2–8",
+    "genre": "Strategy",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EC%8A%A4%EB%A3%B8/5%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": "mancala"
+  },
+  {
+    "id": "S2-10",
+    "season": 2,
+    "title": "Wall Go",
+    "category": "Prison D5",
+    "counts": "Duel",
+    "genre": "Territory",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EC%8A%A4%EB%A3%B8/5%EC%9D%BC%EC%B0%A8",
+      "https://quoridorgame.com/en/season/3/"
+    ],
+    "game": null
+  },
+  {
+    "id": "S2-11",
+    "season": 2,
+    "title": "Doubt and Bet",
+    "category": "Main D6",
+    "counts": "2–10",
+    "genre": "Bluffing",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EC%8A%A4%EB%A3%B8/6%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": null
+  },
+  {
+    "id": "S2-12",
+    "season": 2,
+    "title": "Equation Pyramid",
+    "category": "Prison D6",
+    "counts": "1–16",
+    "genre": "Arithmetic puzzle",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EC%8A%A4%EB%A3%B8/6%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": "pyramid"
+  },
+  {
+    "id": "S2-13",
+    "season": 2,
+    "title": "Big Small",
+    "category": "Final D7",
+    "counts": "Duel",
+    "genre": "Prediction/cards",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EC%8A%A4%EB%A3%B8/7%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": null
+  },
+  {
+    "id": "S2-14",
+    "season": 2,
+    "title": "Bagh Chal",
+    "category": "Final D7",
+    "counts": "Duel",
+    "genre": "Traditional asymmetric board",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EC%8A%A4%EB%A3%B8/7%EC%9D%BC%EC%B0%A8",
+      "https://quoridorgame.com/en/season/3/"
+    ],
+    "game": "bagh"
+  },
+  {
+    "id": "S2-15",
+    "season": 2,
+    "title": "Question and Truth",
+    "category": "Final D7",
+    "counts": "Duel",
+    "genre": "Deduction",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EC%8A%A4%EB%A3%B8/7%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": null
+  },
+  {
+    "id": "S2-16",
+    "season": 2,
+    "title": "Knight's Tour",
+    "category": "Hidden",
+    "counts": "1–16",
+    "genre": "Puzzle",
+    "original": "partial",
+    "sources": [
+      "https://quoridorgame.com/en/season/3/"
+    ],
+    "game": "knight"
+  },
+  {
+    "id": "S2-17",
+    "season": 2,
+    "title": "Hidden Well / Secret Key Challenge",
+    "category": "Hidden",
+    "counts": "1–16",
+    "genre": "Escape puzzle",
+    "original": "partial",
+    "sources": [
+      "https://en.wikipedia.org/wiki/The_Devil%27s_Plan"
+    ],
+    "game": null
+  },
+  {
+    "id": "S3-01",
+    "season": 3,
+    "title": "Either Or",
+    "category": "Main D1",
+    "counts": "4–16",
+    "genre": "Composite decision game",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EB%93%9C%20%EC%96%B4%EA%B2%8C%EC%9D%B8/1%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": null
+  },
+  {
+    "id": "S3-02",
+    "season": 3,
+    "title": "Count the Cubes",
+    "category": "Either Or mini-game",
+    "counts": "1–16",
+    "genre": "3D spatial",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EB%93%9C%20%EC%96%B4%EA%B2%8C%EC%9D%B8/1%EC%9D%BC%EC%B0%A8",
+      "https://quoridorgame.com/en/season/3/"
+    ],
+    "game": "cubes"
+  },
+  {
+    "id": "S3-03",
+    "season": 3,
+    "title": "Count the Rectangles",
+    "category": "Either Or mini-game",
+    "counts": "1–16",
+    "genre": "Numerical spatial",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EB%93%9C%20%EC%96%B4%EA%B2%8C%EC%9D%B8/1%EC%9D%BC%EC%B0%A8",
+      "https://quoridorgame.com/en/season/3/"
+    ],
+    "game": "rectangles"
+  },
+  {
+    "id": "S3-04",
+    "season": 3,
+    "title": "Lay the Grass",
+    "category": "Either Or mini-game",
+    "counts": "2–16",
+    "genre": "Tile placement/negotiation",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EB%93%9C%20%EC%96%B4%EA%B2%8C%EC%9D%B8/1%EC%9D%BC%EC%B0%A8",
+      "https://quoridorgame.com/en/season/3/"
+    ],
+    "game": "grass3"
+  },
+  {
+    "id": "S3-05",
+    "season": 3,
+    "title": "Memory Poker",
+    "category": "Either Or mini-game",
+    "counts": "2–16",
+    "genre": "Memory/cards",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EB%93%9C%20%EC%96%B4%EA%B2%8C%EC%9D%B8/1%EC%9D%BC%EC%B0%A8",
+      "https://quoridorgame.com/en/season/3/"
+    ],
+    "game": null
+  },
+  {
+    "id": "S3-06",
+    "season": 3,
+    "title": "Mystery Stock Market",
+    "category": "Main D2",
+    "counts": "2–16",
+    "genre": "Deduction/economy",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EB%93%9C%20%EC%96%B4%EA%B2%8C%EC%9D%B8/2%EC%9D%BC%EC%B0%A8",
+      "https://quoridorgame.com/en/season/3/"
+    ],
+    "game": null
+  },
+  {
+    "id": "S3-07",
+    "season": 3,
+    "title": "Gem Black Market",
+    "category": "Main D3",
+    "counts": "3–16",
+    "genre": "Hidden objectives/trade",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EB%93%9C%20%EC%96%B4%EA%B2%8C%EC%9D%B8/3%EC%9D%BC%EC%B0%A8",
+      "https://quoridorgame.com/en/season/3/"
+    ],
+    "game": null
+  },
+  {
+    "id": "S3-08",
+    "season": 3,
+    "title": "Auction Bingo",
+    "category": "Main D4",
+    "counts": "2–16",
+    "genre": "Auction/pattern",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EB%93%9C%20%EC%96%B4%EA%B2%8C%EC%9D%B8/4%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": null
+  },
+  {
+    "id": "S3-09",
+    "season": 3,
+    "title": "Hidden Word",
+    "category": "Main D5",
+    "counts": "3–16",
+    "genre": "Semantic deduction",
+    "original": "partial",
+    "sources": [
+      "https://subtitlely.com/subtitle/rc8usmz4nib7ditrgwx5fifb"
+    ],
+    "game": null
+  },
+  {
+    "id": "S3-10",
+    "season": 3,
+    "title": "Hit, Stay",
+    "category": "Main D6",
+    "counts": "2–8",
+    "genre": "Card strategy",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EB%93%9C%20%EC%96%B4%EA%B2%8C%EC%9D%B8/6%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": null
+  },
+  {
+    "id": "S3-11",
+    "season": 3,
+    "title": "Heavy 13",
+    "category": "Prison D1",
+    "counts": "2–8",
+    "genre": "Simultaneous risk/card ordering",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EB%93%9C%20%EC%96%B4%EA%B2%8C%EC%9D%B8/1%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": null
+  },
+  {
+    "id": "S3-12",
+    "season": 3,
+    "title": "Russian Roulette (virtual Hazard Deduction)",
+    "category": "Prison D2",
+    "counts": "3–16",
+    "genre": "Hidden risk",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EB%93%9C%20%EC%96%B4%EA%B2%8C%EC%9D%B8/2%EC%9D%BC%EC%B0%A8",
+      "https://quoridorgame.com/en/season/3/"
+    ],
+    "game": null
+  },
+  {
+    "id": "S3-13",
+    "season": 3,
+    "title": "Piggy Bank",
+    "category": "Prison D3",
+    "counts": "3–8",
+    "genre": "Hidden arithmetic/bluff",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EB%93%9C%20%EC%96%B4%EA%B2%8C%EC%9D%B8/3%EC%9D%BC%EC%B0%A8",
+      "https://quoridorgame.com/en/season/3/"
+    ],
+    "game": null
+  },
+  {
+    "id": "S3-14",
+    "season": 3,
+    "title": "Wall Go II",
+    "category": "Prison D4",
+    "counts": "2–3",
+    "genre": "Territory variant",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EB%93%9C%20%EC%96%B4%EA%B2%8C%EC%9D%B8/4%EC%9D%BC%EC%B0%A8",
+      "https://quoridorgame.com/en/season/3/"
+    ],
+    "game": null
+  },
+  {
+    "id": "S3-15",
+    "season": 3,
+    "title": "Tower of Equations",
+    "category": "Prison D5",
+    "counts": "2–8",
+    "genre": "Arithmetic/stack puzzle",
+    "original": "partial",
+    "sources": [
+      "https://subtitlely.com/subtitle/b50b8yjzyww4t0yiwuci7v9s"
+    ],
+    "game": null
+  },
+  {
+    "id": "S3-16",
+    "season": 3,
+    "title": "Gradation",
+    "category": "Prison D6",
+    "counts": "Duel",
+    "genre": "Allocation strategy",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EB%93%9C%20%EC%96%B4%EA%B2%8C%EC%9D%B8/6%EC%9D%BC%EC%B0%A8"
+    ],
+    "game": null
+  },
+  {
+    "id": "S3-17",
+    "season": 3,
+    "title": "Piece Puzzle",
+    "category": "Exile",
+    "counts": "1–16",
+    "genre": "Spatial",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EB%93%9C%20%EC%96%B4%EA%B2%8C%EC%9D%B8/%EC%9C%A0%EB%B0%B0%EC%A7%80"
+    ],
+    "game": null
+  },
+  {
+    "id": "S3-18",
+    "season": 3,
+    "title": "Spot the Difference",
+    "category": "Exile",
+    "counts": "1–16",
+    "genre": "Visual puzzle",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EB%93%9C%20%EC%96%B4%EA%B2%8C%EC%9D%B8/%EC%9C%A0%EB%B0%B0%EC%A7%80"
+    ],
+    "game": "spot"
+  },
+  {
+    "id": "S3-19",
+    "season": 3,
+    "title": "Secret Code",
+    "category": "Exile",
+    "counts": "1–16",
+    "genre": "Constraint deduction",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EB%93%9C%20%EC%96%B4%EA%B2%8C%EC%9D%B8/%EC%9C%A0%EB%B0%B0%EC%A7%80",
+      "https://quoridorgame.com/en/season/3/"
+    ],
+    "game": "codeLock"
+  },
+  {
+    "id": "S3-20",
+    "season": 3,
+    "title": "Loop Fence Puzzle",
+    "category": "Exile",
+    "counts": "1–16",
+    "genre": "Slitherlink-style",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EB%93%9C%20%EC%96%B4%EA%B2%8C%EC%9D%B8/%EC%9C%A0%EB%B0%B0%EC%A7%80",
+      "https://quoridorgame.com/en/season/3/"
+    ],
+    "game": "fence"
+  },
+  {
+    "id": "S3-21",
+    "season": 3,
+    "title": "Symmetrical Puzzle",
+    "category": "Exile",
+    "counts": "1–16",
+    "genre": "Geometry",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EB%93%9C%20%EC%96%B4%EA%B2%8C%EC%9D%B8/%EC%9C%A0%EB%B0%B0%EC%A7%80",
+      "https://quoridorgame.com/en/season/3/"
+    ],
+    "game": null
+  },
+  {
+    "id": "S3-22",
+    "season": 3,
+    "title": "Flags Around the World",
+    "category": "Exile",
+    "counts": "1–16",
+    "genre": "Memory/recognition",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EB%93%9C%20%EC%96%B4%EA%B2%8C%EC%9D%B8/%EC%9C%A0%EB%B0%B0%EC%A7%80"
+    ],
+    "game": null
+  },
+  {
+    "id": "S3-23",
+    "season": 3,
+    "title": "Exile Rectangle Counting",
+    "category": "Exile",
+    "counts": "1–16",
+    "genre": "Numerical spatial",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EB%93%9C%20%EC%96%B4%EA%B2%8C%EC%9D%B8/%EC%9C%A0%EB%B0%B0%EC%A7%80",
+      "https://subtitlely.com/subtitle/b50b8yjzyww4t0yiwuci7v9s"
+    ],
+    "game": "exile"
+  },
+  {
+    "id": "S3-24",
+    "season": 3,
+    "title": "Trial of God / Divine Test",
+    "category": "Hidden/exile",
+    "counts": "1–16",
+    "genre": "Magic square",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EB%93%9C%20%EC%96%B4%EA%B2%8C%EC%9D%B8/%EC%9C%A0%EB%B0%B0%EC%A7%80"
+    ],
+    "game": "divine"
+  },
+  {
+    "id": "S3-25",
+    "season": 3,
+    "title": "Secret Vault",
+    "category": "Hidden",
+    "counts": "1–16",
+    "genre": "Escape/logic",
+    "original": "partial",
+    "sources": [],
+    "game": null
+  },
+  {
+    "id": "S3-26",
+    "season": 3,
+    "title": "Point Gomoku",
+    "category": "Exile final showdown",
+    "counts": "Duel",
+    "genre": "Board/scoring",
+    "original": "partial",
+    "sources": [
+      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EB%93%9C%20%EC%96%B4%EA%B2%8C%EC%9D%B8/%EC%9C%A0%EB%B0%B0%EC%A7%80"
+    ],
+    "game": "point"
+  },
+  {
+    "id": "S3-27",
+    "season": 3,
+    "title": "Card Janggi",
+    "category": "Final D7",
+    "counts": "Duel",
+    "genre": "Abstract board/cards",
+    "original": "partial",
+    "sources": [
+      "https://transcripts.foreverdreaming.org/viewtopic.php?p=385991"
+    ],
+    "game": null
+  },
+  {
+    "id": "S3-28",
+    "season": 3,
+    "title": "Color Link",
+    "category": "Final D7",
+    "counts": "Duel",
+    "genre": "Spatial feasibility",
+    "original": "partial",
+    "sources": [
+      "https://transcripts.foreverdreaming.org/viewtopic.php?p=385991"
+    ],
+    "game": null
+  },
+  {
+    "id": "S3-29",
+    "season": 3,
+    "title": "Equation Traffic Light / Equation Lights",
+    "category": "Final D7",
+    "counts": "Duel",
+    "genre": "Math deduction",
+    "original": "partial",
+    "sources": [
+      "https://transcripts.foreverdreaming.org/viewtopic.php?p=385991",
+      "https://quoridorgame.com/en/season/3/"
+    ],
+    "game": "equations"
+  }
+]

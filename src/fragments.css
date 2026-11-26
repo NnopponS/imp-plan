@@ -1,0 +1,9 @@
+.fragments-game{display:grid;gap:.8rem;min-width:0}
+.fragments-game p,.fragments-game h3{margin:0}
+.gallery-scene{margin:0 auto;width:min(100%,26rem);padding:.35rem;border:1px solid #ccb595;border-radius:.7rem;background:#f8efdf}
+.gallery-scene svg{display:block;width:100%;height:auto}
+.gallery-scene details{margin:.3rem .45rem;font-size:.9rem}
+.gallery-scene ol{padding-inline-start:1.3rem}
+.fragments-score{border-radius:.4rem;padding:.45rem .65rem;background:#ede0c9}
+.fragments-answers{margin-top:.6rem;display:grid;gap:.45rem;grid-template-columns:repeat(2,minmax(0,1fr))}
+.fragments-answers button{min-height:2.75rem;min-width:0;overflow-wrap:anywhere}

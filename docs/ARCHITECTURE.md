@@ -1,0 +1,2 @@
+# Architecture
+Vite static client and hash invites; no managed backend. React renders snapshots and submits intentions. Host owns a rule engine, roster, server-style monotonic deadlines and state revision. Pure board/time transitions are in src/engine.ts. Host and wire parser are in src/room.ts. Local practice and PeerJS adapters share the same command surface. Time Auction is native for 2–16; duel games use a two-legged round robin for parties above two, other seats watch. With two seats rematches swap first player. Exact scores internally use scaled integer units.

@@ -1,0 +1,13 @@
+.fence-game{display:grid;gap:.65rem;min-width:0}
+.fence-game p{margin:0}
+.fence-grid{position:relative;max-width:500px;width:100%;aspect-ratio:1;margin:0 auto}
+.fence-grid svg{display:block;width:100%;height:auto;filter:drop-shadow(0 3px 5px #6f543420)}
+.fence-grid .fence-edge{all:unset;position:absolute;transform:translate(-50%,-50%);border-radius:5px;cursor:pointer;touch-action:manipulation}
+.fence-grid .horizontal{width:11%;height:5.8%}
+.fence-grid .vertical{width:5.8%;height:11%}
+.fence-grid .fence-edge:not(:disabled):hover{background:#2c836326}
+.fence-grid .fence-edge:focus-visible{outline:2px solid #8a371c;outline-offset:2px}
+.fence-game button[aria-pressed=true]{background:#deeade;border-color:#186056;color:#163d34}
+.fence-clues,.fence-results li{padding:.55rem .7rem;border-radius:8px;background:#f9efdd}
+.fence-results{display:grid;gap:.4rem;padding:0;list-style:none}
+.fence-results li{display:flex;justify-content:space-between;gap:.6rem;flex-wrap:wrap}

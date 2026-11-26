@@ -1,0 +1,47 @@
+import {test,expect} from '@playwright/test'
+test('fan brand and original art are visible without motion or mobile overflow',async({page})=>{
+ await page.setViewportSize({width:390,height:844})
+ await page.emulateMedia({reducedMotion:'reduce'})
+ await page.goto('./')
+ await expect(page).toHaveTitle(/Imp Plan.*Unofficial/)
+ await expect(page.getByRole('heading',{name:'Imp Plan',exact:true})).toBeVisible()
+ await expect(page.getByRole('button',{name:'Create party'})).toBeVisible()
+ await expect(page.getByText('Unofficial fan project', {exact:true})).toBeVisible()
+ for(const asset of await page.locator('img[data-arena-art]').all()){
+  await asset.scrollIntoViewIfNeeded()
+  await expect.poll(async()=>asset.evaluate((n:HTMLImageElement)=>n.complete&&n.naturalWidth>0)).toBe(true)
+ }
+ await expect(page.locator('.stage-orbit')).toHaveCSS('animation-name','none')
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(390)
+ await page.getByLabel('Nickname').fill('Designer')
+ await page.getByRole('button',{name:'Solo practice'}).click()
+ await expect(page.getByRole('heading',{name:'Practice lobby'})).toBeVisible()
+})
+test('each season has a distinct path, accurate index and playable cards',async({page})=>{
+ await page.goto('./')
+ for(const [n,count,games] of [[1,18,8],[2,17,6],[3,29,10]]){
+  await page.getByRole('navigation',{name:'Seasons'}).getByRole('link',{name:'Season '+n,exact:true}).click()
+  await expect(page).toHaveURL(new RegExp('/imp-plan/season/'+n+'/$'))
+  await expect(page.locator('.directory article')).toHaveCount(count)
+  await expect(page.locator('.featured .card')).toHaveCount(games)
+  await expect(page.getByRole('navigation',{name:'Seasons'}).getByRole('link',{name:'Season '+n,exact:true})).toHaveAttribute('aria-current','page')
+  await page.reload()
+  await expect(page.locator('.directory article')).toHaveCount(count)
+ }
+ await page.getByRole('button',{name:/Practice Point Gomoku/}).click()
+ await expect(page.getByLabel('Nickname')).toBeFocused()
+ await page.getByLabel('Nickname').fill('Contestant')
+ await page.getByRole('button',{name:'Solo practice'}).click()
+ await expect(page.getByLabel('Game')).toHaveValue('point')
+})
+test('Blender motion can start and pause on demand',async({page})=>{
+ await page.setViewportSize({width:390,height:844})
+ await page.goto('./')
+ await expect(page.locator('.stage video')).toHaveCount(0)
+ await page.getByRole('button',{name:'Play motion'}).click()
+ const video=page.locator('.stage video')
+ await expect.poll(()=>video.evaluate((el:HTMLVideoElement)=>el.readyState)).toBeGreaterThan(1)
+ await expect(page.getByRole('button',{name:'Pause motion'})).toBeVisible()
+ await page.getByRole('button',{name:'Pause motion'}).click()
+ await expect.poll(()=>video.evaluate((el:HTMLVideoElement)=>el.paused)).toBe(true)
+})

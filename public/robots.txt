@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://nnoppons.github.io/imp-plan/sitemap.xml

@@ -1,0 +1,14 @@
+.tower-game{display:grid;gap:.65rem;min-width:0}
+.tower-game p{margin:0}
+.tower-tray{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem;background:#f5e7cc;border:1px solid #b7a07a;border-radius:9px;padding:.42rem;min-height:3.5rem}
+.tower-tray .tower-tile,.tower-stack .tower-tile,.tower-slot{min-width:2.25rem;min-height:2.25rem;display:inline-grid;place-items:center;padding:.15rem;border-radius:5px;font-family:Georgia,serif;font-weight:800;font-size:1.06rem}
+.tower-tray .tower-tile,.tower-stack .tower-tile{color:#573427;background:#fff6e1;border:1px solid #b49b76;box-shadow:0 2px 0 #be9f6a}
+.tower-game .tower-tile[aria-pressed=true]{background:#d9efdd;border-color:#176451;color:#143f34;outline:2px solid #176451}
+.tower-slot{border:1px dashed #ae9271;color:#705943}
+.tower-columns{display:grid;grid-template-columns:repeat(auto-fit,minmax(4.65rem,1fr));gap:.35rem;align-items:start}
+.tower-columns section{padding:.42rem .35rem;background:#f9efde;border:1px solid #c2ab86;border-radius:8px;text-align:center;min-width:0}
+.tower-columns h3{margin:0 0 .4rem;display:flex;justify-content:space-between;color:#694330;font-size:.72rem;gap:.2rem}
+.tower-columns h3 span{font-weight:400}
+.tower-stack{display:flex;flex-direction:column;gap:.32rem;align-items:center}
+.tower-stack .tower-tile:disabled{opacity:1}
+.tower-columns .tower-add{width:100%;min-height:2.3rem;margin-top:.45rem;padding:.2rem}

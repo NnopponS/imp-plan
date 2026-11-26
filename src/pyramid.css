@@ -1,0 +1,15 @@
+.pyramid-game{display:grid;gap:.75rem;min-width:0}
+.pyramid-game p{margin:0}
+.pyramid-target,.pyramid-expression{font-variant-numeric:tabular-nums;display:block;padding:.5rem .8rem;border-radius:.5rem;background:#f2e4cd;color:#4f3227}
+.pyramid-target strong{font-size:1.35em;margin-inline-start:.5rem}
+.pyramid-board{display:grid;gap:.3rem;justify-items:center}
+.pyramid-row{display:flex;justify-content:center;gap:.3rem;width:100%}
+.pyramid-row button{position:relative;width:min(17%,3.65rem);aspect-ratio:1;min-height:2.75rem;min-width:0;padding:.25rem;background:#f1e2ca;border-color:#b59974;color:#50362c}
+.pyramid-row button[aria-pressed=true]{background:#53414e;color:#fff}
+.pyramid-row small{position:absolute;inset:.06rem .22rem auto auto;font-size:.66rem}
+.pyramid-controls{min-width:0;border:1px solid #c6ad8b;border-radius:.6rem;padding:.45rem}
+.pyramid-controls .actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,8.5rem),1fr))}
+.pyramid-expression{font:700 1.05rem/1.35 ui-monospace,monospace}
+.pyramid-scores{display:flex;gap:.4rem;flex-wrap:wrap;list-style:none;margin:0;padding:0}
+.pyramid-scores li{display:grid;padding:.35rem .6rem;border-radius:.4rem;background:#eadbc3}
+.pyramid-scores li span{font-size:.82rem}

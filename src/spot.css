@@ -1,0 +1,18 @@
+.spot-game{display:grid;gap:.7rem;min-width:0}
+.spot-game p{margin:0}
+.spot-tools{display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap}
+.spot-pan{overflow-x:auto;max-width:100%;overscroll-behavior-inline:contain}
+.spot-spread{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(4px,1.6vw,16px)}
+.spot-zoom .spot-spread{min-width:700px}
+.spot-tray{margin:0;min-width:0}
+.spot-tray figcaption{padding:.2rem 0 .4rem;font-weight:700;font-size:clamp(.65rem,2vw,.85rem)}
+.spot-picture{position:relative;border-radius:6px;overflow:hidden}
+.spot-picture svg{display:block;width:100%;height:auto}
+.spot-picture .spot-area{all:unset;box-sizing:border-box;position:absolute;cursor:crosshair;border-radius:9%;touch-action:manipulation}
+.spot-picture .spot-area:disabled{cursor:default}
+.spot-picture .spot-area:hover:not(:disabled){box-shadow:inset 0 0 0 2px #14685f}
+.spot-compare{padding:.7rem;border:1px solid #bbab92;border-radius:8px}
+.spot-list{display:grid;gap:.45rem;margin-top:.65rem}
+.spot-list>div,.spot-results li{display:flex;align-items:center;justify-content:space-between;gap:.4rem;flex-wrap:wrap;padding:.45rem;background:#fbf4e7;border-radius:6px}
+.spot-list span{display:block;font-size:.8rem}
+.spot-results{display:grid;gap:.35rem;padding:0;list-style:none}
