@@ -126,7 +126,7 @@ export function BlindMatchStage({game:g,you,name,active,practice,leg,legs,submit
     <div className="duel-board-caption"><span>15 × 15 <i aria-hidden="true">◆</i> {g.done?'Sides revealed':'Sides concealed'}</span><span>{moves} {moves===1?'stone':'stones'} laid</span></div>
    </div>
    <aside className="duel-workbench" aria-label="Keeper’s shelf">
-    {!g.done?<CoverTray choice={cover} setChoice={setCover} disabled={!legal.size}/>:<div className="duel-verdict">
+    {!g.done?<CoverTray choice={cover} setChoice={setCover} disabled={!legal.size}/>:<div className="duel-verdict" role="region" aria-label="Chamber record" data-board-result tabIndex={-1}>
      <strong>Chamber record</strong>
      <p>{marks.size?'Gold rings trace the winning line.':'The final positions are shown on the table.'}</p>
     </div>}

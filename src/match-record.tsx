@@ -85,7 +85,7 @@ export function MatchRecord({snap,name,active,onExport,onReturn,onNext,folio}:{s
  const {mark,label}=resultLabel(snap.game)
  const knight=knightPrintData(snap.game)
  const repeat=onNext&&<button className="match-action primary" type="button" disabled={!active} onClick={onNext}><TableMark kind={snap.seriesDone?'rematch':'next'}/>{snap.seriesDone?'Rematch':'Next leg'}</button>
- return <section className={'match-record'+(knight?' knight-match-record':'')} aria-label="Match record">
+ return <section className={'match-record'+(knight?' knight-match-record':'')} aria-label="Match record" data-board-result tabIndex={-1}>
   {knight?<><div className="match-record-imprint"><TableSeal kind={mark}/><h3>Match record{folio}</h3></div><KnightResultPrint result={knight}/></>:<div className="match-record-imprint"><TableSeal kind={mark}/><div><h3>Match record{folio}</h3><p>{label}{mark==='win'&&snap.game.winner?' · '+name(snap.game.winner):''}</p></div></div>}
   <LeagueStandings snap={snap} name={name}/>
   <div className="match-record-actions">

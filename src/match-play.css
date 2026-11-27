@@ -129,3 +129,5 @@ main.wrap.playing-arena[data-board-focus]{width:min(calc(100% - 8px),100rem);max
  }
  .room[data-live-match]:not([data-board-focus])>.match-instruments{grid-area:1 / 2;align-self:start}
 }
+
+.room [data-board-result]:focus-visible{outline:2px solid #bd8545;outline-offset:2px}

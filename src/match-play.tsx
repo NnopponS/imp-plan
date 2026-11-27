@@ -1,4 +1,4 @@
-import {useEffect,useRef,useState} from 'react'
+import {useCallback,useEffect,useLayoutEffect,useRef,useState} from 'react'
 import {isDuel,type GameView} from './engine'
 import type {Seat,Snapshot} from './room'
 import {PlayerPortrait} from './player-wardrobe'
@@ -7,9 +7,21 @@ import './match-play.css'
 type ActiveSnapshot=Snapshot&{game:GameView}
 const hasTurn=(g:GameView)=>isDuel(g.game)||g.game==='mancala'||g.game==='grass1'||g.game==='grass3'||g.game==='piece'
 
-export function useBoardFocus(match:string|undefined){
+export function useBoardFocus(match:string|undefined,finishedMatch:string|undefined){
  const [chosen,setChosen]=useState<string>()
  const button=useRef<HTMLButtonElement>(null)
+ const handoff=useRef(false)
+ const bindButton=useCallback((node:HTMLButtonElement|null)=>{
+  // The detach callback runs before React removes the currently focused node.
+  if(!node&&button.current)handoff.current=document.activeElement===button.current
+  button.current=node
+ },[])
+ useLayoutEffect(()=>{
+  const wasOnToggle=handoff.current
+  handoff.current=false
+  if(finishedMatch&&wasOnToggle&&document.activeElement===document.body)
+   document.querySelector<HTMLElement>('[data-board-result]')?.focus()
+ },[match,finishedMatch])
  const focused=!!match&&chosen===match
  useEffect(()=>{if(!match)setChosen(undefined)},[match])
  useEffect(()=>{
@@ -23,7 +35,7 @@ export function useBoardFocus(match:string|undefined){
   document.addEventListener('keydown',leave)
   return ()=>document.removeEventListener('keydown',leave)
  },[focused])
- return {focused,button,toggle:()=>{
+ return {focused,button:bindButton,toggle:()=>{
   if(!match)return
   setChosen(focused?undefined:match)
   // The same button remains mounted in both layouts and keeps its focus.

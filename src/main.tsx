@@ -270,7 +270,7 @@ function App(){
  const finished=snap?.game?.done
  const playing=!!snap?.game
  const liveMatch=playing&&!finished
- const boardFocus=useBoardFocus(liveMatch?snap?.match:undefined)
+ const boardFocus=useBoardFocus(liveMatch?snap?.match:undefined,finished?snap?.match:undefined)
  const motionOff=feedback.prefs.motion==='off'
  const scene=stageFolio({invite:page==='/join',season:selected?.id,seat:kind??undefined,
   game:snap?.game?.game??choice,match:playing?snap?.match:undefined,finished,hold:holdAuction})

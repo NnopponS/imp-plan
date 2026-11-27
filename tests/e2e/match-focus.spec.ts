@@ -130,3 +130,59 @@ test('Remove One keeps its real roster separate from cards, and Focus preserves 
  await expect(exit(page)).toBeVisible()
  expect(await fit(page)).toBe(true)
 })
+
+test('when the Scale timer ends, focus moves from the disappearing toggle to the match record',async({page})=>{
+ await page.emulateMedia({reducedMotion:'reduce'})
+ await page.clock.install()
+ await page.goto('./season/1/')
+ await page.getByRole('button',{name:'Practice Scale Game',exact:true}).click()
+ await startMatch(page)
+ await focus(page).press('Enter')
+ await expect(exit(page)).toBeFocused()
+ await page.clock.fastForward(301000)
+ await expect(exit(page)).toHaveCount(0)
+ await expect(page.getByRole('region',{name:'Match record'})).toBeFocused()
+})
+
+test('a Scale timeout does not steal keyboard focus from the surviving room exit',async({page})=>{
+ await page.emulateMedia({reducedMotion:'reduce'})
+ await page.clock.install()
+ await page.goto('./season/1/')
+ await page.getByRole('button',{name:'Practice Scale Game',exact:true}).click()
+ await startMatch(page)
+ await focus(page).press('Enter')
+ await exit(page).press('Escape')
+ const leave=page.getByRole('button',{name:'Leave room',exact:true})
+ await leave.focus()
+ await page.clock.fastForward(301000)
+ await expect(page.getByRole('region',{name:'Match record'})).toBeVisible()
+ await expect(leave).toBeFocused()
+})
+
+test('a remote Blind Gomoku win transfers the guest’s disappearing toggle to Chamber record',async({browser,baseURL})=>{
+ const home=await browser.newContext({reducedMotion:'reduce'})
+ const away=await browser.newContext({reducedMotion:'reduce'})
+ try{
+  const host=await home.newPage(),guest=await away.newPage()
+  await host.goto(baseURL!)
+  await host.getByLabel('Nickname').fill('Harbor')
+  await host.getByRole('button',{name:'Create party',exact:true}).click()
+  const code=(await host.getByTestId('room-code').textContent())!
+  await guest.goto(baseURL!+'#/join?room='+code)
+  await guest.getByLabel('Nickname').fill('Sparrow')
+  await guest.getByRole('button',{name:'Join party',exact:true}).click()
+  await guest.getByRole('button',{name:'Ready up',exact:true}).click()
+  await startMatch(host)
+  for(let col=1;col<=4;col++){
+   await cell(host,1,col).click()
+   await expect(cell(guest,1,col,'veiled')).toBeVisible()
+   await cell(guest,15,col).click()
+   await expect(cell(host,15,col,'veiled')).toBeVisible()
+  }
+  await focus(guest).press('Enter')
+  await expect(exit(guest)).toBeFocused()
+  await cell(host,1,5).click()
+  await expect(exit(guest)).toHaveCount(0)
+  await expect(guest.getByRole('region',{name:'Chamber record'})).toBeFocused()
+ }finally{await Promise.all([home.close(),away.close()])}
+})
