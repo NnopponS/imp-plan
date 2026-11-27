@@ -59,6 +59,7 @@ test.describe('touch on the narrow codex',()=>{
   await page.emulateMedia({reducedMotion:'reduce'})
   await page.goto('./')
   const wardrobe=page.getByRole('region',{name:'Player wardrobe'})
+  await wardrobe.getByRole('button',{name:'Cloak',exact:true}).tap()
   await wardrobe.locator('label[title="Forest cloak"]').tap()
   await expect(wardrobe.getByRole('img',{name:/Forest cloak/})).toBeVisible()
   await page.getByRole('link',{name:'Create or join a room',exact:true}).tap()
