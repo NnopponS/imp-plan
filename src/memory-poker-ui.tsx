@@ -9,10 +9,10 @@ const suits=['Clubs','Diamonds','Hearts','Spades']
 const suitPips=['♣','◆','♥','♠']
 const rank=(card:number)=>card%13
 const suit=(card:number)=>Math.floor(card/13)
-const cardName=(card:number)=>ranks[rank(card)]+' of '+suits[suit(card)]
+export const cardName=(card:number)=>ranks[rank(card)]+' of '+suits[suit(card)]
 const scoreText=(score:number)=>(score<0?'−':'')+String(Math.abs(score))+(Math.abs(score)===1?' pt':' pts')
 
-function Face({card}:{card:number}){
+export function Face({card}:{card:number}){
  const i=suit(card)
  return <span className={'memory-face '+(i===1||i===2?'memory-red':'memory-black')} aria-hidden="true">
   <span className="memory-corner">{codes[rank(card)]}<small>{suitPips[i]}</small></span>

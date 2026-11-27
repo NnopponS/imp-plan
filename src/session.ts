@@ -90,8 +90,11 @@ export async function hostRoom(name:string,listener:Listener,options:ConnectOpti
     send(c,{type:'error',reason:'This action no longer matches the current game.'});return
    }
    info.seq=m.seq
-   const err=h.command(key,m.request,m.rev,m.command)
-   if(err){send(c,{type:'error',reason:err});const state=h.snapshot(key);if(state)send(c,{type:'snapshot',state})}else update()
+   const before=h.rev,err=h.command(key,m.request,m.rev,m.command)
+   if(err||m.command.kind==='memory-lock'&&h.rev===before){
+    if(err)send(c,{type:'error',reason:err})
+    const state=h.snapshot(key);if(state)send(c,{type:'snapshot',state})
+   }else update()
   })
  })
  const timer=setInterval(()=>{
@@ -101,7 +104,11 @@ export async function hostRoom(name:string,listener:Listener,options:ConnectOpti
   if(h.tick())update()
  },200)
  update()
- return {code,send:c=>update(h.command('host',id(),h.rev,c)??''),close:()=>{
+ return {code,send:c=>{
+  const before=h.rev,error=h.command('host',id(),h.rev,c)??''
+  if(c.kind==='memory-lock'&&h.rev===before)listener({phase:'online',snapshot:h.snapshot('host'),error})
+  else update(error)
+ },close:()=>{
   clearInterval(timer)
   for(const v of clients.values())send(v.c,{type:'closed',reason:'The host ended this room.'})
   setTimeout(()=>service.destroy(),100)

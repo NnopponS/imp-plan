@@ -43,3 +43,42 @@
 .memory-history .memory-results{margin-top:10px}
 @keyframes memory-turn{from{transform:scaleX(.78);opacity:.5}to{transform:scaleX(1);opacity:1}}
 @media(prefers-reduced-motion:reduce){.memory-revealed{animation:none}}
+
+.duel-grid{grid-template-columns:repeat(4,minmax(0,1fr));width:min(100%,30rem);background:radial-gradient(ellipse at 45% 15%,#f7f0e4,#e6d8e6)}
+.duel-position{position:absolute;bottom:3px;left:4px;line-height:1;padding:2px 3px;border-radius:3px;background:#efe4d4;color:#4e385a;font:700 .65rem/1 system-ui,sans-serif}
+.duel-community{display:grid;justify-items:center;gap:6px;padding:9px;border:1px solid #d7c8cc;border-radius:7px;background:#fbf5eb}
+.duel-community h4{margin:0;font:700 .72rem system-ui;text-transform:uppercase;letter-spacing:.15em;color:#5d4962}
+.duel-shared-hand{grid-template-columns:repeat(3,minmax(0,1fr));width:min(100%,10rem)}
+.duel-pair{grid-template-columns:repeat(2,minmax(0,1fr));width:min(100%,6.5rem)}
+.duel-pair small{display:block;margin-top:3px;text-align:center;font-size:.62rem}
+.duel-lesson{--card-dark:#2e233b;--card-red:#962b3c;display:grid;grid-template-columns:minmax(0,8rem) minmax(0,1fr);gap:.75rem;align-items:center}
+.duel-preview-board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px}
+.duel-preview-board>span{position:relative;display:grid;place-items:center;aspect-ratio:1.1;background:#543976;color:#fff1c2;border:1px solid #e1b96d;border-radius:3px;font-size:.55rem}
+.duel-preview-board>span:has(.memory-face){background:#fffaf1}
+.duel-preview-board>span[data-chosen]{background:#785020;outline:1px solid #a16d27}
+.duel-preview-board .memory-corner,.duel-preview-board .memory-face strong{display:none}
+.duel-preview-board .memory-corner:first-child{display:block;position:static;font-size:.49rem;text-align:center}
+.duel-preview-board .memory-corner:first-child small{margin-left:1px}
+.duel-preview-board .memory-face{padding:0}
+.duel-example-note{display:grid;gap:.35rem;min-width:0;color:#514463;font-size:.78rem}
+
+/* The memory window is short: users must be able to scan the full grid
+   without wasting study time scrolling past the room controls. */
+.room:has(.memory-duel) .invite{display:none}
+.room:has(.memory-duel)>.section-head{margin-bottom:10px}
+.memory-duel .duel-grid{width:min(100%,26rem);gap:clamp(4px,1vw,8px);padding:clamp(4px,1vw,8px)}
+.memory-duel .duel-grid .memory-card{width:100%;aspect-ratio:1.35;min-height:44px}
+.memory-duel .duel-grid .memory-face strong{font-size:clamp(1rem,4vw,1.85rem)}
+.memory-duel .duel-grid .memory-corner{font-size:clamp(.62rem,2vw,.86rem)}
+@media(max-height:790px){
+ .room:has(.memory-duel){padding-top:14px}
+ .room:has(.memory-duel) h1{font-size:clamp(2rem,7.3vw,3.1rem)}
+ .room:has(.memory-duel) .match{padding:12px}
+ .room:has(.memory-duel) .match>h2{margin-block:3px 6px;font-size:1.33rem}
+ .memory-duel{gap:7px;margin-block:8px}
+ .memory-duel .memory-hud{padding:8px}
+ .memory-duel .duel-grid{width:min(100%,23rem)}
+ .memory-duel .duel-grid .memory-card{aspect-ratio:1.5}
+ .memory-duel .duel-community{padding:6px}
+ .memory-duel .duel-shared-hand{width:min(100%,8rem)}
+}

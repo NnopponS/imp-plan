@@ -185,6 +185,5 @@ export function memoryDuelView(s:MemoryDuelState,seat:string|undefined,now:numbe
   cards:next.deal.board.map(card=>visibleStudy?card:null),
   community:next.phase==='study'?[]:[...next.deal.community],
   ownPicks:next.phase==='select'&&picks?[...picks]:null,
-  lockedCount:next.picks.filter(pick=>pick!==null).length,
   result:copyResult(next.result)}
 }

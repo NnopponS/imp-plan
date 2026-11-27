@@ -86,9 +86,9 @@ describe('S3 Memory Poker duel',()=>{
   expect(memoryDuelAction(s,'spectator',1,pack(0,1),selectAt)).toBeNull()
   expect(memoryDuelAction(s,'ari',0,pack(0,1),selectAt)).toBeNull()
   const p=memoryDuelAction(s,'ari',1,pack(1,0),selectAt)!
-  expect(memoryDuelView(p,'ari',selectAt)).toMatchObject({ownPicks:[0,1],lockedCount:1,cards:Array(16).fill(null)})
-  expect(memoryDuelView(p,'bee',selectAt)).toMatchObject({ownPicks:null,lockedCount:1,result:null})
-  expect(memoryDuelView(p,undefined,selectAt)).toMatchObject({ownPicks:null,lockedCount:1,result:null})
+  expect(memoryDuelView(p,'ari',selectAt)).toMatchObject({ownPicks:[0,1],cards:Array(16).fill(null)})
+  expect(memoryDuelView(p,'bee',selectAt)).toMatchObject({ownPicks:null,result:null})
+  expect(memoryDuelView(p,undefined,selectAt)).toMatchObject({ownPicks:null,result:null})
   expect(memoryDuelAction(p,'ari',1,pack(2,3),selectAt+1)).toBeNull()
   expect(memoryDuelAction(p,'bee',1,pack(2,3),selectAt-1)).toBeNull()
   expect(memoryDuelAction(p,'bee',1,pack(2,3),NaN)).toBeNull()
@@ -116,7 +116,7 @@ describe('S3 Memory Poker duel',()=>{
   const next=memoryDuelRedeal(tied,makeDeal([51,50]),selectAt+2)!
   expect(memoryDuelView(next,'ari',selectAt+2)).toMatchObject({
    phase:'study',dealNumber:2,deadline:selectAt+2+20_000,cards:makeDeal([51,50]).board,
-   community:[],ownPicks:null,lockedCount:0,result:null,
+   community:[],ownPicks:null,result:null,
   })
   expect(memoryDuelAction(next,'ari',1,pack(0,1),selectAt+2+20_000)).toBeNull()
   expect(memoryDuelAction(next,'ari',2,pack(0,1),selectAt+2+20_000)).not.toBeNull()
