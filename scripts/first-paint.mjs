@@ -59,3 +59,41 @@ export function firstPaint({data,description,season,seasons,entries}){
   +'<section class="boot-index" id="catalog"><h2>Challenge index</h2><p>'+cards.length+' of '+data.length+' indexed challenges are playable.</p><ul>'+challengeIndex+'</ul></section></main>'
   +'<footer class="boot-wrap boot-footer">Imp Plan is fan-made, not affiliated with Netflix. No real stakes.</footer></div>'
 }
+
+
+// This tiny inline helper must run even if the main module never arrives.
+export const firstPaintRecovery = `(() => {
+ const shell = document.querySelector('[data-first-paint]');
+ const retry = shell.querySelector('a[href="?view=full"]');
+ const syncRetry = () => {
+  const target = new URL(location.href);
+  target.searchParams.set('view', 'full');
+  retry.href = target.href;
+ };
+ syncRetry();
+ shell.addEventListener('focusin', syncRetry);
+ shell.addEventListener('pointerdown', syncRetry);
+ shell.addEventListener('click', (event) => {
+  const link = event.target.closest('a');
+  if (!link || !shell.contains(link)) return;
+  if (event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  if (link === retry) {
+   syncRetry();
+   // A link to the same URL with a fragment need not request a new document.
+   if (retry.href === location.href) {
+    event.preventDefault();
+    location.reload();
+   }
+   return;
+  }
+  if (!location.hash.startsWith('#/join?')) return;
+  const href = link.getAttribute('href');
+  if (!['#play', '#catalog', '#room-entry'].includes(href)) return;
+  const section = document.getElementById(href.slice(1));
+  if (!section) return;
+  event.preventDefault();
+  section.tabIndex = -1;
+  section.focus({preventScroll: true});
+  section.scrollIntoView();
+ });
+})();`

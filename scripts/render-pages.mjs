@@ -1,5 +1,5 @@
 import {readFileSync,writeFileSync,mkdirSync} from 'node:fs'
-import {escapeHtml as e,firstPaint,firstPaintStyle} from './first-paint.mjs'
+import {escapeHtml as e,firstPaint,firstPaintStyle,firstPaintRecovery} from './first-paint.mjs'
 const entries=JSON.parse(readFileSync(new URL('../src/catalog.json',import.meta.url),'utf8'))
 const name='Imp Plan'
 const canonical='https://nnoppons.github.io/imp-plan/'
@@ -33,7 +33,7 @@ for(const {title,path,season,description} of pages){
 <meta name="twitter:image" content="${shareImage}"><meta name="twitter:image:alt" content="${e(shareImageAlt)}">
 <style id="imp-first-paint">
 ${firstPaintStyle}</style>
-</head><body><div id="root">${content}</div><script type="module" src="/src/main.tsx"></script></body></html>
+</head><body><div id="root">${content}</div><script>${firstPaintRecovery}</script><script type="module" src="/src/main.tsx"></script></body></html>
 `
  const dir=new URL('../'+path,import.meta.url)
  mkdirSync(dir,{recursive:true});writeFileSync(new URL('index.html',dir),html)
