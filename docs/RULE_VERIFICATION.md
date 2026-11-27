@@ -19,4 +19,5 @@ The owner's 64-entry fan handoff is the initial catalog. Separate rule checklist
 | S1-06 | Partial / fan playable | [Rule sheet](rules/S1-06.md): cooperative word columns, versioned thematic English pack, exact tile inventory and alternate legal solutions. Original rules unverified. |
 | S3-17 | Partial / fan playable | [Rule sheet](rules/S3-17.md): one 7×7 silhouette, rotated irregular pieces, 1–16 cooperating seats, and paid optional clues. Original rules unverified. |
 | S3-05 | Partial / fan playable | [Rule sheet](rules/S3-05.md): a 4×5 study layout, private five-card locks, four scored rounds, and an optional one-card assistance penalty. Broadcast rules unverified. |
-| Remaining 38 | Planned | No playable claim. Dice Poker is an unaired slot and cannot be independently certified as a played broadcast format. |
+| S3-21 | Partial / fan playable | [Rule sheet](rules/S3-21.md): independent 7 × 7 boards, equal trays, a chosen or seeded mirror line, and four-minute ranking. Exact show timing and elimination rules are unverified. |
+| Remaining 33 | Planned | No playable claim. Dice Poker is an unaired slot and cannot be independently certified as a played broadcast format. |

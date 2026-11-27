@@ -1,3 +1,4 @@
+import {symmetryAxes,symmetryTime} from './symmetry'
 import {colorLinkBot,colorLinkRaceBotDelay,linkCells,linkPairLimit} from './color-link'
 import {heavy13Rounds} from './heavy-13'
 import {timeHoldAction,timeHoldAdvance,timeHoldDisconnect,timeHoldRules,timeHoldView,type TimeHold} from './time-hold'
@@ -21,7 +22,7 @@ export function nickname(value:string):string|null{
  const n=[...new Intl.Segmenter('en',{granularity:'grapheme'}).segment(s)].length
  return n>=1&&n<=24?s:null
 }
-const settings=z.strictObject({game:z.enum(['blind','morris','auction','point','remove','knight','hex','rectangles','mancala','cubes','bagh','secret','grass1','grass3','exile','divine','equations','codeLock','pyramid','fragments','spot','scale','fence','tower','piece','memoryPoker','wallGo','montage','heavy13','colorLink']),seconds:z.number().int().min(10).max(900),size:z.union([z.literal(5),z.literal(6),z.literal(8)]).optional(),closed:z.boolean().optional(),divineSide:z.union([z.literal(3),z.literal(5),z.literal(7)]).optional(),divineHard:z.boolean().optional(),fragmentStrict:z.boolean().optional(),fragmentCount:z.union([z.literal(8),z.literal(12),z.literal(16),z.literal(24)]).optional(),capacity:z.number().int().min(1).max(16),locked:z.boolean(),botLevel:z.enum(botLevels).optional(),memoryPokerPeek:z.boolean().optional(),memoryPokerMode:z.enum(['fan','episode']).optional(),auctionMode:z.enum(['sealed','hold']).optional()})
+const settings=z.strictObject({game:z.enum(['blind','morris','auction','point','remove','knight','hex','rectangles','mancala','cubes','bagh','secret','grass1','grass3','exile','divine','equations','codeLock','pyramid','fragments','spot','scale','fence','tower','piece','memoryPoker','wallGo','montage','heavy13','colorLink','symmetry']),seconds:z.number().int().min(10).max(900),size:z.union([z.literal(5),z.literal(6),z.literal(8)]).optional(),closed:z.boolean().optional(),divineSide:z.union([z.literal(3),z.literal(5),z.literal(7)]).optional(),divineHard:z.boolean().optional(),fragmentStrict:z.boolean().optional(),fragmentCount:z.union([z.literal(8),z.literal(12),z.literal(16),z.literal(24)]).optional(),capacity:z.number().int().min(1).max(16),locked:z.boolean(),botLevel:z.enum(botLevels).optional(),memoryPokerPeek:z.boolean().optional(),memoryPokerMode:z.enum(['fan','episode']).optional(),auctionMode:z.enum(['sealed','hold']).optional(),symmetryAxis:z.enum(symmetryAxes).optional()})
 const montageMatch=z.string().regex(/^[a-f0-9]{32}$/)
 const montageRound=z.number().int().min(1).max(montageRules.rounds)
 const heavyMatch=z.string().regex(/^[a-f0-9]{32}$/)
@@ -65,13 +66,13 @@ export const holdAuctionRules='Start with ten minutes for nineteen rounds. Press
 export const isHoldAuction=(config:Pick<Settings,'game'|'auctionMode'>)=>config.game==='auction'&&config.auctionMode==='hold'
 export type Command=z.infer<typeof schema>
 export type Settings=z.infer<typeof settings>
-export const humanOnly=(g:Game)=>g==='knight'||g==='divine'||g==='codeLock'||g==='pyramid'||g==='fragments'||g==='spot'||g==='scale'||g==='fence'||g==='tower'||g==='piece'||g==='memoryPoker'||g==='montage'||isPuzzle(g)
+export const humanOnly=(g:Game)=>g==='knight'||g==='divine'||g==='codeLock'||g==='pyramid'||g==='fragments'||g==='spot'||g==='scale'||g==='fence'||g==='tower'||g==='piece'||g==='memoryPoker'||g==='montage'||g==='symmetry'||isPuzzle(g)
 // Room limits for the available fan tables, not contestant counts from the show.
 const partyMaximum={
  blind:4,morris:4,point:4,equations:4,wallGo:4,bagh:2,
  auction:16,remove:16,knight:16,hex:16,rectangles:16,cubes:16,exile:16,
  grass1:12,grass3:16,mancala:8,secret:16,divine:16,codeLock:16,pyramid:16,
- fragments:8,spot:16,scale:6,fence:16,tower:8,piece:4,memoryPoker:16,montage:16,heavy13:7,colorLink:2,
+ fragments:8,spot:16,scale:6,fence:16,tower:8,piece:4,memoryPoker:16,montage:16,heavy13:7,colorLink:2,symmetry:16,
 } as const satisfies Record<Game,number>
 type SeatMode=Pick<Settings,'game'|'memoryPokerMode'|'auctionMode'>
 /** Occupied seats for this room (participants plus any supported bots); fixtures still use two participants. */
@@ -303,8 +304,8 @@ export class Host{
    // A carried limit belongs to the previous table; a deliberate new limit is honored.
    const capacity=reseat||(gameChanged||variantChanged)&&changes.capacity===this.settings.capacity?(fixtureSize?Math.max(min,roster.length):max):seatCapacity(changes,this.solo)
    if(capacity<roster.length)return 'Capacity cannot be below the current roster.'
-   const seconds=changes.game==='colorLink'&&gameChanged?45:(changes.game==='wallGo'||changes.game==='heavy13')&&this.settings.game!==changes.game?25:changes.game==='fence'||changes.game==='tower'||changes.game==='piece'?240:changes.game==='scale'?300:changes.game==='spot'?90:changes.game==='fragments'?20:changes.game==='pyramid'?45:changes.game==='codeLock'?180:changes.game==='divine'?(this.settings.game!=='divine'?600:Math.max(60,changes.seconds)):changes.game==='knight'?Math.max(180,Math.min(480,changes.seconds)):changes.game==='hex'?20:changes.game==='rectangles'?45:changes.game==='cubes'?25:changes.game==='exile'?90:changes.game==='secret'&&this.settings.game!=='secret'?90:Math.min(90,changes.seconds)
-   this.settings={...changes,auctionMode:changes.game==='auction'?changes.auctionMode:undefined,memoryPokerMode:changes.game==='memoryPoker'?changes.memoryPokerMode:undefined,botLevel:changes.botLevel??'normal',capacity,seconds,closed:changes.size===5||!changes.size?false:changes.closed}
+   const seconds=changes.game==='symmetry'?symmetryTime/1000:changes.game==='colorLink'&&gameChanged?45:(changes.game==='wallGo'||changes.game==='heavy13')&&this.settings.game!==changes.game?25:changes.game==='fence'||changes.game==='tower'||changes.game==='piece'?240:changes.game==='scale'?300:changes.game==='spot'?90:changes.game==='fragments'?20:changes.game==='pyramid'?45:changes.game==='codeLock'?180:changes.game==='divine'?(this.settings.game!=='divine'?600:Math.max(60,changes.seconds)):changes.game==='knight'?Math.max(180,Math.min(480,changes.seconds)):changes.game==='hex'?20:changes.game==='rectangles'?45:changes.game==='cubes'?25:changes.game==='exile'?90:changes.game==='secret'&&this.settings.game!=='secret'?90:Math.min(90,changes.seconds)
+   this.settings={...changes,symmetryAxis:changes.game==='symmetry'?changes.symmetryAxis:undefined,auctionMode:changes.game==='auction'?changes.auctionMode:undefined,memoryPokerMode:changes.game==='memoryPoker'?changes.memoryPokerMode:undefined,botLevel:changes.botLevel??'normal',capacity,seconds,closed:changes.size===5||!changes.size?false:changes.closed}
    if(this.solo){
     if(changes.game==='divine')this.settings.divineSide??=3
     this.seats=roster
@@ -354,9 +355,9 @@ export class Host{
   this.secretBotRejected.clear()
   const [gameSeed,botSeed]=crypto.getRandomValues(new Uint32Array(2))
   this.botSeed=botSeed
-  const {game,seconds,size,closed,divineSide,divineHard,fragmentStrict,fragmentCount,memoryPokerPeek}=this.settings
+  const {game,seconds,size,closed,divineSide,divineHard,fragmentStrict,fragmentCount,memoryPokerPeek,symmetryAxis}=this.settings
   const seats=isDuel(game)?this.fixtures[this.fixture].sides:this.seats.map(s=>s.id)
-  this.setGame(start(game,seats,seconds*1000,this.clock(),{seed:gameSeed,size,closed,divineSide,divineHard,fragmentStrict,fragmentCount,memoryPokerPeek,memoryDuelDeal:isEpisodePoker(this.settings)?liveMemoryDeal():undefined,holdAuction:isHoldAuction(this.settings),solo:this.solo}))
+  this.setGame(start(game,seats,seconds*1000,this.clock(),{seed:gameSeed,size,closed,divineSide,divineHard,fragmentStrict,fragmentCount,memoryPokerPeek,symmetryAxis,memoryDuelDeal:isEpisodePoker(this.settings)?liveMemoryDeal():undefined,holdAuction:isHoldAuction(this.settings),solo:this.solo}))
   this.publishedHold=this.game?.timeHold?this.game:null
   this.holdUpdates.clear()
  }
@@ -469,6 +470,7 @@ export class Host{
  }
 }
 export function explain(game:Game,count:number) {
+ if(game==='symmetry')return 'All players get the same tray and mirror axis, but build on private 7 × 7 boards. Four minutes; no bots.'
  if(game==='colorLink')return 'Exactly two seats. Add links without closing the routes your opponent needs. Solo practice adds one bot.'
  if(game==='heavy13')return 'One shared table for 2–7 seats. Lock your pair privately, then place on three stands. Practice adds a bot; larger parties are not split into heats.'
  if(game==='montage')return count===1?'One gallery round in solo practice. Private parties need two to sixteen humans.':'One shared portrait feed, simultaneous buzzers, and one team error allowance.'

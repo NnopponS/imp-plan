@@ -1,3 +1,4 @@
+import {symmetryAxes} from './symmetry'
 import {useId,useRef,type CSSProperties,type KeyboardEvent,type ReactNode} from 'react'
 import {fragmentCounts,type FragmentCount} from './fragments'
 import {episodePokerRoster,humanOnly,isHoldAuction,seatRules,seatCapacity,type Settings,type Snapshot} from './room'
@@ -144,13 +145,16 @@ export function TableInstruments({snap,solo,readOnly,config}:{snap:Snapshot;solo
   ...(s.game==='memoryPoker'&&!episode?[{label:'Allow one-card peek (−1 point)',face:'One-card peek',mark:'peek' as const,checked:s.memoryPokerPeek??false,change:()=>config({memoryPokerPeek:!s.memoryPokerPeek})}]:[]),
   ...(!solo?[{label:'Lock new joins',face:'Lock room',mark:'lock' as const,checked:s.locked,change:()=>config({locked:!s.locked})}]:[]),
  ]
- if(solo&&!dualGame&&!gameTimer&&s.game!=='fragments'&&noBots&&!switches.length)return null
+ if(solo&&!dualGame&&!gameTimer&&s.game!=='symmetry'&&s.game!=='fragments'&&noBots&&!switches.length)return null
  return <section className="panel lobby party-settings table-instruments" aria-label="Table settings" data-read-only={readOnly||undefined}>
   <h2 className="party-setting-title">Table settings</h2>
   <div className="instrument-bank">
    {dualGame&&<Choices name={s.game==='divine'?'Square size':'Board size'} value={String(s.game==='divine'?s.divineSide??7:s.size??5)} readOnly={readOnly}
     choices={(s.game==='divine'?[3,5,7]:[5,6,8]).map(n=>({value:String(n),label:n+' × '+n,description:s.game==='divine'&&solo&&n===3?'Starter board':undefined,art:<GridMark side={n}/>}))}
     choose={value=>s.game==='divine'?config({divineSide:Number(value) as 3|5|7}):config({size:Number(value) as 5|6|8,closed:value==='5'?false:s.closed})}/>}
+   {s.game==='symmetry'&&<Choices name="Mirror axis" value={s.symmetryAxis??'surprise'} readOnly={readOnly}
+    choices={[{value:'surprise',label:'Surprise me',face:'Surprise'},...symmetryAxes.map(axis=>({value:axis,label:axis[0].toUpperCase()+axis.slice(1)}))]}
+    choose={value=>config({symmetryAxis:symmetryAxes.find(axis=>axis===value)})}/>}
    {s.game==='divine'&&<Timer name="Time limit" seconds={s.seconds} presets={[120,300,600,900]} readOnly={readOnly} minutes config={config}/>}
    {s.game==='knight'&&<Timer name="Minutes" seconds={s.seconds} presets={[180,240,300,360,420,480]} readOnly={readOnly} minutes config={config}/>}
    {s.game==='auction'&&!solo&&<Choices name="Time Auction mode" caption="Auction mode" value={hold?'hold':'sealed'} readOnly={readOnly} choose={v=>config({auctionMode:v==='hold'?'hold':'sealed'})}

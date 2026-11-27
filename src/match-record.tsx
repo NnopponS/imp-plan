@@ -11,6 +11,7 @@ type ResultMark='win'|'draw'|'complete'|'closed'
 type ActionMark='lobby'|'rematch'|'next'|'export'
 type SeatName=(id:string)=>string
 const scoreFormat=new Intl.NumberFormat('en',{maximumFractionDigits:2})
+const symmetryTimeFormat=new Intl.NumberFormat('en',{minimumFractionDigits:3,maximumFractionDigits:3})
 
 function TableMark({kind}:{kind:RoundMark|ActionMark}){
  const lines={
@@ -51,6 +52,8 @@ function TableSeal({kind}:{kind:ResultMark}){
 }
 
 function resultLabel(g:GameView):{mark:ResultMark,label:string}{
+ if(g.symmetry?.results&&g.seats.length===1)return g.symmetry.results[0]?.score.solved?{mark:'complete',label:'Reflection complete'}:{mark:'closed',label:'Time expired'}
+ if(g.symmetry?.results&&g.symmetry.results.filter(row=>row.rank===1).length>1)return {mark:'draw',label:'Shared lead'}
  const team=g.montage?g.montage.outcome==='cleared':g.scale?g.scale.score===5:g.tower?g.tower.score.passed:g.piece?g.piece.score.adjustedMs!==null:g.fragments?g.fragments.passed:null
  if(team!==null)return team?{mark:'complete',label:'Objective met'}:{mark:'closed',label:'Objective not met'}
  if(g.memoryDuel?.result?.kind==='void')return {mark:'closed',label:'No contest'}
@@ -87,6 +90,12 @@ export function MatchRecord({snap,name,active,onExport,onReturn,onNext,folio}:{s
  const repeat=onNext&&<button className="match-action primary" type="button" disabled={!active} onClick={onNext}><TableMark kind={snap.seriesDone?'rematch':'next'}/>{snap.seriesDone?'Rematch':'Next leg'}</button>
  return <section className={'match-record'+(knight?' knight-match-record':'')} aria-label="Match record" data-board-result tabIndex={-1}>
   {knight?<><div className="match-record-imprint"><TableSeal kind={mark}/><h3>Match record{folio}</h3></div><KnightResultPrint result={knight}/></>:<div className="match-record-imprint"><TableSeal kind={mark}/><div><h3>Match record{folio}</h3><p>{label}{mark==='win'&&snap.game.winner?' · '+name(snap.game.winner):''}</p></div></div>}
+  {snap.game.symmetry?.results&&<section className="league-ledger" aria-label="Symmetrical Puzzle standings"><h4>Standings</h4>
+   <ol role="list">{snap.game.symmetry.results.map(({seat,rank,score})=><li key={seat}>
+    <b className="league-rank"><span className="sr">Rank </span>{rank}</b><span>{name(seat)}</span>
+    <strong>{score.solved?'Solved · '+symmetryTimeFormat.format((score.elapsedMs??0)/1000)+' s':score.partial+' matching '+(score.partial===1?'tile':'tiles')}</strong>
+   </li>)}</ol>
+  </section>}
   <LeagueStandings snap={snap} name={name}/>
   <div className="match-record-actions">
    {knight&&<><KnightResultImageActions key={snap.match} result={knight}/>{repeat}</>}

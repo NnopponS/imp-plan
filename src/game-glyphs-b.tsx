@@ -27,6 +27,7 @@ export const glyphsB={
  // Aligned scoring stones, with point tally ticks.
  point:<><path d="M10 11v16h21M17 11v16m7-16v16m7-16v16M10 13h21" fill="none" stroke="currentColor" strokeWidth="1.45" opacity=".65"/><path d="M10 20h21" stroke="var(--token-accent,#f2ce8d)" strokeWidth="2.4"/><path d="M10 20h.1m6.9 0h.1m6.9 0h.1m6.9 0h.1" stroke="currentColor" strokeWidth="5.4" strokeLinecap="round"/><path d="M17 29v3m6-3v3m6-3v3" stroke="var(--token-accent,#f2ce8d)" strokeWidth="2" strokeLinecap="round"/></>,
  // Separate orthogonal inlays and four matching terminal pads.
+ symmetry:<><path d="M20 8v24" stroke="var(--token-accent,#9dd1c6)" strokeDasharray="1 2"/><path d="M17 13h-4v4h-4v8h8zM23 13h4v4h4v8h-8z"/><path d="m11 28 4 2m14-2-4 2" strokeWidth="1"/></>,
  colorLink:<><path d="M10 11h12v18H11" stroke="currentColor" strokeWidth="2.55"/><path d="M29 12v14" stroke="var(--token-accent,#9dd1c6)" strokeWidth="2.55"/>
   <g fill="var(--token-body,#24413f)" strokeWidth="2.25"><circle cx="10" cy="11" r="2.5" stroke="currentColor"/><circle cx="11" cy="29" r="2.5" stroke="currentColor"/>
    <circle cx="29" cy="12" r="2.5" stroke="var(--token-accent,#9dd1c6)"/><circle cx="29" cy="26" r="2.5" stroke="var(--token-accent,#9dd1c6)"/>

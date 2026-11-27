@@ -16,7 +16,7 @@
 | Time Auction: Hold & release | 2–16 humans | Not available | Native human-only continuous holds. |
 | Memory Poker: episode-style duel | 2 humans | Not available | Two private picks per seat and three shared cards; exact duel only. |
 | Memory Poker: fan table | 2–16 humans | 1 human | Private picks and shared point resolution, not a duel wrapper. |
-| Knight’s Tour, Hexagon, Count the Rectangles, Count the Cubes, Exile Rectangle Counting, Divine Test, Secret Code, Equation Pyramid, Spot the Difference, Loop Fence Puzzle | 2–16 humans | 1 human | Private/simultaneous answers, grids or marks, with scalable scores. |
+| Knight’s Tour, Hexagon, Count the Rectangles, Count the Cubes, Exile Rectangle Counting, Divine Test, Secret Code, Equation Pyramid, Spot the Difference, Loop Fence Puzzle, Symmetrical Puzzle | 2–16 humans | 1 human | Private/simultaneous answers, grids or marks, with scalable scores. |
 | Montage | 2–16 humans | 1 human | Native timed everyone-can-buzz party mode and a separate unscored practice. |
 | Piece Puzzle | 2–4 humans | 1 human | One piece tray with turn control after each action. |
 | Scale Game | 2–6 humans | 1 human | Shared 12-use balance, with opportunity for two turns at full capacity. |

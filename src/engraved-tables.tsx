@@ -8,7 +8,7 @@ export const tableMaterial={
  scale:'brass',auction:'brass',codeLock:'brass',heavy13:'brass',fence:'brass',
  memoryPoker:'felt',remove:'felt',secret:'felt',
  grass1:'oak',grass3:'oak',piece:'oak',tower:'oak',pyramid:'oak',
- colorLink:'ink',hex:'ink',knight:'ink',cubes:'ink',rectangles:'ink',exile:'ink',equations:'ink',
+ symmetry:'ink',colorLink:'ink',hex:'ink',knight:'ink',cubes:'ink',rectangles:'ink',exile:'ink',equations:'ink',
  montage:'vellum',divine:'vellum',fragments:'vellum',spot:'vellum',
 } as const satisfies Record<Game,Material>
 

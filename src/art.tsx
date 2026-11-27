@@ -25,7 +25,7 @@ export function GameArt({mode,motionOff}:{mode:Game;motionOff?:boolean}){
 }
 
 // Only entries with a finished, checked illustration use this new art family.
-const illustratedGameKeys=new Set<string>(['morris','grass1','hex','remove','knight','auction','codeLock','piece','fence','memoryPoker','exile','cubes','fragments','tower','scale','mancala','bagh','pyramid','equations','rectangles','grass3','spot','secret','divine','point'])
+const illustratedGameKeys=new Set<string>(['morris','grass1','hex','remove','knight','auction','codeLock','piece','fence','memoryPoker','exile','cubes','fragments','tower','scale','mancala','bagh','pyramid','equations','rectangles','grass3','spot','secret','divine','point','symmetry'])
 export const hasIllustratedGame=(game:string)=>illustratedGameKeys.has(game)
 const illustratedSource=(game:string)=>base+'art/seasonal-'+game+'.svg'
 export function IllustratedGame({game,className,loading='lazy'}:{game:string;className?:string;loading?:'lazy'|'eager'}){

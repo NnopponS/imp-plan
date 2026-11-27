@@ -402,6 +402,18 @@ function ColorLink(){
   </g>)}</>
 }
 
+function Symmetry(){
+ const half=[[0,0],[0,1],[1,1]]
+ return <><Grid x={69} y={34} cols={7} rows={7} cell={9}/>
+  <path d="M100.5 34v63" className="ap-gold-line" strokeDasharray="2 2"/>
+  {half.map(([x,y],i)=><g key={i}>
+   <rect x={78+x*9} y={53+y*9} width="8" height="8" rx="1" className="ap-jade-fill ap-pop" style={time(140+i*70)}/>
+   <rect x={114-x*9} y={53+y*9} width="8" height="8" rx="1" className="ap-gold-fill ap-pop" style={time(720+i*70)}/>
+  </g>)}
+  <rect x="96.5" y="62" width="8" height="8" rx="1" className="ap-rose-fill ap-pop" style={time(1050)}/>
+ </>
+}
+
 const previewScenes={
  blind:{ms:2240,draw:()=> <Gomoku/>},morris:{ms:1920,draw:Morris},
  auction:{ms:2100,draw:Auction},point:{ms:2060,draw:()=> <Gomoku point/>},
@@ -415,5 +427,5 @@ const previewScenes={
  fragments:{ms:2280,draw:Fragments},spot:{ms:1930,draw:Spot},scale:{ms:2190,draw:Scale},
  fence:{ms:1850,draw:Fence},tower:{ms:1990,draw:Tower},piece:{ms:2030,draw:PieceFit},
  memoryPoker:{ms:2050,draw:Poker},wallGo:{ms:2130,draw:WallGo},
- montage:{ms:2350,draw:Montage},heavy13:{ms:2360,draw:Heavy},colorLink:{ms:2040,draw:ColorLink},
+ montage:{ms:2350,draw:Montage},heavy13:{ms:2360,draw:Heavy},colorLink:{ms:2040,draw:ColorLink},symmetry:{ms:2170,draw:Symmetry},
 } satisfies Record<Game,{ms:number;draw:()=>ReactNode}>

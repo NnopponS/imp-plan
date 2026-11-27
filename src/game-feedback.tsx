@@ -26,7 +26,8 @@ function savePreferences(p:FeedbackPreferences){
 function different<T>(a:readonly T[]|undefined,b:readonly T[]|undefined){
  return !!a&&!!b&&(a.length!==b.length||a.some((v,i)=>v!==b[i]))
 }
-function fitsChanged(a:GameView['piece'],b:GameView['piece']){
+type Fits=Pick<NonNullable<GameView['piece']>,'placements'>
+function fitsChanged(a:Fits|null|undefined,b:Fits|null|undefined){
  return !!a&&!!b&&b.placements.some((p,i)=>a.placements[i]?.anchor!==p?.anchor||a.placements[i]?.rotation!==p?.rotation)
 }
 function towerChanged(a:GameView['tower'],b:GameView['tower']){
@@ -45,7 +46,7 @@ export function feedbackCue(previous:GameFeedbackState|null,current:GameFeedback
  if(different(x.scores,y.scores))return 'score'
  if(different(x.board,y.board)||different(x.bagh?.board,y.bagh?.board)||
   different(x.grass?.board,y.grass?.board)||different(x.path,y.path)||
-  different(x.fence?.marks,y.fence?.marks)||fitsChanged(x.piece,y.piece)||towerChanged(x.tower,y.tower)||
+  different(x.fence?.marks,y.fence?.marks)||fitsChanged(x.piece,y.piece)||fitsChanged(x.symmetry?.board,y.symmetry?.board)||towerChanged(x.tower,y.tower)||
   x.mancala?.placements!==y.mancala?.placements||x.mancala?.sows!==y.mancala?.sows||
   x.scale?.log.length!==y.scale?.log.length)return 'piece'
  return null

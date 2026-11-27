@@ -1,20 +1,77 @@
-.piece-workshop{--piece-plate:#ece6f0}
-.piece-workshop .auction-top{margin-bottom:8px}
+/* Carved physical surfaces for Piece Puzzle's native buttons. No art layer receives input. */
+.piece-workshop{--piece-plate:#45342b}
+.piece-workshop .auction-top{margin-bottom:8px;background:#dfc9a7;border:1px solid #ad8c67;border-radius:4px}
 .piece-turn{font-weight:680}
-.piece-play-area{display:grid;grid-template-columns:minmax(0,1fr) minmax(120px,.6fr);align-items:start;gap:16px}
-.piece-silhouette{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px;padding:5px;background:var(--piece-plate);border:1px solid #c5b7cc;border-radius:7px;isolation:isolate}
-.piece-silhouette>button{display:grid;place-items:center;min-width:0;min-height:0;aspect-ratio:1;padding:0;border-radius:3px;border:1px solid transparent;font-size:clamp(.68rem,2.5vw,.94rem);background:#f6f1f7;color:#282034}
-.piece-silhouette>button[data-target="true"]{background:#d8cddd;border-color:#b5a5bc}
-.piece-silhouette>button[data-filled="true"]{background:var(--piece-ink);color:white;border-color:#44284b}
-.piece-silhouette>button.hint{box-shadow:inset 0 0 0 2px #7c4a15;background:#fbdfab;color:#341e0b}
-.piece-silhouette>button.fit{box-shadow:inset 0 0 0 2px #25654c}
-.piece-silhouette>button.collision{box-shadow:inset 0 0 0 2px #9d3647}
-.piece-silhouette>button:focus-visible{z-index:1;outline-offset:-2px}
-.piece-tray{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
-.piece-tray>button{position:relative;min-width:0;min-height:56px;padding:7px;background:#f7f2f8;border:1px solid #c5b7cc;border-radius:5px}
-.piece-tray>button[aria-pressed="true"]{background:#e5d7ec;border-color:#56397f;box-shadow:inset 0 0 0 1px #56397f}
-.piece-tray>button>span{position:absolute;top:2px;left:5px;font:700 .68rem ui-monospace,monospace;color:#513762}
-.piece-tray svg{display:block;width:min(100%,43px);height:35px;margin:auto;fill:var(--piece-ink)}
+.piece-play-area{display:grid;grid-template-columns:minmax(0,1fr) minmax(120px,.6fr);align-items:start;gap:clamp(8px,2vw,16px)}
+.piece-silhouette{
+ display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px;padding:5px;
+ background-color:var(--piece-plate);border:1px solid #8b6448;border-radius:5px;
+ box-shadow:inset 0 0 0 2px #221b18,inset 0 0 0 3px #b38b625c,0 2px 0 #a27d5699;
+ isolation:isolate;
+}
+.room[data-game=piece] .match .piece-silhouette>button{
+ display:grid;place-items:center;position:relative;min-width:0;min-height:0;aspect-ratio:1;padding:0;
+ border-radius:2px;border:0;background:transparent;color:#3a251f;font-size:clamp(.65rem,2.8vw,.9rem);
+}
+.room[data-game=piece] .match .piece-silhouette>button:hover:not([aria-disabled=true]){background:#bda67b45;color:#3a251f}
+.room[data-game=piece] .match .piece-silhouette>button:focus-visible{z-index:1;outline:2px solid #fff2c7;outline-offset:-1px}
+.room[data-game=piece] .match .piece-silhouette>button:focus-visible::after{content:'';position:absolute;inset:2px;border:1px solid #302017;pointer-events:none}
+.piece-cell-art,.piece-ghost-art{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+.piece-outside-etch{fill:none;stroke:#c3a17b;stroke-width:1;opacity:.4;stroke-linecap:round}
+.piece-slot-lip{fill:#8e6b50;stroke:#d0a681;stroke-width:1.1;stroke-linejoin:round}
+.piece-slot-recess{fill:#c8a989;stroke:#473126;stroke-width:1.45}
+.piece-slot-bevel{fill:none;stroke:#f6d6ad;stroke-width:.75;opacity:.81;stroke-linecap:round}
+.piece-slot-chisel{fill:none;stroke:#604233;stroke-width:.87;stroke-linecap:round;opacity:.52}
+.piece-slot-axis{fill:none;stroke:#6f4e3c;stroke-width:.84;opacity:.66;stroke-linecap:round}
+[data-craft-clue] .piece-slot-lip{fill:#ad6e2d;stroke:#ffdc94;stroke-width:1.4}
+[data-craft-clue] .piece-slot-recess{fill:#f4d291}
+.piece-clue-stamp{fill:none;stroke:#744416;stroke-width:1.35;stroke-linecap:round}
+.piece-face-body{fill:var(--piece-ink);stroke:#f5d5a2;stroke-width:1.16;stroke-linejoin:round}
+.piece-face-shadow{fill:#322119;stroke:#1e130d;stroke-width:1.35}
+.piece-face-lip{fill:none;stroke:#fff0cc;stroke-width:1.25;opacity:.61;stroke-linecap:round}
+.piece-face-line{fill:none;stroke:#fff0d0;stroke-width:1.2;opacity:.47;stroke-linecap:round}
+.piece-face-wear{fill:none;stroke:#23160f;stroke-width:.9;opacity:.56;stroke-linecap:round}
+.piece-face-stamp{fill:none;stroke:#fff0c9;stroke-width:1.04;opacity:.87;stroke-linecap:round;stroke-linejoin:round}
+.piece-board-number{
+ position:relative;place-self:center;margin-block-start:.29em;
+ color:#fff0cd;font:800 1em/1.15 ui-monospace,monospace;pointer-events:none;
+ text-shadow:0 1px 2px #241510,0 0 2px #241510;
+}
+.piece-ghost-art{overflow:visible;color:#174d3f}
+.piece-ghost-art[data-craft-ghost=collision]{color:#7b213b}
+.piece-ghost-outline,.piece-ghost-glyph{
+ fill:none;stroke:currentColor;stroke-width:2.7;stroke-linecap:round;stroke-linejoin:round;
+ paint-order:stroke;filter:drop-shadow(0 0 .85px #fff6e2);
+}
+.piece-ghost-art[data-craft-ghost=collision] .piece-ghost-outline{stroke-dasharray:2.8 2.4}
+.room[data-game=piece] .match .piece-silhouette>button[data-filled=true] .piece-ghost-art{color:#fffae9}
+.piece-tray{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+.room[data-game=piece] .match .piece-tray>button{
+ position:relative;display:grid;place-items:center;min-width:0;min-height:56px;
+ padding:7px 6px 5px;border:1px solid #9d7855;border-radius:4px;
+ background:repeating-linear-gradient(-12deg,#f2d4a81d 0 1px,transparent 1px 5px),#ddc19b;
+ color:#3b291e;box-shadow:inset 0 0 0 2px #f2d5a879,0 1px 0 #9d7951;
+}
+.room[data-game=piece] .match .piece-tray>button:hover:not(:disabled){background-color:#e8cca2;border-color:#705137}
+.room[data-game=piece] .match .piece-tray>button[aria-pressed=true]{
+ background:#f6dbad;border-color:#493628;box-shadow:inset 0 0 0 2px #6d4c34;
+}
+.room[data-game=piece] .match .piece-tray>button[aria-pressed=true]::after{
+ content:'';position:absolute;inset:3px;border:1px dashed #583922;border-radius:2px;pointer-events:none;
+}
+.room[data-game=piece] .match .piece-tray>button:focus-visible{outline:2px solid #59332d;outline-offset:2px;z-index:1}
+.piece-tray>button>span{
+ position:absolute;top:2px;left:5px;font:800 .7rem ui-monospace,monospace;color:#4a2e20;
+}
+.piece-tray-shape{display:block;width:min(80%,62px);height:40px;margin:auto;pointer-events:none}
 .piece-workshop .piece-instructions{font-size:.91rem;margin-top:10px}
 .piece-hint{padding:8px 10px;background:#f9e9cf;border-radius:5px;color:#442b16;border-left:3px solid #855719}
-@media(max-width:600px){.piece-play-area{grid-template-columns:minmax(0,360px);justify-content:center;gap:8px}.piece-tray{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:600px){
+ .piece-play-area{grid-template-columns:minmax(0,360px);justify-content:center;gap:8px}
+ .piece-tray{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media(forced-colors:active){
+ .piece-slot-recess,.piece-face-lip,.piece-face-stamp,.piece-ghost-outline,.piece-ghost-glyph{stroke:CanvasText}
+ .piece-slot-recess,.piece-face-body{fill:Canvas}
+ .piece-board-number{color:CanvasText;text-shadow:none}
+}

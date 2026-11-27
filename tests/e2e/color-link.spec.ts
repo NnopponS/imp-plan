@@ -118,7 +118,7 @@ test('Color Link season practice works on mobile without a room',async({page,bas
 })
 
 test('static shells index Color Link and the actual playable counts without client JavaScript',async({request})=>{
- for(const [route,count] of [['./','30 of 64'],['./season/3/','14 of 29']]){
+ for(const [route,count] of [['./','31 of 64'],['./season/3/','15 of 29']]){
   const response=await request.get(route)
   expect(response.ok()).toBe(true)
   const markup=await response.text()
