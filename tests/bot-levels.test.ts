@@ -1,5 +1,6 @@
+import {botThreeRow} from '../src/three-row'
 import {expect,it} from 'vitest'
-import {botAction,move,playColorLink,playHeavy13,start,titles,view,type BotLevel,type Game} from '../src/engine'
+import {botAction,move,playColorLink,playHeavy13,playThreeRow,start,titles,view,type BotLevel,type Game} from '../src/engine'
 import {colorLinkBot} from '../src/color-link'
 import {Host,decode,defaults,humanOnly} from '../src/room'
 import {buyer,contactAction,guessAction} from "../src/secret"
@@ -64,12 +65,19 @@ it('changing difficulty preserves the complete practice roster but swapping game
 
 it('every game offering AI has legal deterministic opening choices at all three levels',()=>{
  const games=(Object.keys(titles) as Game[]).filter(game=>!humanOnly(game))
- expect(games).toHaveLength(14)
+ expect(games).toHaveLength(15)
  for(const game of games){
-  const seats=(game==='remove'||game==='secret')?['a','b','c']:['a','b']
+  const seats=(game==='remove'||game==='secret'||game==='threeRow')?['a','b','c']:['a','b']
   const g=start(game,seats,25000,0,{seed:733})
   for(const level of levels){
    const v=view(g,'a')
+   if(v.threeRow){
+    const a=botThreeRow(v.threeRow,'a',g.seats,level,()=>0.4)
+    expect(a,game+' '+level).not.toBeNull()
+    expect(playThreeRow(g,'a',a!,1),game+' '+level).not.toBeNull()
+    expect(botThreeRow(v.threeRow,'a',g.seats,level,()=>0.4)).toEqual(a)
+    continue
+   }
    if(v.colorLink){
     const a=colorLinkBot(v.colorLink,'a',19,level)
     expect(a,game+' '+level).toBeDefined()

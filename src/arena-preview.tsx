@@ -414,6 +414,14 @@ function Symmetry(){
  </>
 }
 
+function ThreeRow(){
+ return <><Grid x={75} y={39} cols={5} rows={5} cell={10}/>
+  {[[80,84],[90,74],[100,64]].map(([x,y],i)=><g key={x} className="ap-pop" style={time(225+i*295)}><path className="ap-gold-line" d={`M${x-3} ${y+3}l6-6m-4 4v-3m2 1h3`}/></g>)}
+  <path d="M107 56l6 6-6 6-6-6z" className="ap-rose-fill ap-pop" style={time(630)}/>
+  <path d="M78 86l24-24" className="ap-gold-line ap-draw" style={time(1150)}/>
+  <path d="M116 77h15v10h-15zM116 77l7.5 6 7.5-6" className="ap-secondary-line ap-pop" style={time(1480)}/>
+ </>
+}
 const previewScenes={
  blind:{ms:2240,draw:()=> <Gomoku/>},morris:{ms:1920,draw:Morris},
  auction:{ms:2100,draw:Auction},point:{ms:2060,draw:()=> <Gomoku point/>},
@@ -427,5 +435,5 @@ const previewScenes={
  fragments:{ms:2280,draw:Fragments},spot:{ms:1930,draw:Spot},scale:{ms:2190,draw:Scale},
  fence:{ms:1850,draw:Fence},tower:{ms:1990,draw:Tower},piece:{ms:2030,draw:PieceFit},
  memoryPoker:{ms:2050,draw:Poker},wallGo:{ms:2130,draw:WallGo},
- montage:{ms:2350,draw:Montage},heavy13:{ms:2360,draw:Heavy},colorLink:{ms:2040,draw:ColorLink},symmetry:{ms:2170,draw:Symmetry},
+ montage:{ms:2350,draw:Montage},heavy13:{ms:2360,draw:Heavy},colorLink:{ms:2040,draw:ColorLink},symmetry:{ms:2170,draw:Symmetry},threeRow:{ms:2230,draw:ThreeRow},
 } satisfies Record<Game,{ms:number;draw:()=>ReactNode}>

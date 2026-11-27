@@ -17,8 +17,8 @@ async function motions(copy:Locator){
 test('the painting itself loops; rules remain behind Details',async({page})=>{
  await page.setViewportSize({width:911,height:660})
  await page.goto('./')
- await expect(page.locator('.featured .card')).toHaveCount(31)
- await expect(page.locator('[data-preview-game]')).toHaveCount(31)
+ await expect(page.locator('.featured .card')).toHaveCount(32)
+ await expect(page.locator('[data-preview-game]')).toHaveCount(32)
  await expect(page.locator('.arena-preview [data-character-cue]')).toHaveCount(0)
  const poster=cover(page,'blind').locator('img[data-arena-art]')
  await expect(poster).toBeAttached()
@@ -84,12 +84,12 @@ for(const setting of ['system reduction','saved Motion off','no observer']){
  })
 }
 
-test('all 31 original covers and the three mobile crops have dormant authored motion',async({page})=>{
+test('all 32 original covers and the three mobile crops have dormant authored motion',async({page})=>{
  await page.goto('./')
  const coverSources=await page.locator('.featured .arena-preview').evaluateAll(covers=>covers.flatMap(card=>
   Array.from(card.querySelectorAll('img[data-arena-art],picture>source')).map(asset=>asset.getAttribute('src')||asset.getAttribute('srcset')!)
  ))
- expect(new Set(coverSources).size).toBe(34)
+ expect(new Set(coverSources).size).toBe(35)
  await page.evaluate(async sources=>{
   const signatures=new Set<string>()
   for(const src of sources){
@@ -103,7 +103,7 @@ test('all 31 original covers and the three mobile crops have dormant authored mo
     [cue.getAttribute('attributeName'),cue.getAttribute('values')].join(':')).join('/')
    if(!src.endsWith('-mobile.svg'))signatures.add(signature)
   }
-  if(signatures.size<30)throw new Error('Some paintings share too many cues: '+signatures.size)
+  if(signatures.size<31)throw new Error('Some paintings share too many cues: '+signatures.size)
  },coverSources)
 })
 

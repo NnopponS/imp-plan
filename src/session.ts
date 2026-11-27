@@ -123,7 +123,7 @@ export async function hostRoom(name:string,listener:Listener,options:ConnectOpti
     if(err)rejected(err)
     update();return
    }
-   if(privateHold||err||(m.command.kind==='memory-lock'||m.command.kind==='heavy-lock')&&h.rev===before){
+   if(privateHold||err||(m.command.kind==='memory-lock'||m.command.kind==='heavy-lock'||m.command.kind==='three-row')&&h.rev===before){
     if(err)rejected(err)
     sendState(key)
    }else update()
@@ -146,7 +146,7 @@ export async function hostRoom(name:string,listener:Listener,options:ConnectOpti
   if(c.kind==='time-hold'){
    if(error&&c.action==='hold')holdRejection=request
    ownUpdate(c.action==='hold'?error:'')
-  }else if((c.kind==='memory-lock'||c.kind==='heavy-lock'||c.kind==='heavy-act')&&h.rev===before)ownUpdate(error)
+  }else if((c.kind==='memory-lock'||c.kind==='heavy-lock'||c.kind==='heavy-act'||c.kind==='three-row')&&h.rev===before)ownUpdate(error)
   else update(error)
   return request
  },close:()=>{

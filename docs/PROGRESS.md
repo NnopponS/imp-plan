@@ -107,3 +107,6 @@ Separate optional mode for exactly two humans in a private room. Study 16 cards 
 
 ### S3-21: Symmetrical Puzzle
 Implemented original fan rules on a 7 × 7 mirror bench: one to sixteen human boards, a shared random or selected axis, equal trays, legal quarter turns, and private placements. The browser host verifies connectivity and reflection; it never sends the generation witness. Solved boards lock without stopping other players. After all solve or four minutes expire, elapsed time and valid partial results determine shared or distinct ranks. Art includes original SVG gameplay tiles, lesson stages, and a resting cover whose illustrated tile turns and lands when visible. Local unit/build tests and desktop/mobile loopback browser play are documented in the game's rules. Real cross-network data channels and broadcast mechanics are not verified.
+
+### S1-12: Four-Player Three in a Row
+The 32nd playable fan adaptation adds a shared 5 × 5 engraved print block for 3–4 seats. Place Laurel or Thorn, then seal ballots. Party can use explicit bot seats; practice begins with two bots. Incomplete ballot state is sent only to the submitting seat, and roles are revealed after the result. This is the handoff's different placement version, not a verified recreation of the broadcast stacking table.

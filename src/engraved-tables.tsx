@@ -6,7 +6,7 @@ type Material='lacquer'|'brass'|'felt'|'oak'|'ink'|'vellum'
 export const tableMaterial={
  blind:'lacquer',point:'lacquer',morris:'lacquer',bagh:'lacquer',mancala:'lacquer',wallGo:'lacquer',
  scale:'brass',auction:'brass',codeLock:'brass',heavy13:'brass',fence:'brass',
- memoryPoker:'felt',remove:'felt',secret:'felt',
+ threeRow:'oak',memoryPoker:'felt',remove:'felt',secret:'felt',
  grass1:'oak',grass3:'oak',piece:'oak',tower:'oak',pyramid:'oak',
  symmetry:'ink',colorLink:'ink',hex:'ink',knight:'ink',cubes:'ink',rectangles:'ink',exile:'ink',equations:'ink',
  montage:'vellum',divine:'vellum',fragments:'vellum',spot:'vellum',
