@@ -43,6 +43,7 @@ const games=Object.keys(titles) as Game[]
 const route=()=>{const [page,query]=location.hash.slice(1).split('?');return {page,room:new URLSearchParams(query).get('room')??''}}
 const cleanCode=(x:string)=>x.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6)
 const invite=(code:string)=>location.origin+base+'#/join?room='+code
+const joinStatus={signaling:'Contacting signaling…',peer:'Opening a direct connection…',snapshot:'Waiting for the host’s room state…'} as const
 const exact=(v:number)=>new Intl.NumberFormat('en',{maximumFractionDigits:2}).format(v)
 const mark=(i:number)=>i===0?'●':'◆'
 function App(){
@@ -54,6 +55,8 @@ function App(){
  const [state,setState]=useState<SessionState>({phase:'offline',snapshot:null,error:''})
  const feedback=useGameFeedback(state)
  const [notice,setNotice]=useState('')
+ const [inviteCopy,setInviteCopy]=useState<'copied'|'manual'|null>(null)
+ const inviteInput=useRef<HTMLInputElement>(null)
  const [ice,setIce]=useState('')
  const selected=currentSeason()
  const [season,setSeason]=useState(selected?String(selected.id):'all')
@@ -89,7 +92,7 @@ function App(){
   }
   const attempt=++sig.current
   session.current?.close();session.current=null
-  setPendingEntry(null);setNotice('');setKind(type);setState({phase:'connecting',snapshot:null,error:''});setRoom(type==='join'?code:'')
+  setPendingEntry(null);setNotice('');setInviteCopy(null);setKind(type);setState({phase:'connecting',snapshot:null,error:''});setRoom(type==='join'?code:'')
   const listen=(v:SessionState)=>{if(attempt===sig.current)setState(v)}
   if(type==='solo'){
    session.current=practice(n,listen)
@@ -113,7 +116,19 @@ function App(){
  function leave(){
   ++sig.current;session.current?.close();session.current=null
   if(room)try{sessionStorage.removeItem('arena-resume-'+room)}catch{/* storage unavailable */}
-  setBriefing(null);setKind(null);setRoom('');setState({phase:'offline',snapshot:null,error:''});setNotice('');location.hash='/'
+  setBriefing(null);setKind(null);setRoom('');setState({phase:'offline',snapshot:null,error:''});setNotice('');setInviteCopy(null);location.hash='/'
+ }
+ useEffect(()=>{if(inviteCopy==='manual'){inviteInput.current?.focus();inviteInput.current?.select()}},[inviteCopy])
+ async function copyInvite(){
+  const attempt=sig.current
+  try{
+   await navigator.clipboard.writeText(invite(room))
+   if(attempt===sig.current)setInviteCopy('copied')
+  }catch{
+   if(attempt!==sig.current)return
+   if(inviteCopy==='manual'){inviteInput.current?.focus();inviteInput.current?.select()}
+   setInviteCopy('manual')
+  }
  }
  const command=(c:Command)=>{setNotice('');session.current?.send(c)}
  const host=snap?.host===snap?.you
@@ -187,8 +202,11 @@ function App(){
   </details></>
   :<section className="room" data-layout={snap?.game?.game==='blind'?'chamber':undefined}>
    <div className="section-head"><div><p className="eyebrow">{kind==='solo'?'OFFLINE PRACTICE':'PRIVATE PARTY'}</p><h1 ref={matchHeading} tabIndex={snap?.game?-1:undefined}>{snap?.game?titles[snap.game.game]:kind==='solo'?'Practice lobby':'Party room'}</h1></div><div className="room-controls"><GameFeedbackControls feedback={feedback}/><button onClick={leave}>Leave room</button></div></div>
-   {room&&<div className="invite"><span>Invite code <strong data-testid="room-code">{room}</strong></span><button onClick={()=>{void navigator.clipboard.writeText(invite(room)).then(()=>setNotice('Invite copied.')).catch(()=>setNotice('Copy this invite: '+invite(room)))}}>Copy invite</button></div>}
-   <p role="status" className="notice">{state.phase==='connecting'?'Connecting…':state.phase==='offline'?'Disconnected.':notice||''}</p>
+   {room&&<div className="invite"><span>Invite code <strong data-testid="room-code">{room}</strong></span>{snap&&<button onClick={()=>{void copyInvite()}}>Copy invite</button>}
+    {inviteCopy==='copied'&&<small role="status">Invite copied.</small>}
+    {inviteCopy==='manual'&&<div className="invite-manual"><p id="invite-copy-help">Couldn’t copy automatically. Copy the link below or share the invite code.</p><label>Invite link<input ref={inviteInput} readOnly value={invite(room)} aria-describedby="invite-copy-help" onFocus={e=>e.currentTarget.select()}/></label></div>}
+   </div>}
+   <p role="status" className="notice">{state.phase==='connecting'?joinStatus[state.joinStage??'signaling']:state.phase==='offline'?'Disconnected.':''}</p>
    {state.error&&<p role="alert" className="error">{state.error}</p>}
    {state.phase==='offline'&&<div className="actions"><button onClick={()=>connect(kind)}>Retry</button><button onClick={()=>connect('solo')}>Solo practice</button></div>}
    {snap&&<div className="room-grid"><div>

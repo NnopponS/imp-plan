@@ -24,3 +24,5 @@ button,input,select{color:var(--ink);background:#252320;border-color:#746354;bor
 @keyframes warm-score{0%{scale:.84}100%{scale:1}}
 .briefing>footer{position:sticky;bottom:0;z-index:3;background:#f5eddf;padding-bottom:max(11px,env(safe-area-inset-bottom))}
 .room-controls{display:flex;align-items:center;flex-wrap:wrap;gap:7px}
+
+.invite-manual{flex:1 0 100%;min-width:0}.invite-manual p{margin:0 0 5px}

@@ -20,12 +20,12 @@ export class TestPeer extends Signals {
  constructor(name?:string){
   super()
   const peer=name??crypto.randomUUID()
-  this.ws=new WebSocket('ws://127.0.0.1:9002/?id='+peer)
+  this.ws=new WebSocket('ws://127.0.0.1:'+(import.meta.env.VITE_TEST_SIGNAL_PORT??9002)+'/?id='+peer)
   this.ws.addEventListener('error',()=>this.emit('error',new Error('Test relay error')))
   this.ws.addEventListener('message',({data})=>{
    const m=JSON.parse(data)
    if(m.kind==='registered'){this.emit('open',peer);return}
-   if(m.kind==='missing'||m.kind==='duplicate'){this.emit('error',new Error('Test peer unavailable'));return}
+   if(m.kind==='missing'||m.kind==='duplicate'){this.emit('error',Object.assign(new Error('Test peer unavailable'),{type:m.kind==='missing'?'peer-unavailable':'unavailable-id'}));return}
    if(m.kind==='dial'){
     const c=new TestConnection(this,m.from,m.key)
     this.peers.set(m.key,c);this.emit('connection',c)

@@ -4,7 +4,8 @@ type Endpoint=PeerType|TestPeer
 type Channel=DataConnection|ReturnType<TestPeer['connect']>
 import {Host,decode,id,roomCode,type Snapshot,type Command} from './room'
 export type ConnectOptions={iceServers?:RTCIceServer[]}
-export type SessionState={phase:'connecting'|'online'|'offline',snapshot:Snapshot|null,error:string,receivedAt?:number,holdRejection?:string}
+type JoinStage='signaling'|'peer'|'snapshot'
+export type SessionState={phase:'connecting'|'online'|'offline',snapshot:Snapshot|null,error:string,joinStage?:JoinStage,receivedAt?:number,holdRejection?:string}
 type Listener=(s:SessionState)=>void
 export type Session={send:(c:Command,expectedMatch?:string)=>string|false;close:()=>void}
 const namespace='imp-plan-v5-'
@@ -17,18 +18,23 @@ let openPeer=async(options:ConnectOptions,code?:string):Promise<Endpoint>=>{
  const local=import.meta.env.VITE_TEST_SIGNAL==='1'
  const mock=import.meta.env.VITE_TEST_SIGNAL==='mock'
  const {Peer}=await import('peerjs')
- const opts={debug:0,config:{iceServers:options.iceServers??(local?[]:defaultIce)},...(local?{host:'127.0.0.1',port:9001,path:'/peer',secure:false}:{})}
+ const opts={debug:0,config:{iceServers:options.iceServers??(local?[]:defaultIce)},...(local?{host:'127.0.0.1',port:Number(import.meta.env.VITE_TEST_SIGNAL_PORT??9001),path:'/peer',secure:false}:{})}
  const peer:Endpoint=mock?new (await import('./test-transport')).TestPeer(code?namespace+code:undefined):code?new Peer(namespace+code,opts):new Peer(opts)
  return new Promise((resolve,reject)=>{
   const timer=setTimeout(()=>fail(new Error('Signaling timed out.')),8000)
-  const fail=(e:unknown)=>{clearTimeout(timer);peer.destroy();reject(e)}
-  peer.once('error',fail)
-  peer.once('open',()=>{clearTimeout(timer);peer.off('error',fail);resolve(peer)})
+  const cleanup=()=>{clearTimeout(timer);peer.off('error',fail);peer.off('open',ready)}
+  const fail=(e:unknown)=>{cleanup();peer.destroy();reject(e)}
+  const ready=()=>{cleanup();resolve(peer)}
+  peer.on('error',fail);peer.on('open',ready)
  })
 }
-function notify(text:string){
- return text
+const joinFailures:Record<JoinStage,string>={
+ signaling:'Couldn’t reach signaling. Check your internet connection, then retry.',
+ peer:'The direct connection didn’t open. Keep the host tab open and try a different network if retrying doesn’t help.',
+ snapshot:'Connected, but the host didn’t send the room state. Ask the host to keep the room tab open, then retry.'
 }
+const signalErrors=new Set(['network','disconnected','socket-error','socket-closed','server-error','ssl-unavailable','invalid-key'])
+const peerErrorType=(error:unknown)=>error&&typeof error==='object'&&'type' in error?String(error.type):''
 export function practice(name:string,listener:Listener):Session{
  const h=new Host(name,()=>Math.floor(performance.timeOrigin+performance.now()),true)
  const update=(error='')=>listener({phase:'online',snapshot:h.snapshot('host'),error,receivedAt:performance.now()})
@@ -145,38 +151,67 @@ export function joinRoom(code:string,name:string,listener:Listener,options:Conne
  let receivedAt:number|undefined,holdRejection:string|undefined,authorized=false
  let token:string|undefined
  try{const st=JSON.parse(sessionStorage.getItem(sessionKey(code))??'null');if(st?.name===name)token=st.token}catch{/* storage unavailable */}
- const tell=(phase:SessionState['phase'],err='')=>listener({phase,snapshot,error:err,receivedAt,holdRejection})
- const stop=()=>{conn?.close();peer?.destroy()}
+ const tell=(phase:SessionState['phase'],err='',joinStage?:JoinStage)=>listener({phase,snapshot,error:err,joinStage,receivedAt,holdRejection})
+ const stop=()=>{const channel=conn,endpoint=peer;conn=undefined;peer=undefined;channel?.close();endpoint?.destroy()}
  async function attempt(){
-  tell('connecting')
-  peer=await openPeer(options)
+  tell('connecting','','signaling')
+  try{peer=await openPeer(options)}
+  catch(e){throw new Error(peerErrorType(e)==='browser-incompatible'?'This browser can’t open a direct game connection. Try another browser.':joinFailures.signaling)}
   if(closed){peer.destroy();return}
   const p=peer
   await new Promise<void>((resolve,reject)=>{
-   const c=p.connect(namespace+code,{reliable:true,serialization:'raw'})
-   conn=c;authorized=false;seq=0;seen=performance.now()
-   let accepted=false
-   const timer=setTimeout(()=>reject(new Error('Couldn’t reach this room. Check the code and try again.')),9000)
-   const finish=(e?:Error)=>{clearTimeout(timer);e?reject(e):resolve()}
-   c.on('open',()=>send(c,{version:1,type:'hello',name,token}))
-   c.on('error',()=>finish(new Error('Peer connection failed.')))
-   p.on('error',()=>finish(new Error('Room not found or peer connection failed.')))
-   c.on('close',()=>finish())
-   c.on('data',(raw:unknown)=>{
-    if(typeof raw!=='string'||raw.length>128000)return
+   let c:Channel|undefined,timer:ReturnType<typeof setTimeout>|undefined
+   let stage:'peer'|'snapshot'='peer',accepted=false,firstState=false,finished=false
+   const finish=(message?:string)=>{
+    if(finished)return
+    finished=true;authorized=false;clearTimeout(timer)
+    p.off('error',onPeerError);p.off('disconnected',onSignalingLost)
+    if(message)reject(new Error(message));else resolve()
+   }
+   const connectionLost=()=>finish(firstState?'Host connection was lost. Play is frozen.':joinFailures[stage])
+   const onSignalingLost=()=>{if(!c?.open)finish(joinFailures.signaling)}
+   const onPeerError=(e:unknown)=>{
+    const type=peerErrorType(e)
+    if(signalErrors.has(type)){onSignalingLost();return}
+    if(type==='peer-unavailable'&&stage==='peer'){
+     finish('Room not found. Check the invite code and ask the host to keep the room open.');return
+    }
+    connectionLost()
+   }
+   const waitFor=(next:'peer'|'snapshot')=>{
+    stage=next;clearTimeout(timer);tell('connecting','',stage)
+    timer=setTimeout(connectionLost,9000)
+   }
+   waitFor('peer')
+   p.on('error',onPeerError);p.on('disconnected',onSignalingLost)
+   try{c=p.connect(namespace+code,{reliable:true,serialization:'raw'})}
+   catch{connectionLost();return}
+   if(!c){connectionLost();return}
+   const channel=c
+   conn=channel;authorized=false;seq=0;seen=performance.now()
+   channel.on('open',()=>{
+    if(finished)return
+    waitFor('snapshot')
+    send(channel,{version:1,type:'hello',name,token})
+   })
+   channel.on('error',connectionLost)
+   channel.on('close',connectionLost)
+   channel.on('data',(raw:unknown)=>{
+    if(finished||typeof raw!=='string'||raw.length>128000)return
     try{
      const m=JSON.parse(raw)
      seen=performance.now()
-     if(m.type==='accepted'&&/^[a-f0-9]{32}$/.test(m.token)){
-      accepted=true;authorized=true;token=m.token;clearTimeout(timer)
+     if(m.type==='accepted'&&!accepted&&/^[a-f0-9]{32}$/.test(m.token)){
+      accepted=true;token=m.token
       try{sessionStorage.setItem(sessionKey(code),JSON.stringify({name,token}))}catch{/* storage unavailable */}
      }
      if(m.type==='snapshot'&&accepted&&m.state&&typeof m.state.match==='string'){
+      firstState=true;authorized=true;clearTimeout(timer)
       snapshot=m.state;receivedAt=performance.now();tell('online',error);error=''
      }
      if(m.type==='error'&&typeof m.reason==='string'){
       if(typeof m.holdRejection==='string'&&/^[a-f0-9]{32}$/.test(m.holdRejection))holdRejection=m.holdRejection
-      error=notify(m.reason);tell(snapshot?'online':'connecting',error)
+      error=m.reason;tell(firstState?'online':'connecting',error,firstState?undefined:stage)
      }
      if(m.type==='closed'&&typeof m.reason==='string'){terminal=true;error=m.reason;finish()}
     }catch{/* ignore invalid host data */}
@@ -184,15 +219,20 @@ export function joinRoom(code:string,name:string,listener:Listener,options:Conne
   })
  }
  async function loop(){
+  const resuming=!!token
   let err=''
   for(let i=0;i<4&&!closed&&!terminal;i++){
-   try{await attempt();err='Host unavailable. Play is frozen.'}
+   error=''
+   try{await attempt()}
    catch(e){err=e instanceof Error?e.message:'Connection failed.'}
    finally{stop()}
-   if(closed||terminal||(!token&&!snapshot))break
-   tell('offline',err+' Reconnecting…');await sleep(Math.min(800*2**i,5000)+Math.random()*350)
+   // A new seat without an initial state reports the failure now. Its saved
+   // token can still be reused by Retry, while active seats resume automatically.
+   if(closed||terminal||(!resuming&&!snapshot))break
+   if(i<3){tell('offline',err+' Reconnecting…');await sleep(Math.min(800*2**i,5000)+Math.random()*350)}
   }
-  if(!closed)tell('offline',error||err||'Could not join the room.')
+  clearInterval(heartbeat)
+  if(!closed)tell('offline',terminal?error:err||'Could not join the room.')
  }
  const heartbeat=setInterval(()=>{
   if(conn?.open){

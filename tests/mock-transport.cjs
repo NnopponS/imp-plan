@@ -1,5 +1,5 @@
 const {WebSocketServer}=require('ws')
-const server=new WebSocketServer({host:'127.0.0.1',port:9002})
+const server=new WebSocketServer({host:'127.0.0.1',port:Number(process.env.E2E_SIGNAL_PORT??9002)})
 const sockets=new Map()
 server.on('connection',(ws,req)=>{
  const id=new URL(req.url,'http://localhost').searchParams.get('id')
