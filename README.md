@@ -11,8 +11,9 @@ npm test
 npm run build
 npx playwright install chromium
 npm run test:e2e
+npm run test:e2e:offline
 ```
-Vite serves under `/imp-plan/` by default. Practice has no network requirement once the page assets are loaded. Default browser tests exercise the application protocol through a loopback test transport. The optional REAL_WEBRTC=1 run attempts local PeerServer signaling and native WebRTC; this environment did not open a data channel. The deployed product uses public PeerJS signaling and a public STUN service for network discovery; neither is operated by the owner. Direct connectivity varies by network.
+Vite serves under `/imp-plan/` by default. On the published site, open the game website once while online and wait for **Ready for offline practice.** Then reopen it and play solo without a nickname or connection, including games you have not played before. Private parties still need a connection. If your browser clears its site data, open the site online again to restore the offline copy. Offline browsing is only available from the production build, not the Vite development server. Default browser tests exercise the application protocol through a loopback test transport. The optional REAL_WEBRTC=1 run attempts local PeerServer signaling and native WebRTC; this environment did not open a data channel. The deployed product uses public PeerJS signaling and a public STUN service for network discovery; neither is operated by the owner. Direct connectivity varies by network.
 
 [Product](docs/PRODUCT.md) · [Architecture](docs/ARCHITECTURE.md) · [Security](docs/SECURITY.md) · [Networking](docs/NETWORKING.md) · [Rule audit](docs/RULE_VERIFICATION.md) · [Progress](docs/PROGRESS.md)
 

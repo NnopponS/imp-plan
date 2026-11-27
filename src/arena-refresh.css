@@ -43,3 +43,5 @@ body{background:linear-gradient(155deg,#f5f2ee 15%,#ebe6e3 100%);min-height:100v
 .brief-seat-ring[data-dense]>span{width:7cqi;height:8cqi}
 .brief-seat-ring b{top:38%;height:1.18em;min-width:1.25em;padding-inline:.12em;border-radius:.24em;background:#422d58;font:700 .68rem/1.18 ui-monospace,monospace;text-align:center}
 .brief-seat-ring>span[data-brief-seat=bot] b{background:#5d3e16}
+
+.practice-availability{grid-column:1/-1;line-height:1.35;margin-top:-4px}

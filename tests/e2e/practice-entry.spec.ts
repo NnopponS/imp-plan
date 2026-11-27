@@ -3,6 +3,8 @@ import {expect,test} from '@playwright/test'
 test('a fresh player can open the selected practice game without a nickname',async({page})=>{
  await page.setViewportSize({width:390,height:844})
  await page.goto('./')
+ await expect(page.locator('.practice-availability')).toHaveCount(0)
+ expect(await page.evaluate(async()=>navigator.serviceWorker.getRegistrations().then(registrations=>registrations.length))).toBe(0)
  await page.getByRole('button',{name:'Practice Nine Men’s Morris'}).click()
  await expect(page.getByRole('heading',{name:'Practice lobby'})).toBeVisible({timeout:3000})
  await expect(page.getByRole('combobox',{name:'Game',exact:true})).toHaveValue('morris')

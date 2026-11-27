@@ -1,0 +1,214 @@
+/* Four physical instruments. The common case, clock and lock do not imply a common board. */
+.room[data-playing] .match:has(>.puzzle-instrument){
+ --ink:#f6e8cb;--sub:#d6c4a7;color-scheme:dark;color:var(--ink);
+ background:#28231e;border-color:#896b47;box-shadow:inset 0 0 0 2px #171411;
+}
+.room[data-playing] .match:has(>.puzzle-instrument[data-closed=false])>:is(.eyebrow,h2){display:none}
+.room[data-playing] .match:has(>.puzzle-instrument)>.eyebrow{color:#e2bf87}
+.room[data-playing] .match:has(>.puzzle-instrument)>details{color:#e9d4ad}
+.room[data-playing] .match:has(>.puzzle-instrument)>button.plain:not(.primary):not(.cell){background:#30261e;border-color:#846649;color:#efdbb8}
+.puzzle-instrument{
+ --pb-well:#3a3023;--pb-case:#302820;--pb-metal:#a2855b;--pb-rim:#72583d;--pb-light:#efdbad;
+ --pb-etch:repeating-linear-gradient(114deg,#17130f27 0 .65px,transparent .65px 5px);
+ color:#f6e7c9;min-width:0;
+}
+.puzzle-instrument[data-instrument=hex]{--pb-well:#3d2733;--pb-case:#2d202c;--pb-metal:#a4866e;--pb-rim:#8b6757;--pb-light:#f6deb8}
+.puzzle-instrument[data-instrument=cubes]{--pb-well:#34423a;--pb-case:#26332c;--pb-metal:#8c9a79;--pb-rim:#6d7b59;--pb-light:#e3dfb3}
+.puzzle-instrument[data-instrument=rectangles]{--pb-well:#534237;--pb-case:#3a2f23;--pb-metal:#b99a68;--pb-rim:#886847;--pb-light:#f2dcac}
+.puzzle-instrument[data-instrument=exile]{--pb-well:#302d34;--pb-case:#24242b;--pb-metal:#b6a28b;--pb-rim:#77707a;--pb-light:#f0d9ba}
+.puzzle-titleplate{
+ display:flex;align-items:center;justify-content:space-between;gap:5px 8px;min-width:0;
+ padding:7px 9px;border:1px solid var(--pb-rim);border-radius:4px;
+ background:var(--pb-etch),radial-gradient(ellipse at 15% 40%,var(--pb-well),var(--pb-case));
+ box-shadow:inset 0 0 0 2px #201912,0 2px 0 #171410;
+}
+.puzzle-titlemark,.puzzle-phase{display:flex;align-items:center;gap:7px;min-width:0}
+.puzzle-titlemark svg{width:29px;height:29px;color:var(--pb-light);flex:none}
+.puzzle-titlemark h3{font:400 clamp(1.15rem,4vw,1.75rem)/1.03 Georgia,serif;color:#fff0d1;margin:0}
+.puzzle-titlemark .puzzle-imprint{color:var(--pb-light);font-size:.58rem;font-weight:800;letter-spacing:.11em;text-transform:uppercase;margin:0 0 2px;line-height:1.2}
+.puzzle-titleplate .puzzle-target{margin:0 0 0 auto;gap:4px 8px;color:#f5dfb5;white-space:nowrap;font-size:.76rem}
+.puzzle-titleplate .puzzle-target strong{
+ color:#ffe6b8;background:#261c17;border:1px double var(--pb-rim);border-radius:2px;padding:1px 7px;
+ font:700 1.44rem/1.15 Georgia,serif;font-variant-numeric:tabular-nums;min-width:34px;text-align:center;
+}
+.puzzle-phase{font-size:.72rem;white-space:nowrap;font-variant-numeric:tabular-nums;color:#f0dec2}
+.puzzle-phase>span[role=timer]{background:#251e18;color:#f5d698;border:1px solid var(--pb-rim);border-radius:2px;padding:4px 6px;font-weight:800}
+.puzzle-phase>span[data-urgent=true]{background:#632f2d;color:#ffead6;border-color:#c28a73}
+.puzzle-desk{display:grid;grid-template-columns:minmax(0,1.48fr) minmax(180px,1fr);gap:8px;margin-top:8px;align-items:start;grid-template-areas:"visual answer"}
+.puzzle-visual,.puzzle-answer{
+ border:1px solid var(--pb-rim);border-radius:4px;min-width:0;
+ background:var(--pb-etch),var(--pb-case);box-shadow:inset 0 0 0 2px #1c18168f,0 2px 0 #171410;
+}
+.puzzle-visual{padding:7px;grid-area:visual}
+.puzzle-instrument .puzzle-board{margin:0 auto;width:100%}
+.puzzle-answer{padding:9px;display:grid;gap:7px;grid-area:answer}
+.puzzle-instrument .puzzle-cue{font-size:.78rem;color:#ebd8b7;margin:0;line-height:1.38}
+.puzzle-lock{display:grid;grid-template-columns:auto auto;gap:5px;align-items:end}
+.puzzle-lock label{grid-column:1/-1;font-size:.7rem;color:#f6e2ba}
+.puzzle-lock label input{min-height:42px;margin-top:3px;padding:4px 8px;font:700 1rem ui-monospace,monospace}
+.room[data-playing] .match .puzzle-lock button{
+ min-height:41px;border-radius:3px;font-size:.74rem;padding:5px 7px;line-height:1.12;
+}
+.room[data-playing] .match .puzzle-lock button:not(.primary):not(.cell){
+ background:#302920;color:#f2dbb6;border-color:var(--pb-metal);
+}
+.room[data-playing] .match .puzzle-lock button:not(.primary):not(:disabled):hover{background:#513a2b;color:#ffefd4}
+.room[data-playing] .match .puzzle-lock button.primary{
+ background:linear-gradient(#ebce91,#c09b60);color:#302216;border-color:#f6d99a;box-shadow:inset 0 0 0 1px #75533380;
+}
+.room[data-playing] .match .puzzle-lock button.primary:not(:disabled):hover{background:#ffe8ae}
+.puzzle-instrument button:focus-visible,.puzzle-instrument select:focus-visible,.puzzle-instrument input:focus-visible{outline:2px solid #fff0b8;outline-offset:2px;z-index:3}
+.puzzle-record{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px;min-width:0}
+.puzzle-record>div{
+ display:flex;flex-wrap:wrap;align-items:center;gap:3px 7px;max-width:100%;overflow-wrap:anywhere;line-height:1.24;
+ color:#eed9b3;border:1px solid #665038;background:#2c231b;border-radius:3px;padding:4px 7px;font-size:.7rem;
+}
+.puzzle-record small{color:#d7bea0;font-size:.63rem}
+
+/* Hexagon: wax seals on a pointed honeycomb. Links are drawn only for a valid selected line. */
+.puzzle-instrument[data-instrument=hex] .puzzle-visual{
+ background:var(--pb-etch),radial-gradient(ellipse at center,#60404b,#31242d 72%);padding:5px;
+}
+.puzzle-instrument .hex-instrument{max-width:29rem;aspect-ratio:530/435;position:relative;isolation:isolate}
+.hex-circuit,.hex-trace{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;fill:none}
+.hex-circuit{stroke:#dbb892;stroke-width:1.1;opacity:.54}
+.hex-trace{z-index:0;stroke:#ffe193;stroke-width:9;stroke-linejoin:round;stroke-linecap:round;filter:drop-shadow(0 0 3px #ffd998)}
+.room[data-playing] .match .puzzle-instrument .hex-instrument button{
+ position:absolute;transform:translate(-50%,-50%);isolation:isolate;
+ width:17.1%;height:22.35%;min-height:0;border:none;background:none;color:#ffedce;
+ font:700 clamp(.96rem,4vw,1.45rem)/1 Georgia,serif;text-shadow:0 1px #321c23;
+ box-shadow:none;opacity:1;z-index:1;
+}
+.room[data-playing] .match .puzzle-instrument .hex-instrument button:not(:disabled):hover{background:none}
+.hex-instrument button::before,.hex-instrument button::after{
+ content:"";position:absolute;inset:0;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);z-index:-1;
+ background:#b58b66;
+}
+.hex-instrument button::after{inset:2px;background:var(--pb-etch),linear-gradient(148deg,#83545d,#532f41 57%,#402a35)}
+.room[data-playing] .match .puzzle-instrument .hex-instrument button[aria-pressed=true]{color:#392620;text-shadow:0 1px #ffe4a5}
+.hex-instrument button[aria-pressed=true]::before{background:#fff0b0}
+.hex-instrument button[aria-pressed=true]::after{background:var(--pb-etch),linear-gradient(150deg,#efd298,#c6995d)}
+.hex-instrument button:not([aria-pressed=true]):hover:not(:disabled)::after{background:var(--pb-etch),#945a70}
+
+/* Rectangle ledger and Exile audit: a Cartesian sheet vs. a dark signed abacus. */
+.puzzle-instrument .rect-chart{
+ display:grid;grid-template-columns:1rem minmax(0,1fr);grid-template-rows:1rem minmax(0,1fr);width:min(100%,29rem);
+ margin:auto;font:600 .63rem/1 ui-monospace,monospace;text-align:center;
+}
+.puzzle-axis-x,.puzzle-axis-y{display:grid;align-items:center;gap:2px}
+.puzzle-axis-x{grid-template-columns:repeat(var(--puzzle-cols),minmax(0,1fr))}
+.puzzle-axis-y{grid-template-rows:repeat(var(--puzzle-rows),minmax(0,1fr))}
+.puzzle-axis-corner{align-self:center}
+.puzzle-instrument .rect-puzzle{grid-template-columns:repeat(var(--puzzle-cols),minmax(0,1fr));gap:2px}
+.puzzle-instrument[data-instrument=rectangles] .puzzle-visual{
+ background:repeating-linear-gradient(0deg,#9e7c491f 0 1px,transparent 1px 12px),#c3a57b;
+ border-color:#bf995f;box-shadow:inset 0 0 0 3px #846140; padding:8px;
+}
+.puzzle-instrument[data-instrument=rectangles] .rect-chart{color:#493224}
+.room[data-playing] .match .puzzle-instrument .rect-puzzle button{
+ min-height:0;border-radius:2px;color:#3b2b20;font:bold clamp(.73rem,3.7vw,1.2rem)/1 Georgia,serif;
+ background:var(--pb-etch),linear-gradient(146deg,#f0dcb7,#ddc196);border:1px solid #937249;box-shadow:inset 0 0 0 1px #f5ddb3;
+}
+.room[data-playing] .match .puzzle-instrument[data-instrument=rectangles] .rect-puzzle button:hover:not(:disabled):not([aria-pressed=true]){background:#ffecbf;color:#38251b}
+.puzzle-instrument[data-instrument=exile] .puzzle-visual{
+ background:repeating-linear-gradient(135deg,#6e5d5b29 0 1px,transparent 1px 8px),#28282e;
+ border-color:#86777b;box-shadow:inset 0 0 0 3px #35313a;
+}
+.puzzle-instrument[data-instrument=exile] .rect-chart{color:#ded0b7}
+.puzzle-instrument[data-instrument=exile] :is(.rect-puzzle,.puzzle-axis-x,.puzzle-axis-y){gap:3px}
+.room[data-playing] .match .puzzle-instrument[data-instrument=exile] .rect-puzzle button{
+ position:relative;border:1px solid #82747a;font:700 clamp(.62rem,3vw,1.03rem)/1 ui-monospace,monospace;
+ box-shadow:inset 0 0 0 1px #1c191c98;
+}
+.puzzle-instrument[data-instrument=exile] .rect-puzzle [data-sign],.puzzle-signs>span{
+ --sign-ground:#343e40;--sign-ink:#e8e2d0;
+}
+.puzzle-instrument[data-instrument=exile] .rect-puzzle [data-sign=negative],.puzzle-signs>[data-sign=negative]{--sign-ground:#563537;--sign-ink:#fae0c4}
+.puzzle-instrument[data-instrument=exile] .rect-puzzle [data-sign=zero],.puzzle-signs>[data-sign=zero]{--sign-ground:#dabe8a;--sign-ink:#3c2b22}
+.room[data-playing] .match .puzzle-instrument[data-instrument=exile] .rect-puzzle button,.puzzle-signs>span{background:var(--sign-ground);color:var(--sign-ink)}
+.room[data-playing] .match .puzzle-instrument .rect-puzzle button[aria-pressed=true]{
+ color:#291d1a;background:#f2cd82;border-color:#795334;box-shadow:inset 0 0 0 2px #6c4035;
+}
+.room[data-playing] .match .puzzle-instrument[data-instrument=exile] .rect-puzzle button[aria-pressed=true]{
+ background:var(--sign-ground);color:var(--sign-ink);border-color:#fff0ce;
+ box-shadow:inset 0 0 0 1px #201718,inset 0 0 0 3px #fff0ce,inset 0 0 0 4px #201718;
+}
+.puzzle-instrument[data-instrument=exile] .rect-puzzle button[aria-pressed=true]::after{
+ content:"";position:absolute;top:3px;right:3px;width:7px;height:7px;background:#fff0ce;
+ clip-path:polygon(0 0,100% 0,100% 100%);pointer-events:none;
+}
+@media(forced-colors:active){
+ .puzzle-instrument[data-instrument=exile] .rect-puzzle button[aria-pressed=true]::after{background:Highlight;forced-color-adjust:none}
+}
+.puzzle-signs{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-start}
+.puzzle-signs>span{font-size:.63rem;border:1px solid #94827d;border-radius:2px;padding:2px 4px}
+
+/* Cube view: original projection and heights inside an engraved optical bench. */
+.puzzle-instrument .cube-view{margin:0}
+.cube-views{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
+.room[data-playing] .match .puzzle-instrument .cube-views button:not(.primary):not(.cell){
+ border-color:#83916d;background:#31352b;color:#f8eac6;min-width:0;min-height:42px;padding:3px;
+ font-size:.7rem;line-height:1.11;border-radius:3px;
+}
+.room[data-playing] .match .puzzle-instrument .cube-views button[aria-pressed=true]:not(.primary):not(.cell){
+ border-color:#d6bc82;background:#baa370;color:#261e14;box-shadow:inset 0 0 0 2px #53605280;
+}
+.room[data-playing] .match .puzzle-instrument .cube-views button:hover:not([aria-pressed=true]){background:#425644;color:#fff2cf}
+.puzzle-instrument .voxel-diagram{
+ width:min(100%,27rem);height:auto;margin:6px auto 0;border:1px solid #84916a;border-radius:3px;
+ background:radial-gradient(ellipse at 50% 47%,#5d674b53,#242e28 73%),
+ repeating-linear-gradient(31deg,#b0ad793c 0 1px,transparent 1px 18px),
+ repeating-linear-gradient(149deg,#b0ad7940 0 1px,transparent 1px 18px),#354236;
+}
+.cube-engraved-base polygon{fill:#8e7952;stroke:#d4ba83;stroke-width:.85}
+.cube-engraved-base polygon:nth-of-type(3){fill:#c8af7b}
+.cube-engraved-base polyline{fill:none;stroke:#826c4d;stroke-width:.65}
+.cube-chisel{fill:none;stroke:#997546;stroke-width:.55;opacity:.72}
+.cube-cross-section{margin-top:6px;padding:6px;background:var(--pb-etch),#344337;border:1px solid #748567;border-radius:3px;}
+.cube-cross-section label{display:flex;align-items:center;justify-content:center;gap:6px;margin:0;color:#f7e6c2;font-size:.74rem}
+.room[data-playing] .match .puzzle-instrument .cube-cross-section select{width:auto;min-width:58px;min-height:37px;margin:0;padding:2px 4px}
+.puzzle-instrument .cube-layer{width:min(100%,13rem);margin:6px auto 0;gap:3px}
+.puzzle-instrument .cube-layer span{color:#e4cf9f;border-color:#96a178;background:#2c372e;font-size:.88rem}
+.puzzle-instrument .cube-layer .occupied{color:#4a3927;border-color:#dabe87;background:var(--pb-etch),linear-gradient(145deg,#e0c894,#c09d61)}
+.puzzle-cube-index{display:flex;align-items:center;gap:7px;color:#f2e4bd;font:700 .98rem/1.15 Georgia,serif}
+.puzzle-cube-index svg{width:28px;height:28px;color:#ddc890;flex:none}
+.puzzle-cube-index small{display:block;color:#d4cba9;font:500 .68rem/1.26 system-ui,sans-serif}
+.puzzle-instrument[data-instrument=cubes] .puzzle-lock{grid-template-columns:minmax(0,1fr) auto}
+.puzzle-instrument[data-instrument=cubes] .puzzle-lock label{grid-column:auto}
+
+@media(max-width:680px){
+ .puzzle-desk{grid-template-columns:minmax(0,1fr);gap:5px;margin-top:5px;grid-template-areas:"visual" "answer"}
+ .puzzle-instrument[data-instrument=exile] .puzzle-desk{grid-template-areas:"answer" "visual"}
+ .puzzle-titleplate{padding:5px;gap:4px}
+ .puzzle-titlemark{gap:4px}
+ .puzzle-titlemark svg{width:23px;height:23px}
+ .puzzle-titleplate .puzzle-target{display:grid;gap:0;text-align:center;font-size:.59rem}
+ .puzzle-titleplate .puzzle-target strong{font-size:1.08rem;min-width:25px}
+ .puzzle-phase{display:grid;gap:2px;text-align:center;font-size:.65rem}
+ .puzzle-phase>span[role=timer]{padding:1px 5px}
+ .puzzle-visual{padding:4px}
+ .puzzle-answer{padding:6px;gap:4px}
+ .puzzle-lock label{font-size:.66rem}
+ .puzzle-lock:not(:has(label)){grid-template-columns:repeat(2,minmax(0,1fr))}
+ .puzzle-instrument:not([data-instrument=cubes]) .puzzle-lock:has(label){grid-template-columns:minmax(0,1fr) auto auto}
+ .puzzle-instrument:not([data-instrument=cubes]) .puzzle-lock label{grid-column:auto}
+ .puzzle-instrument .rect-chart{grid-template-columns:.82rem minmax(0,1fr);grid-template-rows:.82rem minmax(0,1fr)}
+}
+@media(max-width:360px){
+ .puzzle-titlemark h3{font-size:1.03rem}
+ .puzzle-titlemark .puzzle-imprint{font-size:.52rem;letter-spacing:.08em}
+ .room[data-playing] .match .puzzle-lock button{font-size:.68rem;padding-inline:5px}
+ .puzzle-lock label>input{min-width:0}
+}
+@media(min-width:681px) and (max-height:535px){
+ .puzzle-desk{grid-template-columns:minmax(0,1.24fr) minmax(0,1fr);gap:5px;margin-top:5px}
+ .puzzle-titleplate{padding:4px 7px}
+ .puzzle-titlemark h3{font-size:1.27rem}
+ .puzzle-visual{padding:5px}
+ .puzzle-answer{padding:7px}
+ .puzzle-instrument .hex-instrument,.puzzle-instrument .rect-chart{max-width:min(100%,calc(100svh - 145px))}
+ .puzzle-instrument .voxel-diagram{width:auto;max-width:100%;height:max(90px,min(170px,calc(100svh - 205px)))}
+ .cube-cross-section{display:grid;grid-template-columns:minmax(0,1fr) 7rem minmax(0,1fr);gap:8px;align-items:center}
+ .cube-cross-section label{justify-self:end;flex-direction:column}
+ .puzzle-instrument .cube-layer{width:100%;margin:0;grid-column:2}
+}
