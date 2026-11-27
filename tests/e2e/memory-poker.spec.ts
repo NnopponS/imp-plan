@@ -4,6 +4,17 @@ import {startMatch} from './start-match'
 const table=(page:Page)=>page.getByRole('region',{name:'Memory Poker table'})
 const cards=(page:Page)=>table(page).getByRole('group',{name:'Card layout'}).getByRole('button')
 const roundResults=(page:Page,round:number)=>table(page).getByRole('region',{name:'Round '+round+' hands'})
+// Keep both browser clocks moving in small steps so the guest's app heartbeat
+// can reach the host before its virtual 30-second connection timeout.
+const advanceRoom=async(host:Page,guest:Page,ms:number)=>{
+ for(let remaining=ms;remaining>0;){
+  const step=Math.min(4_000,remaining)
+  await guest.clock.fastForward(step)
+  await host.clock.fastForward(step)
+  remaining-=step
+ }
+ await Promise.all([host.clock.runFor(240),guest.clock.runFor(240)])
+}
 const timeAdvance=async(host:Page,ms:number)=>{await host.clock.fastForward(ms);await host.clock.runFor(240)}
 
 test('two players play four hands, keep locks and assistance private, then review an exact final score',async({browser,baseURL})=>{
@@ -12,7 +23,7 @@ test('two players play four hands, keep locks and assistance private, then revie
  try{
   const host=await desktop.newPage(),guest=await mobile.newPage()
   host.setDefaultTimeout(8_000);guest.setDefaultTimeout(8_000)
-  await host.clock.install()
+  await Promise.all([host.clock.install(),guest.clock.install()])
   await host.goto(baseURL!+'season/3/')
   await host.getByLabel('Nickname').fill('Ari')
   await host.getByRole('button',{name:'Create party'}).click()
@@ -35,7 +46,7 @@ test('two players play four hands, keep locks and assistance private, then revie
    const visible=await cards(host).evaluateAll(els=>els.map(el=>el.getAttribute('aria-label')!))
    expect(visible.every(x=>x.includes(' of '))).toBe(true)
    expect(await cards(guest).evaluateAll(els=>els.map(el=>el.getAttribute('aria-label')))).toEqual(visible)
-   await timeAdvance(host,25_600)
+   await advanceRoom(host,guest,25_600)
    for(const page of [host,guest]){
     await expect(table(page).getByRole('heading',{name:'Choose five cards'})).toBeVisible()
     await expect(table(page).getByRole('button',{name:'Position 1: face down',exact:true})).toBeVisible()
@@ -71,7 +82,7 @@ test('two players play four hands, keep locks and assistance private, then revie
     if(round===1)await expect(revealed.getByText('−0.5 pts',{exact:true})).toBeVisible()
     else await expect(revealed.getByText('0.5 pts',{exact:true})).toHaveCount(2)
    }
-   await timeAdvance(host,6_250)
+   await advanceRoom(host,guest,6_250)
   }
   await expect(host.getByRole('heading',{name:'Bee wins'})).toBeVisible()
   await expect(guest.getByRole('heading',{name:'Bee wins'})).toBeVisible()

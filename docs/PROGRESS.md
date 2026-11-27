@@ -95,3 +95,6 @@ Separate optional mode for exactly two humans in a private room. Study 16 cards 
 
 ## S2-10 · Wall Go
 27 of 64 catalog entries playable (8 / 7 / 12). A 7 × 7 Fan Mode duel combines pawn movement with permanent adjacent walls. A turn is previewed locally and committed atomically; spectators see only the accepted board. Includes per-turn clock, automatic legal wall at expiry, original art, three solo bot levels, two-player reverse-start rematches and existing larger-room fixture rotation. Browser tests verified a full two-client loopback game to territory scoring at 360 px with keyboard and touch, plus a Hard practice reply at 390 px. Cross-network play and the original broadcast heat are not verified.
+
+## S1-10 · Montage
+28 of 64 catalog entries playable (9 / 7 / 12). The Fan Mode streams a shared gallery of original illustrated portraits to 2–16 human seats through five cooperative rounds. The browser host advances each frame and arbitrates repeat claims. A bot-free one-round practice runs locally. Rules preview, keyboard and touch buzzers, descriptive labels and reduced motion are included. Targeted browser verification uses loopback only; public cross-network room play and full broadcast fidelity are not verified.

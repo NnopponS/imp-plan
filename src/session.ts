@@ -101,6 +101,12 @@ export async function hostRoom(name:string,listener:Listener,options:ConnectOpti
    }
    info.seq=m.seq
    const before=h.rev,err=h.command(key,m.request,m.rev,m.command)
+   if(m.command.kind==='montage-buzz'&&h.rev!==before){
+    // A rejected late claim can advance the gallery. Broadcast that clock change,
+    // while keeping the error local to the submitting connection.
+    if(err)rejected(err)
+    update();return
+   }
    if(privateHold||err||m.command.kind==='memory-lock'&&h.rev===before){
     if(err)rejected(err)
     sendState(key)
