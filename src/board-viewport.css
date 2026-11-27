@@ -1,0 +1,14 @@
+.board-viewer{min-width:0}
+.board-camera{display:flex;align-items:center;justify-content:flex-end;gap:4px;color:#684b32;margin:0 0 4px}
+.board-camera output{display:inline-block;min-width:3.2em;text-align:center;font:700 .72rem system-ui,sans-serif;font-variant-numeric:tabular-nums}
+.room .match .board-camera button:not(.cell),.board-camera button{display:grid;place-items:center;min-width:34px;min-height:34px;padding:2px 5px;border-radius:3px;background:#ead8b7;color:#4b3122;border:1px solid #a17d56}
+.board-camera button:disabled{opacity:.55}
+.board-camera svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+.board-camera-window{min-width:0}
+.board-camera-surface{width:calc(100% * var(--board-scale,1));min-width:0}
+.board-viewer[data-enlarged] .board-camera-window{max-height:min(73svh,44rem);max-width:100%;overflow:auto;overscroll-behavior:contain;outline:1px solid #a77f55;scrollbar-width:thin}
+.board-camera-window:focus-visible{outline:2px solid #bc8553;outline-offset:1px}
+.room[data-game=blind] .board-camera output{color:#eac899}
+@media (orientation:landscape) and (max-height:520px){
+ .board-viewer[data-enlarged] .board-camera-window{max-height:69svh}
+}

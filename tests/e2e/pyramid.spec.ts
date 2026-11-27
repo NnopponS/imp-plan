@@ -16,7 +16,6 @@ test('Equation Pyramid completes all eight rounds with keyboard and touch',async
  try{
   const page=await ctx.newPage()
   await page.goto(baseURL!+'season/2/')
-  await page.getByLabel('Nickname').fill('Builder')
   await page.getByRole('button',{name:/Practice Equation Pyramid/}).click()
   await startMatch(page)
   for(let j=1;j<=8;j++){
@@ -33,7 +32,7 @@ test('Equation Pyramid completes all eight rounds with keyboard and touch',async
    await page.getByRole('button',{name:'Lock answer'}).tap()
   }
   await expect(page.getByRole('heading',{name:'Practice complete'})).toBeVisible()
-  await expect(page.getByText('Builder: 16 pts')).toBeVisible()
+  await expect(page.getByText('Player: 16 pts')).toBeVisible()
   expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(360)
  }finally{await ctx.close()}
 })

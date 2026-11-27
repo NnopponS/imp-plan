@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="52" viewBox="0 0 80 52" role="img" aria-labelledby="t d"><title id="t">Red stand</title><desc id="d">A red cube stand with a triangular peak engraved on its front.</desc><defs><linearGradient id="brass" x2=".66" y2="1"><stop offset="0" stop-color="#e1bc88"/><stop offset="0.5" stop-color="#b38352"/><stop offset="1" stop-color="#745137"/></linearGradient>
+<linearGradient id="side" x2=".67" y2="1"><stop offset="0" stop-color="#a47752"/><stop offset="0.5" stop-color="#53382f"/><stop offset="1" stop-color="#392b2a"/></linearGradient>
+<linearGradient id="red" x2=".76" y2="1"><stop offset="0" stop-color="#af624f"/><stop offset="0.5" stop-color="#8e4146"/><stop offset="1" stop-color="#572f39"/></linearGradient>
+<linearGradient id="blue" x2=".76" y2="1"><stop offset="0" stop-color="#557e8a"/><stop offset="0.5" stop-color="#315c74"/><stop offset="1" stop-color="#2b4159"/></linearGradient>
+<linearGradient id="green" x2=".76" y2="1"><stop offset="0" stop-color="#648a70"/><stop offset="0.5" stop-color="#406958"/><stop offset="1" stop-color="#2e4e47"/></linearGradient>
+</defs>
+<ellipse cx="41" cy="44" rx="38" ry="6.4" fill="#332827" opacity=".25"/>
+<path d="M3 24 10 15h53l14 9v18l-6 5H8l-5-5Z" fill="url(#side)" stroke="#483128" stroke-width="1.4"/>
+<path d="M8 28h64v15H8Z" fill="url(#brass)" stroke="#604438" stroke-width="1.1"/>
+<path d="M12 31h56v10H12Z" fill="url(#red)" stroke="#513431" stroke-width="0.85"/>
+<path d="M12 9h52l13 12-4 9H7l-4-9Z" fill="url(#red)" stroke="#49312b" stroke-width="1.6"/>
+<path d="M13 10.8h50l10 10.2-2.5 4.7H9.5l-3-4.7Z" fill="none" stroke="#e7bc83" stroke-width="0.84" opacity=".79"/>
+<path d="M23 13h31l7.2 7-2.7 4H20l-2.2-4Z" fill="#2f2729" opacity=".42"/>
+<path d="M11 42h58M13 34h13m31 0h11" fill="none" stroke="#f5cd91" stroke-width=".9" stroke-linecap="round" stroke-linejoin="round" opacity=".64"/>
+<g transform="translate(40 35.0) scale(0.71)"><path d="M-9 6 0-8 9 6ZM-4 2 0-3 4 2" fill="none" stroke="#291f20" stroke-width="2.52" stroke-linecap="round" stroke-linejoin="round" opacity=".52" transform="translate(.48 .45)"/>
+<path d="M-9 6 0-8 9 6ZM-4 2 0-3 4 2" fill="none" stroke="#ffe1a4" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" opacity=".98"/>
+</g><path d="M9 18l5-6m51 0 6 5" fill="none" stroke="#fff0b9" stroke-width=".75" stroke-linecap="round" stroke-linejoin="round" opacity=".75"/>
+</svg>

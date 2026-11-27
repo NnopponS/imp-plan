@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="52" viewBox="0 0 80 52" role="img" aria-labelledby="t d"><title id="t">Rainbow wildcard</title><desc id="d">An engraved four-point star above red, blue, green, and gold quadrants. The Rainbow wildcard can choose any stand.</desc><defs><linearGradient id="brass" x2=".66" y2="1"><stop offset="0" stop-color="#e1bc88"/><stop offset="0.5" stop-color="#b38352"/><stop offset="1" stop-color="#745137"/></linearGradient>
+<linearGradient id="side" x2=".67" y2="1"><stop offset="0" stop-color="#a47752"/><stop offset="0.5" stop-color="#53382f"/><stop offset="1" stop-color="#392b2a"/></linearGradient>
+<linearGradient id="red" x2=".76" y2="1"><stop offset="0" stop-color="#af624f"/><stop offset="0.5" stop-color="#8e4146"/><stop offset="1" stop-color="#572f39"/></linearGradient>
+<linearGradient id="blue" x2=".76" y2="1"><stop offset="0" stop-color="#557e8a"/><stop offset="0.5" stop-color="#315c74"/><stop offset="1" stop-color="#2b4159"/></linearGradient>
+<linearGradient id="green" x2=".76" y2="1"><stop offset="0" stop-color="#648a70"/><stop offset="0.5" stop-color="#406958"/><stop offset="1" stop-color="#2e4e47"/></linearGradient>
+</defs>
+<ellipse cx="41" cy="44" rx="21" ry="4.5" fill="#362a28" opacity=".31"/>
+<path d="M21 18 27 10l13-3 13 3 6 8v17l-6 7-13 4-13-4-6-7Z" fill="url(#side)" stroke="#4d322a" stroke-width="1.5"/>
+<path d="M21 18 28 10l12-3 12 3 7 8v13l-7 7-12 4-12-4-7-7Z" fill="url(#brass)" stroke="#634336" stroke-width="1.35"/>
+<path d="M25 20l6-6 9-3v14H25Z" fill="#a8534b"/>
+<path d="M40 11l9 3 6 6v5H40Z" fill="#528099"/>
+<path d="M40 25h15v5l-5 5-10 3Z" fill="#527b65"/>
+<path d="M25 25h15v13l-10-3-5-5Z" fill="#b48b58"/>
+<path d="M25 20l6-6 9-3 9 3 6 6v10l-5 5-10 3-10-3-5-5Z" fill="none" stroke="#efc994" stroke-width="1.13"/>
+<path d="M40 14.5q.9 7.4 10.5 10.2-9.3 1.5-10.5 10.2-2.8-7.9-10.6-10.2 7.9-2.2 10.6-10.2Z" fill="#fff2bf" stroke="#5f4135" stroke-width="1.32"/>
+<path d="M40 21l3.2 3.8-3.2 3.5-3.4-3.5Z" fill="#734b4f"/>
+</svg>

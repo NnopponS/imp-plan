@@ -98,3 +98,6 @@ Separate optional mode for exactly two humans in a private room. Study 16 cards 
 
 ## S1-10 · Montage
 28 of 64 catalog entries playable (9 / 7 / 12). The Fan Mode streams a shared gallery of original illustrated portraits to 2–16 human seats through five cooperative rounds. The browser host advances each frame and arbitrates repeat claims. A bot-free one-round practice runs locally. Rules preview, keyboard and touch buzzers, descriptive labels and reduced motion are included. Targeted browser verification uses loopback only; public cross-network room play and full broadcast fidelity are not verified.
+
+## S3-11 · Heavy 13
+29 of 64 catalog entries playable (9 / 7 / 13). Heavy 13 adds a 14-round table for 2–7 players, with private simultaneous locks, a shared placement order, LIFO passes, three numbered cube stacks, and penalty scoring. The default solo setup adds a bot; the lobby can adjust seat capacity or add more bots. Larger-party rotation and broadcast parity are not claimed. Two-browser loopback checks cover private locks, keyboard and mobile placement, a deferred turn and a scoring clear that includes a zero-valued cube. Live internet connectivity is not verified.

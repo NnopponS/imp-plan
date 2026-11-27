@@ -1,0 +1,114 @@
+/* Game view keeps viewport area for the actual table. */
+.game-settings{position:relative;flex:none}
+.settings-gear{display:grid;place-items:center;width:44px;height:44px;cursor:pointer;list-style:none;border:1px solid #8b6a47;border-radius:4px;background:#2c231d;color:#e7be82}
+.settings-gear::-webkit-details-marker{display:none}
+.settings-gear svg,.settings-popover svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.45;stroke-linejoin:round;stroke-linecap:round}
+.settings-gear:is(:hover,:focus-visible){background:#412d20;color:#ffdd9c;outline:2px solid #d7aa70;outline-offset:2px}
+.settings-popover{position:absolute;z-index:25;top:calc(100% + 6px);inset-inline-end:0;display:grid;gap:5px;width:min(15rem,calc(100vw - 2rem));padding:7px;background:#27201c;color:#f1d8af;border:1px solid #ad875d;box-shadow:0 9px 28px #120d0bba}
+.settings-popover .feedback-control{justify-content:start;display:flex;align-items:center;gap:8px;min-height:42px;padding:7px 9px;text-align:left}
+.settings-popover .feedback-control b{margin-inline-start:auto}
+.settings-popover .error{margin:0;padding:4px}
+.playing-bar .top{min-height:48px;padding-block:4px}
+.playing-bar .brand small{display:none}
+.playing-bar .brand .crest{width:24px;height:24px}
+.playing-bar .alpha-pill{font-size:.68rem}
+main.wrap.playing-arena{width:min(calc(100% - clamp(16px,4vw,48px)),91rem);max-width:91rem;padding-inline:0}
+.room[data-playing]{padding-block-start:14px}
+.room[data-playing]>.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.room[data-playing]>.section-head h1{font-size:clamp(1.8rem,4.5vw,3.2rem);line-height:1.02;margin:1px 0 0}
+.room[data-playing]>.section-head .eyebrow{margin:0;font-size:.6rem}
+.room[data-playing]>.section-head .room-controls{flex-wrap:nowrap;gap:6px;align-self:center}
+.room[data-playing] .room-leave{min-height:40px;font-size:.8rem;padding:4px 9px}
+.room[data-playing] .room-grid{grid-template-columns:minmax(0,1fr) minmax(10rem,.285fr)}
+.room[data-playing] .room-grid>div,.room[data-playing] .room-grid>aside{min-width:0}
+.room[data-playing] .match{padding:clamp(8px,1.7vw,22px)}
+.room[data-playing] .match>h2{line-height:1.06}
+.room[data-game=montage] .match{--paper:#27201d;--ink:#faecd6;--sub:#d9c5a7;--line:#7e6345;background:#27201d;color:var(--ink);border-color:#9e7953;box-shadow:inset 0 0 0 3px #372a22;color-scheme:dark}
+.room[data-game=montage] .match>.eyebrow{color:#d9b782}
+.room[data-game=montage] .match h2,.room[data-game=montage] .match details{color:#f5e5c8}
+.room[data-game=montage] .match button:not(.primary):not(.cell){background-color:#382920;color:#f6dcb0;border-color:#a07c55}
+.room[data-game=montage] .match .montage-buzz:not([aria-disabled=true]){background:#e4bd7c;color:#2b2018}
+.room[data-game=montage] .match .montage-board{--mg-muted:#ded0bc;--mg-gold:#e8c38d;--mg-cream:#fff0d9}
+.room[data-game=montage] .montage-frame{border-radius:4px;background:radial-gradient(ellipse at 52% 42%,#53362e 0%,#2a201b 58%,#1b1614 98%)}
+.room[data-game=montage] .montage-meta div,.room[data-game=montage] .montage-scores div{background:#302720;border-color:#8a6b4b}
+.room[data-game=montage] .montage-frame figure{background:#402b22;box-shadow:0 0 1.4rem #110f0bc9,0 0 0 .18rem #654932}
+@media(max-width:720px){
+ main.wrap.playing-arena{width:calc(100% - 14px)}
+ .room[data-playing]{padding-block-start:8px}
+ .room[data-playing] .room-grid{grid-template-columns:1fr}
+ .room[data-playing] .match{padding:8px}
+ .room[data-playing] .match>h2{font-size:clamp(1.35rem,6.2vw,1.9rem);margin-block:3px 7px}
+ .room[data-playing] .settings-gear{width:40px;height:40px}
+ .room[data-playing] .room-leave{font-size:.72rem;padding-inline:6px}
+ .room[data-playing] .alpha-pill{font-size:.65rem}
+ .room[data-game=montage] .montage-frame{min-height:min(49svh,16rem)}
+ .room[data-game=montage] .montage-frame figure img{width:clamp(7.25rem,33vw,9.75rem)}
+}
+@media(max-height:660px) and (max-width:720px){
+ .room[data-game=montage] .montage-frame{min-height:10rem}
+ .room[data-game=montage] .montage-frame figure img{width:6.1rem}
+}
+/* Wall Go: board first on phones, tools along the board on a wide table. */
+.room[data-game=wallGo] .wall-go{max-width:none;gap:8px}
+.room[data-game=wallGo] .wg-seat{padding:4px 6px;min-height:33px}
+.room[data-game=wallGo] .wg-status{min-height:0;padding:4px 7px}
+.room[data-game=wallGo] .wg-stage{grid-area:wall-board}
+.room[data-game=wallGo] .wg-meta{grid-area:wall-meta}
+.room[data-game=wallGo] .wg-seats{grid-area:wall-seats}
+.room[data-game=wallGo] .wg-status{grid-area:wall-status}
+.room[data-game=wallGo] .wg-workbench,.room[data-game=wallGo] .wg-neutral{grid-area:wall-tools}
+@media (min-width: 980px){
+ .room[data-game=wallGo] .wall-go{grid-template-columns:minmax(0,1.42fr) minmax(210px,1fr);grid-template-rows:auto auto auto 1fr;grid-template-areas:"wall-meta wall-meta" "wall-board wall-seats" "wall-board wall-status" "wall-board wall-tools";align-items:start}
+ .room[data-game=wallGo] .wg-seats{grid-template-columns:1fr}
+ .room[data-game=wallGo] .wg-stage{max-width:min(100%,530px)}
+ .room[data-game=wallGo] .wg-workbench{border:1px solid #c7ab82;background:#f5e9d4;padding:9px}
+}
+@media(max-width:979px){
+ .room[data-game=wallGo] .wall-go{grid-template-columns:minmax(0,1fr);grid-template-areas:"wall-meta" "wall-seats" "wall-board" "wall-status" "wall-tools"}
+ .room[data-game=wallGo] .wg-stage{width:min(100%,530px);justify-self:center}
+ .room[data-game=wallGo] .wg-seat{grid-template-columns:21px minmax(0,1fr) auto;gap:3px 5px}
+ .room[data-game=wallGo] .wg-seat img{width:20px;height:23px;grid-row:1}
+ .room[data-game=wallGo] .wg-seat strong,.room[data-game=wallGo] .wg-score{font-size:.72rem}
+ .room[data-game=wallGo] .wg-seat small{font-size:.57rem}
+}
+@media (orientation:landscape) and (min-width:650px) and (max-width:980px) and (max-height:535px){
+ .room[data-playing] .room-grid{grid-template-columns:1fr}
+ .room[data-playing]>.section-head{margin-bottom:5px}
+ .room[data-playing]>.section-head h1{font-size:1.48rem}
+ .room[data-game=blind] .duel-layout{display:grid;grid-template-columns:minmax(0,.96fr) minmax(205px,1fr);align-items:start}
+ .room[data-game=blind] .duel-board-column{max-width:min(100%,70svh)}
+ .room[data-game=blind] .duel-workbench{max-height:78svh;overflow:auto;overscroll-behavior:contain}
+}
+/* Player-review refinements: menus fit even when long titles wrap. */
+.room>.section-head{position:relative}
+.playing-bar .top{height:48px}
+@media(max-width:720px){
+ .room>.section-head .game-settings{position:static;margin:0}
+ .room>.section-head .settings-popover{inset-inline-end:0;top:calc(100% + 4px);max-width:100%}
+ .room[data-playing]>.section-head>div:first-child{min-width:0}
+ .room[data-playing]>.section-head h1{overflow-wrap:anywhere}
+}
+@media (orientation:landscape) and (min-width:650px) and (max-width:980px) and (max-height:535px){
+ .room[data-game=blind] .engraved-match{display:grid;grid-template-columns:minmax(0,.89fr) minmax(210px,1.11fr);grid-template-rows:auto 1fr auto;grid-template-areas:"blind-board blind-plaque" "blind-board blind-tools" "blind-actions blind-actions";align-items:start;gap:7px 12px;padding:8px}
+ .room[data-game=blind] .duel-layout{display:contents}
+ .room[data-game=blind] .duel-board-column{grid-area:blind-board;max-width:min(100%,76svh);margin:0}
+ .room[data-game=blind] .duel-plaque{grid-area:blind-plaque;margin:0;max-width:none;gap:5px}
+ .room[data-game=blind] .duel-inscription{padding:6px}
+ .room[data-game=blind] .duel-inscription h2{font-size:1.2rem}
+ .room[data-game=blind] .duel-workbench{grid-area:blind-tools;max-height:55svh;margin:0}
+ .room[data-game=blind] .duel-board-caption{margin-top:7px}
+ .room[data-game=blind] .duel-actions{grid-area:blind-actions;margin-top:4px}
+}
+@media (orientation:landscape) and (min-width:650px) and (max-width:980px) and (max-height:535px){
+ .playing-bar .top{height:37px;min-height:37px;padding-block:1px}
+ .playing-bar .brand{font-size:1rem}
+ .playing-bar .brand .crest{width:19px;height:19px}
+ .room[data-playing]{padding-block-start:4px}
+ .room[data-playing]>.section-head{margin-bottom:4px}
+ .room[data-playing]>.section-head .room-controls{gap:4px}
+ .room[data-playing] .settings-gear{width:34px;height:34px}
+ .room[data-playing] .room-leave{min-height:34px;padding:2px 7px}
+ .room[data-game=blind] .duel-board-column{max-width:min(100%,calc(100svh - 141px))}
+ .room[data-game=blind] .chamber-table{padding:7px}
+ .room[data-game=blind] .board-camera button{min-height:31px}
+}

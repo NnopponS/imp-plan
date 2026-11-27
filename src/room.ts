@@ -1,10 +1,11 @@
+import {heavy13Rounds} from './heavy-13'
 import {timeHoldAction,timeHoldAdvance,timeHoldDisconnect,timeHoldRules,timeHoldView,type TimeHold} from './time-hold'
 import {montagePortraitCount,montageRules} from './montage'
 import {memoryDuelDeal} from './memory-duel'
 import {isGrass} from './grass'
 import {isPuzzle} from './puzzles'
 import {z} from 'zod'
-import {start,move,schedule,view,timeout,blindCoverAction,botAction,botLevels,isDuel,minSeats,secretBotIntentKey,simultaneous,redealMemoryDuel,syncTimeHold,openMontageRound,submitMontageBuzz,type State,type Game,type GameView} from './engine'
+import {start,move,heavy13Slot,playHeavy13,schedule,view,timeout,blindCoverAction,botAction,botLevels,isDuel,minSeats,secretBotIntentKey,simultaneous,redealMemoryDuel,syncTimeHold,openMontageRound,submitMontageBuzz,type State,type Game,type GameView} from './engine'
 const codeAlphabet='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
 export const roomCode=()=>Array.from(crypto.getRandomValues(new Uint8Array(6)),x=>codeAlphabet[x&31]).join('')
 export const validCode=(x:string)=>/^[A-HJ-NP-Z2-9]{6}$/.test(x)
@@ -17,9 +18,11 @@ export function nickname(value:string):string|null{
  const n=[...new Intl.Segmenter('en',{granularity:'grapheme'}).segment(s)].length
  return n>=1&&n<=24?s:null
 }
-const settings=z.strictObject({game:z.enum(['blind','morris','auction','point','remove','knight','hex','rectangles','mancala','cubes','bagh','secret','grass1','grass3','exile','divine','equations','codeLock','pyramid','fragments','spot','scale','fence','tower','piece','memoryPoker','wallGo','montage']),seconds:z.number().int().min(10).max(900),size:z.union([z.literal(5),z.literal(6),z.literal(8)]).optional(),closed:z.boolean().optional(),divineSide:z.union([z.literal(3),z.literal(5),z.literal(7)]).optional(),divineHard:z.boolean().optional(),fragmentStrict:z.boolean().optional(),fragmentCount:z.union([z.literal(8),z.literal(12),z.literal(16),z.literal(24)]).optional(),capacity:z.number().int().min(2).max(16),locked:z.boolean(),botLevel:z.enum(botLevels).optional(),memoryPokerPeek:z.boolean().optional(),memoryPokerMode:z.enum(['fan','episode']).optional(),auctionMode:z.enum(['sealed','hold']).optional()})
+const settings=z.strictObject({game:z.enum(['blind','morris','auction','point','remove','knight','hex','rectangles','mancala','cubes','bagh','secret','grass1','grass3','exile','divine','equations','codeLock','pyramid','fragments','spot','scale','fence','tower','piece','memoryPoker','wallGo','montage','heavy13']),seconds:z.number().int().min(10).max(900),size:z.union([z.literal(5),z.literal(6),z.literal(8)]).optional(),closed:z.boolean().optional(),divineSide:z.union([z.literal(3),z.literal(5),z.literal(7)]).optional(),divineHard:z.boolean().optional(),fragmentStrict:z.boolean().optional(),fragmentCount:z.union([z.literal(8),z.literal(12),z.literal(16),z.literal(24)]).optional(),capacity:z.number().int().min(2).max(16),locked:z.boolean(),botLevel:z.enum(botLevels).optional(),memoryPokerPeek:z.boolean().optional(),memoryPokerMode:z.enum(['fan','episode']).optional(),auctionMode:z.enum(['sealed','hold']).optional()})
 const montageMatch=z.string().regex(/^[a-f0-9]{32}$/)
 const montageRound=z.number().int().min(1).max(montageRules.rounds)
+const heavyMatch=z.string().regex(/^[a-f0-9]{32}$/)
+const heavyRound=z.number().int().min(1).max(heavy13Rounds)
 const schema=z.discriminatedUnion('kind',[
  z.strictObject({kind:z.literal('ready')}),
  z.strictObject({kind:z.literal('config'),settings}),
@@ -31,6 +34,8 @@ const schema=z.discriminatedUnion('kind',[
  z.strictObject({kind:z.literal('chat'),text:z.string().min(1).max(240)}),
  z.strictObject({kind:z.literal('montage-open'),match:montageMatch,round:montageRound}),
  z.strictObject({kind:z.literal('montage-buzz'),match:montageMatch,round:montageRound,frame:z.number().int().min(1).max(montagePortraitCount)}),
+ z.strictObject({kind:z.literal('heavy-lock'),match:heavyMatch,round:heavyRound,action:z.number().int().min(0).max(27)}),
+ z.strictObject({kind:z.literal('heavy-act'),match:heavyMatch,round:heavyRound,slot:z.number().int().min(0).max(13),action:z.number().int().min(28).max(31)}),
  z.strictObject({kind:z.literal('memory-lock'),deal:z.number().int().min(1).max(1e8),action:z.number().int().min(0).max(255)}),
  z.strictObject({kind:z.literal('time-hold'),round:z.number().int().min(1).max(timeHoldRules.rounds),action:z.enum(['hold','pulse','release','cancel'])}),
  z.strictObject({kind:z.literal('move'),round:z.number().int().min(1).max(24).optional(),action:z.union([z.number().int().min(-1).max(300000000),z.string().length(8).regex(/^[0-9+*/=\-]+$/),z.strictObject({from:z.number().int().min(0).max(24),to:z.number().int().min(0).max(24)})])})
@@ -131,10 +136,20 @@ export class Host{
   const result=this.apply(seat,rev,c)
   prior.set(request,result)
   if(prior.size>128)prior.delete(prior.keys().next().value!)
-  if(result===null&&c.kind!=='time-hold'&&!(c.kind==='memory-lock'&&this.game?.memoryDuel?.phase==='select'))this.rev++
+  const privateHeavy=c.kind==='heavy-lock'&&this.game?.heavy13?.phase==='select'
+  if(result===null&&!privateHeavy&&c.kind!=='time-hold'&&!(c.kind==='memory-lock'&&this.game?.memoryDuel?.phase==='select'))this.rev++
   return result
  }
  private apply(s:PrivateSeat,rev:number,c:Command):string|null{
+  if(c.kind==='heavy-lock'||c.kind==='heavy-act'){
+   const current=this.game?.heavy13
+   if(!current||c.match!==this.match)return 'This action no longer matches the current game.'
+   if(rev>this.rev||c.round!==current.round||current.phase!==(c.kind==='heavy-lock'?'select':'resolve'))return 'That round or phase has ended.'
+   if(c.kind==='heavy-act'&&c.slot!==heavy13Slot(current))return 'That placement slot has ended.'
+   const next=playHeavy13(this.game!,s.id,c.action,this.clock())
+   if(!next)return c.kind==='heavy-lock'?'That pair cannot be locked.':'That placement is not available.'
+   this.setGame(next);return null
+  }
   const sameHoldRound=c.kind==='time-hold'&&c.round===this.publishedHold?.round
   const concurrentBid=c.kind==='move'&&this.game&&simultaneous(this.game.game)&&c.round===this.game.round
   if(c.kind==='move'&&this.game&&simultaneous(this.game.game)&&c.round!==undefined&&c.round!==this.game.round)return 'That round has ended.'
@@ -216,12 +231,13 @@ export class Host{
    if(isEpisodePoker(changes)&&(this.solo||!episodePokerRoster(this.seats)))return 'Episode-style duel needs exactly two connected human players.'
    const reseat=this.solo&&changes.game!==this.settings.game
    const roster=reseat?this.seats.filter(s=>!s.bot):this.seats
-   const nativeMax=changes.game==='mancala'?8:changes.game==='grass1'?12:16
+   const nativeMax=changes.game==='heavy13'?7:changes.game==='mancala'?8:changes.game==='grass1'?12:16
    const capacity=reseat?nativeMax:Math.min(changes.capacity,nativeMax)
+   if(changes.game==='heavy13'&&roster.length>nativeMax)return 'Heavy 13 seats up to seven players. Remove extra seats first.'
    if(changes.game==='mancala'&&roster.length>nativeMax)return 'Balance Mancala seats up to eight players. Remove extra seats first.'
    if(changes.game==='grass1'&&roster.length>nativeMax)return 'Laying Grass seats up to twelve players.'
    if(capacity<roster.length)return 'Capacity cannot be below the current roster.'
-   const seconds=changes.game==='wallGo'&&this.settings.game!=='wallGo'?25:changes.game==='fence'||changes.game==='tower'||changes.game==='piece'?240:changes.game==='scale'?300:changes.game==='spot'?90:changes.game==='fragments'?20:changes.game==='pyramid'?45:changes.game==='codeLock'?180:changes.game==='divine'?(this.settings.game!=='divine'?600:Math.max(60,changes.seconds)):changes.game==='knight'?Math.max(180,Math.min(480,changes.seconds)):changes.game==='hex'?20:changes.game==='rectangles'?45:changes.game==='cubes'?25:changes.game==='exile'?90:changes.game==='secret'&&this.settings.game!=='secret'?90:Math.min(90,changes.seconds)
+   const seconds=(changes.game==='wallGo'||changes.game==='heavy13')&&this.settings.game!==changes.game?25:changes.game==='fence'||changes.game==='tower'||changes.game==='piece'?240:changes.game==='scale'?300:changes.game==='spot'?90:changes.game==='fragments'?20:changes.game==='pyramid'?45:changes.game==='codeLock'?180:changes.game==='divine'?(this.settings.game!=='divine'?600:Math.max(60,changes.seconds)):changes.game==='knight'?Math.max(180,Math.min(480,changes.seconds)):changes.game==='hex'?20:changes.game==='rectangles'?45:changes.game==='cubes'?25:changes.game==='exile'?90:changes.game==='secret'&&this.settings.game!=='secret'?90:Math.min(90,changes.seconds)
    this.settings={...changes,auctionMode:changes.game==='auction'?changes.auctionMode:undefined,memoryPokerMode:changes.game==='memoryPoker'?changes.memoryPokerMode:undefined,botLevel:changes.botLevel??'normal',capacity,seconds,closed:changes.size===5||!changes.size?false:changes.closed}
    if(this.solo){
     this.seats=roster
@@ -267,7 +283,9 @@ export class Host{
  }
  private setGame(g:State){
   if(g.round!==this.game?.round)this.secretBotRejected.clear()
-  if(!this.game||isGrass(g.game)||isDuel(g.game)||g.round!==this.game.round)this.botDue=this.clock()+650
+  const prior=this.game?.heavy13
+  const heavyChanged=g.heavy13&&prior&&(g.heavy13.phase!==prior.phase||heavy13Slot(g.heavy13)!==heavy13Slot(prior))
+  if(!this.game||heavyChanged||isGrass(g.game)||isDuel(g.game)||g.round!==this.game.round)this.botDue=this.clock()+650
   this.game=g
   if(g.done&&this.fixtures[this.fixture])this.fixtures[this.fixture].winner=g.winner
  }
@@ -307,6 +325,7 @@ export class Host{
    this.publishedHold=this.game;this.holdUpdates.clear();this.rev++;return true
   }
   if(this.game.done)return false
+  if(this.game.heavy13)return this.tickHeavy13(this.game,now)
   if(!this.game.wallGo&&!this.game.montage&&this.game.game!=='piece'&&!this.game.seats.every(id=>this.seats.find(s=>s.id===id)?.online)&&!simultaneous(this.game.game))return false
   const past=this.game
   let g=past.memoryDuel?.phase==='tie'&&now>=past.deadline?redealMemoryDuel(past,liveMemoryDeal(),now):timeout(past,now)
@@ -343,8 +362,28 @@ export class Host{
   if(g===past)return false
   this.setGame(g);this.rev++;return true
  }
+ private tickHeavy13(past:State,now:number){
+  let next=timeout(past,now)
+  if(next===past&&now>=this.botDue){
+   for(const bot of this.seats.filter(s=>s.bot&&past.seats.includes(s.id))){
+    const a=botAction(view(next,bot.id),bot.id,[],this.botSeed,this.settings.botLevel)
+    if(a===undefined)continue
+    const moved=playHeavy13(next,bot.id,a,now)
+    if(!moved)continue
+    next=moved
+    if(past.heavy13?.phase!=='select'||next.heavy13?.phase!=='select')break
+   }
+  }
+  if(next===past)return false
+  this.setGame(next)
+  // Sealed human and bot locks change no public sequence or recipient view.
+  if(past.heavy13?.phase==='select'&&next.heavy13?.phase==='select')return false
+  this.rev++
+  return true
+ }
 }
 export function explain(game:Game,count:number) {
+ if(game==='heavy13')return 'One shared table for 2–7 seats. Lock your pair privately, then place on three stands. Practice adds a bot; larger parties are not split into heats.'
  if(game==='montage')return count===1?'One gallery round in solo practice. Private parties need two to sixteen humans.':'One shared portrait feed, simultaneous buzzers, and one team error allowance.'
  if(game==='wallGo')return count>2?'Two players per board. Each pair plays twice, swapping starting sides. Everyone else watches the current leg.':'Two players fence territory on a 7 × 7 board. Each turn ends with one adjacent wall.'
  return game==='memoryPoker'?'All seats memorize the same layout, then privately lock a five-card hand. Cards are revealed together. No betting.':game==='piece'?'Rotate and fit irregular tiles onto one shared silhouette. Each move passes control; the team has four minutes.':game==='tower'?'A shared letter tray and one team tower. Up to two tile edits per turn, then pass control.':game==='fence'?'Draw your own loop on a private grid. The same clues are shared by everyone.':game==='scale'?'Take turns operating one shared balance. Discuss the evidence and lock one team answer.':game==='spot'?'Compare two shared trays. Each seat has private marks and a private time penalty.':game==='fragments'?'Study one shared exhibit. Players take turns recalling details; in strict mode chat is disabled.':game==='pyramid'?'Every seat gets the same eight puzzles and submits privately. Solo practice needs no bots.':game==='codeLock'?'Everyone gets the same clues and a private answer tray. Offline practice has unlimited retries before the clock runs out.':game==='equations'?'Hide an equation and take turns at each table. Both players receive equal guesses; no turn timer. Larger rooms rotate through a two-leg league.':game==='divine'?'Everyone solves the same magic square on a private grid. Solo practice needs no bots.':isGrass(game)?(game==='grass1'?'2–12 players draft from a shared tile tray.':'2–16 players share a tile draft with optional trades.') :game==='secret'?'3–16 seats exchange private clues. Solo practice fills with two bots.':game==='bagh'?'A two-leg duel swaps goat and tiger roles. Larger rooms run a rotating league.':game==='mancala'?'2–8 players share one circular board. Up to eight seats, including bots.':isPuzzle(game)?'Everyone solves the same challenge and submits privately. Solo practice needs no bots.':game==='knight'?'Everyone solves the same board on a private grid.':game==='remove'?'Every seat gets a private hand; at least three seats.':game==='auction'?'Every seat bids in the same match.':count<=2?'Two players at one board.':'Two legs per pairing, with a different starting player in each leg. Other seats watch the current table. No points for a bye.'

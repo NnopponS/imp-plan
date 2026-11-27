@@ -1,0 +1,47 @@
+.h13{--h13-brass:#b99150;display:grid;gap:12px;max-width:48rem;margin:0 auto 15px;min-width:0}
+.h13-top,.h13-private-head,.h13-stand-head{display:flex;align-items:center;justify-content:space-between;gap:5px 9px;flex-wrap:wrap}
+.h13-top{border:1px solid #665537;border-radius:6px;background:#28251f;color:#ffedbc;padding:9px 12px;font-size:.86rem}
+.h13-top div{display:flex;align-items:center;gap:11px}.h13-top div span{color:#d7c49d;font-size:.72rem}
+.h13-clock{font-variant-numeric:tabular-nums;border-radius:4px;background:#493c29;color:#ffeece;padding:4px 8px;font-weight:750;min-width:3rem;text-align:center}
+.h13-clock[data-urgent]{background:#742c35}
+.h13-status,.h13-event{margin:0;color:#46352a;border-left:3px solid #997044;padding:5px 8px;background:#efe3c9;font-size:.86rem;overflow-wrap:anywhere}
+.h13-event{background:#f0ddcc;border-color:#873d31}
+.h13-stands{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.h13-stand,.h13-colors button{--h13-color:#634337}
+.h13 [data-color=red]{--h13-color:#863638}
+.h13 [data-color=green]{--h13-color:#366148}
+.h13 [data-color=blue]{--h13-color:#395e85}
+.h13 [data-color=rainbow]{--h13-color:#6a426b}
+.h13-stand{position:relative;display:grid;grid-template-rows:auto 1fr auto;min-width:0;border:1px solid #755a43;border-top:3px solid var(--h13-color);border-radius:6px;background:#2d2821;color:#fff2d3;padding:6px}
+.h13-stand[data-called]{box-shadow:0 0 0 2px #b99150}
+.h13-stand-head{font-size:.75rem;line-height:1.15;font-variant-numeric:tabular-nums}
+.h13-stand-head strong span{color:#e5bd82}.h13-stand-head span:last-child{white-space:nowrap}
+.h13-stack{position:relative;min-height:4rem;display:grid;align-content:end;justify-items:center;padding-top:5px}
+.h13-cubes{position:relative;display:flex;justify-content:center;align-items:center;gap:0;flex-wrap:wrap;z-index:1;width:100%}
+.h13-cubes small{color:#c4b18b}
+.h13-cube{display:block;width:clamp(22px,7vw,43px);height:auto;aspect-ratio:1;object-fit:contain}
+.h13-cubes .h13-cube{width:clamp(19px,5vw,38px)}
+.h13-plinth{width:min(75%,80px);height:auto;margin-top:-4px}
+.h13-stand .h13-place{min-height:44px;font-size:.75rem;padding:4px;line-height:1.15;width:100%}
+.h13-private,.h13-reveal{padding:9px 10px;border:1px solid #c8ad7b;border-radius:6px;background:#f2e7d1;min-width:0}
+.h13-private-head small{font-size:.72rem;color:#5e4b33}
+.h13-field-label{color:#664d34;font-weight:730;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;margin:8px 0 5px}
+.h13-nums,.h13-colors{display:grid;gap:4px;min-width:0}
+.h13-nums{grid-template-columns:repeat(7,minmax(0,1fr))}
+.h13-colors{grid-template-columns:repeat(4,minmax(0,1fr))}
+.room .match .h13-nums button,.room .match .h13-colors button{height:auto;min-height:44px;min-width:0;padding:3px;display:grid;justify-items:center;align-content:center}
+.room .match .h13-nums button[aria-pressed=true],.room .match .h13-colors button[aria-pressed=true]{border:2px solid #733d2c;background:#eed0a2}
+.h13-number .h13-cube{width:100%;max-width:44px}
+.h13-colors button span,.h13-locked span,.h13-reveal li span{color:var(--h13-color)}
+.h13-colors button b,.h13-colors button small{font-size:.69rem;line-height:1.2}
+.h13-confirm{display:block;margin:9px 0 0 auto;min-height:44px}
+.h13-locked{display:flex;align-items:center;gap:9px;margin-top:6px;font-weight:750}
+.h13-scores{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+.h13-scores>div{border:1px solid #d2bc98;border-radius:5px;background:#f5ead7;padding:6px 7px;overflow-wrap:anywhere;font-size:.83rem}
+.h13-scores b,.h13-scores>div>small{display:block}.h13-scores small{color:#694925}
+.h13-reveal ol{list-style-position:inside;margin:5px 0;padding:0}
+.h13-reveal li{padding:6px 5px;border-top:1px solid #d0b994;font-size:.82rem;overflow-wrap:anywhere}
+.h13-reveal li[data-active]{border-left:3px solid #ad8042;background:#ebd8b7}
+.h13-reveal li>*{margin-inline:4px}.h13-reveal li>b{font-variant-numeric:tabular-nums}
+.h13-lesson{display:block;width:min(100%,26rem);height:auto}
+@media(max-width:365px){.h13-stand-head{font-size:.68rem}.h13-private,.h13-reveal{padding:7px}.h13-nums,.h13-colors{gap:3px}.h13-colors button b{font-size:.62rem}}

@@ -1,5 +1,5 @@
 import {expect,it} from 'vitest'
-import {botAction,move,start,titles,view,type BotLevel,type Game} from '../src/engine'
+import {botAction,move,playHeavy13,start,titles,view,type BotLevel,type Game} from '../src/engine'
 import {Host,decode,defaults,humanOnly} from '../src/room'
 import {buyer,contactAction,guessAction} from "../src/secret"
 
@@ -63,7 +63,7 @@ it('changing difficulty preserves the complete practice roster but swapping game
 
 it('every game offering AI has legal deterministic opening choices at all three levels',()=>{
  const games=(Object.keys(titles) as Game[]).filter(game=>!humanOnly(game))
- expect(games).toHaveLength(12)
+ expect(games).toHaveLength(13)
  for(const game of games){
   const seats=(game==='remove'||game==='secret')?['a','b','c']:['a','b']
   const g=start(game,seats,25000,0,{seed:733})
@@ -71,7 +71,7 @@ it('every game offering AI has legal deterministic opening choices at all three 
    const v=view(g,'a')
    const a=botAction(v,'a',g.publicMoves,19,level)
    expect(a,game+' '+level).toBeDefined()
-   expect(move(g,'a',a!,1),game+' '+level).not.toBeNull()
+   expect(game==='heavy13'?playHeavy13(g,'a',a,1):move(g,'a',a!,1),game+' '+level).not.toBeNull()
    expect(botAction(v,'a',g.publicMoves,19,level),game+' '+level).toEqual(a)
   }
  }

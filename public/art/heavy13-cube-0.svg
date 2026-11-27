@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60" role="img" aria-labelledby="t d"><title id="t">Cube 0</title><desc id="d">An ivory playing cube engraved with the number 0.</desc><defs><linearGradient id="cubeTop" x2=".42" y2="1"><stop offset="0" stop-color="#fff4cf"/><stop offset="1" stop-color="#e4c594"/></linearGradient>
+<linearGradient id="cubeFace" x2=".84" y2="1"><stop offset="0" stop-color="#f9e7ba"/><stop offset="0.5" stop-color="#ead39d"/><stop offset="1" stop-color="#c69d6c"/></linearGradient>
+<linearGradient id="cubeSide" x2=".64" y2="1"><stop offset="0" stop-color="#ab7c52"/><stop offset="1" stop-color="#6a4836"/></linearGradient>
+</defs>
+<path d="M5 14 19 5h32l5 5v31l-12 13H7l-4-4V18Z" fill="#443126" stroke="none" opacity=".39" transform="translate(1 2)"/>
+<path d="M4 15 18 5h34l4 4-13 10H7Z" fill="url(#cubeTop)" stroke="#725139" stroke-width="1.25"/>
+<path d="M43 18 56 9v33L44 53 40 49Z" fill="url(#cubeSide)" stroke="#684431" stroke-width="1.25"/>
+<path d="M4 17q0-2 2.2-2H42q2 0 2 2.5v33q0 2-2.1 2.5H6q-2-.5-2-2.7Z" fill="url(#cubeFace)" stroke="#684632" stroke-width="1.41"/>
+<path d="M7 18h33v31H7Z" fill="none" stroke="#996c44" stroke-width=".66" opacity=".69"/>
+<path d="M9 20.7v-1.4h1.4m25.2 0h1.9v1.7M9 45.9v1.2h1.6m25.0 0h1.9v-1.8" fill="none" stroke="#8b6042" stroke-width=".72" stroke-linecap="round" stroke-linejoin="round" opacity=".76"/>
+<path d="M9 15.9h31m-34 3.1v31.1M47 23l6.7-5.4m-6.7 28.6 6.4-5.5m-34-33h29" fill="none" stroke="#fff0bc" stroke-width=".79" stroke-linecap="round" stroke-linejoin="round" opacity=".65"/>
+<path d="M47.5 27.5v12.8m2.1-14.6v12.8m2.1-14.2v11.1" fill="none" stroke="#d29f71" stroke-width=".51" stroke-linecap="round" stroke-linejoin="round" opacity=".45"/>
+<g transform="translate(16.4 16.7) scale(1.6)"><path d="M4.7 3.4C.3 3.4.6 17 4.7 17c4.1 0 4.4-13.6 0-13.6Z" fill="none" stroke="#fff3ce" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round" opacity=".8" transform="translate(.22 .28)"/>
+<path d="M4.7 3.4C.3 3.4.6 17 4.7 17c4.1 0 4.4-13.6 0-13.6Z" fill="none" stroke="#4c3028" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity=".97"/>
+</g></svg>

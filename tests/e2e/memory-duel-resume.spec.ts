@@ -1,7 +1,18 @@
 import {test,expect,type Page} from '@playwright/test'
 const table=(p:Page)=>p.getByRole('region',{name:'Episode-style Memory Poker duel'})
 const cards=(p:Page)=>table(p).getByRole('group',{name:'Duel card layout'}).getByRole('button')
-const waitTime=async(p:Page,mini:number)=>{await p.clock.fastForward(mini);await p.clock.runFor(220)}
+// Advance both browser clocks, letting heartbeat traffic arrive before the
+// host's virtual inactivity guard can disconnect a healthy test peer.
+const waitTime=async(host:Page,guest:Page,ms:number)=>{
+ for(let remaining=ms;remaining>0;){
+  const step=Math.min(4_000,remaining)
+  await guest.clock.fastForward(step)
+  await host.clock.fastForward(step)
+  remaining-=step
+ }
+ await Promise.all([host.clock.runFor(220),guest.clock.runFor(220)])
+}
+const reload=async(p:Page)=>{await p.reload({waitUntil:'domcontentloaded'})}
 const geo=async(p:Page)=>cards(p).evaluateAll(els=>({w:innerWidth,h:innerHeight,scroll:scrollY,docWidth:document.documentElement.scrollWidth,rects:els.map(el=>{const {x,y,width,height,bottom,right}=el.getBoundingClientRect();return{x,y,width,height,bottom,right}})}))
 const validateGeom=async(p:Page,phase:string)=>{
  await p.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));const a=await geo(p),rs=a.rects
@@ -32,7 +43,7 @@ for(const [width,height] of [[320,568],[390,844]])test('Memory duel at '+width+'
  try{
  const h=await desk.newPage(),g=await phone.newPage()
  h.setDefaultTimeout(6000);g.setDefaultTimeout(6000)
- await h.clock.install()
+ await Promise.all([h.clock.install(),g.clock.install()])
  await h.goto(baseURL!);await h.getByLabel('Nickname').fill('H');await h.getByRole('button',{name:'Create party'}).click();await h.getByLabel('Game').selectOption('memoryPoker')
  const code=await h.getByTestId('room-code').innerText()
  await g.goto(baseURL!+'#/join?room='+code);await g.getByLabel('Nickname').fill('G');await g.getByRole('button',{name:'Join party'}).click()
@@ -40,8 +51,8 @@ for(const [width,height] of [[320,568],[390,844]])test('Memory duel at '+width+'
  await h.getByLabel('Memory Poker mode').selectOption('episode');await expect(g.getByLabel('Memory Poker mode')).toHaveValue('episode');await g.getByRole('button',{name:'Ready up'}).tap();await h.getByRole('button',{name:'Start match',exact:true}).click();await h.getByRole('button',{name:'Enter match',exact:true}).click()
  await expect(cards(g)).toHaveCount(16)
  await validateGeom(g,'study');const first=await names(g)
- await g.reload();await expect(cards(g)).toHaveCount(16);expect(await names(g)).toEqual(first);await validateGeom(g,'resumed study')
- await waitTime(h,20_030);await expect(table(g).getByRole('heading',{name:'Choose two cards'})).toBeVisible()
+ await reload(g);await expect(cards(g)).toHaveCount(16);expect(await names(g)).toEqual(first);await validateGeom(g,'resumed study')
+ await waitTime(h,g,20_030);await expect(table(g).getByRole('heading',{name:'Choose two cards'})).toBeVisible()
  await validateGeom(g,'select')
  expect((await names(g)).every(n=>n?.includes('face down'))).toBe(true)
  await lockTouch(g);await expect(table(g).getByRole('status')).toHaveText('Pair locked. Waiting for the reveal.')
@@ -49,21 +60,22 @@ for(const [width,height] of [[320,568],[390,844]])test('Memory duel at '+width+'
  await expect(table(h).locator('[aria-pressed=true]')).toHaveCount(0)
  const tokenKey='arena-resume-'+code
  const seatedToken=await g.evaluate(k=>JSON.parse(sessionStorage.getItem(k)!).token,tokenKey)
- await g.reload();await expect(table(g).getByRole('status')).toHaveText('Pair locked. Waiting for the reveal.')
+ await reload(g);await expect(table(g).getByRole('status')).toHaveText('Pair locked. Waiting for the reveal.')
  expect(await g.evaluate(k=>JSON.parse(sessionStorage.getItem(k)!).token,tokenKey)).not.toBe(seatedToken)
  await expect(table(g).locator('[aria-pressed=true]')).toHaveCount(2);await expect(table(h).locator('[aria-pressed=true]')).toHaveCount(0)
  expect((await names(g)).every(n=>n?.includes('face down'))).toBe(true)
  await lockKeyboard(h);await expect(table(g).getByRole('heading',{name:'Exact tie'})).toBeVisible()
- await waitTime(h,3650);await expect(table(g).getByRole('heading',{name:'Memorize the grid'})).toBeVisible()
+ await waitTime(h,g,3650);await expect(table(g).getByRole('heading',{name:'Memorize the grid'})).toBeVisible()
  expect(await names(g)).not.toEqual(first);await expect(table(g)).toContainText('Deal 2');await expect(table(g).getByRole('region',{name:'Shared cards'})).toHaveCount(0)
- await waitTime(h,20_050);await expect(table(g).getByRole('heading',{name:'Choose two cards'})).toBeVisible();await lockKeyboard(h)
+ await waitTime(h,g,20_050);await expect(table(g).getByRole('heading',{name:'Choose two cards'})).toBeVisible();await lockKeyboard(h)
  await expect(table(g).locator('[aria-pressed=true]')).toHaveCount(0)
- await g.reload();await expect(table(g).getByRole('status')).toHaveText('0 / 2 selected')
+ await reload(g);await expect(table(g).getByRole('status')).toHaveText('0 / 2 selected')
  await expect(table(g).locator('[aria-pressed=true]')).toHaveCount(0);await expect(table(g).getByRole('region',{name:'Revealed hands'})).toHaveCount(0)
- await waitTime(h,60_050);await expect(table(h)).toContainText('Only one player locked in time. Neither pair is revealed.')
+ await waitTime(h,g,60_050);await expect(table(h)).toContainText('Only one player locked in time. Neither pair is revealed.')
  await expect(h.getByRole('heading',{name:'H wins',exact:true})).toBeVisible()
  await expect(table(h).getByRole('region',{name:'Revealed hands'})).toHaveCount(0)
- // Reload when finished also restores the same outcome even if the fast-forward evicted heartbeat.
- await g.reload();await expect(table(g)).toContainText('Only one player locked in time. Neither pair is revealed.')
+ await expect(table(g)).toContainText('Only one player locked in time. Neither pair is revealed.')
+ // A finished duel must also restore the same outcome after a guest reload.
+ await reload(g);await expect(table(g)).toContainText('Only one player locked in time. Neither pair is revealed.')
  }finally{await phone.close();await desk.close()}
 })

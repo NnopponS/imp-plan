@@ -35,8 +35,8 @@ const joinFailures:Record<JoinStage,string>={
 }
 const signalErrors=new Set(['network','disconnected','socket-error','socket-closed','server-error','ssl-unavailable','invalid-key'])
 const peerErrorType=(error:unknown)=>error&&typeof error==='object'&&'type' in error?String(error.type):''
-export function practice(name:string,listener:Listener):Session{
- const h=new Host(name,()=>Math.floor(performance.timeOrigin+performance.now()),true)
+export function practice(listener:Listener):Session{
+ const h=new Host('Player',()=>Math.floor(performance.timeOrigin+performance.now()),true)
  const update=(error='')=>listener({phase:'online',snapshot:h.snapshot('host'),error,receivedAt:performance.now()})
  h.command('host',id(),h.rev,{kind:'bot'})
  const timer=setInterval(()=>{if(h.tick())update()},200)
@@ -113,7 +113,7 @@ export async function hostRoom(name:string,listener:Listener,options:ConnectOpti
     if(err)rejected(err)
     update();return
    }
-   if(privateHold||err||m.command.kind==='memory-lock'&&h.rev===before){
+   if(privateHold||err||(m.command.kind==='memory-lock'||m.command.kind==='heavy-lock')&&h.rev===before){
     if(err)rejected(err)
     sendState(key)
    }else update()
@@ -136,7 +136,7 @@ export async function hostRoom(name:string,listener:Listener,options:ConnectOpti
   if(c.kind==='time-hold'){
    if(error&&c.action==='hold')holdRejection=request
    ownUpdate(c.action==='hold'?error:'')
-  }else if(c.kind==='memory-lock'&&h.rev===before)ownUpdate(error)
+  }else if((c.kind==='memory-lock'||c.kind==='heavy-lock'||c.kind==='heavy-act')&&h.rev===before)ownUpdate(error)
   else update(error)
   return request
  },close:()=>{

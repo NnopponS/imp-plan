@@ -13,13 +13,12 @@ test('fan brand and original art are visible without motion or mobile overflow',
  }
  await expect(page.locator('video, img[src*="arena-stage"]')).toHaveCount(0)
  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(390)
- await page.getByLabel('Nickname').fill('Designer')
  await page.getByRole('button',{name:'Solo practice'}).click()
  await expect(page.getByRole('heading',{name:'Practice lobby'})).toBeVisible()
 })
 test('each season has a distinct path, accurate index and playable cards',async({page})=>{
  await page.goto('./')
- for(const [n,count,games] of [[1,18,9],[2,17,7],[3,29,12]]){
+ for(const [n,count,games] of [[1,18,9],[2,17,7],[3,29,13]]){
   await page.getByRole('navigation',{name:'Seasons'}).getByRole('link',{name:'Season '+n,exact:true}).click()
   await expect(page).toHaveURL(new RegExp('/imp-plan/season/'+n+'/$'))
   await expect(page.locator('.directory article')).toHaveCount(count)
@@ -29,9 +28,7 @@ test('each season has a distinct path, accurate index and playable cards',async(
   await expect(page.locator('.directory article')).toHaveCount(count)
  }
  await page.getByRole('button',{name:/Practice Point Gomoku/}).click()
- await expect(page.getByLabel('Nickname')).toBeFocused()
- await page.getByLabel('Nickname').fill('Contestant')
- await page.getByLabel('Nickname').press('Enter')
+ await expect(page.getByLabel('Nickname')).toHaveCount(0)
  await expect(page.getByLabel('Game')).toHaveValue('point')
 })
 test('the first screen is a real Blind Gomoku warm-up, playable without a nickname',async({page})=>{

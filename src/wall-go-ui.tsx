@@ -74,6 +74,7 @@ export function WallGoBoard({snap,active,name,submit}:{snap:Snapshot;active:bool
  const chooseEdge=(edge:number)=>{if(canEdit&&draft&&edges.includes(edge))setStage({...draft,edge})}
  const act=()=>{
   if(!canEdit||!draft||draft.edge===null||!edges.includes(draft.edge))return
+  cellRefs.current[draft.destination]?.focus({preventScroll:true})
   setPending(v.turns)
   submit(wallGoEncode(draft.destination,draft.edge))
  }
@@ -86,7 +87,7 @@ export function WallGoBoard({snap,active,name,submit}:{snap:Snapshot;active:bool
   waiting?'Submitting your move.':
   draft?draft.edge===null?'Preview at '+coordinate(draft.destination)+'. Choose an adjacent wall.':wallName(draft.destination,draft.edge).label+' selected. Confirm the turn.':
   'Your turn. Choose a marked cell or stay where you are.'
- return <section className="wall-go" aria-label="Wall Go territory board">
+ return <section className="wall-go" aria-label="Wall Go territory board" data-draft={draft!==null||undefined}>
   <div className="wg-meta"><span className="wg-table-label">TERRITORY DUEL <i aria-hidden="true">/</i> 7 × 7</span>
    <span>Turns {v.turns} / {wallGoCap}</span>
    {game.deadline!==null&&<span className="wg-clock" role="timer" aria-label="Turn time remaining" data-urgent={seconds<=5||undefined}>{seconds} s</span>}

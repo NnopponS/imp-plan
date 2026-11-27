@@ -1,0 +1,115 @@
+/* Live Blind Gomoku: a flat, readable tactical surface on an engraved frame.
+   Game input stays square; all decorative marks are outside the proven grid. */
+.room[data-layout=chamber] .room-grid{grid-template-columns:minmax(0,1fr)}
+.room[data-layout=chamber] .room-grid>aside:has(.chat){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:12px}
+.room[data-layout=chamber] .room-grid>aside .chat{margin:0}
+.room[data-layout=chamber] .room-controls button{border-color:#8c6b48;background:linear-gradient(155deg,#382c23,#211d1a);color:#f3dfb9;box-shadow:inset 0 0 0 2px #241c18}
+.room[data-layout=chamber] .room-controls button:hover:not(:disabled){background:#49372a;color:#fff1cc;border-color:#c09863}
+.chamber-glyph{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.18;stroke-linejoin:round;stroke-linecap:round;vertical-align:-4px;flex:none}
+.room[data-layout=chamber] .room-controls>button .chamber-glyph{margin-inline-end:5px;color:#e5bb7c}
+.room[data-layout=chamber] .engraved-match{
+ --duel-ink:#f2dab0;--duel-muted:#d4bb94;--duel-edge:#82613f;--duel-etch:#ae844e;
+ color-scheme:dark;color:var(--duel-ink);min-width:0;padding:clamp(10px,2.2vw,23px);border:1px solid #936f48;
+ border-top:2px solid #c09964;border-radius:7px;
+ background:radial-gradient(ellipse at 42% 4%,#4a392b 0%,#2f2620 42%,#211c19 100%);
+ box-shadow:0 5px 0 #151210,inset 0 0 0 4px #241d19,inset 0 0 0 5px #674b31;
+}
+.duel-plaque{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:9px 13px;align-items:stretch;margin-bottom:14px}
+.duel-inscription{display:flex;align-items:center;gap:clamp(9px,1.8vw,17px);min-width:0;padding:clamp(8px,1.3vw,15px);
+ border:1px solid #ad8759;border-radius:3px;
+ background:radial-gradient(ellipse at 18% 41%,#50392a,#2f231e 67%);
+ box-shadow:inset 0 0 0 3px #291f1a,inset 0 0 0 4px #735334;
+}
+.engraved-match[data-result] .duel-inscription{background:radial-gradient(ellipse at 15% 0%,#66452c,#39291f 73%);border-color:#c69d60}
+.duel-signature{min-width:0}
+.duel-seal{flex:none;width:clamp(36px,5vw,62px);height:auto;filter:drop-shadow(0 2px 1px #18110def)}
+.duel-seal-field{fill:#513824;stroke:#ceaa70;stroke-width:1.5}.duel-seal-thread{fill:none;stroke:#ac8150;stroke-width:.8}
+.duel-seal-cut{fill:none;stroke:#f3ce90;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.4}
+.duel-kicker,.duel-kind{margin:0;color:var(--duel-muted);font-size:.67rem;letter-spacing:.08em;text-transform:uppercase;font-weight:750;line-height:1.45}
+.duel-kind{font-size:.68rem;letter-spacing:.055em;font-weight:650}
+.room[data-layout=chamber] .engraved-match .duel-inscription h2{color:#ffedc8;overflow-wrap:anywhere;font:normal clamp(1.45rem,3.25vw,2.75rem)/1.02 Georgia,serif;margin:3px 0 4px}
+.duel-seats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;min-width:0}
+.duel-seat{display:flex;align-items:center;gap:clamp(6px,1.25vw,12px);min-width:0;padding:clamp(7px,1.25vw,13px);border:1px solid #7b5b41;border-radius:3px;background:#2e241e;box-shadow:inset 0 0 0 3px #261d18}
+.duel-seat[data-current],.duel-seat[data-winner]{border-color:#cfa468;background:#493424}
+.duel-seat strong,.duel-seat small{display:block;overflow-wrap:anywhere}
+.duel-seat strong{color:#f7dfb7;font-size:clamp(.8rem,1.5vw,1rem);line-height:1.2}
+.duel-seat small{color:#ccb18a;font-size:.72rem;margin-top:2px;line-height:1.22}
+.duel-seat-token{display:grid;place-items:center;width:clamp(25px,3.7vw,40px);aspect-ratio:1;flex:none;border-radius:50%;border:1px solid #a98052;box-shadow:inset 0 0 0 2px #39291d;color:#f1cb88;background:#33261d;font:normal .92rem Georgia,serif}
+.engraved-match[data-result] .duel-seat[data-second] .duel-seat-token{background:#eddebc;color:#37251c}
+.duel-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(13rem,.41fr);gap:clamp(12px,2vw,24px);align-items:start}
+.duel-board-column,.duel-workbench{min-width:0}
+.duel-board-column{width:100%;max-width:40rem;margin-inline:auto}
+.chamber-table{
+ position:relative;isolation:isolate;padding:clamp(9px,2.1vw,28px);border-radius:4px;
+ background:
+  linear-gradient(120deg,#a67a486b,transparent 42%,#140b0735),
+  repeating-linear-gradient(7deg,#77513255 0 2px,#5f3e28 3px 7px,#513521a3 8px 12px);
+ border:1px solid #d1a36a;box-shadow:0 6px 0 #1a130f,inset 0 0 0 2px #38251a,inset 0 0 0 4px #a37d52,inset 0 0 0 5px #462f20;
+}
+.chamber-carving{pointer-events:none;position:absolute;z-index:-1;top:6px;left:6px;width:clamp(21px,4.8vw,52px);height:auto;fill:none;stroke:#f3c785;stroke-width:1.15;opacity:.76}
+.chamber-carving[data-corner=ne]{left:auto;right:6px;transform:rotate(90deg)}
+.chamber-carving[data-corner=sw]{top:auto;bottom:6px;transform:rotate(-90deg)}
+.chamber-carving[data-corner=se]{top:auto;left:auto;bottom:6px;right:6px;transform:rotate(180deg)}
+.room[data-layout=chamber] .engraved-match .chamber-grid{
+ width:100%;margin:0;aspect-ratio:1;border:1px solid #49311e;border-radius:1px;
+ box-shadow:0 0 0 1px #c59a60,0 0 0 2px #3b271a,inset 0 0 12px #51311a3b;
+ background:
+  radial-gradient(ellipse at 42% 38%,#fff1bf8f,transparent 75%),
+  repeating-linear-gradient(3deg,#e2bd81 0 5px,#e4c187 6px 8px,#dcba81 9px 13px);
+}
+.engraved-match .chamber-grid .cell::before,.engraved-match .chamber-grid .cell::after{background:#57412ba9}
+.engraved-match .chamber-grid .cell:focus-visible{z-index:3;outline:2px solid #653634;outline-offset:-2px}
+.room[data-layout=chamber] .engraved-match .chamber-grid .cell:hover:not([aria-disabled=true]){background:#fbdda1}
+.engraved-match .chamber-grid .cell[data-winning] .inlaid-stone{
+ outline:2px solid #7c421f;outline-offset:1px;box-shadow:0 0 0 4px #ffe0a6bd,inset 0 0 0 1px #fff3cc8a,inset 0 -2px 0 #2b1c1236;
+}
+.engraved-match .chamber-grid .inlaid-stone{width:min(87%,2.18rem)}
+.duel-board-caption{display:flex;align-items:center;justify-content:space-between;gap:3px 7px;flex-wrap:wrap;color:#ddc39d;font-size:.7rem;font-variant-numeric:tabular-nums;margin:12px 1px 0}
+.duel-board-caption i{font-style:normal;color:#ddac67;font-size:.54rem;margin-inline:3px}
+.duel-workbench{display:grid;gap:10px;align-content:start}
+.engraved-match .stone-tray,.duel-verdict,.duel-coordinates{border:1px solid #9b774d;background:#33271e;box-shadow:inset 0 0 0 2px #281e18;border-radius:4px;color:var(--duel-ink);margin:0;padding:9px}
+.engraved-match .tray-label{color:#f1d3a1}.engraved-match .tray-label span{color:#d3b593}
+.room[data-layout=chamber] .engraved-match .tray-covers button:not(.primary){min-height:38px;border-color:#80603c;background:#483425;color:#f2d7a9;box-shadow:inset 0 0 0 1px #332319}
+.room[data-layout=chamber] .engraved-match .tray-covers button[aria-pressed=true]:not(.primary){background:#6a482d;border-color:#ddb277;box-shadow:inset 0 0 0 1px #b88750}
+.engraved-match .tray-covers button:focus-visible{outline-offset:-2px}
+.engraved-match .chamber-scene{margin:0;border-color:#9d774f;box-shadow:inset 0 0 0 2px #3c2a22}
+.engraved-match .chamber-scene figcaption{font-size:.73rem}
+.duel-verdict strong{font:normal 1.15rem Georgia,serif;color:#ffdf9e}
+.duel-verdict p,.duel-rules p{color:var(--duel-muted);margin:6px 0 0;font-size:.83rem}
+.duel-coordinates summary,.duel-rules summary{color:#f4d8a8}
+.duel-coordinate-controls{margin-top:9px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;align-items:end}
+.duel-coordinate-controls label{color:#efcea0}.duel-coordinate-controls button{grid-column:1/-1;justify-self:start}
+.room[data-layout=chamber] .engraved-match button:not(.cell):not(.primary),.room[data-layout=chamber] .engraved-match select{color:#f1daae;background:#3e2f25;border-color:#8e6b42}
+.room[data-layout=chamber] .engraved-match button:not(.cell):not(.primary):hover:not(:disabled){color:#fff0cc;background:#57402f;border-color:#cb9e64}
+.room[data-layout=chamber] .engraved-match .tray-covers button:not(:disabled):hover:not(.primary){background:#67472e;color:#fff1cd}
+.engraved-match .duel-actions{margin-top:13px;padding-top:10px;border-top:1px solid #7f6042;display:flex;align-items:start;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.duel-rules{margin:0;max-width:41rem}.duel-rules summary{display:inline-flex;gap:6px;min-height:44px;align-items:center}.duel-rules summary::-webkit-details-marker{display:none}
+.duel-rules .chamber-glyph{color:#e3b979}
+.duel-action-rail{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+.duel-action-rail button{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:6px 9px;min-height:44px;font-size:.76rem;box-shadow:inset 0 0 0 2px #442e2270}
+.room[data-layout=chamber] .engraved-match .duel-action-rail .primary{background:linear-gradient(141deg,#f6d897,#c69960);border-color:#e4b977;color:#281a12}
+.engraved-match .scores h3,.engraved-match .scores div{color:var(--duel-ink);border-color:var(--duel-edge)}
+@media(max-width:875px){
+ .duel-layout{grid-template-columns:minmax(0,1fr)}
+ .duel-plaque{max-width:40rem;margin-inline:auto}
+ .duel-workbench{grid-template-columns:repeat(2,minmax(0,1fr));width:100%;max-width:40rem;margin-inline:auto}
+ .duel-coordinates{grid-column:1/-1}
+}
+@media(max-width:590px){
+ .room[data-layout=chamber] .room-grid>aside:has(.chat){grid-template-columns:1fr}
+ .room[data-layout=chamber] .room-controls{gap:4px}
+ .room[data-layout=chamber] .room-controls button{font-size:.73rem;padding:5px 6px;min-height:39px}
+ .room[data-layout=chamber] .room-controls>button .chamber-glyph{width:14px;height:14px;vertical-align:-3px;margin-inline-end:3px}
+ .duel-plaque{grid-template-columns:minmax(0,1fr);gap:5px;margin-bottom:8px}
+ .duel-inscription{padding:7px 8px}
+ .duel-seat{padding:5px 6px}
+ .duel-seat small{font-size:.65rem}
+ .duel-kicker,.duel-kind{font-size:.61rem}
+ .duel-workbench{grid-template-columns:minmax(0,1fr);gap:6px}
+ .duel-layout{gap:7px}
+ .duel-board-caption{margin-top:9px;font-size:.63rem}
+ .chamber-table{padding:9px}
+ .engraved-match .chamber-scene .chamber-artwork{aspect-ratio:2.8}
+ .engraved-match .chamber-scene .chamber-artwork img{object-position:64% 41%}
+ .engraved-match .duel-actions{margin-top:8px}
+}

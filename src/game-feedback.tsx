@@ -197,14 +197,48 @@ export function useGameFeedback(state:GameFeedbackState){
 
 export function GameFeedbackControls({feedback}:{feedback:ReturnType<typeof useGameFeedback>}){
  const {prefs,toggleSound,toggleMotion}=feedback
- return <div className="game-feedback" role="group" aria-label="Sound and motion">
-  <button type="button" className="feedback-control" aria-label="Sound" aria-pressed={prefs.sound} onClick={toggleSound}>
-   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/>{prefs.sound?<path d="M16 8a6 6 0 0 1 0 8m2-10a9 9 0 0 1 0 12"/>:<path d="M16 10l5 5m0-5-5 5"/>}</svg>
-   <span>Sound</span><b aria-hidden="true">{prefs.sound?'On':'Off'}</b>
-  </button>
-  <button type="button" className="feedback-control" aria-label="Reduce motion (follows system when off)" aria-pressed={prefs.motion==='off'} onClick={toggleMotion}>
-   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h9m-6 5h10m-4-7 4 2-4 2m-9 9h9m-2-8 4 2-4 2"/></svg>
-   <span>Motion</span><b aria-hidden="true">{prefs.motion==='off'?'Reduced':'System'}</b>
-  </button>
- </div>
+ const menu=useRef<HTMLDetailsElement>(null)
+ const toggle=useRef<HTMLElement>(null)
+ const [full,setFull]=useState(false)
+ const [expanded,setExpanded]=useState(false)
+ const [fullscreenError,setFullscreenError]=useState(false)
+ useEffect(()=>{
+  const update=()=>setFull(!!document.fullscreenElement)
+  const outside=(e:PointerEvent)=>{if(menu.current?.open&&e.target instanceof Node&&!menu.current.contains(e.target))menu.current.open=false}
+  document.addEventListener('fullscreenchange',update)
+  document.addEventListener('pointerdown',outside)
+  update()
+  return ()=>{document.removeEventListener('fullscreenchange',update);document.removeEventListener('pointerdown',outside)}
+ },[])
+ const changeFullscreen=async()=>{
+  setFullscreenError(false)
+  try{
+   if(document.fullscreenElement)await document.exitFullscreen()
+   else await document.documentElement.requestFullscreen()
+   if(menu.current)menu.current.open=false
+   toggle.current?.focus()
+  }catch{setFullscreenError(true)}
+ }
+ return <details className="game-settings" ref={menu} onToggle={e=>setExpanded(e.currentTarget.open)} onKeyDown={e=>{
+  if(e.key==='Escape'&&menu.current?.open){e.preventDefault();menu.current.open=false;toggle.current?.focus()}
+ }}>
+  <summary className="settings-gear" role="button" aria-label="Audio and display settings" aria-expanded={expanded} aria-controls="game-settings-panel" title="Audio and display settings" ref={e=>{toggle.current=e}}>
+   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m10 3-.4 2.3-1.8.9-2-.9-1.4 1.7 1.1 2-.5 2-2.2 1v2.1l2.2.8.6 1.9-1.2 2 1.5 1.6 2.1-.9 1.7.8.5 2h2.1l.6-2 1.9-.8 2 .9 1.4-1.6-1.1-2 .6-1.9 2.1-.8V12l-2.1-1-.6-2 1.1-2-1.4-1.7-2.1.9-1.7-.9-.5-2.3z"/><circle cx="11.25" cy="12.6" r="3.3"/></svg>
+  </summary>
+  <div id="game-settings-panel" className="settings-popover" role="group" aria-label="Sound, motion and display">
+   <button type="button" className="feedback-control" aria-label="Sound" aria-pressed={prefs.sound} onClick={toggleSound}>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/>{prefs.sound?<path d="M16 8a6 6 0 0 1 0 8m2-10a9 9 0 0 1 0 12"/>:<path d="M16 10l5 5m0-5-5 5"/>}</svg>
+    <span>Sound</span><b aria-hidden="true">{prefs.sound?'On':'Off'}</b>
+   </button>
+   <button type="button" className="feedback-control" aria-label="Reduce motion (follows system when off)" aria-pressed={prefs.motion==='off'} onClick={toggleMotion}>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h9m-6 5h10m-4-7 4 2-4 2m-9 9h9m-2-8 4 2-4 2"/></svg>
+    <span>Motion</span><b aria-hidden="true">{prefs.motion==='off'?'Reduced':'System'}</b>
+   </button>
+   {document.fullscreenEnabled&&<button type="button" className="feedback-control" onClick={()=>void changeFullscreen()}>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5m6 0h5v5m0 6v5h-5m-6 0H4v-5"/></svg>
+    <span>{full?'Exit full screen':'Full screen'}</span>
+   </button>}
+   {fullscreenError&&<p className="error" role="status">Full screen isn’t available in this browser.</p>}
+  </div>
+ </details>
 }

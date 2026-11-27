@@ -103,8 +103,6 @@ test('unnamed mobile solo entry stays offline, starts with no bots and records a
   await page.clock.install()
   await page.goto(baseURL!+'season/3/')
   await page.getByRole('button',{name:'Practice Memory Poker',exact:true}).tap()
-  await page.getByLabel('Nickname').fill('Solo')
-  await page.getByLabel('Nickname').press('Enter')
   await expect(page.getByRole('heading',{name:'Practice lobby'})).toBeVisible()
   await expect(page.getByLabel('Game')).toHaveValue('memoryPoker')
   await expect(page.getByLabel('Allow one-card peek (−1 point)')).not.toBeChecked()
@@ -119,7 +117,7 @@ test('unnamed mobile solo entry stays offline, starts with no bots and records a
   await table(page).getByRole('button',{name:'Lock hand'}).tap()
   const hand=roundResults(page,1)
   await expect(hand.getByRole('listitem')).toHaveCount(1)
-  await expect(hand.getByText('Solo',{exact:true})).toBeVisible()
+  await expect(hand.getByText('Player',{exact:true})).toBeVisible()
   await expect(hand.getByRole('img')).toHaveCount(5)
  }finally{await mobile.close()}
 })
