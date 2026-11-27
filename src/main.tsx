@@ -27,7 +27,12 @@ import {hostRoom,joinRoom,practice,type SessionState,type ConnectOptions,type Se
 import catalog from './catalog.json'
 import {SeasonTwo} from './season-two-ui'
 import {GameArt} from './art'
+import {GameDetails} from './game-details'
+import {gameSearchKey} from './game-search'
+import {GameCardIdentity,GameVenue} from './game-identity'
+import {getGameVenue} from './game-venues'
 import {BrandSeal} from './brand-seal'
+import {CodexEntry} from './codex-entry'
 import {base,brand,currentSeason,seasons,seasonHref} from './brand'
 import './style.css'
 import './design.css'
@@ -42,6 +47,7 @@ import {ChapterArt,LandingMark,LandingPainting} from './landing-art'
 import './landing-art.css'
 import './room-stage.css'
 import './codex.css'
+import {PartyActionBar,PartyGlyph,PartyMechanicPreview,PartyRoster,PartyTable} from './party-table'
 import {BoardViewport} from './board-viewport'
 import {useOfflinePractice} from './offline-practice'
 import {loadTable,TableLoadBoundary} from './lazy-table'
@@ -51,6 +57,7 @@ const Heavy13Lesson=lazy(()=>loadHeavy13().then(m=>({default:m.Heavy13Lesson})))
 const loadTimeHold=()=>loadTable(()=>import('./time-hold-ui'))
 const TimeHoldBoard=lazy(()=>loadTimeHold().then(module=>({default:module.TimeHoldBoard})))
 const games=Object.keys(titles) as Game[]
+const catalogGame=new Map(catalog.filter(row=>row.game).map(row=>[row.game,row]))
 const route=()=>{const [page,query]=location.hash.slice(1).split('?');return {page,room:new URLSearchParams(query).get('room')??''}}
 const cleanCode=(x:string)=>x.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6)
 const invite=(code:string)=>location.origin+base+'#/join?room='+code
@@ -166,7 +173,11 @@ function App(){
  const host=snap?.host===snap?.you
  const nameOf=(id:string)=>snap?.seats.find(s=>s.id===id)?.name??'Unknown'
  const playable=games.filter(g=>!selected||catalog.some(c=>c.game===g&&c.season===selected.id))
- const shown=playable.filter(g=>{const row=catalog.find(c=>c.game===g);return [titles[g],row?.genre,row?.id].join(' ').toLowerCase().includes(galleryQuery.trim().toLowerCase())})
+ const galleryNeedle=gameSearchKey(galleryQuery)
+ const shown=playable.filter(g=>{
+  const row=catalogGame.get(g),venue=row&&getGameVenue(row)
+  return gameSearchKey([titles[g],row?.title,row?.genre,row?.id,venue?.label,venue?.caption].join(' ')).includes(galleryNeedle)
+ })
  const holdAuction=!!snap&&isHoldAuction(snap.settings)
  useEffect(()=>{if(holdAuction)void loadTimeHold().catch(()=>{})},[holdAuction])
  const botBlocked=!!snap&&(holdAuction||humanOnly(snap.settings.game))
@@ -176,9 +187,22 @@ function App(){
  useEffect(()=>{if(heavyTable)void loadHeavy13().catch(()=>{})},[heavyTable])
  const montagePractice=snap?.settings.game==='montage'&&kind==='solo'
  const canStart=!!snap&&host&&state.phase==='online'&&(!episodePoker||episodeRoster)&&snap.seats.length>=minSeats(snap.settings.game,kind==='solo')&&snap.seats.every(s=>s.online&&s.ready&&(!s.bot||!botBlocked))
+ const partyLobby=kind!=='solo'&&!!snap&&!snap.game
+ const youReady=snap?.seats.find(s=>s.id===snap.you)?.ready
+ const missingSeats=snap?Math.max(0,minSeats(snap.settings.game)-snap.seats.length):0
+ const waitingSeats=snap?.seats.filter(s=>s.online&&!s.ready).length??0
+ const partyNote=state.phase!=='online'?'Waiting for a connection.':!host?(youReady?'Ready. Waiting for the host.':'Ready up when you’re set.'):canStart?'The table is ready.':
+  episodePoker&&!episodeRoster?'Episode-style duel needs two connected humans.':botBlocked&&snap?.seats.some(s=>s.bot)?'Remove bots to play this game.':
+  missingSeats?'Add '+missingSeats+' more '+(missingSeats===1?'player.':'players.'):snap?.seats.some(s=>!s.online)?'Wait for offline players to reconnect or remove their seats.':
+  'Waiting for '+waitingSeats+' '+(waitingSeats===1?'player':'players')+' to ready up.'
  const count=(n:number)=>catalog.filter(x=>x.season===n).length
  const numberPlayable=(n:number)=>catalog.filter(x=>x.season===n&&x.game).length
- const rows=catalog.filter(g=>(season==='all'||String(g.season)===season)&&(!filter||g.game)&&[g.title,g.genre,g.category,g.id].join(' ').toLowerCase().includes(search.toLowerCase()))
+ const indexNeedle=gameSearchKey(search)
+ const rows=catalog.filter(g=>{
+  if((season!=='all'&&String(g.season)!==season)||(filter&&!g.game))return false
+  const venue=getGameVenue(g)
+  return gameSearchKey([g.title,g.genre,g.category,g.id,venue.label,venue.caption].join(' ')).includes(indexNeedle)
+ })
  const seasonLibrary=page==='/join'?undefined:selected
  const isLanding=!kind&&!selected&&page!=='/join'
  const openCatalog=()=>document.getElementById('catalog')?.setAttribute('open','')
@@ -189,14 +213,42 @@ function App(){
     {page!=='/join'&&<button className="primary" type={submitEntry==='join'?'button':'submit'} onClick={submitEntry==='join'?()=>connect('host'):undefined}>Create party {isLanding?<LandingMark mark="arrow" className="entry-arrow"/>:<span className="arrow-text" aria-hidden="true">↗︎</span>}</button>}
     <div className="join-line"><div><label htmlFor="invite">Invite code</label><input id="invite" autoCapitalize="characters" spellCheck={false} value={code} onChange={e=>setCode(cleanCode(e.target.value))} placeholder="ABC234" maxLength={6}/></div><button type={submitEntry==='join'?'submit':'button'} onClick={submitEntry==='join'?undefined:()=>connect('join')}>Join party</button></div>
     <button type="button" className="plain" id="practice-entry" onClick={e=>connect('solo','blind',e.currentTarget.id)}>Solo practice</button>
-    {offlinePractice&&<small className="practice-availability" role="status">{offlinePractice==='ready'?'Ready for offline practice.':offlinePractice==='saving'?'Saving games for offline practice… Keep this page open.':'Offline files aren’t saved. Open or reload this page with an internet connection.'}</small>}
+    {offlinePractice&&<small className="practice-availability" role="status">{offlinePractice==='ready'?'Ready for offline practice.':offlinePractice==='saving'?'Saving games for offline practice… Keep this page open.':offlinePractice==='updating'?'This release isn’t ready for offline play. Finish any open games, then close all Imp Plan tabs and reopen online.':'Offline files aren’t saved. Open or reload this page with an internet connection.'}</small>}
     <details><summary>Connection options</summary><p>For an online room, signaling is provided by PeerJS, with Google STUN for network discovery by default. Peers can learn network information; some networks can’t connect directly.</p><label htmlFor="ice">Custom STUN URLs (optional)</label><input id="ice" value={ice} onChange={e=>setIce(e.target.value)} placeholder="stun:example.net:3478"/></details>
     {notice&&<p role="alert" className="error">{notice}</p>}
    </form>
  )
+ const lobbySettings=snap&&!snap.game?
+     <section className={'panel lobby'+(partyLobby?' party-settings':'')}>
+      <h2 className={partyLobby?'party-setting-title':undefined}>{partyLobby?'Table settings':'Set the table'}</h2>
+     <div className={partyLobby?'party-settings-fields':undefined}>
+     <label>Game<select aria-label="Game" value={snap.settings.game} disabled={!host||(partyLobby&&state.phase!=='online')} onChange={e=>command({kind:'config',settings:{...snap.settings,game:e.target.value as Game}})}>{games.map(g=><option value={g} key={g}>{titles[g]}</option>)}</select></label>
+     {snap.settings.game==='auction'&&kind!=='solo'&&<label>Time Auction mode<select value={holdAuction?'hold':'sealed'} disabled={!host} onChange={e=>command({kind:'config',settings:{...snap.settings,auctionMode:e.target.value==='hold'?'hold':'sealed'}})}><option value="sealed">Sealed bids</option><option value="hold" disabled={snap.seats.some(s=>s.bot)}>Hold &amp; release (episode-inspired)</option></select>{snap.seats.some(s=>s.bot)&&<small>Remove bots to play Hold &amp; release.</small>}</label>}
+     {(snap.settings.game==='auction'&&!holdAuction||snap.settings.game==='remove'||snap.settings.game==='secret')&&<label>{snap.settings.game==='secret'?'Seconds per contact round':'Seconds to submit'}<select value={snap.settings.seconds} disabled={!host} onChange={e=>command({kind:'config',settings:{...snap.settings,seconds:Number(e.target.value)}})}>{[10,15,25,45,60,90].map(n=><option key={n}>{n}</option>)}</select></label>}
+     {heavyTable&&<label>Seconds per selection or placement<select value={snap.settings.seconds} disabled={!host} onChange={e=>command({kind:'config',settings:{...snap.settings,seconds:Number(e.target.value)}})}>{[...new Set([15,25,45,60,90,snap.settings.seconds])].sort((a,b)=>a-b).map(n=><option key={n}>{n}</option>)}</select></label>}
+     {snap.settings.game==='wallGo'&&<label>Seconds per turn<select value={snap.settings.seconds} disabled={!host} onChange={e=>command({kind:'config',settings:{...snap.settings,seconds:Number(e.target.value)}})}>{[...new Set([10,15,25,45,60,90,snap.settings.seconds])].sort((a,b)=>a-b).map(n=><option key={n}>{n}</option>)}</select></label>}
+     {snap.settings.game==='fragments'&&<div className="actions">
+      <label>Questions<select value={snap.settings.fragmentCount??12} disabled={!host} onChange={e=>command({kind:'config',settings:{...snap.settings,fragmentCount:Number(e.target.value) as FragmentCount}})}>{fragmentCounts.map(n=><option key={n}>{n}</option>)}</select></label>
+      <label>Memory mode<select value={snap.settings.fragmentStrict?'strict':'casual'} disabled={!host} onChange={e=>command({kind:'config',settings:{...snap.settings,fragmentStrict:e.target.value==='strict'}})}><option value="casual">Casual · team discussion</option><option value="strict">Strict · no discussion</option></select></label>
+     </div>}
+     {snap.settings.game==='divine'&&<div className="actions">
+      <label>Square size<select value={snap.settings.divineSide??7} disabled={!host} onChange={e=>command({kind:'config',settings:{...snap.settings,divineSide:Number(e.target.value) as 3|5|7}})}>{[3,5,7].map(n=><option key={n} value={n}>{n} × {n}{kind==='solo'&&n===3?' (starter)':''}</option>)}</select></label>
+      <label>Time limit<select value={snap.settings.seconds} disabled={!host} onChange={e=>command({kind:'config',settings:{...snap.settings,seconds:Number(e.target.value)}})}>{[120,300,600,900].map(n=><option key={n} value={n}>{n/60} minutes</option>)}</select></label>
+      <label className="check"><input type="checkbox" checked={snap.settings.divineHard??false} disabled={!host} onChange={e=>command({kind:'config',settings:{...snap.settings,divineHard:e.target.checked}})}/> Deduce the numeral key</label>
+     </div>}
+     {snap.settings.game==='knight'&&<div className="actions"><label>Board size<select disabled={!host} value={snap.settings.size??5} onChange={e=>command({kind:'config',settings:{...snap.settings,size:Number(e.target.value) as 5|6|8,closed:Number(e.target.value)===5?false:snap.settings.closed}})}>{[5,6,8].map(n=><option key={n} value={n}>{n} × {n}</option>)}</select></label><label>Minutes<select disabled={!host} value={snap.settings.seconds/60} onChange={e=>command({kind:'config',settings:{...snap.settings,seconds:Number(e.target.value)*60}})}>{[3,4,5,6,7,8].map(n=><option key={n}>{n}</option>)}</select></label><label className="check"><input type="checkbox" disabled={!host||(snap.settings.size??5)===5} checked={snap.settings.closed??false} onChange={e=>command({kind:'config',settings:{...snap.settings,closed:e.target.checked}})}/> Closed tour</label></div>}
+     {kind!=='solo'&&<div className="actions"><label>Seat limit<select value={episodePoker?2:snap.settings.capacity} disabled={!host||episodePoker} onChange={e=>command({kind:'config',settings:{...snap.settings,capacity:Number(e.target.value)}})}>{Array.from({length:heavyTable?6:snap.settings.game==='mancala'?7:15},(_,i)=>i+2).filter(n=>n>=snap.seats.length).map(n=><option key={n}>{n}</option>)}</select></label><label className="check"><input type="checkbox" disabled={!host} checked={snap.settings.locked} onChange={e=>command({kind:'config',settings:{...snap.settings,locked:e.target.checked}})}/> Lock new joins</label></div>}
+     {snap.settings.game==='memoryPoker'&&kind!=='solo'&&<label>Memory Poker mode<select value={episodePoker?'episode':'fan'} disabled={!host} onChange={e=>command({kind:'config',settings:{...snap.settings,memoryPokerMode:e.target.value==='episode'?'episode':'fan'}})}><option value="fan">Fan table</option><option value="episode" disabled={!episodeRoster&&!episodePoker}>Episode-style duel</option></select>{!episodeRoster&&<small>Episode-style duel needs two connected human players.</small>}</label>}
+     {snap.settings.game==='memoryPoker'&&!episodePoker&&<label className="check"><input type="checkbox" checked={snap.settings.memoryPokerPeek??false} disabled={!host} onChange={e=>command({kind:'config',settings:{...snap.settings,memoryPokerPeek:e.target.checked}})}/> Allow one-card peek (−1 point)</label>}
+     {!botBlocked&&<label className="bot-level">Bot difficulty<select value={snap.settings.botLevel??'normal'} disabled={!host} onChange={e=>command({kind:'config',settings:{...snap.settings,botLevel:e.target.value as 'easy'|'normal'|'hard'}})}><option value="easy">Easy</option><option value="normal">Standard</option><option value="hard">Hard</option></select><small>Changes how bots choose their moves.</small></label>}
+     <p>{holdAuction?'2–16 connected players. Hold your own clock; other bids stay private.':episodePoker?'Two players, one shared grid. The first stronger hand wins.':explain(snap.settings.game,snap.seats.length)}</p><details><summary>{holdAuction?'Episode-inspired rules':episodePoker?'Episode-style rules':'Fan rules'}</summary><p>{holdAuction?holdAuctionRules:episodePoker?episodePokerRules:montagePractice?montagePracticeRules:tutorials[snap.settings.game]}</p></details>
+     </div>
+     {!partyLobby&&<div className="actions"><button className="primary" disabled={!canStart} onClick={()=>setBriefing('start')}>Start match</button><button disabled={snap.seats.length>=snap.settings.capacity||botBlocked} onClick={()=>command({kind:'bot'})}>Add bot</button></div>}
+    </section>:null
  const finished=snap?.game?.done
  const playing=!!snap?.game
  return <>
+  {isLanding&&<CodexEntry motionOff={feedback.prefs.motion==='off'}/>}
   <header className={'bar'+(isLanding?' landing-bar':playing?' playing-bar':'')}><div className="wrap top">
    <a className="brand" href={base} onClick={e=>{if(kind)e.preventDefault()}}><BrandSeal/><span>{brand}<small>Unofficial fan project</small></span></a>
    {!kind&&<nav className="topright season-nav" aria-label="Seasons">{seasons.map(x=><a key={x.id} href={seasonHref(x.id)} aria-current={selected?.id===x.id?'page':undefined}>Season {x.id}</a>)}</nav>}
@@ -225,7 +277,18 @@ function App(){
    <a href="#catalog" onClick={openCatalog}>{isLanding&&<LandingMark mark="book"/>}Challenge index</a>
   </div>
   {shown.length===0&&<p role="status" className="gallery-empty">No playable games match this search.</p>}
-  <div className="cards">{shown.map(g=>{const entry=catalog.find(x=>x.game===g);return <article className="card" key={g}><GameArt mode={g} motionOff={feedback.prefs.motion==='off'}/><div><p className="game-caption">{entry?'S'+entry.season+' · '+entry.genre:'Fan rules'}</p><h3>{titles[g]}</h3><p>{tutorials[g].split('. ')[0]}.</p><button type="button" id={'practice-gallery-'+g} onClick={e=>connect('solo',g,e.currentTarget.id)}>Practice <span className="sr">{titles[g]}</span><span className="arrow-text" aria-hidden="true"> →</span></button><details><summary>Rules</summary><p>{tutorials[g]}</p></details></div></article>})}</div>
+  <div className="cards">{shown.map(g=>{
+   const entry=catalogGame.get(g)
+   const reference=entry?.sources[0]
+   return <article className="card" key={g}>
+    <GameArt mode={g} motionOff={feedback.prefs.motion==='off'}/>
+    <div className="game-card-body">
+     <GameCardIdentity game={g} entry={entry}/>
+     <div className="game-card-actions"><button type="button" id={'practice-gallery-'+g} onClick={e=>connect('solo',g,e.currentTarget.id)}>Practice <span className="sr">{titles[g]}</span></button>
+      <GameDetails game={g} context={entry&&<GameVenue entry={entry}/>} source={reference} motionOff={feedback.prefs.motion==='off'}/></div>
+    </div>
+   </article>
+  })}</div>
   </section>
   {seasonLibrary&&<div className="front-desk season-room">{roomEntry}</div>}
   <details id="catalog" className="index library-index">
@@ -234,14 +297,14 @@ function App(){
   <div className="filters"><label>Search challenge index<input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Find a game or mechanic"/></label>{!selected&&<label>Season<select value={season} onChange={e=>setSeason(e.target.value)}><option value="all">All seasons</option><option value="1">Season 1</option><option value="2">Season 2</option><option value="3">Season 3</option></select></label>}<label className="check"><input type="checkbox" checked={filter} onChange={e=>setFilter(e.target.checked)}/> Playable only</label></div>
    <div className="directory">{rows.map(row=>{
     const game=games.find(g=>g===row.game)
-    return <article key={row.id}><span className="mono">{row.id}</span><div><strong>{row.title}</strong><br/><small>{row.category} · {row.genre}{row.original==='unaired'?' · Unaired':''}</small></div>
+    return <article key={row.id}><span className="mono">{row.id}</span><div><strong>{row.title}</strong><GameVenue entry={row}/><small>{row.genre}</small></div>
      {game?<button type="button" className="catalog-practice" id={'practice-index-'+row.id} onClick={e=>connect('solo',game,e.currentTarget.id)}>Practice <span className="sr">{titles[game]}</span></button>:<small className="catalog-unavailable">Not playable</small>}
     </article>
    })}</div>{!rows.length&&<p role="status">No matching entries.</p>}
   </details></>
-  :<section className="room" data-playing={playing||undefined} data-game={snap?.game?.game} data-layout={snap?.game?.game==='blind'?'chamber':undefined}>
+  :<section className="room" data-party-lobby={partyLobby||undefined} data-playing={playing||undefined} data-game={snap?.game?.game} data-layout={snap?.game?.game==='blind'?'chamber':undefined}>
    <div className="section-head"><div><p className="eyebrow">{kind==='solo'?'OFFLINE PRACTICE':'PRIVATE PARTY'}</p><h1 ref={matchHeading} tabIndex={snap?.game||kind==='solo'?-1:undefined}>{snap?.game?titles[snap.game.game]:kind==='solo'?'Practice lobby':'Party room'}</h1></div><div className="room-controls"><GameFeedbackControls feedback={feedback}/><button className="room-leave" onClick={leave}>{snap?.game?.game==='blind'&&<ChamberGlyph icon="exit"/>}Leave room</button></div></div>
-   {room&&<div className="invite"><span>Invite code <strong data-testid="room-code">{room}</strong></span>{snap&&<button onClick={()=>{void copyInvite()}}>Copy invite</button>}
+   {room&&<div className="invite">{partyLobby&&<PartyGlyph kind="invite"/>}<span>Invite code <strong data-testid="room-code">{room}</strong></span>{snap&&<button onClick={()=>{void copyInvite()}}>Copy invite</button>}
     {inviteCopy==='copied'&&<small role="status">Invite copied.</small>}
     {inviteCopy==='manual'&&<div className="invite-manual"><p id="invite-copy-help">Couldn’t copy automatically. Copy the link below or share the invite code.</p><label>Invite link<input ref={inviteInput} readOnly value={invite(room)} aria-describedby="invite-copy-help" onFocus={e=>e.currentTarget.select()}/></label></div>}
    </div>}
@@ -249,29 +312,12 @@ function App(){
    {state.error&&<p role="alert" className="error">{state.error}</p>}
    {state.phase==='offline'&&<div className="actions"><button onClick={()=>connect(kind)}>Retry</button><button onClick={()=>connect('solo')}>Solo practice</button></div>}
    {snap&&<div className="room-grid"><div>
-    {!snap.game?<section className="panel lobby"><h2>Set the table</h2>
-     <label>Game<select value={snap.settings.game} disabled={!host} onChange={e=>command({kind:'config',settings:{...snap.settings,game:e.target.value as Game}})}>{games.map(g=><option value={g} key={g}>{titles[g]}</option>)}</select></label>
-     {snap.settings.game==='auction'&&kind!=='solo'&&<label>Time Auction mode<select value={holdAuction?'hold':'sealed'} disabled={!host} onChange={e=>command({kind:'config',settings:{...snap.settings,auctionMode:e.target.value==='hold'?'hold':'sealed'}})}><option value="sealed">Sealed bids</option><option value="hold" disabled={snap.seats.some(s=>s.bot)}>Hold &amp; release (episode-inspired)</option></select>{snap.seats.some(s=>s.bot)&&<small>Remove bots to play Hold &amp; release.</small>}</label>}
-     {(snap.settings.game==='auction'&&!holdAuction||snap.settings.game==='remove'||snap.settings.game==='secret')&&<label>{snap.settings.game==='secret'?'Seconds per contact round':'Seconds to submit'}<select value={snap.settings.seconds} disabled={!host} onChange={e=>command({kind:'config',settings:{...snap.settings,seconds:Number(e.target.value)}})}>{[10,15,25,45,60,90].map(n=><option key={n}>{n}</option>)}</select></label>}
-     {heavyTable&&<label>Seconds per selection or placement<select value={snap.settings.seconds} disabled={!host} onChange={e=>command({kind:'config',settings:{...snap.settings,seconds:Number(e.target.value)}})}>{[...new Set([15,25,45,60,90,snap.settings.seconds])].sort((a,b)=>a-b).map(n=><option key={n}>{n}</option>)}</select></label>}
-     {snap.settings.game==='wallGo'&&<label>Seconds per turn<select value={snap.settings.seconds} disabled={!host} onChange={e=>command({kind:'config',settings:{...snap.settings,seconds:Number(e.target.value)}})}>{[...new Set([10,15,25,45,60,90,snap.settings.seconds])].sort((a,b)=>a-b).map(n=><option key={n}>{n}</option>)}</select></label>}
-     {snap.settings.game==='fragments'&&<div className="actions">
-      <label>Questions<select value={snap.settings.fragmentCount??12} disabled={!host} onChange={e=>command({kind:'config',settings:{...snap.settings,fragmentCount:Number(e.target.value) as FragmentCount}})}>{fragmentCounts.map(n=><option key={n}>{n}</option>)}</select></label>
-      <label>Memory mode<select value={snap.settings.fragmentStrict?'strict':'casual'} disabled={!host} onChange={e=>command({kind:'config',settings:{...snap.settings,fragmentStrict:e.target.value==='strict'}})}><option value="casual">Casual · team discussion</option><option value="strict">Strict · no discussion</option></select></label>
-     </div>}
-     {snap.settings.game==='divine'&&<div className="actions">
-      <label>Square size<select value={snap.settings.divineSide??7} disabled={!host} onChange={e=>command({kind:'config',settings:{...snap.settings,divineSide:Number(e.target.value) as 3|5|7}})}>{[3,5,7].map(n=><option key={n} value={n}>{n} × {n}{kind==='solo'&&n===3?' (starter)':''}</option>)}</select></label>
-      <label>Time limit<select value={snap.settings.seconds} disabled={!host} onChange={e=>command({kind:'config',settings:{...snap.settings,seconds:Number(e.target.value)}})}>{[120,300,600,900].map(n=><option key={n} value={n}>{n/60} minutes</option>)}</select></label>
-      <label className="check"><input type="checkbox" checked={snap.settings.divineHard??false} disabled={!host} onChange={e=>command({kind:'config',settings:{...snap.settings,divineHard:e.target.checked}})}/> Deduce the numeral key</label>
-     </div>}
-     {snap.settings.game==='knight'&&<div className="actions"><label>Board size<select disabled={!host} value={snap.settings.size??5} onChange={e=>command({kind:'config',settings:{...snap.settings,size:Number(e.target.value) as 5|6|8,closed:Number(e.target.value)===5?false:snap.settings.closed}})}>{[5,6,8].map(n=><option key={n} value={n}>{n} × {n}</option>)}</select></label><label>Minutes<select disabled={!host} value={snap.settings.seconds/60} onChange={e=>command({kind:'config',settings:{...snap.settings,seconds:Number(e.target.value)*60}})}>{[3,4,5,6,7,8].map(n=><option key={n}>{n}</option>)}</select></label><label className="check"><input type="checkbox" disabled={!host||(snap.settings.size??5)===5} checked={snap.settings.closed??false} onChange={e=>command({kind:'config',settings:{...snap.settings,closed:e.target.checked}})}/> Closed tour</label></div>}
-     {kind!=='solo'&&<div className="actions"><label>Seat limit<select value={episodePoker?2:snap.settings.capacity} disabled={!host||episodePoker} onChange={e=>command({kind:'config',settings:{...snap.settings,capacity:Number(e.target.value)}})}>{Array.from({length:heavyTable?6:snap.settings.game==='mancala'?7:15},(_,i)=>i+2).filter(n=>n>=snap.seats.length).map(n=><option key={n}>{n}</option>)}</select></label><label className="check"><input type="checkbox" disabled={!host} checked={snap.settings.locked} onChange={e=>command({kind:'config',settings:{...snap.settings,locked:e.target.checked}})}/> Lock new joins</label></div>}
-     {snap.settings.game==='memoryPoker'&&kind!=='solo'&&<label>Memory Poker mode<select value={episodePoker?'episode':'fan'} disabled={!host} onChange={e=>command({kind:'config',settings:{...snap.settings,memoryPokerMode:e.target.value==='episode'?'episode':'fan'}})}><option value="fan">Fan table</option><option value="episode" disabled={!episodeRoster&&!episodePoker}>Episode-style duel</option></select>{!episodeRoster&&<small>Episode-style duel needs two connected human players.</small>}</label>}
-     {snap.settings.game==='memoryPoker'&&!episodePoker&&<label className="check"><input type="checkbox" checked={snap.settings.memoryPokerPeek??false} disabled={!host} onChange={e=>command({kind:'config',settings:{...snap.settings,memoryPokerPeek:e.target.checked}})}/> Allow one-card peek (−1 point)</label>}
-     {!botBlocked&&<label className="bot-level">Bot difficulty<select value={snap.settings.botLevel??'normal'} disabled={!host} onChange={e=>command({kind:'config',settings:{...snap.settings,botLevel:e.target.value as 'easy'|'normal'|'hard'}})}><option value="easy">Easy</option><option value="normal">Standard</option><option value="hard">Hard</option></select><small>Changes how bots choose their moves.</small></label>}
-     <p>{holdAuction?'2–16 connected players. Hold your own clock; other bids stay private.':episodePoker?'Two players, one shared grid. The first stronger hand wins.':explain(snap.settings.game,snap.seats.length)}</p><details><summary>{holdAuction?'Episode-inspired rules':episodePoker?'Episode-style rules':'Fan rules'}</summary><p>{holdAuction?holdAuctionRules:episodePoker?episodePokerRules:montagePractice?montagePracticeRules:tutorials[snap.settings.game]}</p></details>
-     <div className="actions">{host?<><button className="primary" disabled={!canStart} onClick={()=>setBriefing('start')}>Start match</button><button disabled={snap.seats.length>=snap.settings.capacity||botBlocked} onClick={()=>command({kind:'bot'})}>Add bot</button></>:<><button type="button" onClick={()=>setBriefing('preview')}>Preview rules</button><button className="primary" disabled={state.phase!=='online'} onClick={()=>command({kind:'ready'})}>{snap.seats.find(s=>s.id===snap.you)?.ready?'Unready':'Ready up'}</button></>}</div>
-    </section>:snap.game.game==='blind'?<BlindMatchStage key={snap.match} game={snap.game} you={snap.you} name={nameOf} active={state.phase==='online'}
+    {!snap.game?<>{partyLobby&&<section className="panel lobby party-workspace"><PartyTable game={snap.settings.game} variant={holdAuction?'hold':episodePoker?'episode':undefined} canChoose={host} online={state.phase==='online'} motionOff={feedback.prefs.motion==='off'} error={state.error} choose={game=>command({kind:'config',settings:{...snap.settings,game}})} preview={()=>setBriefing('preview')}/>
+      <PartyActionBar note={partyNote}>
+       {host?<><button className="primary" disabled={!canStart} onClick={()=>setBriefing('start')}>Start match</button><button disabled={state.phase!=='online'||snap.seats.length>=snap.settings.capacity||botBlocked} onClick={()=>command({kind:'bot'})}><PartyGlyph kind="bot"/> Add bot</button></>:<button className="primary" disabled={state.phase!=='online'} onClick={()=>command({kind:'ready'})}>{youReady?'Unready':'Ready up'}</button>}
+      </PartyActionBar>
+     </section>}
+     {!partyLobby&&lobbySettings}</>:snap.game.game==='blind'?<BlindMatchStage key={snap.match} game={snap.game} you={snap.you} name={nameOf} active={state.phase==='online'}
      practice={kind==='solo'} leg={snap.fixture+1} legs={snap.count} submit={action=>command({kind:'move',action})}
      onReturn={host?()=>{if(finished||window.confirm('End this match and return to the lobby?'))command({kind:'lobby'})}:undefined}
      onExport={finished?()=>exportMatch(snap):undefined} next={finished&&host?{label:snap.seriesDone?'Rematch':'Next leg',run:()=>command({kind:'next'})}:undefined}
@@ -293,10 +339,10 @@ function App(){
      {finished&&<><Results snap={snap} name={nameOf}/><div className="actions"><button onClick={()=>exportMatch(snap)}>Export result</button>{host&&<button className="primary" onClick={()=>command({kind:'next'})}>{snap.seriesDone?'Rematch':'Next leg'}</button>}</div></>}
      {host&&<button className="plain" disabled={state.phase!=='online'} onClick={()=>{if(finished||window.confirm('End this match and return to the lobby?'))command({kind:'lobby'})}}>Return to lobby</button>}
     </section>}
-   </div><aside><section className="panel roster"><h2>Seats <small>{snap.seats.length}/{episodePoker?2:snap.settings.capacity}</small></h2>{snap.seats.map((s,i)=><div key={s.id} className="seat"><span className="avatar">{s.bot?'◈':i+1}</span><div><strong>{s.name}</strong><small>{s.id===snap.host?'Host':s.bot?'Bot':!s.online?'Offline':s.ready?'Ready':'Not ready'} · Seat {i+1}</small></div>{host&&s.id!==snap.host&&!snap.game&&<button aria-label={'Remove '+s.name+' from seat '+(i+1)} onClick={()=>command({kind:'kick',seat:s.id})}>×</button>}</div>)}</section>
-   {kind!=='solo'&&(!snap.game?.fragments?.strict||snap.game.done)&&<section className="panel chat"><h2>Table talk</h2><div className="messages" role="log">{snap.chat.length?snap.chat.map((m,i)=><p key={i}><strong>{m.name}:</strong> {m.text}</p>):<p>No messages yet.</p>}</div><form onSubmit={e=>{e.preventDefault();if(chat.trim()){command({kind:'chat',text:chat});setChat('')}}}><input aria-label="Message" value={chat} onChange={e=>setChat(e.target.value)} maxLength={240} placeholder="Say something"/><button disabled={state.phase!=='online'||!chat.trim()}>Send</button></form></section>}</aside></div>}
+   </div><aside>{partyLobby?<PartyRoster snap={snap} capacity={episodePoker?2:snap.settings.capacity} canRemove={host} online={state.phase==='online'} remove={seat=>command({kind:'kick',seat})}/>:<section className="panel roster"><h2>Seats <small>{snap.seats.length}/{episodePoker?2:snap.settings.capacity}</small></h2>{snap.seats.map((s,i)=><div key={s.id} className="seat"><span className="avatar">{s.bot?'◈':i+1}</span><div><strong>{s.name}</strong><small>{s.id===snap.host?'Host':s.bot?'Bot':!s.online?'Offline':s.ready?'Ready':'Not ready'} · Seat {i+1}</small></div>{host&&s.id!==snap.host&&!snap.game&&<button aria-label={'Remove '+s.name+' from seat '+(i+1)} onClick={()=>command({kind:'kick',seat:s.id})}>×</button>}</div>)}</section>}
+   {kind!=='solo'&&(!snap.game?.fragments?.strict||snap.game.done)&&<section className="panel chat"><h2>{partyLobby&&<PartyGlyph kind="chat"/>}Table talk</h2><div className="messages" role="log">{snap.chat.length?snap.chat.map((m,i)=><p key={i}><strong>{m.name}:</strong> {m.text}</p>):<p>No messages yet.</p>}</div><form onSubmit={e=>{e.preventDefault();if(chat.trim()){command({kind:'chat',text:chat});setChat('')}}}><input aria-label="Message" value={chat} onChange={e=>setChat(e.target.value)} maxLength={240} placeholder="Say something"/><button disabled={state.phase!=='online'||!chat.trim()}>Send</button></form></section>}</aside>{partyLobby&&lobbySettings}</div>}
   </section>}
-   {briefing&&snap&&!snap.game&&<TableBriefing key={snap.settings.game+':'+episodePoker+':'+holdAuction} game={snap.settings.game} seats={snap.seats} caption={holdAuction?'The table shares the round clock and results, never your live bid.':episodePoker?'Two duelists. The grid is read together; each pair is locked privately.':explain(snap.settings.game,snap.seats.length)} variant={holdAuction?{label:'Hold & release · episode-inspired',rules:holdAuctionRules,demo:()=> <img style={{display:'block',width:'100%',height:'auto',borderRadius:4}} src={base+'art/time-auction-chamber.svg'} alt="The timekeepers’ cabinet" width={1200} height={660}/>}:episodePoker?{label:'Episode-style duel',rules:episodePokerRules,demo:step=><MemoryDuelLesson step={step}/>} :snap.settings.game==='montage'?{label:montagePractice?'FAN RULES · SOLO PRACTICE':'FAN RULES',rules:montagePractice?montagePracticeRules:tutorials.montage,demo:step=><MontageLesson step={step}/>} :snap.settings.game==='heavy13'?{label:'FAN RULES · 2–7 SEATS',rules:tutorials.heavy13,demo:step=><TableLoadBoundary title="Heavy 13"><Suspense fallback={<span>Preparing example…</span>}><Heavy13Lesson step={step}/></Suspense></TableLoadBoundary>} :undefined} close={()=>setBriefing(null)} start={briefing==='start'&&host?{enabled:canStart,confirm:()=>command({kind:'start'})}:undefined}/>}
+   {briefing&&snap&&!snap.game&&<TableBriefing key={snap.settings.game+':'+episodePoker+':'+holdAuction} game={snap.settings.game} seats={snap.seats} mechanic={briefing==='preview'?<PartyMechanicPreview game={snap.settings.game} variant={holdAuction?'hold':episodePoker?'episode':undefined} motionOff={feedback.prefs.motion==='off'}/>:undefined} caption={holdAuction?'The table shares the round clock and results, never your live bid.':episodePoker?'Two duelists. The grid is read together; each pair is locked privately.':explain(snap.settings.game,snap.seats.length)} variant={holdAuction?{label:'Hold & release · episode-inspired',rules:holdAuctionRules,demo:()=> <img style={{display:'block',width:'100%',height:'auto',borderRadius:4}} src={base+'art/time-auction-chamber.svg'} alt="The timekeepers’ cabinet" width={1200} height={660}/>}:episodePoker?{label:'Episode-style duel',rules:episodePokerRules,demo:step=><MemoryDuelLesson step={step}/>} :snap.settings.game==='montage'?{label:montagePractice?'FAN RULES · SOLO PRACTICE':'FAN RULES',rules:montagePractice?montagePracticeRules:tutorials.montage,demo:step=><MontageLesson step={step}/>} :snap.settings.game==='heavy13'?{label:'FAN RULES · 2–7 SEATS',rules:tutorials.heavy13,demo:step=><TableLoadBoundary title="Heavy 13"><Suspense fallback={<span>Preparing example…</span>}><Heavy13Lesson step={step}/></Suspense></TableLoadBoundary>} :undefined} close={()=>setBriefing(null)} start={briefing==='start'&&host?{enabled:canStart,confirm:()=>command({kind:'start'})}:undefined}/>}
   </main>
   <footer className={'wrap footer'+(isLanding?' landing-footer':'')}><strong>{isLanding&&<BrandSeal/>}{brand}</strong><span>Fan-made and not affiliated with Netflix. No real stakes.</span></footer>
  </>

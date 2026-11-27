@@ -1,0 +1,48 @@
+.game-card-actions button.game-details-trigger,.party-card-links button.game-details-trigger{
+ background:#29221d;color:#f4d8ac;border-color:#987651;min-height:44px;
+}
+.game-details-modal{
+ width:min(44rem,calc(100% - 26px));max-width:none;max-height:calc(100dvh - 26px);margin:auto;padding:0;
+ overflow:auto;overscroll-behavior:contain;border:1px solid #a88458;border-radius:6px;
+ background:#30251f;color:#f6e7d1;box-shadow:0 22px 65px #120906b3;color-scheme:dark;
+}
+.game-details-modal::backdrop{background:#130d0ad6}
+.game-details-head{
+ position:sticky;top:0;z-index:1;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;
+ align-items:center;padding:12px clamp(10px,3vw,19px);background:#3b2b24;border-bottom:1px solid #8b6a47;
+}
+.game-details-head .game-token{width:36px;height:36px}
+.game-details-head .eyebrow{font-size:.64rem;margin:0 0 4px}
+.game-details-modal:modal .game-details-head h2{
+ margin:0;padding:0;border:0;color:#fbecd7;
+ font:normal clamp(1.18rem,4.9vw,2.05rem)/1.08 Georgia,serif;letter-spacing:-.015em;overflow-wrap:anywhere;
+}
+.game-details-head button{min-height:44px;padding:5px 12px;font-size:.81rem}
+.game-rule-preview{
+ margin:0;padding:10px clamp(10px,3vw,19px);background:#2d211b;border-bottom:1px solid #8b6a47;color:#f4d6a7;
+}
+.game-rule-preview figcaption{
+ font-size:.71rem;font-weight:750;letter-spacing:.12em;text-transform:uppercase;margin:0 0 6px;
+}
+.game-rule-illustration{
+ display:grid;place-items:center;min-width:0;padding:4px;border:1px solid #82603f;
+ background:radial-gradient(ellipse at 50% 50%,#503929,#281c17 80%);
+}
+.game-rule-illustration>svg{max-width:min(100%,29rem);max-height:13rem}
+.game-rule-illustration>.party-mancala{display:block;width:min(100%,20rem);height:auto}
+.game-details-context{margin-block-end:10px}
+.game-details-rules{padding:13px clamp(10px,3vw,19px) 19px}
+.game-details-rules h3,.card .game-details-rules h3{font:normal 1.35rem/1.2 Georgia,serif;color:#f7e6cb;margin:0 0 5px}
+.game-details-rules p,.card .game-details-rules p:not(.eyebrow){min-height:0;font-size:.91rem;color:#e2cfb5}
+.game-rule-preview[data-preview-motion=off] *{animation:none!important}
+.party-preview-stone{animation:party-sow .6s ease-out var(--sow-delay,0ms) both}
+.party-preview-meter{transform-box:fill-box;transform-origin:left;animation:party-release 1.15s ease-out both}
+.party-preview-pick{animation:party-pick .65s ease-out var(--pick-delay,0ms) both}
+@keyframes party-sow{0%{opacity:0;transform:translate(var(--sow-x),var(--sow-y))}35%{opacity:1}100%{transform:none}}
+@keyframes party-release{0%{transform:scaleX(0)}100%{transform:scaleX(1)}}
+@keyframes party-pick{0%{opacity:.28}45%{opacity:.5}100%{opacity:1}}
+@media(max-width:420px){
+ .game-details-head .game-token{width:29px;height:29px}
+ .game-details-head button{padding-inline:8px}
+ .game-rule-illustration>svg{max-height:8.5rem}
+}

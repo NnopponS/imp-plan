@@ -1,4 +1,4 @@
-import {useEffect,useRef,useState,type CSSProperties} from 'react'
+import {useEffect,useId,useRef,useState,type CSSProperties} from 'react'
 import {base} from './brand'
 import type {Snapshot} from './room'
 import {wallGoCap,wallGoDecode,wallGoEdges,wallGoEncode,wallGoSide} from './wall-go'
@@ -25,11 +25,13 @@ const keyboardStep=(cell:number,key:string)=>{
  if(key==='ArrowDown'&&cell<n*(n-1))return cell+n
  return cell
 }
-type Stage={turn:number,destination:number,edge:number|null}
+type Stage={turn:number,destination:number}
 export function WallGoBoard({snap,active,name,submit}:{snap:Snapshot;active:boolean;name:(id:string)=>string;submit:(code:number)=>void}){
  const game=snap.game!,v=game.wallGo!,side=v.seats.indexOf(snap.you)
  const [stage,setStage]=useState<Stage|null>(null)
  const [pending,setPending]=useState<number|null>(null)
+ const sent=useRef<number|null>(null)
+ const hint=useId()
  const [focus,setFocus]=useState<number>(()=>v.pawns[side]??v.pawns[0])
  const [clock,setClock]=useState(Date.now),[offset,setOffset]=useState(()=>snap.hostNow-Date.now())
  const cellRefs=useRef<Array<HTMLButtonElement|null>>([])
@@ -41,9 +43,14 @@ export function WallGoBoard({snap,active,name,submit}:{snap:Snapshot;active:bool
  },[game.deadline])
  useEffect(()=>{
   if(pending===null)return
-  const timer=setTimeout(()=>setPending(null),850)
+  if(v.turns!==pending||!active){
+   sent.current=null;setPending(null);return
+  }
+  // If nothing acknowledged the command, choosing a new destination is
+  // required before another attempt; never resend a sealed board edge.
+  const timer=setTimeout(()=>{sent.current=null;setPending(null)},1_600)
   return ()=>clearTimeout(timer)
- },[pending])
+ },[pending,v.turns,active])
  useEffect(()=>{if(!active)setStage(null)},[active])
 
  const ms=Math.max(0,(game.deadline??0)-clock-offset),seconds=Math.ceil(ms/1000)
@@ -71,12 +78,17 @@ export function WallGoBoard({snap,active,name,submit}:{snap:Snapshot;active:bool
   }
  }
  const edges=draft?legal.get(draft.destination)??[]:[]
- const chooseEdge=(edge:number)=>{if(canEdit&&draft&&edges.includes(edge))setStage({...draft,edge})}
- const act=()=>{
-  if(!canEdit||!draft||draft.edge===null||!edges.includes(draft.edge))return
-  cellRefs.current[draft.destination]?.focus({preventScroll:true})
+ const clearDraft=()=>{
+  if(draft)cellRefs.current[draft.destination]?.focus({preventScroll:true})
+  setStage(null)
+ }
+ const placeEdge=(edge:number)=>{
+  if(!canEdit||!draft||sent.current===v.turns||!edges.includes(edge))return
+  if(game.deadline===null||Date.now()+offset>=game.deadline)return
+  sent.current=v.turns
   setPending(v.turns)
-  submit(wallGoEncode(draft.destination,draft.edge))
+  clearDraft()
+  submit(wallGoEncode(draft.destination,edge))
  }
  const status=v.end==='separated'?'Pawns separated. Only regions containing one pawn are scored.':
   v.end==='turn-limit'?'Turn limit reached. The common region is neutral.':
@@ -85,8 +97,8 @@ export function WallGoBoard({snap,active,name,submit}:{snap:Snapshot;active:bool
   ms===0?'Turn time expired. Waiting for the table.':
   v.turn!==snap.you?(side<0?'Watching this leg. ':'')+(v.turn?name(v.turn)+'’s turn.':'Waiting for the next turn.'):
   waiting?'Submitting your move.':
-  draft?draft.edge===null?'Preview at '+coordinate(draft.destination)+'. Choose an adjacent wall.':wallName(draft.destination,draft.edge).label+' selected. Confirm the turn.':
-  'Your turn. Choose a marked cell or stay where you are.'
+  draft?'Destination '+coordinate(draft.destination)+'. Choose a marked edge to place the wall and end your turn. Choose another square or select '+coordinate(draft.destination)+' again to clear.':
+  'Your turn. Choose a marked cell or stay where you are, then place a wall on the board.'
  return <section className="wall-go" aria-label="Wall Go territory board" data-draft={draft!==null||undefined}>
   <div className="wg-meta"><span className="wg-table-label">TERRITORY DUEL <i aria-hidden="true">/</i> 7 × 7</span>
    <span>Turns {v.turns} / {wallGoCap}</span>
@@ -102,7 +114,7 @@ export function WallGoBoard({snap,active,name,submit}:{snap:Snapshot;active:bool
    <div className="wg-address" aria-hidden="true">{'ABCDEFG'.split('').map(letter=><span key={letter}>{letter}</span>)}</div>
    <div className="wg-address wg-ranks" aria-hidden="true">{Array.from({length:n},(_,i)=><span key={i}>{i+1}</span>)}</div>
    <div className="wg-board">
-    <div className="wg-grid" role="group" aria-label="Board cells. Use arrow keys to move focus.">
+    <div className="wg-grid" role="group" aria-label="Board cells. Use arrow keys to move focus." aria-describedby={hint}>
      {cells.map(p=>{
       const pawn=v.pawns.indexOf(p),owner=v.territory.owners[p],available=canEdit&&legal.has(p),preview=draft?.destination===p
       const walls=blocked.get(p)
@@ -117,9 +129,9 @@ export function WallGoBoard({snap,active,name,submit}:{snap:Snapshot;active:bool
         if(e.key.startsWith('Arrow')){
          e.preventDefault()
          cellRefs.current[keyboardStep(p,e.key)]?.focus()
-        }else if(e.key==='Escape')setStage(null)
+        }else if(e.key==='Escape'){e.preventDefault();clearDraft()}
        }}
-       onClick={()=>{if(available)setStage({turn:v.turns,destination:p,edge:null})}}>
+       onClick={()=>{if(available&&sent.current!==v.turns)setStage(preview?null:{turn:v.turns,destination:p})}}>
        {owner!==null&&<span className="wg-owned" aria-hidden="true">{owner===0?'·':'×'}</span>}
        {pawn!==-1&&<img className="wg-pawn" data-faded={!!draft&&side===pawn&&!preview||undefined} src={pawnArt(pawn)} width="32" height="36" alt="" />}
        {preview&&pawn!==side&&<img className="wg-pawn wg-ghost" src={pawnArt(side)} width="32" height="36" alt="" />}
@@ -133,26 +145,21 @@ export function WallGoBoard({snap,active,name,submit}:{snap:Snapshot;active:bool
       return <span key={edge} className="wg-edge" data-wall-go="placed" data-upright={upright||undefined}
        data-last={edge===v.lastMove?.edge||undefined} style={{left:x+'%',top:y+'%',backgroundImage:'url('+wallArt+')'} as CSSProperties}/>
      })}
-     {edges.map(edge=>{
-      const {x,y,upright}=edgePoints(edge),selected=draft?.edge===edge
-      return <span key={edge} className="wg-edge" data-wall-go={selected?'preview':'choice'} data-upright={upright||undefined}
-       style={{left:x+'%',top:y+'%'}} onClick={()=>chooseEdge(edge)}/>
-     })}
     </div>
+    {draft&&canEdit&&<div className="wg-edge-layer" role="group" aria-label={'Place a wall beside '+coordinate(draft.destination)}>
+     {edges.map(edge=>{
+      const {x,y,upright}=edgePoints(edge),{side,label}=wallName(draft.destination,edge)
+      return <button key={edge} className="cell wg-edge-action" type="button" aria-label={label} aria-describedby={hint}
+       data-wall-go="choice" data-side={side.toLowerCase()} data-upright={upright||undefined}
+       style={{left:x+'%',top:y+'%'}} onClick={()=>placeEdge(edge)}
+       onKeyDown={e=>{if(e.key==='Escape'){e.preventDefault();clearDraft()}}}>
+       <span aria-hidden="true">{side[0]}</span>
+      </button>
+     })}
+    </div>}
    </div>
+   <p id={hint} className="sr">Enter on a cell to select it. Tab to a marked edge and press Enter to place a wall and end your turn. Press Escape to clear the destination.</p>
   </div>
-  {!v.end&&<div className="wg-workbench">
-   <div className="wg-worktop"><strong>01 <span>Destination</span></strong><strong>02 <span>Wall</span></strong></div>
-   {draft&&<div className="wg-edge-options" role="group" aria-label={'Available walls beside '+coordinate(draft.destination)}>
-    {edges.map(edge=>{const {side,label}=wallName(draft.destination,edge)
-     return <button type="button" key={edge} aria-label={label} aria-pressed={draft.edge===edge} disabled={!canEdit} onClick={()=>chooseEdge(edge)}>{side}</button>
-    })}
-   </div>}
-   <div className="wg-actions">
-    <button type="button" disabled={!draft||!canEdit} onClick={()=>setStage(null)}>Clear preview</button>
-    <button type="button" className="primary" disabled={!canEdit||draft?.edge==null} onClick={act}>Confirm wall</button>
-   </div>
-  </div>}
   {v.end&&<p className="wg-neutral">{v.territory.neutral} neutral {v.territory.neutral===1?'cell':'cells'} · {v.turns} turns played</p>}
  </section>
 }

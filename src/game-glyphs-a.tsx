@@ -1,0 +1,18 @@
+// Original inscriptions for the fan adaptations; the outer token is shared.
+export const glyphsA={
+ fragments:<><path d="M11 10h11l4 4v4l-5 2-2 6-4-2-4 3zM23 23l5-3 3 5-1 6-7-1z" fill="none" stroke="currentColor"/><path d="M14 15h6m-6 4h3" stroke="var(--token-accent)"/></>,
+ secret:<><path d="m13 11 14 3 1 3-2 2-2 10-14-3 1-4 2-1v-3l-1-2z" fill="var(--token-body)" stroke="currentColor"/><path d="m20 14 11 6-2 4h-2l-3 5v2l-2 2-11-6 2-4h2l3-5v-2z" fill="var(--token-body)" stroke="currentColor"/><path d="M20 22c1-2 5-1 4 1 0 1-3 1-3 2m-1 3h.1" fill="none" stroke="var(--token-accent)"/></>,
+ tower:<><path d="M11 26h18v5H11zm4-8h10v5H15zm3-8h4v5h-4z" fill="currentColor"/><path d="M15.5 28.5h3m3.5 0h3m-7-8h4" stroke="var(--token-body)"/></>,
+ scale:<><path d="M20 9v20m-5 2h10m-15-15 20-4m-17 4-4 10h8zm14-3-4 9h8z" stroke="currentColor" fill="none"/><circle cx="20" cy="14" r="2.2" fill="var(--token-accent)"/></>,
+ grass1:<><path d="M9 10h10v14h-5v7H9zM22 10h9v9h-9zm0 12h9v9H17v-5h5z" fill="currentColor"/><path d="M12 14v6m4-6v5m9-5h3m-4 12h4" stroke="var(--token-body)"/></>,
+ montage:<><path d="M9 12h22v16H9z" fill="none" stroke="currentColor"/><path d="M9 17h4m-4 6h4m14-6h4m-4 6h4" stroke="var(--token-accent)"/><path d="M20 15a3 3 0 1 1 0 6 3 3 0 0 1 0-6m-6 12c0-3 3-5 6-5s6 2 6 5z" fill="currentColor"/></>,
+ blind:<><path d="M8 20c5-7 9-7 12-7s7 0 12 7c-5 7-9 7-12 7s-7 0-12-7z" fill="none" stroke="currentColor"/><path d="M23 17a4 4 0 0 1-5 6" fill="none" stroke="currentColor"/><path d="m10 29 20-18" stroke="var(--token-body)" strokeWidth="4"/><path d="m10 29 20-18" stroke="var(--token-accent)"/></>,
+ morris:<><path d="M10 10h20v20H10zm5 5h10v10H15zM20 10v5m10 5h-5m-5 10v-5M10 20h5" fill="none" stroke="currentColor"/><path d="M10 10h.1M20 30h.1M25 20h.1" stroke="var(--token-accent)" strokeWidth="4.1"/></>,
+ hex:<><path d="m14 9 10 0 6 10-6 10H14L8 19z" fill="none" stroke="currentColor"/><path d="M12 19h7l5 7m-5-7 5-7" fill="none" stroke="var(--token-accent)"/><path d="M12 19h.1M19 19h.1m5 7h.1m0-14h.1" stroke="currentColor" strokeWidth="3.3"/></>,
+ remove:<><path d="m12 12 10-2 3 17-10 2z" fill="none" stroke="currentColor"/><path d="m21 14 9 2-3 15-9-2z" fill="var(--token-body)" stroke="currentColor"/><path d="m22 21 5 1" stroke="var(--token-accent)" strokeWidth="2.5"/></>,
+ auction:<><path d="M12 10h13m-13 20h13m-12-19c0 6 3 6 5.5 9C16 23 13 23 13 29m11-18c0 6-3 6-5.5 9 2.5 3 5.5 3 5.5 9" fill="none" stroke="currentColor"/><circle cx="27" cy="26" r="5.2" fill="var(--token-body)" stroke="var(--token-accent)"/><path d="M27 24v4" stroke="var(--token-accent)"/></>,
+ mancala:<><path d="M11 15h18a4 4 0 0 1 4 4v2a4 4 0 0 1-4 4H11a4 4 0 0 1-4-4v-2a4 4 0 0 1 4-4z" fill="none" stroke="currentColor"/><path d="M11 19v2m18-2v2" stroke="var(--token-accent)" strokeWidth="2.7"/><path d="M16 18h.1m4 0h.1m4 0h.1m-8 4h.1m4 0h.1m4 0h.1" stroke="currentColor" strokeWidth="2.3"/></>,
+ wallGo:<><path d="M9 12h22v18H9zm7 0v18m8-18v18M9 18h22M9 24h22" fill="none" stroke="currentColor" strokeWidth="1.35"/><path d="M12 24h12v-9" fill="none" stroke="var(--token-body)" strokeWidth="4.2"/><path d="M12 24h12v-9" fill="none" stroke="var(--token-accent)" strokeWidth="2.2"/><circle cx="16" cy="18" r="2.1" fill="currentColor"/><circle cx="28" cy="27" r="2" fill="currentColor"/></>,
+ pyramid:<><path d="m20 9 12 21H8zM15 18h10M12 24h16m-8 0v6" fill="none" stroke="currentColor"/><path d="M18 16h4m-2-2v4m-2 3h4" stroke="var(--token-accent)" strokeWidth="1.4"/></>,
+ grass3:<><path d="M9 10h21v21H9zm0 7h21M9 24h21m-14-14v21m7-21v21" fill="none" stroke="currentColor" strokeWidth="1.3"/><path d="M10 11h12v5h-5v13h-7z" fill="var(--token-accent)"/><path d="M23 24h7v7h-7z" fill="currentColor"/></>,
+}

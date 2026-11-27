@@ -1,0 +1,37 @@
+import {expect,test} from '@playwright/test'
+import {startMatch} from './start-match'
+
+for(const [width,height] of [[320,690],[844,390],[1440,900]]){
+ test(`the live brass scene drafts visibly without guessing weights at ${width} × ${height}`,async({page})=>{
+  await page.setViewportSize({width,height})
+  await page.emulateMedia({reducedMotion:'reduce'})
+  await page.goto('./season/1/')
+  await page.getByRole('button',{name:'Practice Scale Game',exact:true}).click()
+  await startMatch(page)
+  const bench=page.getByRole('region',{name:'Scale Game bench'})
+  const apparatus=bench.locator('.scale-stage')
+  await expect(apparatus).toBeInViewport({ratio:.9})
+  await expect(apparatus.locator('.scale-chamber-art')).toHaveCount(1)
+  await expect(apparatus).toHaveAttribute('data-reading','unweighed')
+  const left=bench.getByRole('button',{name:/^Left pan,/})
+  const right=bench.getByRole('button',{name:/^Right pan,/})
+  await expect(left).toHaveAttribute('aria-pressed','true')
+  await expect(bench.getByRole('button',{name:'Weigh minerals'})).toBeInViewport()
+  const add=bench.getByRole('button',{name:'Add Jade to Left pan'})
+  expect((await add.boundingBox())!.height).toBeGreaterThanOrEqual(44)
+  for(let i=0;i<4;i++)await add.press('Enter')
+  await expect(add).toBeDisabled()
+  await expect(apparatus.locator('[data-live-pan="left"] [data-mineral="jade"]')).toHaveCount(4)
+  await bench.getByRole('button',{name:'Remove Jade from Left pan'}).press('Enter')
+  await expect(apparatus.locator('[data-live-pan="left"] [data-mineral="jade"]')).toHaveCount(3)
+  await right.press('Enter')
+  await bench.getByRole('button',{name:'Add Brass to Right pan'}).press('Enter')
+  await expect(apparatus.locator('[data-live-pan="right"] [data-mineral="brass"]')).toHaveCount(1)
+  await expect(apparatus).toHaveAttribute('data-reading','unweighed')
+  expect(await apparatus.locator('.scale-beam').evaluate(node=>new DOMMatrix(getComputedStyle(node).transform).b)).toBe(0)
+  await bench.getByRole('button',{name:'Weigh minerals'}).press('Enter')
+  await expect(bench.getByText('1 / 12 weighings')).toBeVisible()
+  await expect(apparatus).toHaveAttribute('data-reading',/^(lighter|heavier|balanced)$/)
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(width)
+ })
+}

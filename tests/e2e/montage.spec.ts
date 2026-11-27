@@ -32,7 +32,7 @@ test('Montage opens host-paced rounds and accepts synchronized keyboard and mobi
   await guest.goto(baseURL!+'#/join?room='+code)
   await guest.getByLabel('Nickname').fill('Mina')
   await guest.getByRole('button',{name:'Join party'}).click()
-  await guest.getByRole('button',{name:'Preview rules'}).click()
+  await guest.getByRole('button',{name:'Details',exact:true}).click()
   await expect(guest.getByRole('dialog').getByRole('group',{name:'Montage rule example'})).toBeVisible()
   await guest.getByRole('button',{name:'Back to lobby'}).click()
   await guest.getByRole('button',{name:'Ready up'}).click()

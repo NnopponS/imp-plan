@@ -141,9 +141,10 @@
 }
 .illustrated-landing .season-card .season-arrow{align-self:end;padding-bottom:3px}
 
-/* Gallery entries are loose leaves rather than replicas of chapter covers. */
+/* Art-first folios: the cover fills the plate; the caption only identifies and opens it. */
+.featured .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .featured .card,.illustrated-landing .featured .card{
- position:relative;isolation:isolate;
+ display:flex;flex-direction:column;position:relative;isolation:isolate;min-width:0;
  background:none;border:0;border-radius:0;box-shadow:none;overflow:visible;
  --slip-shape:polygon(0 9px,9px 0,calc(100% - 18px) 0,100% 18px,100% calc(100% - 7px),calc(100% - 7px) 100%,7px 100%,0 calc(100% - 7px));
 }
@@ -157,12 +158,26 @@
 }
 .featured .card:is(:hover,:focus-within)::before{background:#be9761}
 .featured .card>.game-art,.illustrated-landing .featured .card>.game-art{
- width:calc(100% - 14px);margin:7px 7px 0;overflow:hidden;
- border:0;clip-path:polygon(0 6px,6px 0,calc(100% - 14px) 0,100% 14px,100% 100%,0 100%);
+ flex:none;width:calc(100% - 6px);margin:3px 3px 0;padding:0;aspect-ratio:var(--gallery-art-ratio,1.58);overflow:hidden;background:#35271d;
+ border:0;clip-path:polygon(0 6px,6px 0,calc(100% - 15px) 0,100% 15px,100% 100%,0 100%);
 }
-.featured .card>div:not(.game-art){padding:11px 13px 10px 15px}
-.featured .card .game-caption{border-bottom:1px solid #9a775158;padding-bottom:4px}
-.featured .card button{min-height:44px}
+.featured .card>.game-card-body{display:flex;flex:1;flex-direction:column;align-items:stretch;min-width:0;gap:7px;padding:8px 10px 8px 12px}
+.game-card-actions{display:flex;align-items:center;gap:5px;margin-block-start:auto}
+.featured .card .game-card-actions>button{min-height:44px;font-size:.82rem;line-height:1.12}
+@media(max-width:760px){
+ .featured .cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;--gallery-art-ratio:1.42}
+}
+@media(max-width:480px){
+ .featured .cards{--gallery-art-ratio:1.27}
+ .featured .card>.game-card-body{padding:6px 7px 8px 8px;gap:6px}
+ .game-card-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+ .featured .card .game-card-actions>button{padding:4px;font-size:.77rem}
+}
+@media(max-width:355px){
+ .featured .cards{grid-template-columns:minmax(0,1fr);--gallery-art-ratio:1.84}
+ .game-card-actions{display:flex}
+ .featured .card .game-card-actions>button{padding-inline:11px}
+}
 .illustrated-landing .library-index,.library-index{padding:0 17px}
 .library-index::after{--folio-ink:#2b221d}
 .library-index summary{min-height:48px}

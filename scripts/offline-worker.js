@@ -27,14 +27,27 @@ self.addEventListener('activate',event=>event.waitUntil((async()=>{
  await self.clients.claim()
 })()))
 
-async function cachedOrNetwork(key,request){
- try{
-  const cache=await caches.open(cacheName)
-  const staticResponse=await cache.match(key)
-  if(staticResponse)return staticResponse
- }catch{/* If browser storage is unavailable, use the network normally. */}
- return fetch(request)
+async function cached(key){
+ try{return await (await caches.open(cacheName)).match(key)}
+ catch{/* If browser storage is unavailable, use the network normally. */}
 }
+async function navigate(target,key){
+ const controller=new AbortController()
+ // Include body delivery in the deadline, not just the response headers.
+ const wait=setTimeout(()=>controller.abort(),1800)
+ let rejectedResponse
+ try{
+  const response=await fetch(target,{mode:'same-origin',cache:'no-store',credentials:'omit',redirect:'error',signal:controller.signal})
+  if(response.status===200&&/^text\/html(?:\s*;|$)/i.test(response.headers.get('Content-Type')??'')){
+   if((await response.clone().arrayBuffer()).byteLength)return response
+  }
+  rejectedResponse=response
+ }catch{/* Offline, aborted, or redirected: use the installed release. */}
+ finally{clearTimeout(wait)}
+ // Never store runtime HTML or mix it into the installed release.
+ return await cached(key)??rejectedResponse??Response.error()
+}
+async function cachedOrNetwork(key,request){return await cached(key)??fetch(request)}
 self.addEventListener('fetch',event=>{
  const request=event.request
  if(request.method!=='GET'||request.headers.has('range'))return
@@ -43,8 +56,10 @@ self.addEventListener('fetch',event=>{
  const target=new URL(request.url)
  if(target.search)return
  target.hash='' // invite codes and in-page anchors still use the same static shell
- const key=request.mode==='navigate'?pages.get(target.href):assets.has(target.href)?target.href:undefined
- if(key)event.respondWith(cachedOrNetwork(key,request))
+ if(request.mode==='navigate'){
+  const key=pages.get(target.href)
+  if(key)event.respondWith(navigate(target.href,key))
+ }else if(assets.has(target.href))event.respondWith(cachedOrNetwork(target.href,request))
 })
 
 let repair
@@ -52,9 +67,10 @@ self.addEventListener('message',event=>{
  const port=event.ports[0]
  if(!port||event.data?.type!=='IMP_PLAN_OFFLINE_CHECK')return
  // The controlling worker may be from a different build during an update. Only
- // report ready if it has the entry this document actually loaded and every asset.
+ // report ready only for the stamped document release and every exact asset.
  event.waitUntil((async()=>{
   try{
+   if(event.data.release!==RELEASE)return port.postMessage('different-release')
    if(!assets.has(event.data.entry))return port.postMessage(false)
    const cache=await caches.open(cacheName)
    const cached=new Set((await cache.keys()).map(request=>request.url))

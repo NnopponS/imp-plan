@@ -48,7 +48,7 @@ main.wrap.playing-arena{width:min(calc(100% - clamp(16px,4vw,48px)),91rem);max-w
  .room[data-game=montage] .montage-frame{min-height:10rem}
  .room[data-game=montage] .montage-frame figure img{width:6.1rem}
 }
-/* Wall Go: board first on phones, tools along the board on a wide table. */
+/* Wall Go: board first on phones, scores alongside it on a wide table. */
 .room[data-game=wallGo] .wall-go{max-width:none;gap:8px}
 .room[data-game=wallGo] .wg-seat{padding:4px 6px;min-height:33px}
 .room[data-game=wallGo] .wg-status{min-height:0;padding:4px 7px}
@@ -56,12 +56,11 @@ main.wrap.playing-arena{width:min(calc(100% - clamp(16px,4vw,48px)),91rem);max-w
 .room[data-game=wallGo] .wg-meta{grid-area:wall-meta}
 .room[data-game=wallGo] .wg-seats{grid-area:wall-seats}
 .room[data-game=wallGo] .wg-status{grid-area:wall-status}
-.room[data-game=wallGo] .wg-workbench,.room[data-game=wallGo] .wg-neutral{grid-area:wall-tools}
+.room[data-game=wallGo] .wg-neutral{grid-area:wall-tools}
 @media (min-width: 980px){
  .room[data-game=wallGo] .wall-go{grid-template-columns:minmax(0,1.42fr) minmax(210px,1fr);grid-template-rows:auto auto auto 1fr;grid-template-areas:"wall-meta wall-meta" "wall-board wall-seats" "wall-board wall-status" "wall-board wall-tools";align-items:start}
  .room[data-game=wallGo] .wg-seats{grid-template-columns:1fr}
  .room[data-game=wallGo] .wg-stage{max-width:min(100%,530px)}
- .room[data-game=wallGo] .wg-workbench{border:1px solid #c7ab82;background:#f5e9d4;padding:9px}
 }
 @media(max-width:979px){
  .room[data-game=wallGo] .wall-go{grid-template-columns:minmax(0,1fr);grid-template-areas:"wall-meta" "wall-seats" "wall-board" "wall-status" "wall-tools"}

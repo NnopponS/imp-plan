@@ -1,8 +1,36 @@
 .arena-preview{position:relative}
 .arena-preview>picture{display:block;width:100%;height:100%}
+.arena-character-overlay{
+ position:absolute;z-index:1;inset-block-end:0;inset-inline-start:2%;block-size:78%;
+ display:block;pointer-events:none;--keeper-exit:-19px;
+ --keeper-motion:1440ms;animation:keeper-gallery-pass var(--keeper-motion) ease-in-out both;
+}
+.arena-character-overlay[data-edge=end]{inset-inline-start:auto;inset-inline-end:2%;--keeper-exit:19px}
+.arena-character-overlay .keeper-character{filter:drop-shadow(2px 0 2px #221111b8)}
+.arena-character-overlay[data-edge=end] .keeper-character{scale:-1 1}
+@keyframes keeper-gallery-pass{
+ 0%{opacity:0;transform:translate(var(--keeper-exit),20px)}
+ 19%,68%{opacity:1;transform:translate(0,0)}
+ 100%{opacity:0;transform:translate(var(--keeper-exit),13px)}
+}
+[data-game-motion=off] .arena-character-overlay{display:none}
+@media(prefers-reduced-motion:reduce){.arena-character-overlay{display:none}}
 .arena-preview-scene{
  position:absolute;inset:0;width:100%;height:100%;overflow:hidden;pointer-events:none;
- color:#f6ddb0;animation:ap-veil var(--ap-run) ease both;
+ color:#f6ddb0;
+}
+.arena-game-preview.arena-preview-scene{
+ display:block;position:static;inline-size:100%;block-size:auto;aspect-ratio:172/72;
+ animation:ap-present var(--ap-run,2200ms) ease-out both;
+}
+@keyframes ap-present{0%{opacity:.52}9%,100%{opacity:1}}
+.arena-game-preview[data-preview-static],.arena-game-preview[data-preview-static] *,
+[data-game-motion=off] .arena-game-preview,[data-game-motion=off] .arena-game-preview *{animation:none}
+.arena-game-preview[data-preview-static] :is(.ap-shutter,.ap-portrait-leave),
+[data-game-motion=off] .arena-game-preview :is(.ap-shutter,.ap-portrait-leave){display:none}
+@media(prefers-reduced-motion:reduce){
+ .arena-game-preview,.arena-game-preview *{animation:none}
+ .arena-game-preview :is(.ap-shutter,.ap-portrait-leave){display:none}
 }
 .ap-plate{fill:#231917ed;stroke:#e7c18a;stroke-width:.75}
 .ap-ruling{fill:none;stroke:#ac885a;stroke-width:.68;opacity:.86}
@@ -69,7 +97,6 @@
 .ap-portrait-enter{animation:ap-portrait-in 400ms ease-out var(--ap-wait) both}
 .ap-stack-pickup{animation:ap-discard 490ms ease-in-out var(--ap-wait) both}
 .ap-heavy-drop{animation:ap-heavy-drop 1330ms ease-out var(--ap-wait) both}
-@keyframes ap-veil{0%{opacity:0}12%,81%{opacity:1}100%{opacity:0}}
 @keyframes ap-draw{from{stroke-dashoffset:185}to{stroke-dashoffset:0}}
 @keyframes ap-pop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
 @keyframes ap-drop{0%{opacity:0;transform:translateY(-19px) scale(1.09)}35%{opacity:1}80%{transform:translateY(1px) scale(.96)}100%{transform:none}}
@@ -92,8 +119,7 @@
 @keyframes ap-portrait-away{from{opacity:1;transform:none}to{opacity:0;transform:translateX(11px) scaleX(.7)}}
 @keyframes ap-portrait-in{from{opacity:0;transform:translateX(-11px) scaleX(.7)}to{opacity:1;transform:none}}
 @keyframes ap-heavy-drop{0%{opacity:0;transform:translateY(-15px)}12%,68%{opacity:1;transform:none}100%{opacity:1;transform:translateY(24px)}}
-[data-game-motion=off] .arena-preview-scene{display:none}
-@media(prefers-reduced-motion:reduce){.arena-preview-scene{display:none}}
+
 .ap-cover-turn .ap-stone ellipse:not(.ap-shadow){
  animation:ap-hidden-side 430ms linear var(--ap-turn-at) both;
 }

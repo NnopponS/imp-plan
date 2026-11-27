@@ -84,3 +84,41 @@ for (const first of ['host','guest']) it('whole opponent room snapshot invariant
  expect(next.game?.memoryDuel).toMatchObject({phase:'study',dealNumber:2,result:null,community:[],ownPicks:null,deadline:now+20_000})
  now+=80_000;expect(h.snapshot('again')?.game?.memoryDuel?.result).toMatchObject({kind:'void',winner:null,hands:[null,null]});expect(h.tick()).toBe(true);expect(h.snapshot('again')?.seriesDone).toBe(true)
 })
+
+for(const seat of ['host','guest'])it('commits the public select phase before sealing the first pair at the deadline: '+seat,()=>{
+ let now=1000;const h=new Host('Ari',()=>now)
+ h.join('guest','Bee')
+ expect(config(h)).toBeNull()
+ expect(h.command('guest','ready',h.rev,{kind:'ready'})).toBeNull()
+ expect(h.command('host','start',h.rev,{kind:'start'})).toBeNull()
+ const other=seat==='host'?'guest':'host',pair=memoryDuelPack([0,1])!
+ now+=19_999
+ expect(send(h,seat,'early',pair)).toBe('Wait for the selection phase.')
+ now++
+ const before=h.snapshot(other)!
+ expect(h.game?.memoryDuel?.phase).toBe('study')
+ expect(before.game?.memoryDuel).toMatchObject({phase:'select',ownPicks:null,cards:Array(16).fill(null)})
+ expect(send(h,seat,'at-deadline',pair)).toBeNull()
+ expect(h.game?.memoryDuel?.phase).toBe('select')
+ expect(h.rev).toBe(before.rev+1)
+ expect(h.snapshot(other)).toEqual({...before,rev:before.rev+1})
+ expect(h.snapshot(seat)?.game?.memoryDuel?.ownPicks).toEqual([0,1])
+ expect(h.command(seat,'at-deadline',before.rev,{kind:'memory-lock',deal:1,action:pair})).toBeNull()
+ expect(h.rev).toBe(before.rev+1)
+ expect(h.tick()).toBe(false)
+})
+
+it('publishes an expired duel even when the first lock is rejected',()=>{
+ let now=0;const h=new Host('Ari',()=>now)
+ h.join('guest','Bee')
+ expect(config(h)).toBeNull()
+ expect(h.command('guest','ready',h.rev,{kind:'ready'})).toBeNull()
+ expect(h.command('host','start',h.rev,{kind:'start'})).toBeNull()
+ now=80_000
+ const rev=h.rev
+ expect(send(h,'guest','late',memoryDuelPack([0,1])!)).toBe('Wait for the selection phase.')
+ expect(h.rev).toBe(rev+1)
+ expect(h.game?.memoryDuel?.result?.kind).toBe('void')
+ expect(h.snapshot('host')?.game?.memoryDuel).toMatchObject({phase:'finished',ownPicks:null,result:{kind:'void',hands:[null,null]}})
+ expect(h.tick()).toBe(false)
+})

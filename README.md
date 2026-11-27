@@ -18,11 +18,13 @@ Imp Plan is a free, unofficial fan project with original artwork. Open a private
 | I want to… | What to do |
 | --- | --- |
 | Try a game alone | Open a season, pick **Practice** under a game, then **Start match**. Games with bots offer **Easy**, **Standard**, and **Hard**. |
-| Host a private party | Pick an online nickname, choose **Create party**, and share the invite link or code. Select a game and settings, then start when the required seats are ready. |
+| Host a private party | Pick an online nickname, choose **Create party**, and share the invite link or code. Use the illustrated game picker to choose a table. Guests see the same selected-game preview. Start when the required seats are ready. |
 | Join friends | Open the invite link or enter the code, choose a nickname, and select **Join party**. Use **Preview rules** if you want an explanation before readying up. |
 | Play without internet | Open the site online once and wait for **Ready for offline practice**. Reopen it later in the same browser. If its storage is cleared or evicted, repeat the first online visit. |
 
 A one-move Blind Gomoku warm-up on the homepage is playable immediately. Where supported, a rules briefing uses the actual roster and explains the opening move before the clock starts. Audio and motion options are in the in-game settings menu.
+
+Game cards show an original insignia and their setting in the show, such as a Main Match, Prison Match, or Secret Chamber. A badge identifies the setting, not broadcast-rule accuracy. A short character animation plays as cards enter view; choose **Details** to see the game mechanic and rules. In Wall Go, select a destination and then a marked board edge to take the turn; there is no separate Confirm wall button.
 
 ## Playable catalog
 

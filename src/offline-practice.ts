@@ -1,6 +1,6 @@
 import {useEffect,useState} from 'react'
 
-type Availability='saving'|'ready'|'unavailable'
+type Availability='saving'|'ready'|'updating'|'unavailable'
 
 export function useOfflinePractice(){
  const [availability,setAvailability]=useState<Availability>('saving')
@@ -10,6 +10,7 @@ export function useOfflinePractice(){
   const worker=navigator.serviceWorker
   const script=new URL(import.meta.env.BASE_URL+'sw.js',location.href).href
   const entry=document.querySelector<HTMLScriptElement>('script[type="module"][src]')?.src
+  const release=document.querySelector<HTMLMetaElement>('meta[name="imp-plan-release"]')?.content
   let stopped=false
   let port:MessagePort|undefined
   let deadline:number|undefined
@@ -22,10 +23,10 @@ export function useOfflinePractice(){
    port=channel.port1
    channel.port1.onmessage=event=>{
     window.clearTimeout(deadline)
-    show(event.data===true?'ready':'unavailable')
+    show(event.data===true?'ready':event.data==='different-release'?'updating':'unavailable')
     channel.port1.close()
    }
-   controller.postMessage({type:'IMP_PLAN_OFFLINE_CHECK',entry,online:navigator.onLine},[channel.port2])
+   controller.postMessage({type:'IMP_PLAN_OFFLINE_CHECK',entry,release,online:navigator.onLine},[channel.port2])
   }
   const prepare=async()=>{
    window.clearTimeout(deadline)

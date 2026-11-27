@@ -193,9 +193,14 @@ export class Host{
    return next?null:c.action==='hold'?'Could not enter this round. Hold during the countdown with at least five seconds left.':'That hold is no longer active.'
   }
   if(c.kind==='memory-lock'){
-   if(this.game?.memoryDuel?.dealNumber!==c.deal)return 'That deal has ended.'
-   if(this.game.memoryDuel.phase!=='select')return 'Wait for the selection phase.'
-   const next=move(this.game,s.id,c.action,this.clock(),c.deal)
+   const current=this.game
+   if(current?.memoryDuel?.dealNumber!==c.deal)return 'That deal has ended.'
+   const now=this.clock(),clocked=timeout(current,now)
+   // A snapshot may hide the study faces at the exact deadline, before the
+   // periodic ticker runs. Commit that public clock change before locking.
+   if(clocked!==current){this.setGame(clocked);this.rev++}
+   if(clocked.memoryDuel?.phase!=='select')return 'Wait for the selection phase.'
+   const next=move(clocked,s.id,c.action,now,c.deal)
    if(!next)return 'That pair cannot be locked.'
    this.setGame(next);return null
   }

@@ -1,12 +1,42 @@
 import {useEffect,useRef,useState,type CSSProperties,type ReactNode} from 'react'
-import type {Game} from './engine'
+import {titles,type Game} from './engine'
 import {base} from './brand'
+import {KeeperCharacter,type CharacterCue} from './keeper-character'
 import './arena-preview.css'
 
 type EntryHandler=(entry:IntersectionObserverEntry)=>void
 const watched=new Map<Element,EntryHandler>()
 let observer:IntersectionObserver|undefined
 const seen=new Set<Game>()
+type GalleryTurn=()=>boolean
+const waiting=new Set<GalleryTurn>()
+let activeTurn:GalleryTurn|undefined
+let scheduled=false
+
+function scheduleTurn(){
+ if(activeTurn||scheduled||!waiting.size)return
+ scheduled=true
+ // Let the whole intersection batch report before we offer the next turn.
+ queueMicrotask(()=>{
+  scheduled=false
+  if(activeTurn)return
+  for(const take of waiting){
+   waiting.delete(take)
+   if(!take())continue
+   activeTurn=take
+   break
+  }
+ })
+}
+
+const poses={
+ blind:'glance',morris:'nod',auction:'signal',point:'nod',remove:'glance',knight:'signal',
+ hex:'glance',rectangles:'nod',cubes:'signal',exile:'glance',mancala:'nod',bagh:'signal',
+ secret:'glance',grass1:'nod',grass3:'signal',divine:'nod',equations:'signal',codeLock:'glance',
+ pyramid:'nod',fragments:'glance',spot:'signal',scale:'nod',fence:'glance',tower:'signal',
+ piece:'nod',memoryPoker:'glance',wallGo:'nod',montage:'glance',heavy13:'signal',
+} satisfies Record<Game,CharacterCue>
+const eastCards=new Set<Game>(['morris','point','knight','cubes','mancala','grass3','equations','pyramid','scale','tower','wallGo','heavy13'])
 
 function watch(element:Element,handler:EntryHandler){
  if(!observer)observer=new IntersectionObserver(entries=>{
@@ -31,54 +61,82 @@ export function ArenaPreview({game,posterClass,motionOff=false,children}:{game:G
   const motion=window.matchMedia?.('(prefers-reduced-motion: reduce)')
   const poster=target.querySelector('img[data-arena-art]')
   let currentRatio=0
-  let running=false
+  let ended=false
   let release:(()=>void)|undefined
+  let fallback:number|undefined
+  function eligible(){
+   return !ended&&!seen.has(game)&&currentRatio>=.5&&!motion?.matches&&!document.hidden&&
+    document.documentElement.dataset.gameMotion!=='off'&&
+    (!(poster instanceof HTMLImageElement)||(poster.complete&&poster.naturalWidth>0))
+  }
+  function takeTurn(){
+   if(!eligible())return false
+   seen.add(game)
+   setPlaying(true)
+   // Normally released by animationend. Don't hold the queue if styles suppress it.
+   fallback=window.setTimeout(finish,1900)
+   return true
+  }
   function stopWatching(){
+   ended=true
+   waiting.delete(takeTurn)
    release?.()
    release=undefined
-   poster?.removeEventListener('load',start)
+   window.clearTimeout(fallback)
+   poster?.removeEventListener('load',changed)
    document.removeEventListener('visibilitychange',changed)
    motion?.removeEventListener?.('change',changed)
+   if(activeTurn===takeTurn)activeTurn=undefined
+   scheduleTurn()
   }
   function finish(){
-   if(!running)return
-   running=false
-   stopWatching()
+   if(activeTurn!==takeTurn)return
    setPlaying(false)
-  }
-  function start(){
-   if(running||seen.has(game)||currentRatio<.5||motion?.matches||document.hidden||document.documentElement.dataset.gameMotion==='off')return
-   if(poster instanceof HTMLImageElement&&(!poster.complete||!poster.naturalWidth))return
-   seen.add(game)
-   running=true
-   setPlaying(true)
+   stopWatching()
   }
   function changed(){
-   if(document.hidden||motion?.matches)finish()
-   else start()
+   if(activeTurn===takeTurn){
+    if(currentRatio<.5||document.hidden||motion?.matches||document.documentElement.dataset.gameMotion==='off')finish()
+    return
+   }
+   if(eligible())waiting.add(takeTurn)
+   else waiting.delete(takeTurn)
+   scheduleTurn()
   }
   stop.current=finish
   release=watch(target,entry=>{
    currentRatio=entry.isIntersecting?entry.intersectionRatio:0
-   if(!currentRatio)finish()
-   else start()
+   changed()
   })
-  poster?.addEventListener('load',start)
+  poster?.addEventListener('load',changed)
   document.addEventListener('visibilitychange',changed)
   motion?.addEventListener?.('change',changed)
   return stopWatching
  },[game,motionOff])
- const scene=previewScenes[game]
  return <div ref={node} className={'game-art arena-preview '+posterClass} data-preview-game={game} data-preview-state={playing?'playing':seen.has(game)?'played':'idle'}>
   {children}
-  {playing&&!motionOff&&<svg className="arena-preview-scene" viewBox="0 0 200 108" aria-hidden="true" focusable="false" style={{'--ap-run':scene.ms+'ms'} as CSSProperties} onAnimationEnd={event=>{
+  {playing&&!motionOff&&<span className="arena-character-overlay" data-edge={eastCards.has(game)?'end':'start'} aria-hidden="true" onAnimationEnd={event=>{
    if(event.target===event.currentTarget)stop.current()
-  }}>
-   <path className="ap-plate" d="M14 39 24 30h151l11 9v51l-10 10H24L14 90Z"/>
-   <path className="ap-ruling" d="M20 42v-1l8-7h144l8 7v1M20 87v1l8 8h144l8-8v-1M24 65h5m142 0h5"/>
-   {scene.draw()}
-  </svg>}
+  }}><KeeperCharacter cue={poses[game]}/></span>}
  </div>
+}
+
+/** Render only inside the player's deliberate Details/Preview action. */
+export function ArenaGamePreview({game,replayKey,motionOff=false}:{game:Game;replayKey?:string|number;motionOff?:boolean}){
+ const scene=previewScenes[game]
+ return <svg key={replayKey} className="arena-preview-scene arena-game-preview" viewBox="14 29 172 72" role="img"
+  data-game-preview={game} style={{'--ap-run':scene.ms+'ms'} as CSSProperties} data-preview-static={motionOff||undefined} aria-label={titles[game]+' gameplay preview'} focusable="false">
+  <path className="ap-plate" d="M14 39 24 30h151l11 9v51l-10 10H24L14 90Z"/>
+  <path className="ap-ruling" d="M20 42v-1l8-7h144l8 7v1M20 87v1l8 8h144l8-8v-1M24 65h5m142 0h5"/>
+  {scene.draw()}
+ </svg>
+}
+
+// The lobby needs a persistent, motion-free example rather than the transient gallery overlay.
+export function ArenaStill({game}:{game:Game}){
+ return <svg className="arena-preview-scene arena-preview-still" viewBox="33 35 134 60" role="img" aria-label={titles[game]+' example'}>
+  {previewScenes[game].draw()}
+ </svg>
 }
 
 const time=(ms:number)=>({'--ap-wait':ms+'ms'} as CSSProperties)

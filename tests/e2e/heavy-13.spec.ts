@@ -17,7 +17,7 @@ test('private Heavy 13 keeps picks hidden, reverses a pass, counts old zero cube
   await guest.goto(baseURL!+'#/join?room='+code)
   await guest.getByLabel('Nickname').fill('Mina')
   await guest.getByRole('button',{name:'Join party'}).click()
-  await guest.getByRole('button',{name:'Preview rules'}).click()
+  await guest.getByRole('button',{name:'Details',exact:true}).click()
   await expect(guest.getByRole('dialog').getByRole('img',{name:'Heavy 13 scoring example'})).toBeVisible()
   await guest.getByRole('button',{name:'Back to lobby'}).click()
   await guest.getByRole('button',{name:'Ready up'}).click()

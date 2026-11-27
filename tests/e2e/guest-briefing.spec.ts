@@ -11,7 +11,7 @@ test('invited guests can preview rules before readying and rejoin the match view
   await guest.goto(baseURL!+'#/join?room='+code)
   await guest.getByLabel('Nickname').fill('Guest')
   await guest.getByRole('button',{name:'Join party'}).click()
-  const preview=guest.getByRole('button',{name:'Preview rules',exact:true})
+  const preview=guest.getByRole('button',{name:'Details',exact:true})
   await expect(preview).toBeVisible({timeout:3000})
   await preview.click()
   const dialog=guest.getByRole('dialog',{name:'Blind Gomoku'})

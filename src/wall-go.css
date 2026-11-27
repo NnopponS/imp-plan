@@ -1,5 +1,5 @@
 .wall-go{--wg-gold:#f2cf81;--wg-red:#ffb6b5;--wg-line:#695136;display:grid;gap:12px;min-width:0;max-width:35rem;margin:0 auto 14px}
-.wg-meta,.wg-worktop,.wg-actions{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.wg-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .wg-meta{font-size:.73rem;color:#584731;font-variant-numeric:tabular-nums;font-weight:730}
 .wg-table-label{letter-spacing:.1em}.wg-table-label i{font-style:normal;color:#886241}
 .wg-clock{border:1px solid #a6855f;border-radius:5px;background:#f2e2c5;color:#442c24;padding:4px 8px;min-width:4em;text-align:center}
@@ -37,15 +37,29 @@
 .wg-edge[data-upright]{transform:translate(-50%,-50%) rotate(90deg)}
 .wg-edge[data-wall-go="placed"]{background-size:100% 100%;background-position:center;background-repeat:no-repeat;filter:drop-shadow(0 2px 2px #160c08)}
 .wg-edge[data-last]{filter:drop-shadow(0 0 3px #efc171)}
-.wg-edge[data-wall-go="choice"],.wg-edge[data-wall-go="preview"]{height:7%;border:2px dashed #fff0ba;background:#644427;cursor:pointer;pointer-events:auto}
-.wg-edge[data-wall-go="preview"],.wg-edge[data-wall-go="choice"]:hover{border-style:solid;background:#f2cf81}
-.wg-workbench{min-width:0;display:grid;gap:7px}.wg-worktop{justify-content:flex-start;font-size:.73rem;color:#653f32;gap:6px 16px}
-.wg-worktop span{color:#39291c;font-size:.84rem;margin-left:3px}
-.wg-actions{justify-content:flex-end}.wg-actions button,.wg-edge-options button{min-height:44px;padding:7px 9px}
-.wg-edge-options{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
-.wg-edge-options button{min-width:0;font-size:.75rem}
-.room .match .wg-edge-options button[aria-pressed=true]{background:#5d392b;color:#fff3d6}
+/* The visible rails are actual buttons. Push their touch areas a few pixels
+   out from the chosen square so neither its center nor a sibling rail is hidden. */
+.wg-edge-layer{position:absolute;inset:0;pointer-events:none;z-index:3}
+.room .match .wg-board .wg-edge-action,
+.room .match .wg-board .wg-edge-action:not(:disabled):hover{
+ position:absolute;display:grid;place-items:center;pointer-events:auto;touch-action:manipulation;
+ transform:translate(-50%,-50%);width:clamp(24px,10.7%,48px);height:24px;min-height:0;min-width:0;
+ padding:0;border:0;border-radius:5px;background:transparent;color:#fff0c2;cursor:pointer
+}
+.room .match .wg-board .wg-edge-action[data-upright]{width:24px;height:clamp(24px,10.7%,48px)}
+.wg-edge-action[data-side=north]{margin-top:-3px;--wg-mark-shift:0 1px}
+.wg-edge-action[data-side=south]{margin-top:3px;--wg-mark-shift:0 -1px}
+.wg-edge-action[data-side=west]{margin-left:-3px;--wg-mark-shift:1px 0}
+.wg-edge-action[data-side=east]{margin-left:3px;--wg-mark-shift:-1px 0}
+.wg-edge-action span{
+ display:grid;place-items:center;width:100%;height:14px;translate:var(--wg-mark-shift);
+ color:#fff0c2;background:#604128;border:1.5px dashed #ffdfa1;border-radius:4px;
+ font:800 .65rem/1 system-ui,sans-serif;pointer-events:none
+}
+.wg-edge-action[data-upright] span{width:14px;height:100%}
+.wg-edge-action:hover span,.wg-edge-action:focus-visible span{background:#f2cf81;color:#332414;border-style:solid}
+.wg-edge-action:focus-visible{outline:2px solid #fff4cb;outline-offset:1px}
 .wg-neutral{color:#5b452e;font-size:.86rem;margin:0}
 .wg-lesson{display:block;width:min(100%,26rem);height:auto}
 @media(min-width:540px){.wg-seat{grid-template-columns:31px minmax(0,1fr) auto}.wg-seat img{grid-row:1}.wg-seat img{width:27px;height:31px}}
-@media(max-width:380px){.wg-meta{font-size:.68rem}.wg-stage{grid-template-columns:.9rem minmax(0,1fr);padding-right:6px}.wg-address{font-size:.56rem}.wg-edge-options button{padding-inline:4px}}
+@media(max-width:380px){.wg-meta{font-size:.68rem}.wg-stage{grid-template-columns:.9rem minmax(0,1fr);padding-right:6px}.wg-address{font-size:.56rem}}

@@ -14,7 +14,6 @@
 .season-gallery .section-head {align-items:baseline;margin-bottom:0;}
 .season-gallery .section-head h2 {margin:0;font-size:clamp(1.25rem,2.8vw,2rem);}
 .season-gallery .section-head p {margin:0;color:var(--sub);}
-.season-gallery .card>.game-art {aspect-ratio:16 / 10;}
 .season-room {display:block;padding-block:32px 0;}
 .season-room .entrance:target,.season-room .entrance:focus-within {border-color:#9f794d;}
 
@@ -54,8 +53,6 @@
 @media(max-width:355px){
  .season-heading {padding-block:12px;gap:8px;}
  .season-heading .front-cta {min-height:40px;padding:6px 10px;font-size:.8rem;}
- .season-gallery .card>.game-art {aspect-ratio:2.1;}
- .season-gallery .card p:not(.game-caption) {font-size:.875rem;line-height:1.35;margin-bottom:8px;}
  .season-gallery .library-tools {padding-block:3px;margin-bottom:8px;}
  .library-tools a {font-size:.78rem;}
  .catalog-practice {font-size:.8rem;padding-inline:8px;}

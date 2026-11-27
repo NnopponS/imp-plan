@@ -6,9 +6,16 @@ const testSocket=/^ws:\/\/127\.0\.0\.1:\d+\/\?id=/
 const native=process.env.REAL_WEBRTC==='1'
 const table=(p:Page)=>p.getByRole('region',{name:'Episode-style Memory Poker duel'})
 const cards=(p:Page)=>table(p).getByRole('group',{name:'Duel card layout'}).getByRole('button')
-const lock=async(p:Page,pair:number[])=>{
- for(const i of pair)await cards(p).nth(i).click()
- await table(p).getByRole('button',{name:'Lock two cards'}).click()
+const lock=async(p:Page,pair:number[],touch=false)=>{
+ for(const i of pair){
+  const card=cards(p).nth(i)
+  if(touch)await card.tap();else await card.press('Enter')
+  await expect(card).toHaveAttribute('aria-pressed','true')
+ }
+ const confirm=table(p).getByRole('button',{name:'Lock two cards'})
+ await expect(confirm).toBeEnabled()
+ if(touch)await confirm.tap()
+ else await confirm.press('Enter')
 }
 const openParty=async(page:Page,url:string)=>{
  await page.goto(url)
@@ -65,23 +72,25 @@ test('actual copied invite opens a clean guest, finishes a Memory duel, and rest
   const board=await cards(host).evaluateAll(els=>els.map(el=>Number(el.getAttribute('data-card'))))
   expect(new Set(board).size).toBe(16)
   await host.clock.fastForward(20_100);await host.clock.runFor(240)
-  await expect(table(guest).getByRole('heading',{name:'Choose two cards'})).toBeVisible()
-  const shared=await table(host).getByRole('region',{name:'Shared cards'}).getByRole('img').evaluateAll(els=>els.map(el=>Number(el.getAttribute('data-card'))))
+  for(const p of [host,guest])await expect(table(p).getByRole('heading',{name:'Choose two cards'})).toBeVisible()
+  const sharedCards=table(host).getByRole('region',{name:'Shared cards'}).getByRole('img')
+  await expect(sharedCards).toHaveCount(3)
+  const shared=await sharedCards.evaluateAll(els=>els.map(el=>Number(el.getAttribute('data-card'))))
   // Pick distinct strengths so this one-deal transport test cannot randomly tie.
   const choices=board.flatMap((a,i)=>board.slice(i+1).map((b,j)=>({pair:[i,i+j+1],score:rankPokerHand([...shared,a,b])!.strength})))
   choices.sort((a,b)=>a.score.reduce((d,x,i)=>d||x-b.score[i],0))
   const low=choices[0],high=choices.at(-1)!
   expect(low.score).not.toEqual(high.score)
-  await lock(guest,low.pair)
+  await lock(guest,low.pair,true)
   await expect(table(guest).getByRole('status')).toHaveText('Pair locked. Waiting for the reveal.')
-  await guest.reload()
+  await guest.reload({waitUntil:'domcontentloaded'})
   await expect(table(guest).getByRole('status')).toHaveText('Pair locked. Waiting for the reveal.')
   await lock(host,high.pair)
   for(const p of [host,guest]){
    await expect(p.getByRole('heading',{name:'Ari wins',exact:true})).toBeVisible()
    await expect(table(p).getByRole('region',{name:'Revealed hands'}).getByRole('img')).toHaveCount(4)
   }
-  await guest.reload()
+  await guest.reload({waitUntil:'domcontentloaded'})
   await expect(guest.getByRole('heading',{name:'Ari wins',exact:true})).toBeVisible()
   await expect(table(guest).getByRole('region',{name:'Revealed hands'}).getByRole('img')).toHaveCount(4)
  }finally{await phone.close();await context.close()}

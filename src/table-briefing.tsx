@@ -8,7 +8,7 @@ import {hasIllustratedGame,IllustratedGame} from './art'
 import {EngravedRule,hasEngravedRule} from './engraved-rule'
 
 const seatText=(n:number,s:string)=>n+' '+s+(n===1?'':'s')
-export function TableBriefing({game,seats,caption,close,start,variant}:{game:Game;seats:Seat[];caption:string;close:()=>void;start?:{enabled:boolean;confirm:()=>void};variant?:{label:string;rules:string;demo:(step:number)=>ReactNode}}){
+export function TableBriefing({game,seats,caption,close,start,variant,mechanic}:{game:Game;seats:Seat[];caption:string;mechanic?:ReactNode;close:()=>void;start?:{enabled:boolean;confirm:()=>void};variant?:{label:string;rules:string;demo:(step:number)=>ReactNode}}){
  const dialog=useRef<HTMLDialogElement>(null)
  const [step,setStep]=useState(0)
  const instruction=variant?.rules??tutorials[game]
@@ -25,6 +25,7 @@ export function TableBriefing({game,seats,caption,close,start,variant}:{game:Gam
    <div><p className="eyebrow">{start?'TABLE BRIEFING':'RULES PREVIEW'} · {variant?.label??'FAN RULES'}</p><h2 id="brief-game">{titles[game]}</h2></div>
    <button type="button" className="brief-back" data-chamber-next={!start||undefined} onClick={close}>{start?'Back to setup':'Back to lobby'}</button>
   </div>
+  {mechanic}
   {game==='blind'&&<ChamberEntrance/>}
   <div className="brief-body">
    <div className="brief-stage">
