@@ -1,3 +1,4 @@
+import {TableToolMark} from './engraved-tables'
 import {useEffect,useRef,useState,type CSSProperties} from 'react'
 import {packPiece,pieceCanPlace,pieceClue,pieceFootprint,pieceOccupancy,piecePass,pieceRemove,pieceRotation,pieceSide,pieceTime,type PieceCell} from './piece'
 import type {Snapshot} from './room'
@@ -90,9 +91,9 @@ export function PieceBoard({snap,name,active,submit}:{snap:Snapshot;name:(id:str
   {!game.done&&<><p className="piece-instructions" id="piece-instructions">Select a piece, then choose the top-left of its bounding box on the grid. Rotate to change its shape. Use arrow keys to explore the grid and Enter to place.</p>
   {hint&&<p className="piece-hint">{hint.kind==='place'?`Clue: try piece ${hint.piece+1} at ${coordinate(hint.fit.anchor).toLowerCase()}, turned ${hint.fit.rotation*90}° clockwise from the tray.`:`Clue: consider returning piece ${hint.piece+1} to follow one known solution.`}</p>}
   <div className="actions piece-actions">
-   <button type="button" disabled={!enabled||selected===null} onClick={()=>{setRotation(r=>(r+1)%4);setNotice('')}}>Rotate clockwise</button>
-   <button type="button" disabled={!enabled||selected===null||!previous} onClick={()=>act(pieceRemove(selected!))}>Return piece</button>
-   <button type="button" disabled={!enabled||!!hint} onClick={()=>act(pieceClue)}>Use clue (−20 s)</button>
+   <button type="button" disabled={!enabled||selected===null} onClick={()=>{setRotation(r=>(r+1)%4);setNotice('')}}><TableToolMark mark="rotate"/>Rotate clockwise</button>
+   <button type="button" disabled={!enabled||selected===null||!previous} onClick={()=>act(pieceRemove(selected!))}><TableToolMark mark="return"/>Return piece</button>
+   <button type="button" disabled={!enabled||!!hint} onClick={()=>act(pieceClue)}><TableToolMark mark="clue"/>Use clue (−20 s)</button>
    <button type="button" disabled={!enabled} onClick={()=>act(piecePass)}>Pass turn</button>
   </div></>}
  </section>

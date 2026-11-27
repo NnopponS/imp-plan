@@ -1,3 +1,4 @@
+import {TableToolMark} from './engraved-tables'
 import {useEffect,useId,useState,type CSSProperties} from 'react'
 import type {Snapshot} from './room'
 import {base} from './brand'
@@ -172,7 +173,7 @@ export function ScaleBoard({snap,active,name,submit}:{snap:Snapshot;active:boole
      {selected.some(Boolean)&&<div className="scale-lift" role="group" aria-label={`Lift from ${caption(pan)} pan`}>{selected.map((n,index)=>n?<button key={index} type="button" aria-label={`Remove ${scaleNames[index]} from ${caption(pan)} pan`} disabled={!editable} onClick={()=>change(index,-1)}>
       <span aria-hidden="true">−</span> {scaleNames[index]} ×{n}
      </button>:null)}</div>}
-     <div className="scale-weigh"><button type="button" className="primary" disabled={!canWeigh} onClick={()=>{submit(packWeigh(left,right));setLeft(empty());setRight(empty())}}>Weigh minerals</button>
+     <div className="scale-weigh"><button type="button" className="primary" disabled={!canWeigh} onClick={()=>{submit(packWeigh(left,right));setLeft(empty());setRight(empty())}}><TableToolMark mark="weigh"/>Weigh minerals</button>
       <small>1–6 per pan · max 4 of a kind · different loads</small></div>
     </>}
    </div>

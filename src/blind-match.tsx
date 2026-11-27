@@ -3,6 +3,7 @@ import {useRef,useState,type ReactNode} from 'react'
 import {blindCoverAction,tutorials,type BlindCover,type GameView} from './engine'
 import {ChamberScene,CoverTray,InlaidStone,coverNames} from './blind-chamber'
 import './blind-match.css'
+import {TableMakersMark,tableMaterial} from './engraved-tables'
 
 const side=15
 const coordinates=Array.from({length:side},(_,i)=>i+1)
@@ -87,7 +88,7 @@ export function BlindMatchStage({game:g,you,name,active,practice,leg,legs,submit
   if(legal.has(i))submit(cover===null?i:blindCoverAction(i,cover))
  }
  const resultDetail=g.winner&&marks.size?'Five in a row':g.winner?'Table complete':'No winning line'
- return <section className="panel match engraved-match" aria-label="Engraved Blind Gomoku table" data-result={g.done||undefined}>
+ return <section className="panel match engraved-match" aria-label="Engraved Blind Gomoku table" data-result={g.done||undefined} data-table-material={g.done?undefined:tableMaterial.blind}>
   <header className="duel-plaque">
    <div className="duel-inscription">
     <Seal revealed={g.done}/>
@@ -96,6 +97,7 @@ export function BlindMatchStage({game:g,you,name,active,practice,leg,legs,submit
      <div role="status" aria-atomic="true"><h2>{title}</h2></div>
      <p className="duel-kind">{g.done?resultDetail:!active?'Table connection interrupted':'Secret Chamber'}</p>
     </div>
+    {!g.done&&<TableMakersMark game="blind"/>}
    </div>
    {g.done&&<div className="duel-seats" aria-label="The two sides">
     {g.seats.map((seat,i)=><div className="duel-seat" data-second={i===1||undefined}

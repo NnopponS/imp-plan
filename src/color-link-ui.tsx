@@ -1,3 +1,4 @@
+import {TableToolMark} from './engraved-tables'
 import {useEffect,useRef,useState,type KeyboardEvent} from 'react'
 import {linkAdjacent,linkCells,linkPairLimit,linkSide,type LinkPaths,type LinkView} from './color-link'
 import type {Command,Snapshot} from './room'
@@ -174,10 +175,10 @@ export function ColorLinkBoard({snap,name,active,receivedAt,submit}:{snap:Snapsh
       className:'cl-tone-'+i,face:<RouteGlyph letter={letters[i]} path={draft.paths[i]} ends={p.cells} done={routeComplete(i)}/> }))}
      select={i=>writeRoute(i,draft.paths[i].length?draft.paths[i]:[v.pairs[i].cells[0]])}/>
     <div className="cl-actions">
-     <button type="button" disabled={!canRoute||selected.length<2} onClick={()=>writeRoute(draft.route!,selected.slice(0,-1))}>Undo step</button>
+     <button type="button" disabled={!canRoute||selected.length<2} onClick={()=>writeRoute(draft.route!,selected.slice(0,-1))}><TableToolMark mark="return"/>Undo step</button>
      <button type="button" disabled={!canRoute||selected.length===0} onClick={()=>writeRoute(draft.route!,[])}>Clear route</button>
     </div>
-    <button className="primary" type="button" disabled={!canRoute||completed!==linkPairLimit} onClick={()=>send({type:'proof',paths:draft.paths})}>Submit proof</button>
+    <button className="primary" type="button" disabled={!canRoute||completed!==linkPairLimit} onClick={()=>send({type:'proof',paths:draft.paths})}><TableToolMark mark="proof"/>Submit proof</button>
    </div>}
   </div>
  </section>
