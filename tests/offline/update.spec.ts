@@ -76,6 +76,7 @@ test('same-entry release update prefers fresh HTML, keeps old offline intact, an
 
   b=true
   const newTab=await context.newPage()
+  await newTab.setViewportSize({width:320,height:720})
   const fresh=await newTab.goto(scope)
   // Source is the normal scoped URL with no rescue query/version parameter.
   expect(fresh?.fromServiceWorker()).toBe(true)
@@ -88,7 +89,13 @@ test('same-entry release update prefers fresh HTML, keeps old offline intact, an
   const aRelease=releaseOf(aHTML)
   expect(aRelease).not.toBe(bRelease)
   expect(await revision(page)).toBe(aRelease)
-  await expect(newTab.getByText('This release isn’t ready for offline play.',{exact:false})).toBeVisible()
+  const warning=newTab.locator('#room-entry').getByRole('status')
+  await expect(warning).toHaveText('This release isn’t ready for offline play. Finish any open games, then close all Imp Plan tabs and reopen online.')
+  const safe=await warning.evaluate(node=>{
+   const paper=node.closest('form')!.getBoundingClientRect(),note=node.getBoundingClientRect()
+   return note.left-paper.left>=14&&paper.right-note.right>=14&&paper.bottom-note.bottom>=14&&node.scrollWidth<=node.clientWidth
+  })
+  expect(safe).toBe(true)
   await expect(ready(newTab)).toHaveCount(0)
   await expect.poll(()=>newTab.evaluate(async()=> (await navigator.serviceWorker.getRegistration())?.waiting?.state),{timeout:10000}).toBe('installed')
   await expect(ready(page)).toBeVisible()

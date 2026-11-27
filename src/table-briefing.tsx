@@ -2,7 +2,7 @@ import {useEffect,useRef,useState,type CSSProperties,type ReactNode} from 'react
 import {titles,tutorials,type Game} from './engine'
 import type {Seat} from './room'
 import {RuleDemo,hasRuleDemo} from './rule-demo'
-import {ChamberEntrance} from './blind-chamber'
+import {base} from './brand'
 import {WallGoLesson} from './wall-go-ui'
 import {hasIllustratedGame,IllustratedGame} from './art'
 import {EngravedRule,hasEngravedRule} from './engraved-rule'
@@ -25,6 +25,9 @@ function Seats({seats}:{seats:Seat[]}){
 export function TableBriefing({game,seats,caption,close,start,variant,mechanic,setupHint,hold=false,motionOff=false}:{game:Game;hold?:boolean;seats:Seat[];caption:string;mechanic?:ReactNode;setupHint?:string;motionOff?:boolean;close:()=>void;start?:{enabled:boolean;confirm:()=>void};variant?:{label:string;rules:string;demo:(step:number)=>ReactNode}}){
  const dialog=useRef<HTMLDialogElement>(null)
  const [step,setStep]=useState(0)
+ const [skipEntrance,setSkipEntrance]=useState(false)
+ const back=useRef<HTMLButtonElement>(null)
+ const enter=useRef<HTMLButtonElement>(null)
  const [reduced,setReduced]=useState(()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches)
  const staticScene=motionOff||reduced
  const instruction=variant?.rules??tutorials[game]
@@ -46,22 +49,37 @@ export function TableBriefing({game,seats,caption,close,start,variant,mechanic,s
  const hasPoster=hasIllustratedGame(game)
  const uniquePreview=!start&&game==='auction'&&variant?mechanic:undefined
  const scene=uniquePreview??diagram??(!start&&mechanic?mechanic:hasPoster?<IllustratedGame game={game} className="brief-theater-poster" loading="eager"/>:null)
+ const blind=game==='blind'
+ const showEntrance=blind&&!skipEntrance
+ function dismissEntrance(){
+  setSkipEntrance(true)
+  const next=enter.current
+  if(next&&!next.disabled)next.focus({preventScroll:true})
+  else back.current?.focus({preventScroll:true})
+ }
  return <dialog ref={dialog} className="briefing briefing-theater" aria-labelledby="brief-game" data-brief-game={game} data-motion-off={staticScene||undefined} onCancel={e=>{e.preventDefault();close()}}>
   <div className="brief-head">
    <div><p className="eyebrow">{start?'TABLE BRIEFING':'RULES PREVIEW'} · {variant?.label??'FAN RULES'}<FolioTransition scene={{phase:start?'brief':'rules',game,hold}} motionOff={staticScene}/></p><h2 id="brief-game">{titles[game]}</h2></div>
-   <button type="button" className="brief-back" data-chamber-next={!start||undefined} onClick={close}>{start?'Back to setup':'Back to lobby'}</button>
+   <button ref={back} type="button" className="brief-back" onClick={close}><svg viewBox="0 0 16 16" width="16" height="16" fill="none" aria-hidden="true"><path d="M10.5 3 5.5 8l5 5M6 8h8" stroke="currentColor" strokeWidth="1.55" strokeLinecap="round" strokeLinejoin="round"/></svg>{start?'Back to setup':'Back to lobby'}</button>
   </div>
-  {game==='blind'&&<ChamberEntrance/>}
-  {hex?<HexBriefing motionOff={staticScene}/>:<div className="brief-theater-content" data-scene={scene?'on':undefined}>
-   {scene&&<div className="brief-theater-scene" data-diagram={diagram?'on':undefined}>
-    {diagram&&hasPoster&&<IllustratedGame game={game} className="brief-theater-backdrop" loading="eager"/>}
-    {scene}
+  <div className="brief-theater-scroll">
+   {hex?<HexBriefing motionOff={staticScene}/>:<div className="brief-theater-content" data-scene={scene?'on':undefined}>
+    {scene&&<section className="brief-theater-scene" aria-label={showEntrance?'Secret Chamber':'Game example'} data-diagram={diagram&&!uniquePreview?'on':undefined} data-entrance={showEntrance||undefined}>
+     {showEntrance?<img className="brief-theater-backdrop" src={base+'art/secret-chamber.svg'} alt="" width={1200} height={660} decoding="async"/>:!blind&&diagram&&hasPoster&&!uniquePreview?<IllustratedGame game={game} className="brief-theater-backdrop" loading="eager"/>:null}
+     <div className="brief-scene-legend">
+      <span className="brief-scene-title">{showEntrance?'Secret Chamber':diagram?'Worked example':'Table preview'}</span>
+      {showEntrance&&<button type="button" className="brief-skip" onClick={dismissEntrance}>Skip entrance</button>}
+     </div>
+     <div className="brief-scene-object">{scene}</div>
+    </section>}
+    <div className="brief-theater-rules">
+     <p className="brief-rules-caption">{caption}</p>
+     {setupHint&&<p className="brief-setup-note">{setupHint}</p>}
+     <ol aria-label="Rules">{rules.map((rule,i)=><li key={i}>{diagram?<button type="button" aria-pressed={step===i} onClick={()=>setStep(i)}><span aria-hidden="true">{String(i+1).padStart(2,'0')}</span>{rule}</button>:<p><span aria-hidden="true">{String(i+1).padStart(2,'0')}</span>{rule}</p>}</li>)}</ol>
+    </div>
    </div>}
-   <div className="brief-theater-rules"><p>{caption}</p>{setupHint&&<p>{setupHint}</p>}
-    <ol>{rules.map((rule,i)=><li key={i}>{diagram?<button type="button" aria-pressed={step===i} onClick={()=>setStep(i)}><span aria-hidden="true">{String(i+1).padStart(2,'0')}</span>{rule}</button>:<p><span aria-hidden="true">{String(i+1).padStart(2,'0')}</span>{rule}</p>}</li>)}</ol>
-   </div>
-  </div>}
-  <Seats seats={seats}/>
-  <footer><span>{start?'Timers start only after you enter.':'Only the host can start the match.'}</span>{start&&<button className="primary" data-chamber-next type="button" disabled={!start.enabled} onClick={start.confirm}>Enter match</button>}</footer>
+   <Seats seats={seats}/>
+  </div>
+  <footer><span>{start?'Timers start only after you enter.':'Only the host can start the match.'}</span>{start&&<button ref={enter} className="primary" type="button" disabled={!start.enabled} onClick={start.confirm}>Enter match</button>}</footer>
  </dialog>
 }

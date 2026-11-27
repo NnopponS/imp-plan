@@ -2,7 +2,8 @@ import type {Peer as PeerType,DataConnection} from 'peerjs'
 import type {TestPeer} from './test-transport'
 type Endpoint=PeerType|TestPeer
 type Channel=DataConnection|ReturnType<TestPeer['connect']>
-import {Host,appearancePreset,decode,id,roomCode,type Snapshot,type Command} from './room'
+import {Host,decode,id,roomCode,type Snapshot,type Command} from './room'
+import {appearancePreset,legacyAppearance,wardrobeVersion} from './wardrobe-look'
 export type ConnectOptions={iceServers?:RTCIceServer[],appearance?:number}
 type JoinStage='signaling'|'peer'|'snapshot'
 export type SessionState={phase:'connecting'|'online'|'offline',snapshot:Snapshot|null,error:string,joinStage?:JoinStage,receivedAt?:number,holdRejection?:string}
@@ -56,14 +57,18 @@ export async function hostRoom(name:string,listener:Listener,options:ConnectOpti
  if(!peer)throw Error('Could not reserve a code.')
  const service=peer
  const h=new Host(name,()=>Math.floor(performance.timeOrigin+performance.now()),false,options.appearance)
- const clients=new Map<string,{c:Channel,authorized:boolean,seq:number,seen:number,window:number,count:number}>()
+ const clients=new Map<string,{c:Channel,authorized:boolean,seq:number,seen:number,window:number,count:number,extendedWardrobe:boolean}>()
  let holdRejection:string|undefined
  const ownUpdate=(error='')=>listener({phase:'online',snapshot:h.snapshot('host'),error,receivedAt:performance.now(),holdRejection})
  const sendState=(key:string)=>{
   const info=clients.get(key)
   if(!info?.authorized)return
   const state=h.snapshot(key)
-  if(state)send(info.c,{type:'snapshot',state})
+  if(state){
+   // Older guests understand only the original 27 IDs; give them the equivalent silhouette.
+   const projected=info.extendedWardrobe?state:{...state,seats:state.seats.map(seat=>seat.appearance===undefined?seat:{...seat,appearance:legacyAppearance(seat.appearance)})}
+   send(info.c,{type:'snapshot',state:projected})
+  }
   else{send(info.c,{type:'closed',reason:'The host removed this seat.'});setTimeout(()=>info.c.close(),200)}
  }
  const update=(error='')=>{
@@ -75,10 +80,10 @@ export async function hostRoom(name:string,listener:Listener,options:ConnectOpti
  service.on('disconnected',()=>{if(!service.destroyed)try{service.reconnect()}catch{/* already reconnecting */}})
  service.on('connection',c=>{
   if(clients.size>=32){c.on('open',()=>c.close());return}
-  const key=id(),now=performance.now(),info={c,authorized:false,seq:0,seen:now,window:now,count:0}
+  const key=id(),now=performance.now(),info={c,authorized:false,seq:0,seen:now,window:now,count:0,extendedWardrobe:false}
   clients.set(key,info)
-  // Legacy guests ignore this unknown envelope. Their strict hello stays unchanged.
-  c.on('open',()=>send(c,{type:capability,appearance:1}))
+  // The existing capability stays valid for v1 guests; only v2 guests acknowledge wardrobe.
+  c.on('open',()=>send(c,{type:capability,appearance:1,wardrobe:wardrobeVersion}))
   const drop=()=>{
    if(!clients.delete(key))return
    const before=h.rev;h.disconnect(key);if(h.rev!==before)update()
@@ -96,6 +101,7 @@ export async function hostRoom(name:string,listener:Listener,options:ConnectOpti
     const result=h.join(key,m.name,m.token,m.appearance)
     if(!result){send(c,{type:'closed',reason:'Room is locked, full, playing, or this seat cannot be resumed.'});setTimeout(()=>c.close(),250);return}
     info.authorized=true
+    info.extendedWardrobe=m.wardrobe===wardrobeVersion
     const previous=clients.get(result.old);if(previous){clients.delete(result.old);previous.c.close()}
     send(c,{type:'accepted',token:result.token});update();return
    }
@@ -166,7 +172,7 @@ export function joinRoom(code:string,name:string,listener:Listener,options:Conne
   const p=peer
   await new Promise<void>((resolve,reject)=>{
    let c:Channel|undefined,timer:ReturnType<typeof setTimeout>|undefined,helloTimer:ReturnType<typeof setTimeout>|undefined
-   let stage:'peer'|'snapshot'='peer',accepted=false,firstState=false,finished=false,helloSent=false,appearanceSupported=false
+   let stage:'peer'|'snapshot'='peer',accepted=false,firstState=false,finished=false,helloSent=false,appearanceSupported=false,extendedWardrobe=false
    const finish=(message?:string)=>{
     if(finished)return
     finished=true;authorized=false;clearTimeout(timer);clearTimeout(helloTimer)
@@ -197,13 +203,17 @@ export function joinRoom(code:string,name:string,listener:Listener,options:Conne
    const hello=()=>{
     if(finished||helloSent||!channel.open)return
     helloSent=true;clearTimeout(helloTimer)
-    send(channel,{version:1,type:'hello',name,token,...(appearanceSupported&&appearance!==undefined?{appearance}:{})})
+    send(channel,{version:1,type:'hello',name,token,
+     ...(extendedWardrobe?{wardrobe:wardrobeVersion}:{}),
+     ...(appearanceSupported&&appearance!==undefined?{appearance:extendedWardrobe?appearance:legacyAppearance(appearance)}:{})
+    })
    }
    channel.on('open',()=>{
     if(finished)return
     waitFor('snapshot')
-    // A pre-preset host rejects extra hello fields; negotiate only when needed.
-    if(appearance===undefined||appearanceSupported)hello()
+    // Negotiate even with the automatic look so newer guests receive other players' layers.
+    // Hosts that predate capabilities get exactly the original, strict hello.
+    if(appearanceSupported)hello()
     else helloTimer=setTimeout(hello,capabilityWait)
    })
    channel.on('error',connectionLost)
@@ -215,6 +225,7 @@ export function joinRoom(code:string,name:string,listener:Listener,options:Conne
      seen=performance.now()
      if(m.type===capability&&m.appearance===1&&!helloSent){
       appearanceSupported=true
+      extendedWardrobe=m.wardrobe===wardrobeVersion
       if(stage==='snapshot')hello()
       return
      }

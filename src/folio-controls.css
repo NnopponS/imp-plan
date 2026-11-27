@@ -20,50 +20,68 @@
 .chapter-entry-link .folio-mark,.library-tools a .folio-mark{color:#dfb585}
 .library-tools a{display:inline-flex;align-items:center;justify-content:flex-end;gap:5px;min-height:44px}
 
-/* Keep native text controls; a punched ticket frames the invite rather than
-   replacing one code field with six or breaking copy/paste. */
-.front-desk .entry-ticket-form{grid-template-columns:minmax(0,1fr) auto;gap:8px 8px}
-.entry-ticket-form>h2,.entry-ticket-form>.join-line,.entry-ticket-form>.practice-availability,.entry-ticket-form>.error,.entry-ticket-form>.entry-connection[open]{grid-column:1/-1}
+/* A quiet writing surface framed by a single bevel. The bevel is not a
+   border-image: thick corner slices used to run through the form content. */
+#room-entry.entry-ticket-form{
+ --ticket-action:clamp(122px,34%,142px);
+ --ticket-shape:polygon(0 10px,10px 0,calc(100% - 14px) 0,100% 14px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px));
+ display:grid;position:relative;isolation:isolate;
+ grid-template-columns:minmax(0,1fr) var(--ticket-action);gap:10px;
+ padding:clamp(16px,2.2vw,24px);
+}
+.entry-ticket-form::before,.entry-ticket-form::after{content:"";position:absolute;z-index:-1;pointer-events:none;clip-path:var(--ticket-shape)}
+.entry-ticket-form::before{inset:0;background:linear-gradient(132deg,#c59b6a,#8d694c 55%,#b28a60)}
+.entry-ticket-form::after{inset:1px;background:radial-gradient(ellipse at 30% 0,#4e3529 0,transparent 73%),#2d231e}
+.entry-ticket-form:is(:target,:focus-within)::before{background:#bb8f62}
+.entry-ticket-form>:is(h2,.join-line,.entry-tools,.practice-availability,.error){grid-column:1/-1}
 .front-desk .entry-ticket-form>h2{display:flex;align-items:center;gap:8px}
-.entry-ticket-form>h2 .folio-mark{color:#e3bc81;width:23px;height:23px}
+.entry-ticket-form>h2 .folio-mark{color:#e3bc81;width:20px;height:20px}
 .entry-nameplate,.entry-invite-tag{
- display:grid;grid-template-columns:21px minmax(0,1fr);align-items:center;gap:2px 7px;
- min-width:0;color:#e9c892;
+ display:grid;grid-template-columns:17px minmax(0,1fr);grid-template-rows:auto auto;
+ align-items:center;gap:5px;min-width:0;color:#e9c892;
 }
-.entry-nameplate{padding-inline-start:7px;border-inline-start:1px solid #9c724c}
-.entry-ticket-form :is(.entry-nameplate,.entry-invite-tag)>label{margin:0;min-width:0;font-size:.74rem;line-height:1.25}
-.entry-ticket-form :is(.entry-nameplate,.entry-invite-tag)>svg{grid-column:1;grid-row:1/3;justify-self:center}
-.entry-ticket-form :is(.entry-nameplate,.entry-invite-tag)>input{grid-column:2;min-width:0;min-height:44px;margin:0;padding:5px 8px;border-radius:2px}
-.entry-ticket-form .entry-create{
- min-height:44px;align-self:end;justify-content:center;gap:5px;padding:5px 9px;font-size:.85rem;
+.entry-ticket-form :is(.entry-nameplate,.entry-invite-tag)>label{grid-column:2;grid-row:1;margin:0;min-width:0;font-size:.78rem;line-height:1.25}
+.entry-ticket-form :is(.entry-nameplate,.entry-invite-tag)>svg{grid-column:1;grid-row:1;width:16px;height:16px}
+.front-desk .entry-ticket-form input:not([type=checkbox]){
+ grid-column:1/-1;min-width:0;min-height:44px;margin:0;padding:6px 9px;border-radius:4px;
+ background:#221812;color:#fff0d2;border:1px solid #9a7253;
 }
-.entry-ticket-form .entry-create .folio-mark{width:17px;height:17px}
-.entry-ticket-form .join-line{
- display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:8px;
- margin-block-start:3px;padding-block-start:8px;border-top:1px solid #91634663;
+.entry-ticket-form #invite{letter-spacing:.11em}
+#room-entry.entry-ticket-form .join-line{
+ display:grid;grid-template-columns:minmax(0,1fr) var(--ticket-action);align-items:end;gap:10px;
+ margin:0;padding:0;border:0;
 }
-.entry-invite-tag{
- position:relative;isolation:isolate;padding:5px 8px 5px 5px;
- background:#473021;border:1px solid #a7794e;border-radius:3px;
+#room-entry.entry-ticket-form :is(.entry-create,.entry-join){
+ display:flex;align-items:center;justify-content:center;align-self:end;
+ gap:5px;min-width:0;min-height:44px;padding:4px 6px;margin:0;line-height:1.12;font-size:.83rem;white-space:nowrap;
 }
-.entry-invite-tag::before{content:'';position:absolute;inset:3px auto 3px 26px;border-inline-end:1px dashed #c28d5a9c;pointer-events:none}
-.entry-ticket-form .entry-invite-tag #invite{min-height:44px;letter-spacing:.12em;background:#211812;color:#fff2d4;border-color:#8d6846}
-.entry-ticket-form .entry-join{
- display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:44px;
- padding:5px 9px;margin-block-end:5px;font-size:.85rem;
+.entry-ticket-form :is(.entry-create,.entry-join) .folio-mark{width:16px;height:16px}
+.entry-ticket-form .entry-create .folio-mark:last-child{display:none}
+.entry-ticket-form .entry-tools{
+ display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);align-items:start;gap:0 8px;min-width:0;
+ border-block-start:1px solid #9c72565e;margin-block-start:2px;padding-block-start:2px;
 }
-.entry-ticket-form #practice-entry,#room-entry .entry-connection>summary{
- display:inline-flex;align-items:center;gap:5px;min-height:44px;width:fit-content;
- font-size:.8rem;font-weight:650;line-height:1.15;color:#eaca9a;
+.front-desk .entry-ticket-form #practice-entry,#room-entry .entry-connection>summary{
+ display:flex;justify-content:flex-start;align-items:center;gap:5px;min-width:0;min-height:44px;width:fit-content;
+ padding:3px 0;margin:0;font-size:.78rem;font-weight:650;line-height:1.18;color:#eaca9a;
 }
-.front-desk .entry-ticket-form #practice-entry{grid-column:auto;justify-self:start;padding:4px 2px}
-.entry-ticket-form .entry-connection{align-self:start;justify-self:end;margin:0}
-.entry-ticket-form .entry-connection[open]{justify-self:stretch}
-#room-entry .entry-connection>summary{padding:4px 2px;list-style:none}
+#room-entry .entry-tools>#practice-entry{grid-column:1;grid-row:1;justify-self:start}
+.entry-ticket-form .entry-tools .folio-mark{width:17px;height:17px}
+.entry-ticket-form .entry-connection{margin:0;min-width:0}
+#room-entry .entry-tools>.entry-connection:not([open]){grid-row:1;grid-column:2;justify-self:end}
+#room-entry .entry-tools>.entry-connection[open]{grid-row:2;grid-column:1/-1}
+#room-entry .entry-tools :is(summary,#practice-entry){max-width:100%;white-space:normal}
+.entry-ticket-form .entry-connection p{font-size:.81rem;margin:2px 0 9px}
+.entry-ticket-form .entry-connection label{margin:0 0 5px}
+#room-entry .entry-connection>summary{list-style:none}
 .entry-connection>summary::-webkit-details-marker{display:none}
-#room-entry .entry-connection>summary::after{content:'';width:6px;height:6px;border:solid currentColor;border-width:0 1px 1px 0;transform:rotate(45deg);margin:0 2px 4px}
+#room-entry .entry-connection>summary::after{content:"";width:6px;height:6px;flex:none;border:solid currentColor;border-width:0 1px 1px 0;transform:rotate(45deg);margin:0 2px 4px}
 .entry-ticket-form .entry-connection[open]>summary::after{transform:rotate(225deg);margin-block:4px 0}
-.entry-ticket-form .practice-availability{margin:0}
+.entry-ticket-form .practice-availability{
+ display:block;margin:0;padding:8px 10px;background:#241b17;border-inline-start:2px solid #936b49;
+ color:#e9cdae;font-size:.76rem;line-height:1.47;overflow-wrap:anywhere;
+}
+.entry-ticket-form .error{margin:0}
 .season-room .entry-ticket-form{max-width:40rem}
 .invite-desk .entry-nameplate{grid-column:1/-1}
 
@@ -136,15 +154,15 @@
  .challenge-folio .challenge-controls,.challenge-folio .folio-register{grid-template-columns:minmax(0,1fr)}
 }
 @media(max-width:365px){
- .entry-ticket-form .entry-create .folio-mark:last-child{display:none}
- .entry-ticket-form .entry-join .folio-mark,.entry-ticket-form .entry-create .folio-mark{inline-size:15px;block-size:15px}
- .entry-ticket-form .entry-join,.entry-ticket-form .entry-create{padding-inline:5px;font-size:.78rem}
+ #room-entry .entry-connection summary>.folio-mark{display:none}
  .challenge-folio .folio-register article{grid-template-columns:33px minmax(0,1fr) auto;gap:4px;padding:5px}
  .folio-register .register-copy .game-venue{margin-top:2px}
  .register-seal .game-token{width:27px}
  .folio-register .catalog-practice .folio-mark{display:none}
 }
 @media(forced-colors:active){
+ #room-entry.entry-ticket-form{border:1px solid CanvasText}
+ .entry-ticket-form::before,.entry-ticket-form::after{display:none}
  .chapter-metal{fill:Canvas;stroke:CanvasText}
  .chapter-seal,.folio-mark{color:CanvasText}
  .bar .chapter-bookmarks .chapter-bookmark[aria-current=page],.challenge-folio button[aria-pressed=true]{outline:2px solid Highlight;outline-offset:-3px}

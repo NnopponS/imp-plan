@@ -97,13 +97,13 @@ export function BlindMatchStage({game:g,you,name,active,practice,leg,legs,submit
      <p className="duel-kind">{g.done?resultDetail:!active?'Table connection interrupted':'Secret Chamber'}</p>
     </div>
    </div>
-   <div className="duel-seats" aria-label="The two sides">
+   {g.done&&<div className="duel-seats" aria-label="The two sides">
     {g.seats.map((seat,i)=><div className="duel-seat" data-second={i===1||undefined}
      data-current={!g.done&&g.turn===seat||undefined} data-winner={g.done&&g.winner===seat||undefined} key={seat}>
      <span className="duel-seat-token" aria-hidden="true">{i===0?'Ⅰ':'Ⅱ'}</span>
      <div><strong>{name(seat)}</strong><small>{g.done?(g.winner===seat?'Winner':'Revealed'):seat===g.turn?'To move':seat===you?'You':'At the table'}</small></div>
     </div>)}
-   </div>
+   </div>}
   </header>
   <div className="duel-layout">
    <div className="duel-board-column">
@@ -130,7 +130,7 @@ export function BlindMatchStage({game:g,you,name,active,practice,leg,legs,submit
      <strong>Chamber record</strong>
      <p>{marks.size?'Gold rings trace the winning line.':'The final positions are shown on the table.'}</p>
     </div>}
-    <ChamberScene game={g} practice={practice}/>
+    {g.done?<ChamberScene game={g} practice={practice}/>:<details className="match-atmosphere"><summary>Chamber artwork</summary><ChamberScene game={g} practice={practice}/></details>}
     {!g.done&&<details className="duel-coordinates"><summary>Place by coordinates</summary><div className="duel-coordinate-controls">
      <label>Row<select value={row} onChange={e=>setRow(Number(e.target.value))}>{coordinates.map(n=><option key={n} value={n-1}>{n}</option>)}</select></label>
      <label>Column<select value={column} onChange={e=>setColumn(Number(e.target.value))}>{coordinates.map(n=><option key={n} value={n-1}>{n}</option>)}</select></label>

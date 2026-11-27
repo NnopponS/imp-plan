@@ -6,15 +6,14 @@ import {memoryDuelDeal} from './memory-duel'
 import {isGrass} from './grass'
 import {isPuzzle} from './puzzles'
 import {z} from 'zod'
+import {appearancePreset,legacyAppearance,legacyAppearanceCount,wardrobeVersion} from './wardrobe-look'
+export {appearancePreset} from './wardrobe-look'
 import {start,move,titles,heavy13Slot,playHeavy13,playColorLink,schedule,view,timeout,blindCoverAction,botAction,botLevels,isDuel,minSeats,secretBotIntentKey,simultaneous,redealMemoryDuel,syncTimeHold,openMontageRound,submitMontageBuzz,type State,type Game,type GameView} from './engine'
 const codeAlphabet='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
 export const roomCode=()=>Array.from(crypto.getRandomValues(new Uint8Array(6)),x=>codeAlphabet[x&31]).join('')
 export const validCode=(x:string)=>/^[A-HJ-NP-Z2-9]{6}$/.test(x)
 export const id=()=>Array.from(crypto.getRandomValues(new Uint8Array(16)),x=>x.toString(16).padStart(2,'0')).join('')
 export const protocolVersion=1
-export const appearanceCount=27
-export const appearancePreset=(value:unknown):number|undefined=>
- typeof value==='number'&&Number.isInteger(value)&&value>=0&&value<appearanceCount?value:undefined
 const unsafe=/[\p{Cc}\p{Cs}\p{Zl}\p{Zp}\u061c\u200b\u200e\u200f\u202a-\u202e\u2060-\u206f\ufeff]/u
 export function nickname(value:string):string|null{
  if(unsafe.test(value)||value.length>160)return null
@@ -101,13 +100,19 @@ export function seatStartError(settings:Settings,seats:readonly Pick<Seat,'bot'|
  return null
 }
 const wire=z.discriminatedUnion('type',[
- z.strictObject({version:z.literal(1),type:z.literal('hello'),name:z.string().max(160),token:z.string().regex(/^[a-f0-9]{32}$/).optional(),appearance:z.unknown().optional().transform(appearancePreset)}),
+ z.strictObject({version:z.literal(1),type:z.literal('hello'),name:z.string().max(160),token:z.string().regex(/^[a-f0-9]{32}$/).optional(),wardrobe:z.literal(wardrobeVersion).optional(),appearance:z.unknown().optional().transform(appearancePreset)}),
  z.strictObject({version:z.literal(1),type:z.literal('command'),epoch:z.string().length(32),match:z.string().max(32),seq:z.number().int().positive().max(1e8),request:z.string().length(32),rev:z.number().int().nonnegative(),command:schema}),
  z.strictObject({version:z.literal(1),type:z.literal('ping')}),
 ])
 export function decode(raw:unknown){
  if(typeof raw!=='string'||raw.length>4096)return null
- try{const parsed=wire.safeParse(JSON.parse(raw));return parsed.success?parsed.data:null}catch{return null}
+ try{
+  const parsed=wire.safeParse(JSON.parse(raw))
+  if(!parsed.success)return null
+  const message=parsed.data
+  if(message.type==='hello'&&message.wardrobe!==wardrobeVersion&&(message.appearance??0)>=legacyAppearanceCount)message.appearance=undefined
+  return message
+ }catch{return null}
 }
 export type Seat={id:string,name:string,ready:boolean,bot:boolean,online:boolean,appearance?:number}
 type PrivateSeat=Seat&{token:string,connection:string,appearance:number}
@@ -325,15 +330,15 @@ export class Host{
  private assignAppearance(requested?:number){
   let preset=appearancePreset(requested)
   if(preset===undefined){
-   const inUse=new Set(this.seats.map(s=>s.appearance))
-   const vacant=Array.from({length:appearanceCount},(_,i)=>i).filter(i=>!inUse.has(i))
+   const inUse=new Set(this.seats.map(s=>legacyAppearance(s.appearance)))
+   const vacant=Array.from({length:legacyAppearanceCount},(_,i)=>i).filter(i=>!inUse.has(i))
    // Keep the entire room (including disconnected, resumable seats) distinct
    // for automatic assignments, preferring never-used presets after a kick.
    const fresh=vacant.filter(i=>!this.issuedAppearances.has(i))
    const choices=fresh.length?fresh:vacant
    preset=choices[secureIndex(choices.length)] // Maximum room size is 16.
   }
-  this.issuedAppearances.add(preset)
+  this.issuedAppearances.add(legacyAppearance(preset))
   return preset
  }
  private addBot(){

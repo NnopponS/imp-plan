@@ -74,6 +74,7 @@ for(const width of [320,390]){
    await page.getByRole('button',{name:'Place stone',exact:true}).tap()
    const placed=board.getByRole('button',{name:'Row 8, column 8, veiled',exact:true})
    await expect(placed).toHaveAttribute('aria-description','Jade cover. Side hidden.')
+   await page.getByText('Chamber artwork',{exact:true}).tap()
    const scene=page.locator('.chamber-scene')
    await scene.scrollIntoViewIfNeeded()
    const art=scene.locator('img[src$="secret-chamber.svg"]')

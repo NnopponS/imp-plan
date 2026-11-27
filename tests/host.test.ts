@@ -1,6 +1,7 @@
 import {expect,it} from 'vitest'
 import {Host,decode,nickname,seatRules} from '../src/room'
 import type {Game} from '../src/engine'
+import {appearanceCount,appearancePreset,legacyAppearance,lookToOutfit,outfitToLook} from '../src/wardrobe-look'
 it('rejects malformed and spoofed messages; processes commands only once at a matching revision',()=>{
  const h=new Host('Host',()=>0)
  const a=h.join('connection','Ann')!
@@ -186,4 +187,35 @@ it('does not inherit a small cap into a larger game and caps private puzzle prac
  expect(solo.snapshot('host')!.seats).toHaveLength(1)
  expect(solo.join('remote','Guest')).toBeNull()
  expect(solo.command('host','start',solo.rev,{kind:'start'})).toBeNull()
+})
+
+it('keeps legacy appearance IDs readable and only accepts a richer look with wardrobe negotiation',()=>{
+ const base={version:1,type:'hello',name:'Ash'}
+ expect(decode(JSON.stringify({...base,appearance:17}))).toMatchObject({appearance:17})
+ const advanced=550
+ expect(decode(JSON.stringify({...base,appearance:advanced}))).toMatchObject({appearance:undefined})
+ expect(decode(JSON.stringify({...base,appearance:advanced,wardrobe:2}))).toMatchObject({appearance:advanced,wardrobe:2})
+ expect(decode(JSON.stringify({...base,appearance:advanced,wardrobe:3}))).toBeNull()
+ const room=new Host('Host',()=>0,false,advanced)
+ expect(room.snapshot('host')!.seats[0].appearance).toBe(advanced)
+ const guest=room.join('wardrobe','Guest',undefined,540)!
+ room.disconnect('wardrobe')
+ expect(room.join('return','Guest',guest.token,570)?.id).toBe(guest.id)
+ expect(room.snapshot('return')!.seats.find(s=>s.id===guest.id)?.appearance).toBe(540)
+})
+
+it('round trips all wardrobe choices to compact unique IDs without changing the legacy presets',()=>{
+ expect(appearanceCount).toBe(1620)
+ expect(lookToOutfit(17)).toMatchObject({mask:'raven',cloak:'midnight',clasp:'key',dye:'original',extra:'none'})
+ const names=new Set()
+ for(let n=0;n<appearanceCount;n++){
+  const outfit=lookToOutfit(n)
+  expect(outfitToLook(outfit)).toBe(n)
+  expect(legacyAppearance(n)).toBeGreaterThanOrEqual(0)
+  expect(legacyAppearance(n)).toBeLessThan(27)
+  names.add(JSON.stringify(outfit))
+ }
+ expect(names.size).toBe(appearanceCount)
+ expect(appearancePreset(appearanceCount)).toBeUndefined()
+ expect(appearancePreset(Number.POSITIVE_INFINITY)).toBeUndefined()
 })

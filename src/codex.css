@@ -45,20 +45,20 @@
 
 /* Layered folio and dog-ear. The pseudo-elements carry the silhouette and
    binding; fields, keyboard outlines and the 7×5 warm-up grid stay unmasked. */
-:is(.landing-table,.front-desk .entrance,.room:not([data-playing]) .lobby,.room:not([data-playing]) .roster,.room:not([data-playing]) .chat,.library-index){
+:is(.landing-table,.room:not([data-playing]) .lobby,.room:not([data-playing]) .roster,.room:not([data-playing]) .chat,.library-index){
  --folio-edge:#98704c;
  --folio-ink:#2e211c;
  --folio-shape:polygon(0 10px,10px 0,calc(100% - 26px) 0,100% 26px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px));
  position:relative;isolation:isolate;
 }
-:is(.landing-table,.front-desk .entrance,.room:not([data-playing]) .lobby,.room:not([data-playing]) .roster,.room:not([data-playing]) .chat,.library-index)::before,
-:is(.landing-table,.front-desk .entrance,.room:not([data-playing]) .lobby,.room:not([data-playing]) .roster,.room:not([data-playing]) .chat,.library-index)::after{
+:is(.landing-table,.room:not([data-playing]) .lobby,.room:not([data-playing]) .roster,.room:not([data-playing]) .chat,.library-index)::before,
+:is(.landing-table,.room:not([data-playing]) .lobby,.room:not([data-playing]) .roster,.room:not([data-playing]) .chat,.library-index)::after{
  content:"";position:absolute;pointer-events:none;z-index:-1;clip-path:var(--folio-shape);
 }
-:is(.landing-table,.front-desk .entrance,.room:not([data-playing]) .lobby,.room:not([data-playing]) .roster,.room:not([data-playing]) .chat,.library-index)::before{
+:is(.landing-table,.room:not([data-playing]) .lobby,.room:not([data-playing]) .roster,.room:not([data-playing]) .chat,.library-index)::before{
  inset:0;background:linear-gradient(135deg,#c39a6b,var(--folio-edge) 40%,#684b37 92%);
 }
-:is(.landing-table,.front-desk .entrance,.room:not([data-playing]) .lobby,.room:not([data-playing]) .roster,.room:not([data-playing]) .chat,.library-index)::after{
+:is(.landing-table,.room:not([data-playing]) .lobby,.room:not([data-playing]) .roster,.room:not([data-playing]) .chat,.library-index)::after{
  inset:1px 1px 2px;background:
   linear-gradient(45deg,#513629,#aa7e50 55%,#805a3c 56%,#3a2821) no-repeat right top / 26px 26px,
   linear-gradient(90deg,#291917 0 5px,#7a583b 5px 6px,#3b2a22 6px 10px,transparent 10px),
@@ -298,7 +298,7 @@ body .footer{
 
 /* These are the folded folios already in the layout. Stitchwork is drawn
    into the border layer; the clipped fold and existing content layout stay. */
-body :is(.front-desk .entrance,.landing-table,.library-index,.room:not([data-playing]) :is(.lobby,.roster,.chat))::after{
+body :is(.landing-table,.library-index,.room:not([data-playing]) :is(.lobby,.roster,.chat))::after{
  background:
   linear-gradient(44deg,#33221b,#a17954 54%,#5d3d2d 56%,#2b201a) right top / 26px 26px no-repeat,
   var(--etch-ink) repeat,
@@ -326,7 +326,6 @@ body .challenge-folio .folio-register article{
  background:var(--etch-ink) repeat,linear-gradient(105deg,#a67d4f2d,transparent 38%),var(--register-ink);
 }
 body .challenge-folio .folio-register article[data-shelf="archive"]{border-style:dashed}
-body .entry-ticket-form .entry-invite-tag,
 body .room[data-party-lobby] .invite{
  border-radius:3px 8px 3px 5px;
  background:var(--etch-ink) repeat,linear-gradient(102deg,#4b3428,#322620);
@@ -447,7 +446,7 @@ body .room[data-party-lobby] .party-roster .party-seat:has(button){grid-template
 body .room[data-playing] .chat input,body .room[data-playing] .invite-manual input{
  color:#f9e7c9;border-color:#9b7555;background:#251d18;
 }
-body :is(.entry-ticket-form,.gallery-tools,.challenge-folio,.party-picker-tools,.room:not([data-playing]) .chat) input:not([type=checkbox]){
+body :is(.gallery-tools,.challenge-folio,.party-picker-tools,.room:not([data-playing]) .chat) input:not([type=checkbox]){
  color:#fff0d2;border-color:#a07a56;border-radius:3px 5px 2px 4px;
  background:var(--etch-ink) repeat,#261c17;min-height:44px;
 }
