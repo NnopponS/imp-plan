@@ -58,7 +58,7 @@
  <g transform="translate(23 24)"><circle r="11" fill="#60472f" stroke="#b9905d" stroke-width="1.5"/><circle r="6.5" fill="#a58554"/><path d="m-4 0 8 0m-4 -2 5 .5" stroke="#56412e" stroke-width="1.55"/></g><g transform="translate(650 24)"><circle r="11" fill="#60472f" stroke="#b9905d" stroke-width="1.5"/><circle r="6.5" fill="#a58554"/><path d="m-4 0 8 0m-4 -2 5 .5" stroke="#56412e" stroke-width="1.55"/></g><g transform="translate(23 393)"><circle r="11" fill="#60472f" stroke="#b9905d" stroke-width="1.5"/><circle r="6.5" fill="#a58554"/><path d="m-4 0 8 0m-4 -2 5 .5" stroke="#56412e" stroke-width="1.55"/></g><g transform="translate(650 393)"><circle r="11" fill="#60472f" stroke="#b9905d" stroke-width="1.5"/><circle r="6.5" fill="#a58554"/><path d="m-4 0 8 0m-4 -2 5 .5" stroke="#56412e" stroke-width="1.55"/></g>
  <g transform="translate(87 21)">
   <path id="mirror-axis-light" d="M251 9v375" stroke="#f4d995" opacity=".33" stroke-width="16">
-   <animate attributeName="opacity" data-cover-at="0.16s" begin="indefinite" dur="1.84s" keyTimes="0;.44;.69;.87;1" values=".33;.44;.83;.53;.33"/>
+   <animate attributeName="opacity" data-cover-at="0.16s" begin="indefinite" fill="remove" dur="1.84s" keyTimes="0;.44;.69;.87;1" values=".33;.44;.83;.53;.33"/>
   </path>
   <path d="M251 9v375" stroke="#f0d49a" opacity=".88" stroke-width="3.2" stroke-dasharray="8 6"/>
   <path d="M251 13v367m-9-353 9-11 9 11m-18 335 9 12 9-12" fill="none" stroke="#fff0bd" stroke-width="1.6"/>
@@ -131,14 +131,14 @@
 <!-- The independently illustrated sixth piece lands in the open reflected footprint. -->
 <g opacity="0" transform="matrix(-.31 .985 -1.2 0 715.78 272.77)">
  <use href="#mirror-loose-stone"/>
- <animate attributeName="opacity" data-cover-at="0.10s" begin="indefinite" dur="1.88s" keyTimes="0;.46;.59;.80;1" values="0;0;1;1;0"/>
+ <animate attributeName="opacity" data-cover-at="0.10s" begin="indefinite" fill="remove" dur="1.88s" keyTimes="0;.46;.59;.80;1" values="0;0;1;1;0"/>
 </g>
 <g opacity="1">
- <animate attributeName="opacity" data-cover-at="0.10s" begin="indefinite" dur="1.88s" keyTimes="0;.44;.59;.80;1" values="1;1;0;0;1"/>
- <animateTransform attributeName="transform" type="translate" data-cover-at="0.10s" begin="indefinite" dur="1.88s" keyTimes="0;.19;.55;.78;1" values="0 0;-24 -21;-125 -61;-125 -61;0 0"/>
+ <animate attributeName="opacity" data-cover-at="0.10s" begin="indefinite" fill="remove" dur="1.88s" keyTimes="0;.44;.59;.80;1" values="1;1;0;0;1"/>
+ <animateTransform attributeName="transform" type="translate" data-cover-at="0.10s" begin="indefinite" fill="remove" dur="1.88s" keyTimes="0;.19;.55;.78;1" values="0 0;-24 -21;-125 -61;-125 -61;0 0"/>
  <g transform="translate(778 364) rotate(-15)">
  <g>
-  <animateTransform attributeName="transform" type="rotate" data-cover-at="0.10s" begin="indefinite" dur="1.88s" keyTimes="0;.19;.55;.78;1" values="0 75 45;11 75 45;65 75 45;65 75 45;0 75 45"/>
+  <animateTransform attributeName="transform" type="rotate" data-cover-at="0.10s" begin="indefinite" fill="remove" dur="1.88s" keyTimes="0;.19;.55;.78;1" values="0 75 45;11 75 45;65 75 45;65 75 45;0 75 45"/>
   <g transform="scale(.73 .72)">
     <g id="mirror-loose-stone">
       <defs><linearGradient id="lac5" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#bdc394"/><stop offset=".55" stop-color="#729075"/><stop offset="1" stop-color="#34564c"/></linearGradient></defs>
@@ -156,7 +156,7 @@
  </g>
 </g>
 <g stroke-linecap="round" stroke-linejoin="round">
- <animateTransform attributeName="transform" type="translate" data-cover-at="0.10s" begin="indefinite" dur="1.88s" keyTimes="0;.24;.53;.83;1" values="0 0;-11 -4;-41 -14;-11 -5;0 0"/>
+ <animateTransform attributeName="transform" type="translate" data-cover-at="0.10s" begin="indefinite" fill="remove" dur="1.88s" keyTimes="0;.24;.53;.83;1" values="0 0;-11 -4;-41 -14;-11 -5;0 0"/>
  <path fill="#161518" opacity=".64" d="M1127 598c-57-47-108-55-152-65l-41-86 101-81 90 31 120 54v207Z"/>
  <path d="M1239 431c-70-24-122-56-189-65l-32 48 9 68c61 33 122 45 211 105Z" fill="url(#arm)" stroke="#211c22" stroke-width="6"/>
  <path d="M1239 431c-70-24-122-56-189-65l-32 48 9 68c61 33 122 45 211 105Z" fill="url(#fabricgrain)"/>
