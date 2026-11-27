@@ -7,21 +7,26 @@ const chamberCovers={
  montage:{stem:'montage',className:'montage-cover',width:1120,height:610},
  wallGo:{stem:'wall-go',className:'wall-go-cover',width:1200,height:620},
 } as const
-export function GameArt({mode,motionOff}:{mode:Game;motionOff?:boolean}){
- if(hasIllustratedGame(mode))return <ArenaPreview game={mode} motionOff={motionOff} posterClass={'engraved-game '+mode}><IllustratedGame game={mode}/></ArenaPreview>
+export function gameArtSources(mode:Game):{src:string;mobile?:string;width:number;height:number;className:string}{
+ if(hasIllustratedGame(mode))return {src:illustratedSource(mode),width:960,height:540,className:'engraved-game '+mode}
  if(mode==='heavy13'||mode==='montage'||mode==='wallGo'){
-  const cover=chamberCovers[mode]
-  return <ArenaPreview game={mode} motionOff={motionOff} posterClass={cover.className}><picture>
-   <source media="(max-width:640px)" srcSet={base+'art/'+cover.stem+'-chamber-mobile.svg'}/>
-   <img data-arena-art src={base+'art/'+cover.stem+'-chamber.svg'} width={cover.width} height={cover.height} loading="lazy" decoding="async" alt=""/>
-  </picture></ArenaPreview>
+  const {stem,width,height,className}=chamberCovers[mode]
+  return {src:base+'art/'+stem+'-chamber.svg',mobile:base+'art/'+stem+'-chamber-mobile.svg',width,height,className}
  }
- return <ArenaPreview game={mode} motionOff={motionOff} posterClass={mode}><img data-arena-art src={base+'art/'+(mode==='blind'?'secret-chamber.svg':mode+'.webp')} width={650} height={430} loading="lazy" decoding="async" alt=""/></ArenaPreview>
+ return {src:base+'art/'+(mode==='blind'?'secret-chamber.svg':mode+'.webp'),width:650,height:430,className:mode}
+}
+export function GameArt({mode,motionOff}:{mode:Game;motionOff?:boolean}){
+ const cover=gameArtSources(mode)
+ const image=<img data-arena-art src={cover.src} width={cover.width} height={cover.height} loading="lazy" decoding="async" alt=""/>
+ return <ArenaPreview game={mode} motionOff={motionOff} posterClass={cover.className}>
+  {cover.mobile?<picture><source media="(max-width:640px)" srcSet={cover.mobile}/>{image}</picture>:image}
+ </ArenaPreview>
 }
 
 // Only entries with a finished, checked illustration use this new art family.
 const illustratedGameKeys=new Set<string>(['morris','grass1','hex','remove','knight','auction','codeLock','piece','fence','memoryPoker','exile','cubes','fragments','tower','scale','mancala','bagh','pyramid','equations','rectangles','grass3','spot','secret','divine','point'])
 export const hasIllustratedGame=(game:string)=>illustratedGameKeys.has(game)
+const illustratedSource=(game:string)=>base+'art/seasonal-'+game+'.svg'
 export function IllustratedGame({game,className,loading='lazy'}:{game:string;className?:string;loading?:'lazy'|'eager'}){
- return <img className={className} data-arena-art src={base+'art/seasonal-'+game+'.svg'} width={960} height={540} alt="" loading={loading} decoding="async"/>
+ return <img className={className} data-arena-art src={illustratedSource(game)} width={960} height={540} alt="" loading={loading} decoding="async"/>
 }

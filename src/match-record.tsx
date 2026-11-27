@@ -3,6 +3,8 @@ import {isDuel,type GameView} from './engine'
 import {isPuzzle} from './puzzles'
 import type {Snapshot} from './room'
 import './match-record.css'
+import {KnightResultImageActions,KnightResultPrint} from './knight-result'
+import {knightPrintData} from './knight-result-art'
 
 type RoundMark='move'|'wait'|'watch'|'paused'
 type ResultMark='win'|'draw'|'complete'|'closed'
@@ -78,16 +80,19 @@ export function LeagueStandings({snap,name}:{snap:Snapshot,name:SeatName}){
  </section>
 }
 
-export function MatchRecord({snap,name,active,onExport,onReturn,onNext}:{snap:Snapshot,name:SeatName,active:boolean,onExport:()=>void,onReturn?:()=>void,onNext?:()=>void}){
+export function MatchRecord({snap,name,active,onExport,onReturn,onNext,folio}:{snap:Snapshot,name:SeatName,active:boolean,onExport:()=>void,onReturn?:()=>void,onNext?:()=>void;folio?:ReactNode}){
  if(!snap.game?.done)return null
  const {mark,label}=resultLabel(snap.game)
- return <section className="match-record" aria-label="Match record">
-  <div className="match-record-imprint"><TableSeal kind={mark}/><div><h3>Match record</h3><p>{label}{mark==='win'&&snap.game.winner?' · '+name(snap.game.winner):''}</p></div></div>
+ const knight=knightPrintData(snap.game)
+ const repeat=onNext&&<button className="match-action primary" type="button" disabled={!active} onClick={onNext}><TableMark kind={snap.seriesDone?'rematch':'next'}/>{snap.seriesDone?'Rematch':'Next leg'}</button>
+ return <section className={'match-record'+(knight?' knight-match-record':'')} aria-label="Match record">
+  {knight?<><div className="match-record-imprint"><TableSeal kind={mark}/><h3>Match record{folio}</h3></div><KnightResultPrint result={knight}/></>:<div className="match-record-imprint"><TableSeal kind={mark}/><div><h3>Match record{folio}</h3><p>{label}{mark==='win'&&snap.game.winner?' · '+name(snap.game.winner):''}</p></div></div>}
   <LeagueStandings snap={snap} name={name}/>
   <div className="match-record-actions">
+   {knight&&<><KnightResultImageActions key={snap.match} result={knight}/>{repeat}</>}
    <button className="match-action" type="button" onClick={onExport}><TableMark kind="export"/>Export result</button>
    {onReturn&&<ReturnToLobby active={active} onReturn={onReturn}/>}
-   {onNext&&<button className="match-action primary" type="button" disabled={!active} onClick={onNext}><TableMark kind={snap.seriesDone?'rematch':'next'}/>{snap.seriesDone?'Rematch':'Next leg'}</button>}
+   {!knight&&repeat}
   </div>
  </section>
 }

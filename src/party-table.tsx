@@ -5,9 +5,9 @@ import {gameSearchKey} from './game-search'
 import {GameArt} from './art'
 import {seasons} from './brand'
 import catalog from './catalog.json'
-import {minSeats,titles,type Game} from './engine'
+import {titles,type Game} from './engine'
 import {makeMancala,pitType,plant,sow} from './mancala'
-import type {Snapshot} from './room'
+import {seatRules,type Snapshot} from './room'
 import './party-table.css'
 
 const gallery=catalog.flatMap(row=>row.game&&Object.hasOwn(titles,row.game)?[{...row,game:row.game as Game}]:[])
@@ -87,7 +87,9 @@ export function PartyTable({game,practice,variant,canChoose,online,motionOff,err
  const trigger=useRef<HTMLButtonElement>(null)
  const [open,setOpen]=useState(false)
  useEffect(()=>{if(!online||!canChoose)setOpen(false)},[online,canChoose])
- const people=variant==='episode'?'2 humans':variant==='hold'?'2–16 humans':game==='mancala'?'2–8 players':game==='heavy13'?'2–7 players':game==='grass1'?'2–12 players':minSeats(game)+'–16 players'
+ const {min,max,fixtureSize}=seatRules({game,memoryPokerMode:variant==='episode'?'episode':undefined,auctionMode:variant==='hold'?'hold':undefined},practice)
+ const seats=min===max?String(min):min+'–'+max
+ const people=variant==='episode'||variant==='hold'?seats+' humans':fixtureSize&&max>2?'2 per board · up to '+max+' in a tournament':seats+' players'
  return <section className="party-table" aria-label="Current table" data-party-game={game} data-chapter={row?.season}>
   <div className="party-cover">
    <GameArt mode={game} motionOff={motionOff}/>

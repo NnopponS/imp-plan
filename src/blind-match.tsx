@@ -71,8 +71,9 @@ type Props={
  onExport?:()=>void
  next?:{label:string,run:()=>void}
  extra?:ReactNode
+ resultFolio?:ReactNode
 }
-export function BlindMatchStage({game:g,you,name,active,practice,leg,legs,submit,onReturn,onExport,next,extra}:Props){
+export function BlindMatchStage({game:g,you,name,active,practice,leg,legs,submit,onReturn,onExport,next,extra,resultFolio}:Props){
  const [cover,setCover]=useState<BlindCover|null>(null)
  const [focus,setFocus]=useState(112)
  const [row,setRow]=useState(0),[column,setColumn]=useState(0)
@@ -91,7 +92,7 @@ export function BlindMatchStage({game:g,you,name,active,practice,leg,legs,submit
    <div className="duel-inscription">
     <Seal revealed={g.done}/>
     <div className="duel-signature">
-     <p className="duel-kicker">FAN MODE · Round {leg} of {legs}</p>
+     <p className="duel-kicker">FAN MODE · Round {leg} of {legs}{resultFolio}</p>
      <div role="status" aria-atomic="true"><h2>{title}</h2></div>
      <p className="duel-kind">{g.done?resultDetail:!active?'Table connection interrupted':'Secret Chamber'}</p>
     </div>

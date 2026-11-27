@@ -1,6 +1,7 @@
 import {describe,it,expect} from 'vitest'
 import fc from 'fast-check'
 import {start,move,view,timeout,schedule,botAction} from '../src/engine'
+import {knightPrintData,knightRecordSvg} from '../src/knight-result-art'
 describe('alpha games',()=>{
  it('Blind Gomoku reveals a real line of five and not earlier ownership',()=>{
   let g=start('blind',['a','b'],100,0)
@@ -64,4 +65,45 @@ it('each board engine reaches a terminal state in multiple legal bot-driven matc
   }
   expect(g.done).toBe(true)
  }
+})
+
+it('projects just one completed Knight route and its host-recorded elapsed time',()=>{
+ let g=start('knight',['one','two'],180_000,7000,{size:5,seed:69})
+ let at=7010
+ g=move(g,'two',g.tour[1],at)!
+ expect(view(g,'two').knightElapsedMs).toBeUndefined()
+ for(const cell of g.tour.slice(1)){
+  at+=741
+  g=move(g,'one',cell,at)!
+ }
+ const first=view(g,'one',at+55_000)
+ expect(first.knightElapsedMs).toBe(at-7000)
+ expect(first.path).toEqual(g.tour)
+ const other=view(g,'two',at+55_000)
+ expect(other.knightElapsedMs).toBeUndefined()
+ expect(other.path).toEqual(g.tour.slice(0,2))
+ expect(view(g,'unseated').knightElapsedMs).toBeUndefined()
+ const result=knightPrintData(first)!
+ expect(result.visited).toBe(25)
+ expect(result.complete).toBe(true)
+ expect(result.elapsed).toBe('00:17')
+ const art=knightRecordSvg(result)
+ expect(art.match(/data-visit=/g)).toHaveLength(25)
+ expect(art).toContain('data-visit="1" data-cell="'+g.tour[0]+'"')
+ expect(art).not.toContain('unseated')
+})
+
+it('prints the actual path after undo, not the longest score, and omits timing on partial tours',()=>{
+ let g=start('knight',['Player'],180_000,5000,{size:6,closed:true})
+ for(const [i,cell] of g.tour.slice(1,4).entries())g=move(g,'Player',cell,6000+i)!
+ g=move(g,'Player',-1,7000)!
+ g=timeout(g,g.deadline)
+ const result=knightPrintData(view(g,'Player',g.deadline+999))!
+ expect(result.path).toEqual(g.tour.slice(0,3))
+ expect(result.complete).toBe(false)
+ expect(result.elapsed).toBeNull()
+ expect(view(g,'Player').scores).toEqual([4])
+ expect(knightRecordSvg(result)).not.toMatch(/\bbest\b|00:00/i)
+ expect(knightPrintData({...view(g,'Player'),path:[0,0]})).toBeNull()
+ expect(knightPrintData({...view(g,'Player'),path:[0,1]})).toBeNull()
 })

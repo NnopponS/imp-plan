@@ -6,6 +6,7 @@ const configure=(h:Host,auctionMode?:'sealed'|'hold')=>cmd(h,'host',{kind:'confi
 const setup=()=>{
  let now=1000
  const h=new Host('House',()=>now)
+ expect(configure(h,'hold')).toBeNull()
  const guest=h.join('guest','Guest')!
  const observer=h.join('observer','Observer')!
  return {h,guest,observer,at:(n:number)=>{now=n},begin:()=>{

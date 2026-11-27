@@ -169,3 +169,20 @@
  .room[data-practice-lobby] .party-pick-actions svg{width:13px;height:13px}
  .room[data-practice-lobby] .party-action-bar{margin-top:8px;padding-top:7px}
 }
+
+
+@media(max-width:355px){
+ /* Reserve the right of the masthead for controls. The heading takes the
+    whole second row so a wide fallback font cannot stack both text lines. */
+ .room[data-practice-lobby]{padding-top:8px}
+ .room[data-practice-lobby]>.section-head{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;
+  grid-template-areas:"practice-label room-controls" "practice-title practice-title";
+  align-items:center;gap:1px 4px;margin-bottom:8px;
+ }
+ .room[data-practice-lobby]>.section-head>div:first-child{display:contents}
+ .room[data-practice-lobby]>.section-head .eyebrow{grid-area:practice-label;margin:0}
+ .room[data-practice-lobby]>.section-head h1{grid-area:practice-title;font-size:1.5rem;line-height:1.03}
+ .room[data-practice-lobby] .room-controls{grid-area:room-controls;flex-wrap:nowrap}
+ .room[data-practice-lobby] .table-instruments{margin-top:8px}
+}

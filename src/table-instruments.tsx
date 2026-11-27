@@ -1,6 +1,6 @@
 import {useId,useRef,type CSSProperties,type KeyboardEvent,type ReactNode} from 'react'
 import {fragmentCounts,type FragmentCount} from './fragments'
-import {episodePokerRoster,humanOnly,isHoldAuction,type Settings,type Snapshot} from './room'
+import {episodePokerRoster,humanOnly,isHoldAuction,seatRules,seatCapacity,type Settings,type Snapshot} from './room'
 import './table-instruments.css'
 
 type Instrument={value:string;label:string;face?:string;art?:ReactNode;unavailable?:string;description?:string}
@@ -103,19 +103,26 @@ function Latch({label,face,mark,checked,readOnly,change}:{label:string;face?:str
 }
 
 function SeatLimit({snap,readOnly,episode,config}:{snap:Snapshot;readOnly:boolean;episode:boolean;config:Wire}){
- const game=snap.settings.game
- const max=episode?2:game==='heavy13'?7:game==='mancala'?8:game==='grass1'?12:16
- const min=Math.max(2,snap.seats.length)
- const value=episode?2:snap.settings.capacity
+ const {min:floor,max,fixtureSize}=seatRules(snap.settings)
+ const league=fixtureSize===2&&max>2
+ const value=seatCapacity(snap.settings)
+ const tournament=league&&value>2
+ const min=Math.max(floor,snap.seats.length,tournament?3:0)
+
  return <section className="instrument instrument-seats" aria-label="Seat limit">
+  {league&&<div className="instrument-seat-layout" role="group" aria-label="Table format">
+   <button type="button" aria-pressed={!tournament} disabled={readOnly||snap.seats.length>2} onClick={()=>config({capacity:2})}><Mark name="duel"/> Duel</button>
+   <button type="button" aria-pressed={tournament} disabled={readOnly} onClick={()=>config({capacity:Math.max(3,snap.seats.length)})}><Mark name="fan"/> Tournament</button>
+  </div>}
   <div className="instrument-seat-top">
    <span className="instrument-name">Seat limit</span>
    <div className="instrument-stepper">
-    {!readOnly&&!episode&&<button type="button" aria-label="Decrease seat limit" disabled={value<=min} onClick={()=>config({capacity:value-1})}>−</button>}
+    {!readOnly&&!episode&&(!league||tournament)&&<button type="button" aria-label="Decrease seat limit" disabled={value<=min} onClick={()=>config({capacity:value-1})}>−</button>}
     <strong aria-label={value+' seats allowed'}>{value}</strong>
-    {!readOnly&&!episode&&<button type="button" aria-label="Increase seat limit" disabled={value>=max} onClick={()=>config({capacity:value+1})}>+</button>}
+    {!readOnly&&!episode&&(!league||tournament)&&<button type="button" aria-label="Increase seat limit" disabled={value>=max} onClick={()=>config({capacity:value+1})}>+</button>}
    </div>
   </div>
+  {tournament&&<small>2 on each board · up to {value*(value-1)} legs</small>}
   <div className="instrument-seat-marks" aria-hidden="true">{Array.from({length:max},(_,i)=>{
    const seat=snap.seats[i]
    return <i key={i} data-mark={seat?(seat.bot?'bot':'occupied'):i<value?'open':'closed'}/>

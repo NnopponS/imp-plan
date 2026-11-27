@@ -1,0 +1,38 @@
+/* The paper record is a self-contained SVG so the PNG is exactly what this print shows. */
+.match-record.knight-match-record{
+ display:grid;grid-template-columns:minmax(0,1fr);grid-template-areas:"seal" "print" "controls";
+ justify-items:center;align-items:center;gap:10px;
+ padding:clamp(9px,2vw,18px);border-color:#8b6849;
+ background:radial-gradient(ellipse at 29% 41%,#59442d,#29211a 74%);
+}
+/* Keep the decorative border inside the panel's scroll box and reserve a row for its folio. */
+body .room[data-playing] .match-record.knight-match-record::before{inset:0}
+.knight-match-record .match-record-imprint{grid-area:seal;justify-self:center}
+.knight-result-print{grid-area:print;min-width:0;width:min(100%,365px);margin:0;display:block}
+.knight-result-print>img{
+ display:block;width:100%;height:auto;aspect-ratio:460/684;
+ border:1px solid #d6aa79;border-radius:2px;box-shadow:1px 9px 26px #150a07a6
+}
+.match-record.knight-match-record .match-record-actions{
+ grid-area:controls;display:grid;width:min(100%,365px);
+ grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch;gap:7px;
+ border:0;padding:0
+}
+.knight-match-record .match-record-actions>.match-action{padding-inline:6px;min-width:0}
+.knight-match-record .match-record-actions>.knight-result-image{grid-area:1/1;color:#f6d49c}
+.knight-match-record .match-record-actions>.primary{grid-area:1/2}
+.knight-match-record .match-record-actions:not(:has(.primary))>.knight-result-image{grid-column:1/-1}
+.knight-match-record .match-record-actions>.knight-result-message{
+ grid-column:1/-1;color:#f0d4a7;text-align:left;font-size:.78rem;line-height:1.25
+}
+.knight-match-record .knight-result-message:empty{position:absolute;clip-path:inset(50%);width:1px;height:1px;overflow:hidden}
+.knight-result-print:focus-visible{outline:2px solid #ffe3a7;outline-offset:3px}
+@media(min-width:700px){
+ .match-record.knight-match-record{
+  grid-template-columns:minmax(0,365px) minmax(0,290px);grid-template-areas:"seal seal" "print controls";
+  justify-content:center;column-gap:clamp(12px,3.8vw,40px);justify-items:stretch
+ }
+}
+@media(min-width:700px) and (max-height:500px){
+ .knight-result-print{width:min(100%,calc((100dvh - 96px) * .6725));justify-self:center}
+}

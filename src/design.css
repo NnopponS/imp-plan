@@ -38,14 +38,5 @@ html{scroll-padding-top:18px}
 .pit-0 {--pit:#902f37}.pit-1 {--pit:#36586a}.pit-2 {--pit:#51704d}.pit-3 {--pit:#ad773b}.pit-4 {--pit:#4f433b}
 .pit[aria-pressed=true],.pit.landing {outline:2px solid #6a3831;outline-offset:1px}
 .pit b {display:inline-grid;place-items:center;min-width:1rem;min-height:1rem;background:#52382b;color:white;border-radius:50%;font-size:.64rem;margin:1px}
-.bagh-board {position:relative;width:min(100%,28rem);aspect-ratio:1;margin:1rem auto;background:#ede0c7;border:1px solid #ad9474;border-radius:1.2rem}
-.bagh-board svg {position:absolute;inset:0;width:100%;height:100%}
-.bagh-board line {stroke:#957750;stroke-width:.5}
-.bagh-board .bagh-node {position:absolute;translate:-50% -50%;width:13%;aspect-ratio:1;display:grid;place-items:center;padding:0;border-radius:50%;min-width:0;min-height:0}
-.bagh-node[aria-disabled=true] {cursor:default}
-.bagh-board .bagh-1 {background:#f9eed7;color:#442522}
-.bagh-board .bagh-2 {background:#63312e;color:#fff2df}
-.bagh-board .bagh-0 {background:#ceb58d;color:#573c22}
-.bagh-node[aria-pressed=true] {outline:3px solid #65342a;outline-offset:2px}
 .secret-notebook {padding:.5rem 1rem;background:#f3e8d4;border:1px solid #d4c09f;border-radius:1rem;margin-block:1rem}
 .secret-notebook details p {overflow-wrap:anywhere}

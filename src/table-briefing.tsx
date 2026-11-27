@@ -7,6 +7,7 @@ import {WallGoLesson} from './wall-go-ui'
 import {hasIllustratedGame,IllustratedGame} from './art'
 import {EngravedRule,hasEngravedRule} from './engraved-rule'
 import {HexBriefing} from './hex-briefing'
+import {FolioTransition} from './stage-folio'
 import './table-briefing.css'
 
 const seatText=(n:number,s:string)=>n+' '+s+(n===1?'':'s')
@@ -21,7 +22,7 @@ function Seats({seats}:{seats:Seat[]}){
   </div>
  </div>
 }
-export function TableBriefing({game,seats,caption,close,start,variant,mechanic,setupHint,motionOff=false}:{game:Game;seats:Seat[];caption:string;mechanic?:ReactNode;setupHint?:string;motionOff?:boolean;close:()=>void;start?:{enabled:boolean;confirm:()=>void};variant?:{label:string;rules:string;demo:(step:number)=>ReactNode}}){
+export function TableBriefing({game,seats,caption,close,start,variant,mechanic,setupHint,hold=false,motionOff=false}:{game:Game;hold?:boolean;seats:Seat[];caption:string;mechanic?:ReactNode;setupHint?:string;motionOff?:boolean;close:()=>void;start?:{enabled:boolean;confirm:()=>void};variant?:{label:string;rules:string;demo:(step:number)=>ReactNode}}){
  const dialog=useRef<HTMLDialogElement>(null)
  const [step,setStep]=useState(0)
  const [reduced,setReduced]=useState(()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches)
@@ -47,7 +48,7 @@ export function TableBriefing({game,seats,caption,close,start,variant,mechanic,s
  const scene=uniquePreview??diagram??(!start&&mechanic?mechanic:hasPoster?<IllustratedGame game={game} className="brief-theater-poster" loading="eager"/>:null)
  return <dialog ref={dialog} className="briefing briefing-theater" aria-labelledby="brief-game" data-brief-game={game} data-motion-off={staticScene||undefined} onCancel={e=>{e.preventDefault();close()}}>
   <div className="brief-head">
-   <div><p className="eyebrow">{start?'TABLE BRIEFING':'RULES PREVIEW'} · {variant?.label??'FAN RULES'}</p><h2 id="brief-game">{titles[game]}</h2></div>
+   <div><p className="eyebrow">{start?'TABLE BRIEFING':'RULES PREVIEW'} · {variant?.label??'FAN RULES'}<FolioTransition scene={{phase:start?'brief':'rules',game,hold}} motionOff={staticScene}/></p><h2 id="brief-game">{titles[game]}</h2></div>
    <button type="button" className="brief-back" data-chamber-next={!start||undefined} onClick={close}>{start?'Back to setup':'Back to lobby'}</button>
   </div>
   {game==='blind'&&<ChamberEntrance/>}

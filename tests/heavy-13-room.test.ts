@@ -72,6 +72,7 @@ test('bots can privately lock without a public revision, then auto-play their re
 test('sets 2–7 native limits, refuses preexisting oversized rooms, and clock resolves disconnected seats',()=>{
  for(let n=2;n<=7;n++)expect(table(n).hv().seats).toHaveLength(n)
  const h=new Host('Ada',()=>1000)
+ expect(h.command('host','auction',h.rev,{kind:'config',settings:{...h.settings,game:'auction'}})).toBeNull()
  for(let i=0;i<7;i++)expect(h.join('g'+i,'Guest '+i)).not.toBeNull()
  expect(h.command('host','large',h.rev,{kind:'config',settings:{...h.settings,game:'heavy13'}})).toMatch(/seven/i)
  const game=table(2)

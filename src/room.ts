@@ -5,7 +5,7 @@ import {memoryDuelDeal} from './memory-duel'
 import {isGrass} from './grass'
 import {isPuzzle} from './puzzles'
 import {z} from 'zod'
-import {start,move,heavy13Slot,playHeavy13,schedule,view,timeout,blindCoverAction,botAction,botLevels,isDuel,minSeats,secretBotIntentKey,simultaneous,redealMemoryDuel,syncTimeHold,openMontageRound,submitMontageBuzz,type State,type Game,type GameView} from './engine'
+import {start,move,titles,heavy13Slot,playHeavy13,schedule,view,timeout,blindCoverAction,botAction,botLevels,isDuel,minSeats,secretBotIntentKey,simultaneous,redealMemoryDuel,syncTimeHold,openMontageRound,submitMontageBuzz,type State,type Game,type GameView} from './engine'
 const codeAlphabet='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
 export const roomCode=()=>Array.from(crypto.getRandomValues(new Uint8Array(6)),x=>codeAlphabet[x&31]).join('')
 export const validCode=(x:string)=>/^[A-HJ-NP-Z2-9]{6}$/.test(x)
@@ -21,7 +21,7 @@ export function nickname(value:string):string|null{
  const n=[...new Intl.Segmenter('en',{granularity:'grapheme'}).segment(s)].length
  return n>=1&&n<=24?s:null
 }
-const settings=z.strictObject({game:z.enum(['blind','morris','auction','point','remove','knight','hex','rectangles','mancala','cubes','bagh','secret','grass1','grass3','exile','divine','equations','codeLock','pyramid','fragments','spot','scale','fence','tower','piece','memoryPoker','wallGo','montage','heavy13']),seconds:z.number().int().min(10).max(900),size:z.union([z.literal(5),z.literal(6),z.literal(8)]).optional(),closed:z.boolean().optional(),divineSide:z.union([z.literal(3),z.literal(5),z.literal(7)]).optional(),divineHard:z.boolean().optional(),fragmentStrict:z.boolean().optional(),fragmentCount:z.union([z.literal(8),z.literal(12),z.literal(16),z.literal(24)]).optional(),capacity:z.number().int().min(2).max(16),locked:z.boolean(),botLevel:z.enum(botLevels).optional(),memoryPokerPeek:z.boolean().optional(),memoryPokerMode:z.enum(['fan','episode']).optional(),auctionMode:z.enum(['sealed','hold']).optional()})
+const settings=z.strictObject({game:z.enum(['blind','morris','auction','point','remove','knight','hex','rectangles','mancala','cubes','bagh','secret','grass1','grass3','exile','divine','equations','codeLock','pyramid','fragments','spot','scale','fence','tower','piece','memoryPoker','wallGo','montage','heavy13']),seconds:z.number().int().min(10).max(900),size:z.union([z.literal(5),z.literal(6),z.literal(8)]).optional(),closed:z.boolean().optional(),divineSide:z.union([z.literal(3),z.literal(5),z.literal(7)]).optional(),divineHard:z.boolean().optional(),fragmentStrict:z.boolean().optional(),fragmentCount:z.union([z.literal(8),z.literal(12),z.literal(16),z.literal(24)]).optional(),capacity:z.number().int().min(1).max(16),locked:z.boolean(),botLevel:z.enum(botLevels).optional(),memoryPokerPeek:z.boolean().optional(),memoryPokerMode:z.enum(['fan','episode']).optional(),auctionMode:z.enum(['sealed','hold']).optional()})
 const montageMatch=z.string().regex(/^[a-f0-9]{32}$/)
 const montageRound=z.number().int().min(1).max(montageRules.rounds)
 const heavyMatch=z.string().regex(/^[a-f0-9]{32}$/)
@@ -52,13 +52,45 @@ const secureIndex=(upper:number)=>{
 const liveMemoryDeal=()=>memoryDuelDeal(secureIndex)
 export const episodePokerRules='Study sixteen cards for twenty seconds. After the board turns over, three shared cards appear. Privately lock two positions within sixty seconds to complete your five-card hand. Exact ties deal a fresh board. No betting.'
 export const episodePokerRoster=(seats:readonly {bot:boolean;online:boolean}[])=>seats.length===2&&seats.every(s=>s.online&&!s.bot)
-const isEpisodePoker=(config:Settings)=>config.game==='memoryPoker'&&config.memoryPokerMode==='episode'
+const isEpisodePoker=(config:Pick<Settings,'game'|'memoryPokerMode'>)=>config.game==='memoryPoker'&&config.memoryPokerMode==='episode'
 export const holdAuctionRules='Start with ten minutes for nineteen rounds. Press and hold during the countdown to enter; release before five seconds to pass for free. At five seconds or more, your full held time is spent. The highest hold wins a token only if untied. Final standings use tokens, then time left. An interrupted hold cannot win.'
-export const isHoldAuction=(config:Settings)=>config.game==='auction'&&config.auctionMode==='hold'
+export const isHoldAuction=(config:Pick<Settings,'game'|'auctionMode'>)=>config.game==='auction'&&config.auctionMode==='hold'
 export type Command=z.infer<typeof schema>
 export type Settings=z.infer<typeof settings>
 export const humanOnly=(g:Game)=>g==='knight'||g==='divine'||g==='codeLock'||g==='pyramid'||g==='fragments'||g==='spot'||g==='scale'||g==='fence'||g==='tower'||g==='piece'||g==='memoryPoker'||g==='montage'||isPuzzle(g)
-export const defaults:Settings={game:'blind',seconds:25,capacity:16,locked:false,botLevel:'normal'}
+// Room limits for the available fan tables, not contestant counts from the show.
+const partyMaximum={
+ blind:4,morris:4,point:4,equations:4,wallGo:4,bagh:2,
+ auction:16,remove:16,knight:16,hex:16,rectangles:16,cubes:16,exile:16,
+ grass1:12,grass3:16,mancala:8,secret:16,divine:16,codeLock:16,pyramid:16,
+ fragments:8,spot:16,scale:6,fence:16,tower:8,piece:4,memoryPoker:16,montage:16,heavy13:7,
+} as const satisfies Record<Game,number>
+type SeatMode=Pick<Settings,'game'|'memoryPokerMode'|'auctionMode'>
+/** Occupied seats for this room (participants plus any supported bots); fixtures still use two participants. */
+export function seatRules(settings:SeatMode,solo=false):{min:number,max:number,fixtureSize?:2}{
+ const {game}=settings,episode=isEpisodePoker(settings),duel=isDuel(game)
+ if(episode)return {min:2,max:2,fixtureSize:2}
+ const min=solo?minSeats(game,true):Math.max(2,minSeats(game))
+ const max=solo?(humanOnly(game)?1:duel?2:partyMaximum[game]):partyMaximum[game]
+ return duel?{min,max,fixtureSize:2}:{min,max}
+}
+export const defaults:Settings={game:'blind',seconds:25,capacity:2,locked:false,botLevel:'normal'}
+export function seatCapacity(settings:SeatMode&Pick<Settings,'capacity'>,solo=false){
+ const {min,max}=seatRules(settings,solo)
+ return Math.max(min,Math.min(max,settings.capacity))
+}
+const seatCountWords:Readonly<Partial<Record<number,string>>>={4:'four',6:'six',7:'seven',8:'eight',12:'twelve'}
+const tooManySeats=(game:Game,min:number,max:number)=>titles[game]+(min===max?' seats '+max+' players.':' seats up to '+(seatCountWords[max]??max)+' players.')+' Remove extra seats first.'
+export function seatStartError(settings:Settings,seats:readonly Pick<Seat,'bot'|'online'|'ready'>[],solo=false){
+ const {min,max}=seatRules(settings,solo)
+ if(isEpisodePoker(settings)&&(solo||!episodePokerRoster(seats)))return 'Episode-style duel needs exactly two connected human players.'
+ if(seats.length>max)return tooManySeats(settings.game,min,max)
+ if(seats.length>seatCapacity(settings,solo))return 'The table is above its seat limit. Remove extra seats first.'
+ if(seats.length<min||seats.some(s=>!s.ready||!s.online))return 'More connected, ready seats are needed.'
+ if(isHoldAuction(settings)&&(solo||seats.some(s=>s.bot)))return 'Hold & release needs connected human players only.'
+ if(humanOnly(settings.game)&&seats.some(s=>s.bot))return 'Remove the bots before starting this puzzle.'
+ return null
+}
 const wire=z.discriminatedUnion('type',[
  z.strictObject({version:z.literal(1),type:z.literal('hello'),name:z.string().max(160),token:z.string().regex(/^[a-f0-9]{32}$/).optional(),appearance:z.unknown().optional().transform(appearancePreset)}),
  z.strictObject({version:z.literal(1),type:z.literal('command'),epoch:z.string().length(32),match:z.string().max(32),seq:z.number().int().positive().max(1e8),request:z.string().length(32),rev:z.number().int().nonnegative(),command:schema}),
@@ -97,6 +129,7 @@ export class Host{
  private lastChat=new Map<string,number>()
  constructor(name:string,clock=()=>Date.now(),private readonly solo=false,appearance?:number){
   this.clock=clock
+  this.settings.capacity=seatCapacity(this.settings,this.solo)
   this.seats=[{id:this.owner,name,ready:true,bot:false,online:true,token:'',connection:'host',appearance:this.assignAppearance(appearance)}]
  }
  join(connection:string,raw:string,token?:string,appearance?:number){
@@ -110,7 +143,7 @@ export class Host{
    s.connection=connection;s.online=true;s.token=id();this.rev++
    return {id:s.id,token:s.token,old}
   }
-  if(this.game||this.settings.locked||this.seats.length>=(isEpisodePoker(this.settings)?2:this.settings.capacity))return null
+  if(this.solo||this.game||this.settings.locked||this.seats.length>=seatCapacity(this.settings,this.solo))return null
   const seat={id:id(),name,ready:false,bot:false,online:true,token:id(),connection,appearance:this.assignAppearance(appearance)}
   this.seats.push(seat);this.rev++
   return {id:seat.id,token:seat.token,old:''}
@@ -239,25 +272,27 @@ export class Host{
    if(isHoldAuction(changes)&&this.solo)return 'Hold & release needs two or more connected human players.'
    if(isHoldAuction(changes)&&this.seats.some(s=>s.bot))return 'Remove the bots before selecting Hold & release.'
    if(isEpisodePoker(changes)&&(this.solo||!episodePokerRoster(this.seats)))return 'Episode-style duel needs exactly two connected human players.'
-   const reseat=this.solo&&changes.game!==this.settings.game
+   const gameChanged=changes.game!==this.settings.game
+   const variantChanged=isEpisodePoker(changes)!==isEpisodePoker(this.settings)||isHoldAuction(changes)!==isHoldAuction(this.settings)
+   const reseat=this.solo&&gameChanged
    const roster=reseat?this.seats.filter(s=>!s.bot):this.seats
-   const nativeMax=changes.game==='heavy13'?7:changes.game==='mancala'?8:changes.game==='grass1'?12:16
-   const capacity=reseat?nativeMax:Math.min(changes.capacity,nativeMax)
-   if(changes.game==='heavy13'&&roster.length>nativeMax)return 'Heavy 13 seats up to seven players. Remove extra seats first.'
-   if(changes.game==='mancala'&&roster.length>nativeMax)return 'Balance Mancala seats up to eight players. Remove extra seats first.'
-   if(changes.game==='grass1'&&roster.length>nativeMax)return 'Laying Grass seats up to twelve players.'
+   const {min,max,fixtureSize}=seatRules(changes,this.solo)
+   if(roster.length>max)return tooManySeats(changes.game,min,max)
+   if(humanOnly(changes.game)&&roster.some(s=>s.bot))return 'Remove the bots before selecting this human-only table.'
+   // A carried limit belongs to the previous table; a deliberate new limit is honored.
+   const capacity=reseat||(gameChanged||variantChanged)&&changes.capacity===this.settings.capacity?(fixtureSize?Math.max(min,roster.length):max):seatCapacity(changes,this.solo)
    if(capacity<roster.length)return 'Capacity cannot be below the current roster.'
    const seconds=(changes.game==='wallGo'||changes.game==='heavy13')&&this.settings.game!==changes.game?25:changes.game==='fence'||changes.game==='tower'||changes.game==='piece'?240:changes.game==='scale'?300:changes.game==='spot'?90:changes.game==='fragments'?20:changes.game==='pyramid'?45:changes.game==='codeLock'?180:changes.game==='divine'?(this.settings.game!=='divine'?600:Math.max(60,changes.seconds)):changes.game==='knight'?Math.max(180,Math.min(480,changes.seconds)):changes.game==='hex'?20:changes.game==='rectangles'?45:changes.game==='cubes'?25:changes.game==='exile'?90:changes.game==='secret'&&this.settings.game!=='secret'?90:Math.min(90,changes.seconds)
    this.settings={...changes,auctionMode:changes.game==='auction'?changes.auctionMode:undefined,memoryPokerMode:changes.game==='memoryPoker'?changes.memoryPokerMode:undefined,botLevel:changes.botLevel??'normal',capacity,seconds,closed:changes.size===5||!changes.size?false:changes.closed}
    if(this.solo){
     if(changes.game==='divine')this.settings.divineSide??=3
     this.seats=roster
-    for(let i=this.seats.length;i<minSeats(changes.game,this.solo);i++)this.addBot()
+    for(let i=this.seats.length;i<min;i++)this.addBot()
    }
    return null
   }
   if(c.kind==='bot'){
-   if(this.seats.length>=this.settings.capacity)return 'The room is full.'
+   if(this.seats.length>=seatCapacity(this.settings,this.solo))return 'The room is full.'
    if(isHoldAuction(this.settings))return 'Hold & release uses human seats only.'
    if(humanOnly(this.settings.game))return 'This puzzle uses human seats only.'
    this.addBot()
@@ -267,10 +302,8 @@ export class Host{
    if(c.seat===this.owner||!this.seats.some(s=>s.id===c.seat))return 'That seat cannot be removed.'
    this.seats=this.seats.filter(s=>s.id!==c.seat);this.requests.delete(c.seat);this.lastChat.delete(c.seat);return null
   }
-  if(isEpisodePoker(this.settings)&&(this.solo||!episodePokerRoster(this.seats)))return 'Episode-style duel needs exactly two connected human players.'
-  if(this.seats.length<minSeats(this.settings.game,this.solo)||this.seats.some(s=>!s.ready||!s.online))return 'More connected, ready seats are needed.'
-  if(isHoldAuction(this.settings)&&(this.solo||this.seats.some(s=>s.bot)))return 'Hold & release needs connected human players only.'
-  if(humanOnly(this.settings.game)&&this.seats.some(s=>s.bot))return 'Remove the bots before starting this puzzle.'
+  const seating=seatStartError(this.settings,this.seats,this.solo)
+  if(seating)return seating
   this.prepare(false);this.begin();return null
  }
  private assignAppearance(requested?:number){

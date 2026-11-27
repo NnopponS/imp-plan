@@ -1,0 +1,66 @@
+/* Ink and paper in the heading's existing type line. Never animate the live surface. */
+.stage-folio-slot{
+ position:relative;display:inline-block;vertical-align:baseline;
+ inline-size:0;block-size:0;line-height:0;pointer-events:none;user-select:none;
+}
+.stage-folio{
+ --fold:polygon(0 0,9% 6%,14% 92%,0 100%);
+ --lift:translateX(-5px) skewY(-3deg);
+ --out:translateX(4px);
+ --ink:#e2bd80;
+ display:block;position:absolute;inset-inline-start:.45rem;inset-block-end:-.35rem;
+ inline-size:clamp(52px,15vw,96px);block-size:23px;isolation:isolate;overflow:hidden;
+ clip-path:polygon(2% 22%,8% 5%,90% 5%,98% 22%,98% 76%,90% 95%,8% 95%,2% 80%);
+ color:var(--ink);background:linear-gradient(104deg,#312119,#6e482d 53%,#30221b);
+ animation:stage-folio-leaf var(--folio-time) cubic-bezier(.2,.6,.35,1) both;
+}
+.stage-folio picture,.stage-folio .stage-folio-edge{position:absolute;inset:0;display:block;width:100%;height:100%}
+.stage-folio picture{overflow:hidden}
+.stage-folio img{width:100%;height:100%;display:block;object-fit:cover;object-position:center 57%}
+.stage-folio::after{content:'';position:absolute;inset:0;z-index:0;background:linear-gradient(90deg,#2519109c,transparent 33% 62%,#261c119e);pointer-events:none}
+.stage-folio-edge{z-index:1;stroke:currentColor;stroke-width:1}
+.stage-folio-engrave{stroke-width:.55;opacity:.78}
+.stage-folio :is(.game-token,.folio-mark,svg:last-child:not(.stage-folio-edge)){
+ position:absolute;z-index:2;inset-block-start:3px;inset-inline-start:calc(50% - 8px);
+ inline-size:16px;block-size:16px;
+}
+.stage-folio .game-token+svg:last-child{inset-inline-start:auto;inset-inline-end:6px;inline-size:11px;block-size:11px;inset-block-start:6px}
+.stage-folio[data-folio-venue=prison],.stage-folio[data-folio-venue=secret]{
+ --fold:polygon(0 0,100% 0,93% 15%,7% 15%);--lift:translateY(-5px);--out:translateY(-4px);
+ --ink:#e1b295;
+}
+.stage-folio[data-folio-venue=exile],.stage-folio[data-folio-stage=invite]{
+ --fold:polygon(91% 4%,100% 0,100% 100%,88% 88%);--lift:translateX(5px) skewY(3deg);--out:translateX(-4px);
+ --ink:#cff0cb;
+}
+.stage-folio:is([data-folio-stage=brief],[data-folio-stage=rules]){inset-block-end:-.24rem}
+.stage-folio[data-folio-venue=final],.stage-folio[data-folio-stage=result]{
+ --fold:polygon(45% 16%,55% 16%,55% 84%,45% 84%);--lift:scale(.86);--out:scale(.98);
+ --ink:#f4d49d;
+}
+.stage-folio[data-folio-stage=match]{
+ --fold:polygon(2% 85%,98% 85%,98% 100%,2% 100%);--lift:translateY(5px);--out:translateY(4px);
+}
+.stage-folio[data-folio-stage=result]{inset-block-end:-.17rem}
+@keyframes stage-folio-leaf{
+ from{clip-path:var(--fold);transform:var(--lift);opacity:.7}
+ 40%,75%{clip-path:polygon(2% 0,98% 0,98% 100%,2% 100%);transform:none;opacity:1}
+ to{clip-path:polygon(2% 0,98% 0,98% 100%,2% 100%);transform:var(--out);opacity:0}
+}
+/* The briefing itself no longer slides. Enter is stable as soon as it exists. */
+.briefing.briefing-theater[open]{animation:none}
+[data-game-motion=off] .stage-folio-slot{display:none}
+@media(prefers-reduced-motion:reduce){.stage-folio-slot{display:none}}
+@media(max-width:540px){
+ .stage-folio{inline-size:46px;block-size:18px;inset-block-end:-.25rem}
+ .stage-folio :is(.game-token,.folio-mark,svg:last-child:not(.stage-folio-edge)){inline-size:12px;block-size:12px;inset-inline-start:calc(50% - 6px)}
+ .stage-folio .game-token+svg:last-child{inset-inline-start:auto;inset-inline-end:3px;inline-size:8px;block-size:8px;inset-block-start:5px}
+ /* Narrow dialogs have a second header action; the printed slip occupies only the heading gap. */
+ .briefing .stage-folio{inline-size:36px;inset-inline-start:.28rem}
+ .briefing .stage-folio .game-token+svg:last-child{display:none}
+}
+.invite-desk .front-copy{position:relative}
+.invite-folio-line{position:absolute;inset-block-start:0;inset-inline-start:0;line-height:0;pointer-events:none}
+.stage-folio[data-folio-stage=party]:not([data-folio-venue=secret],[data-folio-venue=prison]){
+ --fold:polygon(85% 5%,100% 0,100% 100%,85% 95%);--lift:translateX(5px) skewY(3deg);--out:translateX(-4px);
+}

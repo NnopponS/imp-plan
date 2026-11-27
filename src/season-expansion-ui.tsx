@@ -1,29 +1,7 @@
 import React,{useEffect,useState} from 'react'
-import {baghEdges} from './bagh'
 import {buyer,candidates,contactAction,guessAction,ticketNames} from './secret'
-import type {GameView} from './engine'
 import type {Snapshot} from './room'
-export function BaghBoard({g,you,active,submit}:{g:GameView,you:string,active:boolean,submit:(a:number|{from:number,to:number})=>void}){
- const b=g.bagh!,role=g.seats.indexOf(you)
- const [from,setFrom]=useState<number|null>(null)
- const mine=active&&!g.done&&g.turn===you
- const enabled=(i:number)=>mine&&(g.legal.includes(i)||g.legal.some(a=>typeof a==='object'&&(a.from===i||a.from===from&&a.to===i)))
- const fire=(i:number)=>{
-  if(!enabled(i))return
-  if(g.legal.includes(i))submit(i)
-  else if(g.legal.some(a=>typeof a==='object'&&a.from===from&&a.to===i)){submit({from:from!,to:i});setFrom(null)}
-  else setFrom(from===i?null:i)
- }
- const pos=(i:number)=>[10+i%5*20,10+Math.floor(i/5)*20]
- return <div>
-  <p>{role<0?'Spectating.':'You play '+(role===0?'goats.':'tigers.')} Goats to place: <strong>{b.banked}</strong> · Captures: <strong>{b.captured}/5</strong></p>
-  <p>{b.banked>0&&g.turn===g.seats[0]?'Goats: choose an open intersection.':'Choose a piece, then choose an open destination on a marked line.'}</p>
-  <div className="bagh-board" role="group" aria-label="Bagh Chal board">
-   <svg viewBox="0 0 100 100" aria-hidden="true">{baghEdges.map(([a,c])=><line key={a+':'+c} x1={pos(a)[0]} y1={pos(a)[1]} x2={pos(c)[0]} y2={pos(c)[1]}/>)}</svg>
-   {b.board.map((v,i)=><button key={i} type="button" className={'bagh-node bagh-'+v} aria-disabled={!enabled(i)} aria-pressed={i===from} aria-label={`Row ${1+Math.floor(i/5)}, column ${1+i%5}, ${v===2?'tiger':v===1?'goat':'open'}`} style={{left:pos(i)[0]+'%',top:pos(i)[1]+'%'}} onClick={()=>fire(i)}>{v===2?'T':v===1?'G':'·'}</button>)}
-  </div>
- </div>
-}
+export {BaghBoard} from './bagh-ui'
 export function SecretBoard({snap,active,submit,name}:{snap:Snapshot,active:boolean,submit:(a:number)=>void,name:(s:string)=>string}){
  const g=snap.game!,v=g.secret!,i=g.seats.indexOf(snap.you)
  const [other,setOther]=useState('')

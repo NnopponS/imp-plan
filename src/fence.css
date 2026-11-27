@@ -1,13 +1,147 @@
-.fence-game{display:grid;gap:.65rem;min-width:0}
-.fence-game p{margin:0}
-.fence-grid{position:relative;max-width:500px;width:100%;aspect-ratio:1;margin:0 auto}
-.fence-grid svg{display:block;width:100%;height:auto;filter:drop-shadow(0 3px 5px #6f543420)}
-.fence-grid .fence-edge{all:unset;position:absolute;transform:translate(-50%,-50%);border-radius:5px;cursor:pointer;touch-action:manipulation}
-.fence-grid .horizontal{width:11%;height:5.8%}
-.fence-grid .vertical{width:5.8%;height:11%}
-.fence-grid .fence-edge:not(:disabled):hover{background:#2c836326}
-.fence-grid .fence-edge:focus-visible{outline:2px solid #8a371c;outline-offset:2px}
-.fence-game button[aria-pressed=true]{background:#deeade;border-color:#186056;color:#163d34}
-.fence-clues,.fence-results li{padding:.55rem .7rem;border-radius:8px;background:#f9efdd}
-.fence-results{display:grid;gap:.4rem;padding:0;list-style:none}
-.fence-results li{display:flex;justify-content:space-between;gap:.6rem;flex-wrap:wrap}
+/* The artwork is the actual playing surface. The etched lines under each
+   button share its geometry; no decorative scene duplicates the board. */
+.room[data-game=fence] .match{
+ color-scheme:dark;
+ --ink:#f8e8cc;--sub:#d7bea6;--line:#7c5c47;--paper:#302622;--green:#f0c589;
+ background:var(--etch-ink,none) repeat,radial-gradient(ellipse at 31% 19%,#45332c,#2a211f 79%);
+ border-color:#826247;border-top-color:#c19868;color:var(--ink);
+}
+.room[data-game=fence] .match>.eyebrow{color:#d9b789;margin-bottom:4px}
+.room[data-game=fence] .match>details>summary{width:fit-content;min-height:44px;padding-block:13px 8px}
+.fence-game{
+ --slate-gold:#e4ba7f;--slate-muted:#dac3ab;--slate-red:#f5a295;
+ display:grid;grid-template-columns:minmax(0,1fr);gap:8px;min-width:0;
+}
+.fence-instruments{min-width:0;display:grid;align-content:start;gap:6px;color:var(--ink)}
+.fence-caption{
+ display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0;
+ padding:2px 0 4px;border-bottom:1px solid #966f528f;
+}
+.fence-caption strong{font:normal clamp(1.15rem,3vw,1.42rem)/1.08 Georgia,serif;letter-spacing:-.015em}
+.fence-clock{
+ display:inline-flex;align-items:center;gap:5px;flex:none;
+ color:#f5d29d;font:700 .85rem/1 Georgia,serif;font-variant-numeric:tabular-nums;
+}
+.fence-clock[data-low]{color:var(--slate-red)}
+.fence-game :is(.fence-clock,.fence-toolbar,.fence-clues,.fence-progress) svg{
+ width:17px;height:17px;display:block;flex:none;color:var(--slate-gold);
+}
+.fence-clock[data-low] svg{color:currentColor}
+.fence-status{margin:0;color:var(--slate-muted);font-size:.79rem;line-height:1.34}
+.fence-toolbar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;min-width:0}
+.room[data-game=fence] .match .fence-toolbar button{
+ display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;min-width:44px;
+ padding:6px 8px;color:#efd6b3;font-size:.8rem;line-height:1.15;text-align:center;
+ border:1px solid #987148;border-radius:4px 8px 3px 6px;
+ background:var(--etch-ink,none) repeat,linear-gradient(157deg,#4a372d,#302523 79%);
+}
+.room[data-game=fence] .match .fence-toolbar button[aria-pressed=true]{
+ color:#fff2ce;border-color:#e3bb7b;
+ background:var(--etch-ink,none) repeat,linear-gradient(152deg,#694d36,#4a3329);
+ text-decoration:underline;text-decoration-color:#e1b479;text-underline-offset:4px;
+}
+.room[data-game=fence] .match .fence-toolbar button:hover:not(:disabled){
+ color:#fff5d5;border-color:#efcd8b;background:var(--etch-ink,none) repeat,#604730;
+}
+.fence-toolbar button:only-child{grid-column:1/-1}
+.fence-toolbar button:nth-child(2) svg{color:var(--slate-red)}
+.fence-progress{
+ display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:5px;
+ min-width:0;padding:3px 4px;color:var(--slate-muted);font-size:.75rem;
+}
+.fence-progress strong{font-variant-numeric:tabular-nums;color:#fbe0a7}
+
+.fence-grid{
+ position:relative;isolation:isolate;max-width:550px;width:100%;min-width:0;
+ aspect-ratio:1;margin:0 auto;line-height:0;
+ border-radius:15px;color:#dec099;
+}
+.fence-drawing{display:block;width:100%;height:100%;pointer-events:none;overflow:hidden}
+.fence-drawing path{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.fence-drawing .fence-groove{stroke:#9a8068;stroke-width:1.24;opacity:.76}
+.fence-drawing .fence-ink-depth{stroke:#221b20;stroke-width:7.5}
+.fence-drawing .fence-ink-line{stroke:#efc787;stroke-width:4.6}
+.fence-drawing .fence-ink-cross{stroke:#f5ae9c;stroke-width:2.3}
+.fence-drawing .fence-pin{fill:#d1a26e;stroke:#261b22;stroke-width:.82}
+.fence-clue-glyph{fill:#f4e2c6;font:normal 21px Georgia,serif;font-variant-numeric:lining-nums}
+[data-clue-state=exact] .fence-clue-tick{fill:#e6c583}
+[data-clue-state=over] .fence-clue-glyph{fill:#ffafa2}
+[data-clue-state=over] .fence-clue-tick{stroke:#f6a08d;stroke-width:1.35}
+
+/* The centers form a diagonal lattice. Same-sized diamonds meet at the
+   perpendicular bisectors (no invisible overlap around a corner). At 320px
+   each has a roughly 47px bounding box and an isolated mark center. */
+.room[data-game=fence] .match .fence-grid .fence-edge{
+ position:absolute;translate:-50% -50%;display:block;
+ border:0;border-radius:0;min-height:0;min-width:0;padding:0;
+ background:none;box-shadow:none;opacity:1;touch-action:manipulation;
+ clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);
+}
+.room[data-game=fence] .match .fence-grid .fence-edge:hover:not(:disabled){
+ background:transparent;box-shadow:none;
+}
+.fence-grid .fence-edge:disabled{cursor:default}
+.fence-edge::after{
+ content:"";position:absolute;inset:50% auto auto 50%;translate:-50% -50%;
+ width:55%;height:24%;border:1px solid transparent;border-radius:3px;pointer-events:none;
+}
+.fence-edge.vertical::after{width:24%;height:55%}
+@media(hover:hover) and (pointer:fine){
+ .fence-edge:not(:disabled):hover::after{background:#ecc68530;border-color:#e8c68b88}
+ .fence-grid[data-fence-tool=cross] .fence-edge:not(:disabled):hover::after{background:#eeb09823;border-color:#f0a18c9e}
+}
+.fence-edge:focus-visible::after{outline:2px solid #ffe2ab;outline-offset:1px;background:#f1c98d25}
+.fence-edge:focus-visible{z-index:1}
+
+.fence-clues{
+ margin:1px 0 0;padding:0 9px 5px;width:100%;min-width:0;
+ background:var(--etch-ink,none) repeat,#352820;border:1px solid #856445;
+ border-radius:2px 6px 3px 4px;color:#eed9b8;
+}
+.fence-clues summary{display:flex;align-items:center;gap:6px;width:fit-content;min-height:44px;list-style:none;font-size:.81rem}
+.fence-clues summary::-webkit-details-marker{display:none}
+.fence-clues summary::after{
+ content:"";width:6px;height:6px;margin:0 3px 4px 2px;
+ border:solid #edc08a;border-width:0 1px 1px 0;rotate:45deg;
+}
+.fence-clues[open] summary::after{rotate:225deg;margin-block:3px 0}
+.fence-clues p{margin:0;color:#f5d2a6;font-size:.76rem}
+.fence-clues ol{margin:6px 0;padding-inline-start:20px;color:#eedbb9;font-size:.78rem;line-height:1.42}
+.fence-clues li+li{margin-top:4px}
+.fence-results{display:grid;gap:5px;padding:0;margin:0;list-style:none}
+.fence-results li{
+ display:flex;justify-content:space-between;gap:7px;flex-wrap:wrap;
+ min-width:0;padding:8px 9px;border:1px solid #856445;border-radius:3px 6px 4px 3px;
+ color:#f3deb9;background:var(--etch-ink,none) repeat,#382921;font-size:.85rem;
+}
+.fence-results li strong{overflow-wrap:anywhere}
+.fence-results li span{font-variant-numeric:tabular-nums;color:#f9cf91}
+
+@media(min-width:960px){
+ .fence-game{grid-template-columns:minmax(0,1fr) minmax(11rem,15.5rem);grid-template-areas:"slate controls" "clues clues" "result result";align-items:start;gap:10px clamp(10px,2vw,24px)}
+ .fence-grid{grid-area:slate}
+ .fence-instruments{grid-area:controls;gap:10px;padding:9px 0}
+ .fence-clues{grid-area:clues}
+ .fence-results{grid-area:result}
+}
+@media(orientation:landscape) and (max-height:525px) and (min-width:650px) and (max-width:959px){
+ .fence-game{grid-template-columns:minmax(0,.92fr) minmax(12rem,1fr);grid-template-areas:"slate controls" "clues clues" "result result";align-items:start}
+ .fence-grid{grid-area:slate;max-width:min(100%,calc(100svh - 125px))}
+ .fence-instruments{grid-area:controls}
+ .fence-clues{grid-area:clues}
+ .fence-results{grid-area:result}
+}
+@media(max-width:355px){
+ .fence-game{gap:6px}
+ .fence-caption strong{font-size:1.12rem}
+ .fence-progress{padding-block:1px}
+}
+@media(forced-colors:active){
+ .fence-drawing image{display:none}
+ .fence-drawing .fence-groove,.fence-drawing .fence-pin{stroke:CanvasText}
+ .fence-drawing .fence-pin,.fence-clue-glyph,[data-clue-state=over] .fence-clue-glyph{fill:CanvasText}
+ .fence-drawing .fence-ink-line,.fence-drawing .fence-ink-cross,[data-clue-state=over] .fence-clue-tick{stroke:LinkText}
+ [data-clue-state=exact] .fence-clue-tick{fill:LinkText}
+ .fence-edge:focus-visible::after{outline:2px solid Highlight;forced-color-adjust:none}
+ .room[data-game=fence] .match .fence-toolbar button[aria-pressed=true]{outline:2px solid Highlight;outline-offset:-2px}
+}

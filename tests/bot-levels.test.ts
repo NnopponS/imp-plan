@@ -13,7 +13,7 @@ it('validates the difficulty on the wire, allows legacy configs and keeps the ho
  for(const level of levels)expect(decode(packet(level))).not.toBeNull()
  expect(decode(packet())).not.toBeNull()
  expect(decode(packet('unbeatable'))).toBeNull()
- const config={kind:'config' as const,settings:{...defaults,botLevel:'hard' as const}}
+ const config={kind:'config' as const,settings:{...defaults,capacity:3,botLevel:'hard' as const}}
  expect(h.command('guest','config',h.rev,config)).toMatch(/host/i)
  expect(h.command('host','config',h.rev,config)).toBeNull()
  expect(h.snapshot('guest')?.settings.botLevel).toBe('hard')
@@ -176,6 +176,7 @@ it('practice switches from a full 16-seat auction to Mancala and returns to 16-s
 
 it('uses post-reset headcount in practice only, never discarding online room guests',()=>{
  const h=new Host('Host',()=>0,false)
+ expect(h.command('host','auction',h.rev,{kind:'config',settings:{...h.settings,game:'auction'}})).toBeNull()
  for(let i=1;i<10;i++)expect(h.join('c'+i,'Guest '+i)).not.toBeNull()
  const old=h.snapshot('host')!.seats
  expect(h.command('host','mancala',h.rev,{kind:'config',settings:{...defaults,game:'mancala'}})).toMatch(/eight/i)

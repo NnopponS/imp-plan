@@ -37,6 +37,7 @@ test('solo fills one rival and every bot difficulty responds from its public pro
 
 test('a three-player party schedules six legs, alternates sides, and protects watching seats and stale turns',()=>{
  const h=new Host('Ari',()=>1000)
+ expect(h.command('host','three',h.rev,{kind:'config',settings:{...h.settings,game:'wallGo',capacity:3}})).toBeNull()
  const a=h.join('a','Bee')!.id,b=h.join('b','Cee')!.id
  const send=(who:string,request:string,command:Command,rev=h.rev)=>h.command(who,request,rev,command)
  expect(send('host','config',{kind:'config',settings:{...h.settings,game:'wallGo'}})).toBeNull()

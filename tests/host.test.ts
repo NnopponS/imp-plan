@@ -1,5 +1,6 @@
 import {expect,it} from 'vitest'
-import {Host,decode,nickname} from '../src/room'
+import {Host,decode,nickname,seatRules} from '../src/room'
+import type {Game} from '../src/engine'
 it('rejects malformed and spoofed messages; processes commands only once at a matching revision',()=>{
  const h=new Host('Host',()=>0)
  const a=h.join('connection','Ann')!
@@ -64,6 +65,7 @@ it('accepts concurrent bids against the same round without accepting a prior rou
 
 it('automatically deals different appearances to all 16 seats and hides private seat fields',()=>{
  const room=new Host('Host',()=>10)
+ expect(room.command('host','auction',room.rev,{kind:'config',settings:{...room.settings,game:'auction'}})).toBeNull()
  for(let i=1;i<16;i++)expect(room.join('p'+i,'Player '+i)).not.toBeNull()
  const publicSeats=room.snapshot('p15')!.seats
  const appearances=publicSeats.map(s=>s.appearance)
@@ -75,6 +77,7 @@ it('automatically deals different appearances to all 16 seats and hides private 
 
 it('honors explicit presets, avoids their collisions on automatic assignment and never redresses a resumed seat',()=>{
  const room=new Host('Host',()=>10,false,0)
+ expect(room.command('host','set-three',room.rev,{kind:'config',settings:{...room.settings,capacity:3}})).toBeNull()
  const manual=room.join('manual','Manual',undefined,0)!
  const fresh=room.join('fresh','Fresh')!
  const appearance=(id:string)=>room.snapshot('host')!.seats.find(seat=>seat.id===id)?.appearance
@@ -93,6 +96,7 @@ it('honors explicit presets, avoids their collisions on automatic assignment and
 
 it('reuses only currently vacant looks even after all 27 presets have been dealt',()=>{
  const room=new Host('Host',()=>10,false,26)
+ expect(room.command('host','set-three',room.rev,{kind:'config',settings:{...room.settings,capacity:3}})).toBeNull()
  const persistent=room.join('persistent','Persistent')!
  const issued=new Set<number>(room.snapshot('host')!.seats.map(seat=>seat.appearance!))
  for(let i=0;i<40;i++){
@@ -119,4 +123,67 @@ it('accepts the legacy hello and sanitizes only the additive preset field',()=>{
   expect(parsed?.type==='hello'?parsed.appearance:NaN).toBeUndefined()
  }
  expect(decode(JSON.stringify({...hello,appearance:4,host:true}))).toBeNull()
+})
+
+it('matches audited table limits for all choices, rather than falling back to a generic room',()=>{
+ const gameRules={
+  blind:[2,4],morris:[2,4],point:[2,4],equations:[2,4],wallGo:[2,4],bagh:[2,2],
+  auction:[2,16],remove:[3,16],knight:[2,16],hex:[2,16],rectangles:[2,16],cubes:[2,16],exile:[2,16],
+  grass1:[2,12],grass3:[2,16],mancala:[2,8],secret:[3,16],divine:[2,16],codeLock:[2,16],pyramid:[2,16],
+  fragments:[2,8],spot:[2,16],scale:[2,6],fence:[2,16],tower:[2,8],piece:[2,4],memoryPoker:[2,16],montage:[2,16],heavy13:[2,7]
+ } as const satisfies Record<Game,readonly [number,number]>
+ for(const game of Object.keys(gameRules) as Game[]){
+  const [min,max]=gameRules[game]
+  expect(seatRules({game})).toMatchObject({min,max})
+  const room=new Host('Host')
+  expect(room.command('host','configure',room.rev,{kind:'config',settings:{...room.settings,game,capacity:16}})).toBeNull()
+  expect(room.settings.capacity).toBe(max)
+  expect(room.command('host','not-enough',room.rev,{kind:'start'})).toMatch(/more connected/i)
+  for(let i=1;i<max;i++){
+   expect(room.join('g'+i,'Guest '+i)).not.toBeNull()
+   expect(room.command('g'+i,'ready',room.rev,{kind:'ready'})).toBeNull()
+  }
+  expect(room.join('blocked','Extra guest')).toBeNull()
+  expect(room.command('host','seat-bot',room.rev,{kind:'bot'})).toMatch(/full/i)
+  expect(room.command('host','start',room.rev,{kind:'start'})).toBeNull()
+  expect(room.snapshot('host')?.game?.seats).toHaveLength(seatRules({game}).fixtureSize??max)
+ }
+ expect(seatRules({game:'memoryPoker',memoryPokerMode:'episode'})).toMatchObject({min:2,max:2})
+ expect(seatRules({game:'auction',auctionMode:'hold'})).toMatchObject({min:2,max:16})
+})
+
+it('leaves a too-large party and disconnected reservations intact until the host removes a seat',()=>{
+ const room=new Host('Host')
+ expect(room.settings.capacity).toBe(2)
+ expect(room.command('host','four-player-league',room.rev,{kind:'config',settings:{...room.settings,capacity:4}})).toBeNull()
+ const guests=[1,2,3].map(i=>room.join('g'+i,'Guest '+i)!)
+ room.disconnect('g1')
+ expect(room.command('host','smaller',room.rev,{kind:'config',settings:{...room.settings,game:'bagh'}})).toMatch(/2 players.*remove/i)
+ expect(room.settings.game).toBe('blind')
+ expect(room.snapshot('host')!.seats).toHaveLength(4)
+ expect(room.join('new','New')).toBeNull()
+ expect(room.join('resume','Guest 1',guests[0].token)?.id).toBe(guests[0].id)
+ for(const guest of guests.slice(1))expect(room.command('host','kick'+guest.id,room.rev,{kind:'kick',seat:guest.id})).toBeNull()
+ expect(room.command('host','bagh',room.rev,{kind:'config',settings:{...room.settings,game:'bagh'}})).toBeNull()
+ expect(room.settings.capacity).toBe(2)
+ expect(room.join('late','Late')).toBeNull()
+})
+
+it('does not inherit a small cap into a larger game and caps private puzzle practice at one',()=>{
+ const room=new Host('Host')
+ expect(room.settings.capacity).toBe(2)
+ expect(room.command('host','larger',room.rev,{kind:'config',settings:{...room.settings,game:'heavy13'}})).toBeNull()
+ expect(room.settings.capacity).toBe(7)
+ expect(room.command('host','lower-explicit',room.rev,{kind:'config',settings:{...room.settings,capacity:2}})).toBeNull()
+ expect(room.settings.capacity).toBe(2)
+ expect(room.command('host','secret',room.rev,{kind:'config',settings:{...room.settings,game:'secret'}})).toBeNull()
+ expect(room.settings.capacity).toBe(16)
+ const solo=new Host('Player',()=>0,true)
+ expect(solo.settings.capacity).toBe(2)
+ expect(solo.command('host','hex',solo.rev,{kind:'config',settings:{...solo.settings,game:'hex'}})).toBeNull()
+ expect(seatRules({game:'hex'},true)).toMatchObject({min:1,max:1})
+ expect(solo.settings.capacity).toBe(1)
+ expect(solo.snapshot('host')!.seats).toHaveLength(1)
+ expect(solo.join('remote','Guest')).toBeNull()
+ expect(solo.command('host','start',solo.rev,{kind:'start'})).toBeNull()
 })
