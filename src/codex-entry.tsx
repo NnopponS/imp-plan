@@ -1,6 +1,7 @@
 import {useEffect,useRef,useState} from 'react'
 import {base} from './brand'
 import {KeeperCharacter} from './keeper-character'
+import {chapterArrival} from './page-turn'
 import './codex-entry.css'
 
 const sessionKey='imp-plan-codex-opened-v1'
@@ -9,7 +10,10 @@ const fallbackTime=1560
 
 function shouldOpen(motionOff:boolean){
  if(motionOff||typeof window==='undefined'||location.hash||location.search||document.hidden||scrollY>24||window.matchMedia?.(reducedMotion)?.matches)return false
- try{return sessionStorage.getItem(sessionKey)!=='1'}
+ try{
+  if(chapterArrival()){sessionStorage.setItem(sessionKey,'1');return false}
+  return sessionStorage.getItem(sessionKey)!=='1'
+ }
  catch{return false}
 }
 

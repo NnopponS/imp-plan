@@ -1,0 +1,35 @@
+/* Incoming page curl. The actual screen underneath never transforms, moves or loses input. */
+.page-turn{
+ --turn-time:360ms;--turn-paper:#3c281b;--turn-fold:#745337;--turn-gilt:#d4ad70;
+ position:fixed;inset:0;z-index:89;isolation:isolate;overflow:hidden;pointer-events:none;user-select:none;
+}
+.page-turn[data-turn-back]{transform:scaleX(-1)}
+.page-turn:is([data-page-turn="season-1"],[data-page-turn=party]){--turn-paper:#421f1b;--turn-fold:#744537;--turn-gilt:#d6a883}
+.page-turn:is([data-page-turn="season-2"],[data-page-turn=invite]){--turn-paper:#172822;--turn-fold:#385740;--turn-gilt:#acc5a1}
+.page-turn-shadow{
+ position:absolute;inset:0;
+ background:linear-gradient(90deg,transparent 28%,#23150f48 53%,#170c0bb8 95%);
+ animation:turn-shadow var(--turn-time) cubic-bezier(.24,.5,.24,1) both;
+}
+.page-turn-leaf{
+ position:absolute;inset-block:0;inset-inline-end:-2px;display:block;
+ inline-size:min(63vw,1020px);block-size:100%;overflow:visible;
+ animation:turn-leaf var(--turn-time) cubic-bezier(.25,.57,.22,1) both;
+}
+.page-turn-paper{fill:var(--turn-paper)}
+.page-turn-fold{fill:var(--turn-fold);opacity:.86}
+.page-turn-ink,.page-turn-rule{fill:none;stroke:var(--turn-gilt);stroke-width:1;vector-effect:non-scaling-stroke}
+.page-turn-rule{stroke-width:.7;opacity:.57}
+@keyframes turn-leaf{
+ from{transform:translateX(9%) scaleX(1.17);opacity:.87}
+ 48%{opacity:.8}
+ to{transform:translateX(106%) scaleX(.68);opacity:0}
+}
+@keyframes turn-shadow{
+ from{opacity:.7;transform:translateX(0)}
+ to{opacity:0;transform:translateX(36%)}
+}
+/* A screen turn supersedes the tiny heading cue; briefing and result art still exist independently. */
+:root:has(.page-turn) .stage-folio-slot{visibility:hidden}
+[data-game-motion=off] .page-turn{display:none}
+@media(prefers-reduced-motion:reduce){.page-turn{display:none}}

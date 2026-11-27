@@ -16,6 +16,7 @@ import {GameCardIdentity,GameVenue} from './game-identity'
 import {getGameVenue} from './game-venues'
 import {BrandSeal} from './brand-seal'
 import {CodexEntry} from './codex-entry'
+import {PageTurn,type PageTurnScreen} from './page-turn'
 import {base,brand,currentSeason,seasons,seasonHref} from './brand'
 import './style.css'
 import './design.css'
@@ -269,8 +270,11 @@ function App(){
  const motionOff=feedback.prefs.motion==='off'
  const scene=stageFolio({invite:page==='/join',season:selected?.id,seat:kind??undefined,
   game:snap?.game?.game??choice,match:playing?snap?.match:undefined,finished,hold:holdAuction})
+ const turnScreen:PageTurnScreen|undefined=!kind?(page==='/join'?'invite':selected?`season-${selected.id}`:'home'):
+  !snap?undefined:playing?(finished?'result':'match'):kind==='solo'?'practice':'party'
  const folio=scene.phase==='result'?null:<FolioTransition key={scene.key} scene={scene} motionOff={motionOff} suspend={!!briefing&&!playing}/>
  return <>
+  <PageTurn screen={turnScreen} motionOff={motionOff}/>
   {isLanding&&<CodexEntry motionOff={feedback.prefs.motion==='off'}/>}
   <header className={'bar'+(isLanding?' landing-bar':playing?' playing-bar':'')}><div className="wrap top">
    <a className="brand" href={base} onClick={e=>{if(kind)e.preventDefault()}}><BrandSeal/><span>{brand}<small>Unofficial fan project</small></span></a>

@@ -21,6 +21,7 @@ Imp Plan is a free, unofficial fan project with original artwork. Open a private
 | Host a private party | Pick an online nickname, choose **Create party**, and share the invite link or code. Use the illustrated game picker to choose a table. Guests see the same selected-game preview. Start when the required seats are ready. |
 | Join friends | Open the invite link or enter the code, choose a nickname, and select **Join party**. Use **Preview rules** if you want an explanation before readying up. |
 | Play without internet | Open the site online once and wait for **Ready for offline practice**. Reopen it later in the same browser. If its storage is cleared or evicted, repeat the first online visit. |
+| Loading or scripts blocked | Home and all three seasons ship with illustrated HTML that you can browse before the game loads. Playing needs JavaScript. If the controls never arrive, use **Game controls → Reload game controls**. |
 
 The optional **Player wardrobe** on the homepage has 27 painted outfits. Your chosen outfit stays in this browser; unstyled seats get a distinct random outfit when they join a room. Blind Gomoku is still available from the game gallery. Where supported, a rules briefing uses the actual roster and explains the opening move before the clock starts. Audio and motion options are in the in-game settings menu. Room limits follow the selected game; two-seat boards offer an explicit short tournament where supported. See the [player count table](docs/PLAYER_COUNTS.md).
 
