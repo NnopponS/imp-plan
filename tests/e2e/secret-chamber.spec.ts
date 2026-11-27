@@ -1,0 +1,26 @@
+import {test,expect} from '@playwright/test'
+import {startMatch} from './start-match'
+
+test('chamber turns chosen tile covers into public board marks, not ownership',async({page})=>{
+ await page.setViewportSize({width:390,height:844})
+ await page.emulateMedia({reducedMotion:'reduce'})
+ await page.goto('./')
+ await page.getByLabel('Nickname').fill('Visitor')
+ await page.getByRole('button',{name:'Practice Blind Gomoku',exact:true}).click()
+ await startMatch(page)
+ const tray=page.getByRole('group',{name:'Stone covers'})
+ const selected=tray.getByRole('button',{name:'Jade cover',exact:true})
+ await selected.click()
+ await expect(selected).toHaveAttribute('aria-pressed','true')
+ await page.getByRole('button',{name:'Row 8, column 8, open',exact:true}).click()
+ const stone=page.getByRole('button',{name:'Row 8, column 8, veiled',exact:true})
+ await expect(stone).toHaveAttribute('aria-description','Jade cover. Side hidden.')
+ await expect(stone.locator('[data-cover="jade"]')).toBeVisible()
+ const board=page.getByLabel('Blind Gomoku board')
+ await expect(board.locator('[data-cover="jade"]')).toHaveCount(2)
+ await expect(board.locator('[data-side]')).toHaveCount(0)
+ const art=page.locator('img[src$="secret-chamber.svg"]')
+ await art.scrollIntoViewIfNeeded()
+ await expect.poll(()=>art.evaluate((img:HTMLImageElement)=>img.complete&&img.naturalWidth>0)).toBe(true)
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(390)
+})

@@ -10,12 +10,13 @@ const phase=(step:number,last:number)=>Number.isFinite(step)?Math.min(last,Math.
 export const blindDemoMoves=[
  [5,7],[6,5],[6,7],[8,6],[7,7],[5,8],[8,7],[9,9],[9,7],
 ] as const
+const demoCap=['#8e4140','#396759','#bf8c45','#495f79']
 const boardSize=15
 const marks=Array.from({length:boardSize+1},(_,i)=>i*10)
 function BlindDemo({step}:{step:number}){
  const stage=phase(step,2)
- const captions=['Take turns on a 15 × 15 board.','During play, every placed stone looks the same.','Five in a row ends the game. Then the stones reveal their owners.']
- const labels=['Example: the first veiled stone on a 15 by 15 board.','Example: eight identical veiled stones; ownership is not shown.','Example: five circle stones form a line. Four opposing stones reveal as diamonds.']
+ const captions=['Take turns on a 15 × 15 board.','The cover stays visible. The color underneath stays hidden.','Five in a row ends the game. Then the stones reveal their owners.']
+ const labels=['Example: the first veiled stone on a 15 by 15 board.','Example: eight stones show engraved colored covers. Ownership is not shown.','Example: five circle stones form a line. Four opposing stones reveal as diamonds.']
  const reveal=stage===2
  const stones=blindDemoMoves.slice(0,[1,8,9][stage])
  return <figure className="rule-demo" data-rule-demo="blind">
@@ -25,8 +26,8 @@ function BlindDemo({step}:{step:number}){
    {reveal&&<path className="rule-demo-winning-line" d="M55 75H95"/>}
    {stones.map(([x,y],i)=>{
     const cx=x*10+5,cy=y*10+5,kind=!reveal?'veiled':i%2?'diamond':'circle'
-    return <g key={i+kind} className="rule-demo-stone" data-stone={kind} aria-hidden="true">
-     {kind==='diamond'?<path d={`M${cx} ${cy-4} l4 4 -4 4 -4 -4Z`}/>:<circle cx={cx} cy={cy} r="3.7"/>}
+    return <g key={i+kind} className="rule-demo-stone" data-stone={kind} style={!reveal?{fill:demoCap[Math.floor(i/2)%demoCap.length]}:undefined} aria-hidden="true">
+     {kind==='diamond'?<path d={`M${cx} ${cy-4} l4 4 -4 4 -4 -4Z`}/>:<circle cx={cx} cy={cy} r="3.7"/>}{!reveal&&<path d={`M${cx-1.7} ${cy+1}l3.4 -2`} stroke="#ffebc7" strokeWidth=".45"/>}
     </g>
    })}
   </svg>

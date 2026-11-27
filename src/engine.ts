@@ -45,16 +45,23 @@ export const tutorials={
  remove:'Discard one of your two cards in secret. After the reveal, the lowest value kept by exactly one player earns two chips. Start with five chips and play eight rounds; ties can add up to three rounds.',
  knight:'Move in a chess knight’s L-shape, visiting every square once. You can undo and try another path. Finish the full board first or build the longest route before time runs out; closed tours must return within a knight move of the start.',
  point:'Place on a 13 × 13 board. A newly lengthened line scores 1 for three, 2 for four, or 5 for five or more; extensions of five-plus lines do not score again. After 20 moves each, highest score wins.',
- blind:'Take turns placing a stone on the 15 × 15 board. All placed stones look the same during play. The host automatically checks for five in a line; all stones are revealed at the end.',
+ blind:'Take turns placing a stone on the 15 × 15 board. Choose any cover: the color on top never tells you the side underneath. Make five in a line to flip the stones and reveal each side. In solo practice, the bot echoes your last cover.',
  morris:'Place nine stones each on the marked points. A line of three on a drawn segment lets you remove an opposing stone. Once all stones are placed, slide to neighboring points; with three left, fly to any open point. A player with fewer than three stones or no legal move loses.',
  auction:'Start with a 60-second time bank. In each of eight timed rounds privately commit up to 15 seconds. Everyone pays their own bid; the highest positive bid wins the revealed reward, split across ties. Score wins, then time remaining.'
 }
 export const mills=[[0,1,2],[3,4,5],[6,7,8],[9,10,11],[12,13,14],[15,16,17],[18,19,20],[21,22,23],[0,9,21],[3,10,18],[6,11,15],[1,4,7],[16,19,22],[8,12,17],[5,13,20],[2,14,23]]
 export const points=[[0,0],[3,0],[6,0],[1,1],[3,1],[5,1],[2,2],[3,2],[4,2],[0,3],[1,3],[2,3],[4,3],[5,3],[6,3],[2,4],[3,4],[4,4],[1,5],[3,5],[5,5],[0,6],[3,6],[6,6]]
 const neighbors=(a:number,b:number)=>mills.some(m=>Math.abs(m.indexOf(a)-m.indexOf(b))===1&&m.includes(a)&&m.includes(b))
-export type State={game:Game,seats:string[],board:string[],turn:number,capture:boolean,placed:number[],winner:string|null,done:boolean,round:number,deadline:number,window:number,bids:Record<string,number>,scores:number[],credits:number[],last:number[]|null,plies:number,quiet:number,history:Record<string,number>,publicMoves:number[],hands:Record<string,Card[]>,seed:number,paths:Record<string,number[]>,tour:number[],size:TourSize,closed:boolean,reached:Record<string,number>,reveal:{round:number,winner:string|null}|null,puzzleStage:'study'|'answer',spent:number[],opened:number,mancala:Mancala|null,bagh:Bagh|null,secret:Secret|null,grass:Grass|null,divine:Divine|null,equations:Equations|null,codeLock:CodeLock|null,pyramid:Pyramid|null,fragments:Fragments|null,spot:Spot|null,scale:Scale|null,fence:Fence|null,tower:Tower|null,piece:Piece|null,memoryPoker:MemoryPoker|null}
+export type State={game:Game,seats:string[],board:string[],blindCovers:(BlindCover|null)[]|null,turn:number,capture:boolean,placed:number[],winner:string|null,done:boolean,round:number,deadline:number,window:number,bids:Record<string,number>,scores:number[],credits:number[],last:number[]|null,plies:number,quiet:number,history:Record<string,number>,publicMoves:number[],hands:Record<string,Card[]>,seed:number,paths:Record<string,number[]>,tour:number[],size:TourSize,closed:boolean,reached:Record<string,number>,reveal:{round:number,winner:string|null}|null,puzzleStage:'study'|'answer',spent:number[],opened:number,mancala:Mancala|null,bagh:Bagh|null,secret:Secret|null,grass:Grass|null,divine:Divine|null,equations:Equations|null,codeLock:CodeLock|null,pyramid:Pyramid|null,fragments:Fragments|null,spot:Spot|null,scale:Scale|null,fence:Fence|null,tower:Tower|null,piece:Piece|null,memoryPoker:MemoryPoker|null}
 type BoardAction=number|{from:number,to:number}
 export type Action=BoardAction|string
+export const blindCoverIds=[0,1,2,3,4,5,6] as const
+export type BlindCover=typeof blindCoverIds[number]
+const blindCoverBase=299_998_000, blindCellCount=15*15
+export function blindCoverAction(cell:number,cover:BlindCover){
+ if(!Number.isInteger(cell)||cell<0||cell>=blindCellCount||!blindCoverIds.includes(cover))throw new RangeError('Invalid Blind Gomoku cell or cover.')
+ return blindCoverBase+cell*blindCoverIds.length+cover
+}
 export const isDuel=(g:Game)=>g==='blind'||g==='morris'||g==='point'||g==='bagh'||g==='equations'
 export const minSeats=(g:Game)=>g==='knight'||g==='divine'||g==='codeLock'||g==='pyramid'||g==='fragments'||g==='spot'||g==='scale'||g==='fence'||g==='tower'||g==='piece'||g==='memoryPoker'||isPuzzle(g)?1:g==='remove'||g==='secret'?3:2
 export const simultaneous=(g:Game)=>!isDuel(g)&&g!=='mancala'&&g!=='piece'&&!isGrass(g)
@@ -63,7 +70,7 @@ export function start(game:Game,seats:string[],window:number,now:number,options:
  const {size=5,closed=false,seed=31337}=options
  const tour=game==='knight'?tourRoute(size,closed,seed):[]
  const hands=game==='remove'?Object.fromEntries(deal(seats.length,seed).map((cards,i)=>[seats[i],cards])):{}
- return {memoryPoker:game==='memoryPoker'?memoryPokerStart(seed,seats,now,options.memoryPokerPeek):null,piece:game==='piece'?pieceStart(seed):null,tower:game==='tower'?towerStart(seed,seats.length):null,fence:game==='fence'?fenceStart(seed,seats):null,scale:game==='scale'?scaleStart(seed):null,spot:game==='spot'?spotStart(seed,seats):null,fragments:game==='fragments'?fragmentStart(seed,options.fragmentStrict??false,options.fragmentCount??12):null,pyramid:game==='pyramid'?pyramidStart(seed,1):null,codeLock:game==='codeLock'?codeStart(seats.length,seed,options.solo??false):null,equations:game==='equations'?equationStart():null,divine:game==='divine'?divineInit(options.divineSide??7,seed,options.divineHard??false,seats):null,grass:isGrass(game)?grassStart(game,seats.length,seed):null,bagh:game==='bagh'?baghInit():null,secret:game==='secret'?initSecret(seats.length,seed):null,mancala:game==='mancala'?makeMancala(seats.length):null,game,seats,board:Array(game==='blind'?225:game==='morris'?24:game==='point'?169:0).fill(''),turn:0,capture:false,placed:[0,0],winner:null,done:false,round:1,deadline:now+(game==='memoryPoker'?memoryPokerStudy:game==='hex'?30000:game==='fragments'?45000:game==='spot'?spotWindow:game==='scale'?scaleWindow:game==='fence'?fenceTime:game==='tower'?towerTime:game==='piece'?pieceTime:window),window,puzzleStage:game==='hex'?'study':'answer',opened:now,spent:seats.map(()=>0),bids:{},scores:seats.map(()=>game==='remove'?5*720720:game==='knight'?720720:0),credits:seats.map(()=>60000),last:null,plies:0,quiet:0,history:{},publicMoves:[],hands,seed,paths:Object.fromEntries(seats.map(id=>[id,tour.slice(0,1)])),tour,size,closed,reached:isPuzzle(game)?{}:Object.fromEntries(seats.map(id=>[id,now])),reveal:null}
+ return {memoryPoker:game==='memoryPoker'?memoryPokerStart(seed,seats,now,options.memoryPokerPeek):null,piece:game==='piece'?pieceStart(seed):null,tower:game==='tower'?towerStart(seed,seats.length):null,fence:game==='fence'?fenceStart(seed,seats):null,scale:game==='scale'?scaleStart(seed):null,spot:game==='spot'?spotStart(seed,seats):null,fragments:game==='fragments'?fragmentStart(seed,options.fragmentStrict??false,options.fragmentCount??12):null,pyramid:game==='pyramid'?pyramidStart(seed,1):null,codeLock:game==='codeLock'?codeStart(seats.length,seed,options.solo??false):null,equations:game==='equations'?equationStart():null,divine:game==='divine'?divineInit(options.divineSide??7,seed,options.divineHard??false,seats):null,grass:isGrass(game)?grassStart(game,seats.length,seed):null,bagh:game==='bagh'?baghInit():null,secret:game==='secret'?initSecret(seats.length,seed):null,mancala:game==='mancala'?makeMancala(seats.length):null,game,seats,blindCovers:game==='blind'?Array(blindCellCount).fill(null):null,board:Array(game==='blind'?blindCellCount:game==='morris'?24:game==='point'?169:0).fill(''),turn:0,capture:false,placed:[0,0],winner:null,done:false,round:1,deadline:now+(game==='memoryPoker'?memoryPokerStudy:game==='hex'?30000:game==='fragments'?45000:game==='spot'?spotWindow:game==='scale'?scaleWindow:game==='fence'?fenceTime:game==='tower'?towerTime:game==='piece'?pieceTime:window),window,puzzleStage:game==='hex'?'study':'answer',opened:now,spent:seats.map(()=>0),bids:{},scores:seats.map(()=>game==='remove'?5*720720:game==='knight'?720720:0),credits:seats.map(()=>60000),last:null,plies:0,quiet:0,history:{},publicMoves:[],hands,seed,paths:Object.fromEntries(seats.map(id=>[id,tour.slice(0,1)])),tour,size,closed,reached:isPuzzle(game)?{}:Object.fromEntries(seats.map(id=>[id,now])),reveal:null}
 }
 export function schedule(ids:string[]):string[][] {
  const ring=[...ids]; if(ring.length%2)ring.push('')
@@ -222,6 +229,13 @@ export function timeout(g:State,now:number):State {
 export function move(old:State,seat:string,a:Action,now:number):State|null{
  const idx=old.seats.indexOf(seat)
  if(idx<0||old.done)return null
+ let cover:BlindCover|undefined
+ if(typeof a==='number'&&a>=blindCoverBase){
+  const code=a-blindCoverBase
+  if(old.game!=='blind'||!Number.isInteger(code)||code>=blindCellCount*blindCoverIds.length)return null
+  cover=blindCoverIds[code%blindCoverIds.length]
+  a=Math.floor(code/blindCoverIds.length)
+ }
  if(old.memoryPoker){
   if(typeof a!=='number')return null
   const poker=memoryPokerAction(old.memoryPoker,seat,a,now)
@@ -382,6 +396,12 @@ export function move(old:State,seat:string,a:Action,now:number):State|null{
   return g.plies>=40?complete(g,g.scores[0]===g.scores[1]?null:g.seats[g.scores[0]>g.scores[1]?0:1]):next(g)
  }
  if(g.game==='blind'){
+  const covers=g.blindCovers!.slice()
+  // The automatic cover depends on the public cell/ply and a game seed,
+  // never on the stone's hidden side.
+  const colorSeed=(g.seed^Math.imul(i+1,0x9e3779b9)^Math.imul(g.plies,0x85ebca6b))>>>0
+  covers[i]=cover??blindCoverIds[colorSeed%blindCoverIds.length]
+  g.blindCovers=covers
   g.publicMoves=[...g.publicMoves,i]
   const x=i%15,y=Math.floor(i/15)
   const longest=[[1,0],[0,1],[1,1],[1,-1]].some(([dx,dy])=>{
@@ -403,7 +423,7 @@ export function view(g:State,seat:string){
  const p=isPuzzle(g.game)?makePuzzle(g.game,g.seed,g.round):null
  const puzzle=p?{...p,values:g.game==='hex'&&g.puzzleStage==='answer'?[]:p.values,target:g.game==='cubes'||g.puzzleStage==='study'?null:p.target,stage:g.puzzleStage}:null
  const scores=isPuzzle(g.game)?g.scores.map((v,i)=>v-(g.reached[g.seats[i]]===1?720720:0)):g.scores
- return {puzzle,memoryPoker:g.memoryPoker?memoryPokerView(g.memoryPoker,seat):null,piece:g.piece?pieceView(g.piece):null,tower:g.tower?towerView(g.tower,g.done):null,fence:g.fence?fenceView(g.fence,seat,g.done):null,scale:g.scale?scaleView(g.scale,g.done):null,spot:g.spot?spotView(g.spot,seat,g.done):null,fragments:g.fragments?fragmentView(g.fragments,g.round,g.done):null,pyramid:g.pyramid?pyramidView(g.pyramid,seat):null,codeLock:g.codeLock?codeView(g.codeLock,g.seats.indexOf(seat),g.done):null,equations:g.equations?equationView(g.equations,g.seats.indexOf(seat)):null,divine:g.divine?divineView(g.divine,seat):null,grass:g.grass,bagh:g.bagh,secret:g.secret?secretView(g.secret,g.seats.indexOf(seat),g.done):null,mancala:g.mancala,game:g.game,seats:g.seats,board:g.board.map(v=>g.game==='blind'&&!g.done&&v?'?':v),turn:g.seats[g.turn],capture:g.capture,done:g.done,winner:g.winner,round:g.round,deadline:simultaneous(g.game)||g.game==='piece'?g.deadline:null,mine:g.bids[seat]??null,submitted:Object.keys(g.bids).length,credits:g.credits,scores:scores.map(s=>s/720720),last:g.last,legal:legal(g,seat),hand:g.game==='remove'&&!g.done?g.hands[seat]??[]:[],path:g.game==='knight'?g.paths[seat]??[]:[],size:g.size,closed:g.closed,reveal:g.reveal}
+ return {puzzle,memoryPoker:g.memoryPoker?memoryPokerView(g.memoryPoker,seat):null,piece:g.piece?pieceView(g.piece):null,tower:g.tower?towerView(g.tower,g.done):null,fence:g.fence?fenceView(g.fence,seat,g.done):null,scale:g.scale?scaleView(g.scale,g.done):null,spot:g.spot?spotView(g.spot,seat,g.done):null,fragments:g.fragments?fragmentView(g.fragments,g.round,g.done):null,pyramid:g.pyramid?pyramidView(g.pyramid,seat):null,codeLock:g.codeLock?codeView(g.codeLock,g.seats.indexOf(seat),g.done):null,equations:g.equations?equationView(g.equations,g.seats.indexOf(seat)):null,divine:g.divine?divineView(g.divine,seat):null,grass:g.grass,bagh:g.bagh,secret:g.secret?secretView(g.secret,g.seats.indexOf(seat),g.done):null,mancala:g.mancala,game:g.game,seats:g.seats,board:g.board.map(v=>g.game==='blind'&&!g.done&&v?'?':v),blindCovers:g.blindCovers?.slice()??null,turn:g.seats[g.turn],capture:g.capture,done:g.done,winner:g.winner,round:g.round,deadline:simultaneous(g.game)||g.game==='piece'?g.deadline:null,mine:g.bids[seat]??null,submitted:Object.keys(g.bids).length,credits:g.credits,scores:scores.map(s=>s/720720),last:g.last,legal:legal(g,seat),hand:g.game==='remove'&&!g.done?g.hands[seat]??[]:[],path:g.game==='knight'?g.paths[seat]??[]:[],size:g.size,closed:g.closed,reveal:g.reveal}
 }
 export type GameView=ReturnType<typeof view>
 /** Uses the current seat's view, public move order, and a dedicated policy seed.

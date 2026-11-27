@@ -19,7 +19,11 @@ test('Fragments of Memory recalls the hidden gallery through all 24 questions',a
    return {color,item:item[0].toUpperCase()+item.slice(1)}
   })
   expect(data).toHaveLength(9)
-  await page.clock.fastForward(45100)
+  // Pause the real-time Playwright clock pump while shifting the study interval.
+  // Resume before tap() so its browser animation-frame stability check can run.
+  await page.clock.pauseAt(await page.evaluate(()=>Date.now()+500))
+  await page.clock.fastForward(45500)
+  await page.clock.resume()
   await expect(scene).toHaveCount(0)
   for(let n=1;n<=24;n++){
    await expect(page.getByText(`Question ${n} / 24`,{exact:true})).toBeVisible()
@@ -34,7 +38,8 @@ test('Fragments of Memory recalls the hidden gallery through all 24 questions',a
    else if(q.includes('center'))answer=data[1+3*['top','middle','bottom'].indexOf(q.split(' ').at(-2)!)].item
    else answer=String(data.filter(o=>o.color.toLowerCase()===q.split(' ')[2]).length)
    const choice=region.getByRole('button',{name:answer,exact:true})
-   if(n%2)await choice.press('Enter');else await choice.tap()
+   await expect(choice).toBeEnabled({timeout:2500})
+   if(n%2)await choice.press('Enter',{timeout:2500});else await choice.tap({timeout:2500})
   }
   await expect(page.getByRole('heading',{name:'Exhibit cleared'})).toBeVisible()
   await expect(page.getByText('24 / 24',{exact:true})).toBeVisible()

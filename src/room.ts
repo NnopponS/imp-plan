@@ -1,7 +1,7 @@
 import {isGrass} from './grass'
 import {isPuzzle} from './puzzles'
 import {z} from 'zod'
-import {start,move,schedule,view,timeout,botAction,botLevels,isDuel,minSeats,secretBotIntentKey,simultaneous,type State,type Game,type GameView} from './engine'
+import {start,move,schedule,view,timeout,blindCoverAction,botAction,botLevels,isDuel,minSeats,secretBotIntentKey,simultaneous,type State,type Game,type GameView} from './engine'
 const codeAlphabet='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
 export const roomCode=()=>Array.from(crypto.getRandomValues(new Uint8Array(6)),x=>codeAlphabet[x&31]).join('')
 export const validCode=(x:string)=>/^[A-HJ-NP-Z2-9]{6}$/.test(x)
@@ -210,8 +210,13 @@ export class Host{
     const v=view(g,s.id), rejected=this.secretBotRejected.get(s.id), contact=v.secret?.phase==='contact'?v.secret:null
     const index=contact?v.seats.indexOf(s.id):-1
     if(contact&&rejected)for(const key of rejected)if(key<0&&secretBotIntentKey(contact,index,-key)!==key)rejected.delete(key)
-    const a=botAction(v,s.id,g.publicMoves,this.botSeed,this.settings.botLevel,rejected)
+    let a=botAction(v,s.id,g.publicMoves,this.botSeed,this.settings.botLevel,rejected)
     if(a===undefined)continue
+    if(this.solo&&g.game==='blind'&&g.seats[1-g.turn]===this.owner&&typeof a==='number'){
+     const previous=g.publicMoves.at(-1)
+     const cover=previous===undefined?null:v.blindCovers?.[previous]
+     if(cover!=null)a=blindCoverAction(a,cover)
+    }
     const result=move(g,s.id,a,now)
     if(result){g=result;if(g.done||g.round!==past.round||!simultaneous(g.game))break}
     else if(contact&&typeof a==='number'){

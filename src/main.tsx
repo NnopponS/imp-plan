@@ -18,7 +18,7 @@ import {PuzzleBoard} from './puzzle-ui'
 import {isPuzzle} from './puzzles'
 import React,{useEffect,useRef,useState} from 'react'
 import {createRoot} from 'react-dom/client'
-import {mills,points,reward,titles,tutorials,isDuel,minSeats,type Game,type GameView} from './engine'
+import {blindCoverAction,mills,points,reward,titles,tutorials,isDuel,minSeats,type BlindCover,type Game,type GameView} from './engine'
 import {defaults,explain,humanOnly,nickname,validCode,type Command,type Snapshot} from './room'
 import {hostRoom,joinRoom,practice,type SessionState,type ConnectOptions} from './session'
 import catalog from './catalog.json'
@@ -29,6 +29,7 @@ import './style.css'
 import './design.css'
 import './arena-refresh.css'
 import {TableBriefing} from './table-briefing'
+import {ChamberScene,CoverTray,InlaidStone,coverNames} from './blind-chamber'
 import {GomokuWarmup} from './gomoku-warmup'
 import {GameFeedbackControls,useGameFeedback} from './game-feedback'
 import './cinematic.css'
@@ -68,7 +69,7 @@ function App(){
  useEffect(()=>{
   if(!matchOpen||!briefing)return
   setBriefing(null)
-  if(briefing==='preview')matchHeading.current?.focus()
+  matchHeading.current?.focus()
  },[matchOpen,briefing])
  function connect(type:'host'|'join'|'solo',game=privateGame){
   const n=nickname(name)
@@ -152,7 +153,7 @@ function App(){
   <section id="catalog" className="index"><div className="section-head"><div><p className="eyebrow">{selected?'SEASON '+selected.roman:'SEASONS I–III'}</p><h2>Challenge index</h2></div><p>{selected?count(selected.id):catalog.length} entries, including variants.</p></div>
   <div className="filters"><label>Search<input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Find a game or mechanic"/></label>{!selected&&<label>Season<select value={season} onChange={e=>setSeason(e.target.value)}><option value="all">All seasons</option><option value="1">Season 1</option><option value="2">Season 2</option><option value="3">Season 3</option></select></label>}<label className="check"><input type="checkbox" checked={filter} onChange={e=>setFilter(e.target.checked)}/> Playable only</label></div>
   <div className="directory">{rows.map(g=><article key={g.id}><span className="mono">{g.id}</span><div><strong>{g.title}</strong><br/><small>{g.category} · {g.genre}</small></div><span className={'pill '+(g.game?'live':'')}>{g.game?'Fan mode':g.original==='unaired'?'Unaired · planned':'Planned'}</span></article>)}</div>{!rows.length&&<p>No matching entries.</p>}</section></>
-  :<section className="room">
+  :<section className="room" data-layout={snap?.game?.game==='blind'?'chamber':undefined}>
    <div className="section-head"><div><p className="eyebrow">{kind==='solo'?'OFFLINE PRACTICE':'PRIVATE PARTY'}</p><h1 ref={matchHeading} tabIndex={snap?.game?-1:undefined}>{snap?.game?titles[snap.game.game]:kind==='solo'?'Practice lobby':'Party room'}</h1></div><div className="room-controls"><GameFeedbackControls feedback={feedback}/><button onClick={leave}>Leave room</button></div></div>
    {room&&<div className="invite"><span>Invite code <strong data-testid="room-code">{room}</strong></span><button onClick={()=>{void navigator.clipboard.writeText(invite(room)).then(()=>setNotice('Invite copied.')).catch(()=>setNotice('Copy this invite: '+invite(room)))}}>Copy invite</button></div>}
    <p role="status" className="notice">{state.phase==='connecting'?'Connecting…':state.phase==='offline'?'Disconnected.':notice||''}</p>
@@ -187,14 +188,18 @@ function App(){
      {host&&<button className="plain" disabled={state.phase!=='online'} onClick={()=>{if(finished||window.confirm('End this match and return to the lobby?'))command({kind:'lobby'})}}>Return to lobby</button>}
     </section>}
    </div><aside><section className="panel roster"><h2>Seats <small>{snap.seats.length}/{snap.settings.capacity}</small></h2>{snap.seats.map((s,i)=><div key={s.id} className="seat"><span className="avatar">{s.bot?'◈':i+1}</span><div><strong>{s.name}</strong><small>{s.id===snap.host?'Host':s.bot?'Bot':!s.online?'Offline':s.ready?'Ready':'Not ready'} · Seat {i+1}</small></div>{host&&s.id!==snap.host&&!snap.game&&<button aria-label={'Remove '+s.name+' from seat '+(i+1)} onClick={()=>command({kind:'kick',seat:s.id})}>×</button>}</div>)}</section>
+   {snap.game?.game==='blind'&&<ChamberScene game={snap.game} practice={kind==='solo'}/>}
    {kind!=='solo'&&(!snap.game?.fragments?.strict||snap.game.done)&&<section className="panel chat"><h2>Table talk</h2><div className="messages" role="log">{snap.chat.length?snap.chat.map((m,i)=><p key={i}><strong>{m.name}:</strong> {m.text}</p>):<p>No messages yet.</p>}</div><form onSubmit={e=>{e.preventDefault();if(chat.trim()){command({kind:'chat',text:chat});setChat('')}}}><input aria-label="Message" value={chat} onChange={e=>setChat(e.target.value)} maxLength={240} placeholder="Say something"/><button disabled={state.phase!=='online'||!chat.trim()}>Send</button></form></section>}</aside></div>}
   </section>}
-   {briefing&&snap&&!snap.game&&<TableBriefing key={snap.settings.game} game={snap.settings.game} seats={snap.seats} caption={explain(snap.settings.game,snap.seats.length)} close={()=>setBriefing(null)} start={briefing==='start'&&host?{enabled:canStart,confirm:()=>{setBriefing(null);command({kind:'start'})}}:undefined}/>}
+   {briefing&&snap&&!snap.game&&<TableBriefing key={snap.settings.game} game={snap.settings.game} seats={snap.seats} caption={explain(snap.settings.game,snap.seats.length)} close={()=>setBriefing(null)} start={briefing==='start'&&host?{enabled:canStart,confirm:()=>command({kind:'start'})}:undefined}/>}
   </main>
   <footer className="wrap footer"><strong>{brand}</strong><span>Fan-made and not affiliated with Netflix. No real stakes.</span></footer>
  </>
 }
 function Board({v,name,active,submit}:{v:GameView,name:(s:string)=>string,active:boolean,submit:(a:number|{from:number,to:number})=>void}){
+ const blind=v.game==='blind'
+ const [cover,setCover]=useState<BlindCover|null>(null)
+ const place=(i:number)=>submit(blind&&cover!==null?blindCoverAction(i,cover):i)
  const [from,setFrom]=useState<number|null>(null)
  const [focus,setFocus]=useState(0)
  const [row,setRow]=useState(0)
@@ -204,26 +209,28 @@ function Board({v,name,active,submit}:{v:GameView,name:(s:string)=>string,active
  const size=v.game==='point'?13:15
  function cell(i:number){
   const value=v.board[i]
+  const tile=v.blindCovers?.[i]
   const canFrom=v.legal.some(a=>typeof a==='object'&&a.from===i)
   const canPlace=v.legal.includes(i)
   const canTo=v.legal.some(a=>typeof a==='object'&&a.from===from&&a.to===i)
   const can=active&&(canPlace||canFrom||canTo)
   const label=(linear?'Row '+(Math.floor(i/size)+1)+', column '+(i%size+1):'Point '+(i+1))+', '+(!value?'open':value==='?'?'veiled':name(value))
   const [x,y]=points[i]??[0,0]
-  return <button type="button" key={i} style={linear?{}:{left:(7+x*(86/6))+'%',top:(7+y*(86/6))+'%'}} ref={el=>{refs.current[i]=el}} tabIndex={i===focus?0:-1} aria-label={label} aria-disabled={!can} aria-pressed={from===i}
+  return <button type="button" key={i} style={linear?{}:{left:(7+x*(86/6))+'%',top:(7+y*(86/6))+'%'}} ref={el=>{refs.current[i]=el}} tabIndex={i===focus?0:-1} aria-label={label} aria-description={blind&&value==='?'&&typeof tile==='number'?coverNames[tile]+' cover. Side hidden.':undefined} data-star={blind&&[48,56,112,168,176].includes(i)||undefined} aria-disabled={!can} aria-pressed={from===i}
    className={'cell '+(value==='?'?'veil':value?'color'+v.seats.indexOf(value):'')+(can?' legal':'')}
    onFocus={()=>setFocus(i)} onKeyDown={e=>{
     const nav:Record<string,number>={ArrowRight:1,ArrowLeft:-1,ArrowUp:linear?-size:-1,ArrowDown:linear?size:1}
     if(!(e.key in nav))return
     e.preventDefault();const next=Math.max(0,Math.min(v.board.length-1,i+nav[e.key]));refs.current[next]?.focus()
    }}
-   onClick={()=>{if(!can)return;if(canPlace){submit(i);setFrom(null)}else if(canTo&&from!==null){submit({from,to:i});setFrom(null)}else if(canFrom)setFrom(from===i?null:i)}}>
-   <span className={value?'placed-piece':undefined} key={value} aria-hidden="true">{value==='?'?'●':value?mark(v.seats.indexOf(value)):''}</span>
+   onClick={()=>{if(!can)return;if(canPlace){place(i);setFrom(null)}else if(canTo&&from!==null){submit({from,to:i});setFrom(null)}else if(canFrom)setFrom(from===i?null:i)}}>
+   {blind&&<span className="chamber-star" aria-hidden="true"/>}
+   {blind&&typeof tile==='number'?<InlaidStone key={value} cover={tile} side={v.done?(value===v.seats[0]?0:1):undefined}/>:<span className={value?'placed-piece':undefined} key={value} aria-hidden="true">{value==='?'?'●':value?mark(v.seats.indexOf(value)):''}</span>}
   </button>
  }
- return <><p className="board-hint">{v.capture?'Mill formed. Choose an opposing stone to remove.':v.game==='blind'?'All stones stay veiled until the result.':'Use the arrow keys to inspect points and Enter to play.'}</p><div className={'board '+(linear?'gomoku':'morris-board')} style={linear?{gridTemplateColumns:'repeat('+size+',1fr)',gridTemplateRows:'repeat('+size+',1fr)'}:{}} aria-label={titles[v.game]+' board'}>
+ return <><p className="board-hint">{v.capture?'Mill formed. Choose an opposing stone to remove.':blind?'The cover is visible. The stone’s side stays hidden until the result.':'Use the arrow keys to inspect points and Enter to play.'}</p>{blind&&!v.done&&<CoverTray choice={cover} setChoice={setCover} disabled={!active||!v.legal.length}/>}<div className={'board '+(blind?'gomoku chamber-grid':linear?'gomoku':'morris-board')} style={linear?{gridTemplateColumns:'repeat('+size+',1fr)',gridTemplateRows:'repeat('+size+',1fr)'}:{}} aria-label={titles[v.game]+' board'}>
  {linear?null:<svg viewBox="0 0 100 100" aria-hidden="true">{mills.map((m,i)=><line key={i} x1={7+points[m[0]][0]*86/6} y1={7+points[m[0]][1]*86/6} x2={7+points[m[2]][0]*86/6} y2={7+points[m[2]][1]*86/6}/>)}</svg>}
- {v.board.map((_,i)=>cell(i))}</div>{linear&&!v.done&&<details><summary>Place by coordinates</summary><div className="actions"><label>Row<select value={row} onChange={e=>setRow(Number(e.target.value))}>{Array.from({length:size},(_,i)=><option key={i} value={i}>{i+1}</option>)}</select></label><label>Column<select value={column} onChange={e=>setColumn(Number(e.target.value))}>{Array.from({length:size},(_,i)=><option key={i} value={i}>{i+1}</option>)}</select></label><button disabled={!active||!v.legal.includes(row*size+column)} onClick={()=>submit(row*size+column)}>Place stone</button></div></details>}</>
+ {v.board.map((_,i)=>cell(i))}</div>{linear&&!v.done&&<details><summary>Place by coordinates</summary><div className="actions"><label>Row<select value={row} onChange={e=>setRow(Number(e.target.value))}>{Array.from({length:size},(_,i)=><option key={i} value={i}>{i+1}</option>)}</select></label><label>Column<select value={column} onChange={e=>setColumn(Number(e.target.value))}>{Array.from({length:size},(_,i)=><option key={i} value={i}>{i+1}</option>)}</select></label><button disabled={!active||!v.legal.includes(row*size+column)} onClick={()=>place(row*size+column)}>Place stone</button></div></details>}</>
 }
 function Auction({snap,active,submit}:{snap:Snapshot,active:boolean,submit:(v:number)=>void}){
  const g=snap.game!
