@@ -13,8 +13,9 @@ const pages=[
 const e=s=>s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;')
 for(const {title,path,heading,season,description} of pages){
  const data=season?entries.filter(g=>g.season===season):entries
+ const playable=data.filter(g=>g.game)
  const nav=seasons.map(([subtitle,n])=>'<a href="%BASE_URL%season/'+n+'/">Season '+n+': '+e(subtitle)+'</a>').join(' · ')
- const content='<main><h1>'+e(heading)+'</h1><p>'+e(description)+'</p><nav aria-label="Seasons">'+nav+'</nav><h2>Playable fan games</h2><ul>'+data.filter(g=>g.game).map(g=>'<li>'+e(g.title)+'</li>').join('')+'</ul><p>'+data.length+' challenge entries. Unofficial fan project, not affiliated with Netflix. JavaScript is required to start a game.</p></main>'
+ const content='<main><h1>'+e(heading)+'</h1><p>'+e(description)+'</p><nav aria-label="Seasons">'+nav+'</nav><h2>Playable fan games</h2><ul>'+playable.map(g=>'<li>'+e(g.title)+'</li>').join('')+'</ul><p>'+playable.length+' of '+data.length+' indexed challenges are playable. Unofficial fan project, not affiliated with Netflix. JavaScript is required to start a game.</p></main>'
  const location=canonical+path
  const shareTitle=season?title:name
  const html=`<!doctype html>

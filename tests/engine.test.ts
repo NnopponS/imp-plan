@@ -93,17 +93,28 @@ it('projects just one completed Knight route and its host-recorded elapsed time'
  expect(art).not.toContain('unseated')
 })
 
-it('prints the actual path after undo, not the longest score, and omits timing on partial tours',()=>{
- let g=start('knight',['Player'],180_000,5000,{size:6,closed:true})
- for(const [i,cell] of g.tour.slice(1,4).entries())g=move(g,'Player',cell,6000+i)!
+it('prints each seat’s highest-scoring Knight route after undo without exposing it during play',()=>{
+ let g=start('knight',['Player','Rival'],180_000,5000,{size:6,closed:true})
+ for(const [i,cell] of g.tour.slice(1,5).entries())g=move(g,'Player',cell,6000+i)!
+ g=move(g,'Rival',g.tour[1],6500)!
  g=move(g,'Player',-1,7000)!
+ g=move(g,'Player',-1,7100)!
+ expect(view(g,'Player').path).toEqual(g.tour.slice(0,3))
+ expect(view(g,'Player').knightResultPath).toBeUndefined()
  g=timeout(g,g.deadline)
- const result=knightPrintData(view(g,'Player',g.deadline+999))!
- expect(result.path).toEqual(g.tour.slice(0,3))
+ const projection=view(g,'Player',g.deadline+999)
+ const result=knightPrintData(projection)!
+ expect(projection.path).toEqual(g.tour.slice(0,3))
+ expect(result.path).toEqual(g.tour.slice(0,5))
  expect(result.complete).toBe(false)
  expect(result.elapsed).toBeNull()
- expect(view(g,'Player').scores).toEqual([4])
- expect(knightRecordSvg(result)).not.toMatch(/\bbest\b|00:00/i)
- expect(knightPrintData({...view(g,'Player'),path:[0,0]})).toBeNull()
- expect(knightPrintData({...view(g,'Player'),path:[0,1]})).toBeNull()
+ expect(projection.scores).toEqual([5,2])
+ expect(knightPrintData(view(g,'Rival'))?.path).toEqual(g.tour.slice(0,2))
+ expect(view(g,'unseated').knightResultPath).toBeUndefined()
+ expect(knightPrintData(view(g,'unseated'))).toBeNull()
+ expect(knightRecordSvg(result)).not.toMatch(/00:00/)
+ expect(knightPrintData({...projection,knightResultPath:[0,0]})).toBeNull()
+ expect(knightPrintData({...projection,knightResultPath:[0,1]})).toBeNull()
+ const rematch=start('knight',['Player','Rival'],180_000,200_000,{size:6,closed:true})
+ expect(knightPrintData(view(timeout(rematch,rematch.deadline),'Player'))?.visited).toBe(1)
 })

@@ -7,7 +7,9 @@ export const knightPrintHeight=684
 
 /** Render only the viewer-authorized path and elapsed duration, never the roster or the seed. */
 export function knightPrintData(view:GameView):KnightPrint|null{
- const {size,closed,path}=view
+ const {size,closed}=view
+ // Older hosts may not send a separately recorded result trail.
+ const path=view.knightResultPath??view.path
  if(view.game!=='knight'||!view.done||(size!==5&&size!==6&&size!==8)||typeof closed!=='boolean'||!Array.isArray(path)||!path.length||path.length>size*size||
   new Set(path).size!==path.length||path.some((p,i)=>!Number.isInteger(p)||p<0||p>=size*size||i>0&&!knightStep(path[i-1],p,size)))return null
  const complete=path.length===size*size

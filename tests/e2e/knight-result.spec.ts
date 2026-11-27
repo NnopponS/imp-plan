@@ -59,16 +59,24 @@ test('completed tour shares the actual numbered PNG and can rematch without publ
  await expect(record).toHaveCount(0)
 })
 
-test('partial tour saves a standalone PNG without inventing finish time',async({page})=>{
+test('partial tour saves the highest-scoring route after undo without inventing finish time',async({page})=>{
  await page.clock.install()
  await page.addInitScript(()=>Object.defineProperty(navigator,'canShare',{configurable:true,value:()=>false}))
  const route=await startTour(page)
- await playCell(page,route[1])
+ for(const cell of route.slice(1,5))await playCell(page,cell)
+ const undo=page.getByRole('button',{name:'Undo step',exact:true})
+ await undo.click()
+ await expect(tourBoard(page).getByRole('button',{name:boardCell(route[3])+', knight, step 4',exact:true})).toBeVisible()
+ await undo.click()
+ await expect(tourBoard(page).getByRole('button',{name:boardCell(route[2])+', knight, step 3',exact:true})).toBeVisible()
  await page.clock.fastForward(190_000)
  const record=page.getByRole('region',{name:'Match record',exact:true})
- const print=record.getByRole('img',{name:/2 of 25 squares visited/})
+ const print=record.getByRole('img',{name:/5 of 25 squares visited/})
  await expect(print).toBeVisible()
  await expect(print).not.toHaveAttribute('alt',/Finish time/)
+ const svg=decodeURIComponent((await print.getAttribute('src'))!.split(',')[1])
+ for(const [i,cell] of route.slice(0,5).entries())expect(svg).toContain(`data-visit="${i+1}" data-cell="${cell}"`)
+ expect(svg).not.toContain('data-visit="6"')
  const download=page.waitForEvent('download')
  await record.getByRole('button',{name:'Save image',exact:true}).click()
  const result=await download
