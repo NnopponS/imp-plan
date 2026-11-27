@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="16" viewBox="0 0 64 16" role="img" aria-labelledby="title desc">
+<title id="title">Engraved wall segment</title>
+<desc id="desc">A horizontal brass-capped wall that can block a single edge between two squares.</desc>
+<defs>
+<linearGradient id="bronze" x2="0" y2="1"><stop offset="0" stop-color="#f4d292"/><stop offset=".21" stop-color="#cb9b58"/><stop offset=".75" stop-color="#997143"/><stop offset="1" stop-color="#775131"/></linearGradient>
+</defs>
+<path d="M3 4h58l2 3v6l-2 2H3l-2-2V7Z" fill="#4b3328" stroke="#302017" stroke-width="1"/>
+<path d="M3 2.25h58l2 3-2 5.1H3l-2-5.1Z" fill="url(#bronze)" stroke="#553c28" stroke-width="1"/>
+<path d="M6 4.6h52M7 8.1h50" fill="none" stroke="#ffe1a5" stroke-width="0.9" opacity=".8" stroke-linecap="round"/>
+<path d="M1.8 5.7 5 7.5 3.3 9.7m58.9-4L59 7.5l1.7 2.2M7.5 12.1h49" fill="none" stroke="#d5a879" stroke-width="0.9" opacity=".45" stroke-linecap="round"/>
+</svg>

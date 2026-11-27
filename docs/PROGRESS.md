@@ -92,3 +92,6 @@ The character illustration and chamber are original. Play now uses engraved cove
 
 ## Memory Poker: episode-style duel
 Separate optional mode for exactly two humans in a private room. Study 16 cards for 20 seconds, then choose two positions privately alongside three community cards. An exact tie produces a new deal. Solo and group fan tables are unchanged. The first private lock updates only its actor, without a shared revision change; reveal follows the second lock or a safe timeout. Two browser contexts tested full play, tie and view privacy over loopback. Genuine WebRTC join did not complete in the test environment. No elimination ladder or full broadcast verification.
+
+## S2-10 · Wall Go
+27 of 64 catalog entries playable (8 / 7 / 12). A 7 × 7 Fan Mode duel combines pawn movement with permanent adjacent walls. A turn is previewed locally and committed atomically; spectators see only the accepted board. Includes per-turn clock, automatic legal wall at expiry, original art, three solo bot levels, two-player reverse-start rematches and existing larger-room fixture rotation. Browser tests verified a full two-client loopback game to territory scoring at 360 px with keyboard and touch, plus a Hard practice reply at 390 px. Cross-network play and the original broadcast heat are not verified.

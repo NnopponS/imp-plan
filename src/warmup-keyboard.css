@@ -1,0 +1,6 @@
+.warmup .warmup-header-actions {display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;}
+.warmup-header-actions a {
+ display:inline-flex;align-items:center;min-height:40px;padding-inline:5px;
+ color:var(--gold);font-size:.73rem;font-weight:650;text-underline-offset:.2em;
+}
+.warmup .warmup-key-hint {margin-block:5px 0;font-size:.71rem;color:var(--sub);}

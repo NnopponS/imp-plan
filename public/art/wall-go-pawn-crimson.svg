@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="36" viewBox="0 0 32 36" role="img" aria-labelledby="title desc">
+<title id="title">Crimson survey pawn</title>
+<desc id="desc">Engraved game pawn with a faceted head and diamond mark.</desc>
+<defs>
+<linearGradient id="red" x2=".65" y2="1"><stop offset="0" stop-color="#dfa084"/><stop offset=".27" stop-color="#bd655c"/><stop offset=".76" stop-color="#933f45"/><stop offset="1" stop-color="#582833"/></linearGradient>
+<linearGradient id="redFoot" x2=".6" y2="1"><stop offset="0" stop-color="#be6e56"/><stop offset=".45" stop-color="#8e4c42"/><stop offset="1" stop-color="#45262b"/></linearGradient>
+</defs>
+<ellipse cx="16" cy="32.3" rx="14.2" ry="2.65" fill="#2f2215" opacity=".25"/>
+<path d="M4.3 27 8 24.3l3.8-3.5.6-7.1h7.2l.6 7.1 3.8 3.5 3.7 2.7v4.2l-4 2.1H8.4l-4.1-2.1Z" fill="url(#redFoot)" stroke="#472527" stroke-width="1.1"/>
+<path d="m4.7 27.4 4 2h14.6l4-2M8.3 24.4l3.4 1.1h8.6l3.5-1.1" fill="none" stroke="#edaa83" stroke-width="1" opacity=".8"/>
+<path d="m16 2 6.9 5v5.9l-3.65 4h-6.5l-3.65-4V7Z" fill="url(#red)" stroke="#51272f" stroke-width="1"/>
+<path d="m16 3.5-5.5 4v4.9l2.2 2.4" fill="none" stroke="#ffd2a6" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" opacity=".83"/>
+<path d="m16 6.8 2.6 2.2-2.6 2.2L13.4 9Zm0 4.3 2.1 1.7h-4.2Z" fill="#ffe4b6"/>
+</svg>

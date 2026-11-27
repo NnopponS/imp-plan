@@ -3,6 +3,7 @@ import {titles,tutorials,type Game} from './engine'
 import type {Seat} from './room'
 import {RuleDemo,hasRuleDemo} from './rule-demo'
 import {ChamberEntrance} from './blind-chamber'
+import {WallGoLesson} from './wall-go-ui'
 
 const seatText=(n:number,s:string)=>n+' '+s+(n===1?'':'s')
 export function TableBriefing({game,seats,caption,close,start,variant}:{game:Game;seats:Seat[];caption:string;close:()=>void;start?:{enabled:boolean;confirm:()=>void};variant?:{label:string;rules:string;demo:(step:number)=>ReactNode}}){
@@ -34,7 +35,7 @@ export function TableBriefing({game,seats,caption,close,start,variant}:{game:Gam
     </div>
     <div className="brief-count"><strong>{seats.length} at the table</strong><span>{seatText(seats.length-bots,'human')} · {seatText(bots,'bot')}</span></div>
    </div>
-   <div className="brief-lesson"><p>{caption}</p>{(variant||hasRuleDemo(game))&&<div className="brief-example"><span>Rule example</span>{variant?variant.demo(step):<RuleDemo game={game} step={step}/>}</div>}<ol>{rules.map((rule,i)=><li key={i}><button type="button" aria-pressed={step===i} onClick={()=>setStep(i)}><span aria-hidden="true">{String(i+1).padStart(2,'0')}</span>{rule}</button></li>)}</ol></div>
+   <div className="brief-lesson"><p>{caption}</p>{(variant||game==='wallGo'||hasRuleDemo(game))&&<div className="brief-example"><span>Rule example</span>{variant?variant.demo(step):game==='wallGo'?<WallGoLesson step={step}/>:<RuleDemo game={game} step={step}/>}</div>}<ol>{rules.map((rule,i)=><li key={i}><button type="button" aria-pressed={step===i} onClick={()=>setStep(i)}><span aria-hidden="true">{String(i+1).padStart(2,'0')}</span>{rule}</button></li>)}</ol></div>
   </div>
   <footer><span>{start?'Any match timer starts after you enter.':'Only the host can start the match.'}</span>{start&&<button className="primary" data-chamber-next type="button" disabled={!start.enabled} onClick={start.confirm}>Enter match</button>}</footer>
  </dialog>

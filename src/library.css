@@ -1,0 +1,63 @@
+/* Keep season-specific games ahead of the shared room form. */
+.season-heading {
+ display:flex;align-items:end;justify-content:space-between;gap:12px 22px;flex-wrap:wrap;
+ padding-block:clamp(18px,3vw,42px) 18px;border-bottom:1px solid var(--line);
+}
+.season-heading .eyebrow {margin:0 0 .45rem;}
+.season-heading h1 {
+ margin:0;color:var(--ink);
+ font:normal clamp(2.25rem,5vw,4.5rem)/.98 Georgia,serif;letter-spacing:-.05em;
+}
+.season-heading .front-cta {color:var(--gold);}
+.season-heading .front-cta:hover {background:#32291f;}
+.season-gallery {padding-top:14px;}
+.season-gallery .section-head {align-items:baseline;margin-bottom:0;}
+.season-gallery .section-head h2 {margin:0;font-size:clamp(1.25rem,2.8vw,2rem);}
+.season-gallery .section-head p {margin:0;color:var(--sub);}
+.season-gallery .card>.game-art {aspect-ratio:16 / 10;}
+.season-room {display:block;padding-block:32px 0;}
+.season-room .entrance:target,.season-room .entrance:focus-within {border-color:#9f794d;}
+
+.library-tools {
+ display:grid;grid-template-columns:minmax(0,19rem) auto;align-items:center;
+ justify-content:space-between;gap:8px 12px;margin-block:0 12px;
+}
+.library-tools input {width:100%;min-width:0;margin:0;}
+.library-tools a {
+ color:var(--gold);font-size:.85rem;font-weight:650;text-underline-offset:.25em;
+ padding-block:.55rem;
+}
+.season-gallery .library-tools {border-top:0;}
+
+.library-index {
+ margin-block:24px;padding:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+}
+.library-index summary {
+ display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:12px;
+ padding:12px 0;list-style:none;font-size:1rem;
+}
+.library-index summary::-webkit-details-marker {display:none;}
+.library-index summary>:first-child {font:normal 1.35rem Georgia,serif;color:var(--ink);}
+.library-index summary small,.index-note {color:var(--sub);}
+.library-index summary:focus-visible {outline:2px solid var(--gold);outline-offset:2px;}
+.index-toggle {display:grid;place-items:center;min-width:1.5rem;font-size:1.25em;color:var(--gold);}
+.index-toggle::after {content:'+';}
+.library-index[open] .index-toggle::after {content:'−';}
+.index-note {font-size:.86rem;}
+.catalog-practice {color:#f3cd92;background:#362b20;border-color:#806242;min-height:40px;}
+.catalog-unavailable {color:var(--sub);}
+@media(max-width:760px){
+ .season-room {padding-top:24px;}
+ .library-tools {grid-template-columns:minmax(0,1fr) auto;}
+ .season-gallery .section-head {display:flex;justify-content:space-between;}
+}
+@media(max-width:355px){
+ .season-heading {padding-block:12px;gap:8px;}
+ .season-heading .front-cta {min-height:40px;padding:6px 10px;font-size:.8rem;}
+ .season-gallery .card>.game-art {aspect-ratio:2.1;}
+ .season-gallery .card p:not(.game-caption) {font-size:.875rem;line-height:1.35;margin-bottom:8px;}
+ .season-gallery .library-tools {padding-block:3px;margin-bottom:8px;}
+ .library-tools a {font-size:.78rem;}
+ .catalog-practice {font-size:.8rem;padding-inline:8px;}
+ .catalog-unavailable {max-width:6.5ch;text-align:right;}
+}

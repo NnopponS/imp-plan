@@ -63,7 +63,7 @@ it('changing difficulty preserves the complete practice roster but swapping game
 
 it('every game offering AI has legal deterministic opening choices at all three levels',()=>{
  const games=(Object.keys(titles) as Game[]).filter(game=>!humanOnly(game))
- expect(games).toHaveLength(11)
+ expect(games).toHaveLength(12)
  for(const game of games){
   const seats=(game==='remove'||game==='secret')?['a','b','c']:['a','b']
   const g=start(game,seats,25000,0,{seed:733})

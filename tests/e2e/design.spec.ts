@@ -19,7 +19,7 @@ test('fan brand and original art are visible without motion or mobile overflow',
 })
 test('each season has a distinct path, accurate index and playable cards',async({page})=>{
  await page.goto('./')
- for(const [n,count,games] of [[1,18,8],[2,17,6],[3,29,12]]){
+ for(const [n,count,games] of [[1,18,8],[2,17,7],[3,29,12]]){
   await page.getByRole('navigation',{name:'Seasons'}).getByRole('link',{name:'Season '+n,exact:true}).click()
   await expect(page).toHaveURL(new RegExp('/imp-plan/season/'+n+'/$'))
   await expect(page.locator('.directory article')).toHaveCount(count)
