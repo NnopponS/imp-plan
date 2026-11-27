@@ -11,7 +11,7 @@ test('fan brand and original art are visible without motion or mobile overflow',
   await asset.scrollIntoViewIfNeeded()
   await expect.poll(async()=>asset.evaluate((n:HTMLImageElement)=>n.complete&&n.naturalWidth>0)).toBe(true)
  }
- await expect(page.locator('.stage-orbit')).toHaveCSS('animation-name','none')
+ await expect(page.locator('video, img[src*="arena-stage"]')).toHaveCount(0)
  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(390)
  await page.getByLabel('Nickname').fill('Designer')
  await page.getByRole('button',{name:'Solo practice'}).click()
@@ -19,7 +19,7 @@ test('fan brand and original art are visible without motion or mobile overflow',
 })
 test('each season has a distinct path, accurate index and playable cards',async({page})=>{
  await page.goto('./')
- for(const [n,count,games] of [[1,18,8],[2,17,6],[3,29,10]]){
+ for(const [n,count,games] of [[1,18,8],[2,17,6],[3,29,12]]){
   await page.getByRole('navigation',{name:'Seasons'}).getByRole('link',{name:'Season '+n,exact:true}).click()
   await expect(page).toHaveURL(new RegExp('/imp-plan/season/'+n+'/$'))
   await expect(page.locator('.directory article')).toHaveCount(count)
@@ -31,17 +31,20 @@ test('each season has a distinct path, accurate index and playable cards',async(
  await page.getByRole('button',{name:/Practice Point Gomoku/}).click()
  await expect(page.getByLabel('Nickname')).toBeFocused()
  await page.getByLabel('Nickname').fill('Contestant')
- await page.getByRole('button',{name:'Solo practice'}).click()
+ await page.getByLabel('Nickname').press('Enter')
  await expect(page.getByLabel('Game')).toHaveValue('point')
 })
-test('Blender motion can start and pause on demand',async({page})=>{
+test('the first screen is a real Blind Gomoku warm-up, playable without a nickname',async({page})=>{
  await page.setViewportSize({width:390,height:844})
  await page.goto('./')
- await expect(page.locator('.stage video')).toHaveCount(0)
- await page.getByRole('button',{name:'Play motion'}).click()
- const video=page.locator('.stage video')
- await expect.poll(()=>video.evaluate((el:HTMLVideoElement)=>el.readyState)).toBeGreaterThan(1)
- await expect(page.getByRole('button',{name:'Pause motion'})).toBeVisible()
- await page.getByRole('button',{name:'Pause motion'}).click()
- await expect.poll(()=>video.evaluate((el:HTMLVideoElement)=>el.paused)).toBe(true)
+ const warmup=page.getByRole('region',{name:'One-move warm-up'})
+ await expect(warmup).toBeVisible()
+ expect(await warmup.boundingBox().then(b=>b!.y)).toBeLessThan(600)
+ await expect(page.locator('video, img[src*="arena-stage"]')).toHaveCount(0)
+ await warmup.getByRole('button',{name:'Row 8, column 10, empty'}).click()
+ await expect(warmup.getByRole('status')).toHaveText(/Not quite/)
+ await warmup.getByRole('button',{name:'Row 8, column 9, empty'}).press('Enter')
+ await expect(warmup.getByRole('status')).toHaveText(/Five in a row/)
+ await warmup.getByRole('button',{name:'Reset warm-up'}).click()
+ await expect(warmup.getByRole('button',{name:'Row 8, column 9, empty'})).toBeEnabled()
 })

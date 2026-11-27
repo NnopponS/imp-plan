@@ -1,7 +1,7 @@
 import {isGrass} from './grass'
 import {isPuzzle} from './puzzles'
 import {z} from 'zod'
-import {start,move,schedule,view,timeout,botAction,botLevels,isDuel,minSeats,simultaneous,type State,type Game,type GameView} from './engine'
+import {start,move,schedule,view,timeout,botAction,botLevels,isDuel,minSeats,secretBotIntentKey,simultaneous,type State,type Game,type GameView} from './engine'
 const codeAlphabet='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
 export const roomCode=()=>Array.from(crypto.getRandomValues(new Uint8Array(6)),x=>codeAlphabet[x&31]).join('')
 export const validCode=(x:string)=>/^[A-HJ-NP-Z2-9]{6}$/.test(x)
@@ -14,7 +14,7 @@ export function nickname(value:string):string|null{
  const n=[...new Intl.Segmenter('en',{granularity:'grapheme'}).segment(s)].length
  return n>=1&&n<=24?s:null
 }
-const settings=z.strictObject({game:z.enum(['blind','morris','auction','point','remove','knight','hex','rectangles','mancala','cubes','bagh','secret','grass1','grass3','exile','divine','equations','codeLock','pyramid','fragments','spot','scale','fence','tower']),seconds:z.number().int().min(10).max(900),size:z.union([z.literal(5),z.literal(6),z.literal(8)]).optional(),closed:z.boolean().optional(),divineSide:z.union([z.literal(3),z.literal(5),z.literal(7)]).optional(),divineHard:z.boolean().optional(),fragmentStrict:z.boolean().optional(),fragmentCount:z.union([z.literal(8),z.literal(12),z.literal(16),z.literal(24)]).optional(),capacity:z.number().int().min(2).max(16),locked:z.boolean(),botLevel:z.enum(botLevels).optional()})
+const settings=z.strictObject({game:z.enum(['blind','morris','auction','point','remove','knight','hex','rectangles','mancala','cubes','bagh','secret','grass1','grass3','exile','divine','equations','codeLock','pyramid','fragments','spot','scale','fence','tower','piece','memoryPoker']),seconds:z.number().int().min(10).max(900),size:z.union([z.literal(5),z.literal(6),z.literal(8)]).optional(),closed:z.boolean().optional(),divineSide:z.union([z.literal(3),z.literal(5),z.literal(7)]).optional(),divineHard:z.boolean().optional(),fragmentStrict:z.boolean().optional(),fragmentCount:z.union([z.literal(8),z.literal(12),z.literal(16),z.literal(24)]).optional(),capacity:z.number().int().min(2).max(16),locked:z.boolean(),botLevel:z.enum(botLevels).optional(),memoryPokerPeek:z.boolean().optional()})
 const schema=z.discriminatedUnion('kind',[
  z.strictObject({kind:z.literal('ready')}),
  z.strictObject({kind:z.literal('config'),settings}),
@@ -28,7 +28,7 @@ const schema=z.discriminatedUnion('kind',[
 ])
 export type Command=z.infer<typeof schema>
 export type Settings=z.infer<typeof settings>
-export const humanOnly=(g:Game)=>g==='knight'||g==='divine'||g==='codeLock'||g==='pyramid'||g==='fragments'||g==='spot'||g==='scale'||g==='fence'||g==='tower'||isPuzzle(g)
+export const humanOnly=(g:Game)=>g==='knight'||g==='divine'||g==='codeLock'||g==='pyramid'||g==='fragments'||g==='spot'||g==='scale'||g==='fence'||g==='tower'||g==='piece'||g==='memoryPoker'||isPuzzle(g)
 export const defaults:Settings={game:'blind',seconds:25,capacity:16,locked:false,botLevel:'normal'}
 const wire=z.discriminatedUnion('type',[
  z.strictObject({version:z.literal(1),type:z.literal('hello'),name:z.string().max(160),token:z.string().regex(/^[a-f0-9]{32}$/).optional()}),
@@ -57,6 +57,7 @@ export class Host{
  chat:Chat[]=[]
  private botDue=0
  private botSeed=0
+ private secretBotRejected=new Map<string,Set<number>>()
  private seats:PrivateSeat[]
  private requests=new Map<string,Map<string,string|null>>()
  private lastChat=new Map<string,number>()
@@ -138,15 +139,18 @@ export class Host{
   }
   if(this.game)return 'Settings are locked during a match.'
   if(c.kind==='config'){
-   if(c.settings.game==='mancala'&&this.seats.length>8)return 'Balance Mancala seats up to eight players. Remove extra seats first.'
-   if(c.settings.capacity<this.seats.length)return 'Capacity cannot be below the current roster.'
-   if(c.settings.game==='grass1'&&this.seats.length>12)return 'Laying Grass seats up to twelve players.'
    const changes=c.settings
-   const seconds=changes.game==='fence'||changes.game==='tower'?240:changes.game==='scale'?300:changes.game==='spot'?90:changes.game==='fragments'?20:changes.game==='pyramid'?45:changes.game==='codeLock'?180:changes.game==='divine'?(this.settings.game!=='divine'?600:Math.max(60,changes.seconds)):changes.game==='knight'?Math.max(180,Math.min(480,changes.seconds)):changes.game==='hex'?20:changes.game==='rectangles'?45:changes.game==='cubes'?25:changes.game==='exile'?90:changes.game==='secret'&&this.settings.game!=='secret'?90:Math.min(90,changes.seconds)
-   const changedGame=changes.game!==this.settings.game
-   this.settings={...changes,botLevel:changes.botLevel??'normal',capacity:Math.min(changes.capacity,changes.game==='mancala'?8:changes.game==='grass1'?12:16),seconds,closed:changes.size===5||!changes.size?false:changes.closed}
+   const reseat=this.solo&&changes.game!==this.settings.game
+   const roster=reseat?this.seats.filter(s=>!s.bot):this.seats
+   const nativeMax=changes.game==='mancala'?8:changes.game==='grass1'?12:16
+   const capacity=reseat?nativeMax:Math.min(changes.capacity,nativeMax)
+   if(changes.game==='mancala'&&roster.length>nativeMax)return 'Balance Mancala seats up to eight players. Remove extra seats first.'
+   if(changes.game==='grass1'&&roster.length>nativeMax)return 'Laying Grass seats up to twelve players.'
+   if(capacity<roster.length)return 'Capacity cannot be below the current roster.'
+   const seconds=changes.game==='fence'||changes.game==='tower'||changes.game==='piece'?240:changes.game==='scale'?300:changes.game==='spot'?90:changes.game==='fragments'?20:changes.game==='pyramid'?45:changes.game==='codeLock'?180:changes.game==='divine'?(this.settings.game!=='divine'?600:Math.max(60,changes.seconds)):changes.game==='knight'?Math.max(180,Math.min(480,changes.seconds)):changes.game==='hex'?20:changes.game==='rectangles'?45:changes.game==='cubes'?25:changes.game==='exile'?90:changes.game==='secret'&&this.settings.game!=='secret'?90:Math.min(90,changes.seconds)
+   this.settings={...changes,botLevel:changes.botLevel??'normal',capacity,seconds,closed:changes.size===5||!changes.size?false:changes.closed}
    if(this.solo){
-    if(changedGame)this.seats=this.seats.filter(s=>!s.bot)
+    this.seats=roster
     for(let i=this.seats.length;i<minSeats(changes.game);i++)this.addBot()
    }
    return null
@@ -175,13 +179,15 @@ export class Host{
  }
  private begin(){
   this.match=id()
+  this.secretBotRejected.clear()
   const [gameSeed,botSeed]=crypto.getRandomValues(new Uint32Array(2))
   this.botSeed=botSeed
-  const {game,seconds,size,closed,divineSide,divineHard,fragmentStrict,fragmentCount}=this.settings
+  const {game,seconds,size,closed,divineSide,divineHard,fragmentStrict,fragmentCount,memoryPokerPeek}=this.settings
   const seats=isDuel(game)?this.fixtures[this.fixture].sides:this.seats.map(s=>s.id)
-  this.setGame(start(game,seats,seconds*1000,this.clock(),{seed:gameSeed,size,closed,divineSide,divineHard,fragmentStrict,fragmentCount,solo:this.solo}))
+  this.setGame(start(game,seats,seconds*1000,this.clock(),{seed:gameSeed,size,closed,divineSide,divineHard,fragmentStrict,fragmentCount,memoryPokerPeek,solo:this.solo}))
  }
  private setGame(g:State){
+  if(g.round!==this.game?.round)this.secretBotRejected.clear()
   if(!this.game||isGrass(g.game)||isDuel(g.game)||g.round!==this.game.round)this.botDue=this.clock()+650
   this.game=g
   if(g.done&&this.fixtures[this.fixture])this.fixtures[this.fixture].winner=g.winner
@@ -189,13 +195,32 @@ export class Host{
  tick(){
   if(!this.game||this.game.done)return false
   const now=this.clock()
-  if(!this.game.seats.every(id=>this.seats.find(s=>s.id===id)?.online)&&!simultaneous(this.game.game))return false
+  if(this.game.game!=='piece'&&!this.game.seats.every(id=>this.seats.find(s=>s.id===id)?.online)&&!simultaneous(this.game.game))return false
   const past=this.game
   let g=timeout(past,now)
+  if(g===past&&g.piece&&!this.seats.find(s=>s.id===past.seats[past.turn])?.online){
+   // Preserve roster order, but don't let the active seat's disconnect stall a timed team puzzle.
+   for(let offset=1;offset<past.seats.length;offset++){
+    const turn=(past.turn+offset)%past.seats.length
+    if(this.seats.some(s=>s.id===past.seats[turn]&&s.online)){g={...past,turn,round:past.round+1};break}
+   }
+  }
   if(g===past&&now>=this.botDue){
    for(const s of this.seats.filter(s=>s.bot&&g.seats.includes(s.id))){
-    const a=botAction(view(g,s.id),s.id,g.publicMoves,this.botSeed,this.settings.botLevel)
-    if(a!==undefined){const result=move(g,s.id,a,now);if(result){g=result;if(g.done||g.round!==past.round||!simultaneous(g.game))break}}
+    const v=view(g,s.id), rejected=this.secretBotRejected.get(s.id), contact=v.secret?.phase==='contact'?v.secret:null
+    const index=contact?v.seats.indexOf(s.id):-1
+    if(contact&&rejected)for(const key of rejected)if(key<0&&secretBotIntentKey(contact,index,-key)!==key)rejected.delete(key)
+    const a=botAction(v,s.id,g.publicMoves,this.botSeed,this.settings.botLevel,rejected)
+    if(a===undefined)continue
+    const result=move(g,s.id,a,now)
+    if(result){g=result;if(g.done||g.round!==past.round||!simultaneous(g.game))break}
+    else if(contact&&typeof a==='number'){
+     // A genuine action can fail on a hidden ticket. Don't preview validity
+     // or expose the result to other seats; choose again on the next host tick.
+     const memory=rejected??new Set<number>()
+     memory.add(secretBotIntentKey(contact,index,a))
+     if(!rejected)this.secretBotRejected.set(s.id,memory)
+    }
    }
   }
   if(g===past)return false
@@ -203,5 +228,5 @@ export class Host{
  }
 }
 export function explain(game:Game,count:number) {
- return game==='tower'?'A shared letter tray and one team tower. Up to two tile edits per turn, then pass control.':game==='fence'?'Draw your own loop on a private grid. The same clues are shared by everyone.':game==='scale'?'Take turns operating one shared balance. Discuss the evidence and lock one team answer.':game==='spot'?'Compare two shared trays. Each seat has private marks and a private time penalty.':game==='fragments'?'Study one shared exhibit. Players take turns recalling details; in strict mode chat is disabled.':game==='pyramid'?'Every seat gets the same eight puzzles and submits privately. Solo practice needs no bots.':game==='codeLock'?'Everyone gets the same clues and a private answer tray. Offline practice has unlimited retries before the clock runs out.':game==='equations'?'Hide an equation and take turns at each table. Both players receive equal guesses; no turn timer. Larger rooms rotate through a two-leg league.':game==='divine'?'Everyone solves the same magic square on a private grid. Solo practice needs no bots.':isGrass(game)?(game==='grass1'?'2–12 players draft from a shared tile tray.':'2–16 players share a tile draft with optional trades.') :game==='secret'?'3–16 seats exchange private clues. Solo practice fills with two bots.':game==='bagh'?'A two-leg duel swaps goat and tiger roles. Larger rooms run a rotating league.':game==='mancala'?'2–8 players share one circular board. Up to eight seats, including bots.':isPuzzle(game)?'Everyone solves the same challenge and submits privately. Solo practice needs no bots.':game==='knight'?'Everyone solves the same board on a private grid.':game==='remove'?'Every seat gets a private hand; at least three seats.':game==='auction'?'Every seat bids in the same match.':count<=2?'Two players at one board.':'Two legs per pairing, with a different starting player in each leg. Other seats watch the current table. No points for a bye.'
+ return game==='memoryPoker'?'All seats memorize the same layout, then privately lock a five-card hand. Cards are revealed together. No betting.':game==='piece'?'Rotate and fit irregular tiles onto one shared silhouette. Each move passes control; the team has four minutes.':game==='tower'?'A shared letter tray and one team tower. Up to two tile edits per turn, then pass control.':game==='fence'?'Draw your own loop on a private grid. The same clues are shared by everyone.':game==='scale'?'Take turns operating one shared balance. Discuss the evidence and lock one team answer.':game==='spot'?'Compare two shared trays. Each seat has private marks and a private time penalty.':game==='fragments'?'Study one shared exhibit. Players take turns recalling details; in strict mode chat is disabled.':game==='pyramid'?'Every seat gets the same eight puzzles and submits privately. Solo practice needs no bots.':game==='codeLock'?'Everyone gets the same clues and a private answer tray. Offline practice has unlimited retries before the clock runs out.':game==='equations'?'Hide an equation and take turns at each table. Both players receive equal guesses; no turn timer. Larger rooms rotate through a two-leg league.':game==='divine'?'Everyone solves the same magic square on a private grid. Solo practice needs no bots.':isGrass(game)?(game==='grass1'?'2–12 players draft from a shared tile tray.':'2–16 players share a tile draft with optional trades.') :game==='secret'?'3–16 seats exchange private clues. Solo practice fills with two bots.':game==='bagh'?'A two-leg duel swaps goat and tiger roles. Larger rooms run a rotating league.':game==='mancala'?'2–8 players share one circular board. Up to eight seats, including bots.':isPuzzle(game)?'Everyone solves the same challenge and submits privately. Solo practice needs no bots.':game==='knight'?'Everyone solves the same board on a private grid.':game==='remove'?'Every seat gets a private hand; at least three seats.':game==='auction'?'Every seat bids in the same match.':count<=2?'Two players at one board.':'Two legs per pairing, with a different starting player in each leg. Other seats watch the current table. No points for a bye.'
 }

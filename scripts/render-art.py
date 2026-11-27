@@ -467,7 +467,83 @@ def tower_art():
             glyph.data.materials.append([teal,oxblood,ash][i])
     render('tower',(0,0,0),(.85,-3.9,7.2),(650,430),3.95)
 
-if os.environ.get('ARENA_GAME_ART')=='arena-tower':
+
+def piece_art():
+    scene('C8C0D3')
+    violet=material('Amethyst enamel','735294',.28,.29)
+    honey=material('Honey brass','AD7235',.54,.30)
+    ice=material('Pale lavender stone','C6B8CF',.07,.42)
+    block((2.95,2.68,.15),(0,0,.04),ash,.088)
+    block((2.72,2.45,.075),(0,0,.132),ivory,.052)
+    glyph=['..###..','.#####.','#######','#######','#######','.#####.','..###..']
+    for y,row in enumerate(glyph):
+        for x,on in enumerate(row):
+            if on=='#':block((.245,.245,.032),((x-3)*.272,(3-y)*.272,.185),ice,.016)
+    for x0,y0,angle,shape,tone in [
+        (-.60,-.58,-.06,[(0,0),(1,0),(1,1),(1,2),(2,2)],violet),
+        (.24,.53,.05,[(0,0),(1,0),(0,1),(1,1),(1,2)],teal),
+        (.72,-.50,.11,[(0,0),(0,1),(1,1),(2,1)],honey),
+        (-1.05,.68,-.15,[(0,0),(1,0),(1,1)],oxblood),
+    ]:
+        for x,y in shape:
+            a,b=x*.238,y*.238
+            ob=block((.238,.238,.111),(x0+a*math.cos(angle)-b*math.sin(angle),y0+a*math.sin(angle)+b*math.cos(angle),.253),tone,.022)
+            ob.rotation_euler.z=angle
+    render('piece',(0,0,0),(1.22,-4.2,6.8),(650,430),4.10)
+
+def memory_poker_art():
+    scene('C8C0CE')
+    plum=material('Mulberry linen','57396F',.02,.65,.25)
+    slate=material('Purple felt','80698D',.02,.59,.25)
+    ruby=material('Carmine ink','9B3042',.08,.32)
+    midnight=material('Indigo ink','33223E',.08,.32)
+    block((3.98,3.61,.15),(0,0,.014),ash,.08)
+    block((3.78,3.43,.055),(0,0,.11),brass,.035)
+    block((3.69,3.34,.036),(0,0,.146),slate,.033)
+    warm=material('Card vellum','FFF4DE',0,.5,.05)
+    heart=[(math.sin(t)**3,(13*math.cos(t)-5*math.cos(2*t)-2*math.cos(3*t)-math.cos(4*t))/16) for t in (2*PI*i/36 for i in range(36))]
+    diamond=[(0,1),(.75,0),(0,-1),(-.75,0)]
+    def polygon(points,x,y,z,scale,tone):
+        verts=[(x+dx*scale,y+dy*scale,z) for dx,dy in points]
+        mesh=bpy.data.meshes.new('Printed suit');mesh.from_pydata(verts,[],[tuple(range(len(verts)))]);mesh.update()
+        obj=bpy.data.objects.new('Printed suit',mesh);bpy.context.collection.objects.link(obj);coat(obj,tone)
+    def pip(symbol,x,y,z,size):
+        tone=ruby if symbol in ('H','D') else midnight
+        if symbol in ('H','D'):polygon(heart if symbol=='H' else diamond,x,y,z,size,tone)
+        if symbol=='S':
+            polygon([(a,-b) for a,b in heart],x,y+.018,z,size,tone)
+            polygon([(-.44,-.88),(.44,-.88),(0,.03)],x,y,z+.003,size,tone)
+        if symbol=='C':
+            for k,(dx,dy) in enumerate([(0,.5),(-.46,.02),(.46,.02)]):disc(size*.47,.003,(x+dx*size,y+dy*size,z+k*.002),tone,0,n=32)
+            polygon([(-.36,-.87),(.36,-.87),(0,.04)],x,y,z+.006,size,tone)
+    def glyph(word,x,y,z,scale,tone):
+        bpy.ops.object.text_add(location=(x,y,z))
+        obj=bpy.context.object;obj.data.body=word;obj.data.size=scale;coat(obj,tone)
+    dealt={1:('A','S'),3:('Q','H'),7:('10','D'),8:('K','C'),11:('J','S'),13:('9','H'),16:('Q','C'),18:('8','D')}
+    for i in range(20):
+        x=(i%5-2)*.685;y=(1.5-i//5)*.778;z=.20
+        block((.571,.707,.034),(x,y,z),warm if i in dealt else plum,.026)
+        if i in dealt:
+            rank,suit=dealt[i]
+            tone=ruby if suit in ('H','D') else midnight
+            glyph(rank,x-.239,y+.158,z+.019,.116,tone)
+            pip(suit,x+.018,y-.017,z+.022,.147)
+            obj_x,obj_y=x+.241,y-.151
+            bpy.ops.object.text_add(location=(obj_x,obj_y,z+.019));obj=bpy.context.object
+            obj.rotation_euler.z=PI;obj.data.body=rank;obj.data.size=.105;coat(obj,tone)
+        else:
+            for u,v in [((-.231,-.289),(.231,-.289)),((.231,-.289),(.231,.289)),((.231,.289),(-.231,.289)),((-.231,.289),(-.231,-.289))]:
+                rule((x+u[0],y+u[1]),(x+v[0],y+v[1]),.008,z+.018,brass)
+            for r in [.183,.136]:
+                d=[(x+a*r,y+b*r) for a,b in diamond]
+                for k in range(4):rule(d[k],d[(k+1)%4],.009,z+.018,brass)
+    render('memoryPoker',(0,0,.1),(1.12,-5.65,7.4),(650,430),5.43)
+
+if os.environ.get('ARENA_GAME_ART')=='arena-memory-poker':
+    memory_poker_art()
+elif os.environ.get('ARENA_GAME_ART')=='arena-piece':
+    piece_art()
+elif os.environ.get('ARENA_GAME_ART')=='arena-tower':
     tower_art()
 elif os.environ.get('ARENA_GAME_ART')=='arena-fence':
     fence_art()
@@ -504,4 +580,4 @@ else:
         board('morris','CF9B88',morris=True)
         auction()
         board('point','DECA95',point=True)
-        remove_one();knight();puzzle_art();arena_ten_art();arena_twelve_art();grass_art();exile_art();divine_art();equation_art();code_art();pyramid_art();fragments_art();spot_art();scale_art();fence_art();tower_art()
+        remove_one();knight();puzzle_art();arena_ten_art();arena_twelve_art();grass_art();exile_art();divine_art();equation_art();code_art();pyramid_art();fragments_art();spot_art();scale_art();fence_art();tower_art();piece_art();memory_poker_art()

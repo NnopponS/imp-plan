@@ -1,0 +1,16 @@
+.game-feedback{
+ display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-inline-size:0
+}
+.game-feedback .feedback-control{
+ display:inline-flex;align-items:center;gap:6px;min-block-size:44px;padding:5px 8px;
+ border:1px solid #806440;border-radius:3px;background:#24211d;color:#f4e9d5;
+ font:650 .75rem/1.2 system-ui,sans-serif;white-space:nowrap
+}
+.game-feedback .feedback-control[aria-pressed=true]{border-color:#d0a566;background:#362b1f}
+.game-feedback .feedback-control:hover{background:#493628}
+.game-feedback .feedback-control:focus-visible{outline:2px solid #edca8a;outline-offset:2px}
+.game-feedback svg{width:17px;height:17px;flex:none;fill:none;stroke:#ebc483;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.game-feedback b{font-size:.68rem;font-weight:550;color:#dfc299}
+[data-game-motion=off],[data-game-motion=off] *,[data-game-motion=off] *::before,[data-game-motion=off] *::after{
+ animation:none!important;transition:none!important;scroll-behavior:auto!important
+}

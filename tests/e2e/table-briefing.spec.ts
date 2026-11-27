@@ -23,7 +23,7 @@ test('briefing counts actual seats, explains the game, and does not start until 
  await expect(briefing.getByText('1 human · 1 bot')).toBeVisible()
  await expect(briefing.locator('[data-brief-seat]')).toHaveCount(2)
  await expect(briefing.locator('[data-brief-seat]').first()).toHaveCSS('animation-name','none')
- await expect(briefing.getByText(/15 × 15 board/)).toBeVisible()
+ await expect(briefing.getByRole('button',{name:/15 × 15 board/})).toBeVisible()
  await expect(page.getByLabel('Blind Gomoku board')).toHaveCount(0)
  await briefing.getByRole('button',{name:'Back to setup'}).click()
  await expect(page.getByRole('button',{name:'Start match',exact:true})).toBeFocused()
