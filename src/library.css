@@ -70,3 +70,9 @@
  .catalog-practice {font-size:.8rem;padding-inline:8px;}
  .catalog-unavailable {max-width:6.5ch;text-align:right;}
 }
+
+/* The reel can be stopped before joining a room or opening game settings. */
+.gallery-reel-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:2px 10px;min-width:0}
+.gallery-reel-actions .preview-reel-control{min-height:44px;padding:5px 8px;border-color:transparent;background:transparent;color:var(--gold);font-size:.73rem;text-decoration:underline;text-underline-offset:.22em;white-space:nowrap}
+.gallery-reel-actions .preview-reel-control:hover,.gallery-reel-actions .preview-reel-control:focus-visible{background:#36291f;border-color:#9f794d;color:#ffe7b6}
+@media(prefers-reduced-motion:reduce){.gallery-reel-actions .preview-reel-control{display:none}}

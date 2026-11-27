@@ -2,55 +2,44 @@ import {expect,test,type Page} from '@playwright/test'
 
 const cover=(page:Page,game:string)=>page.locator('[data-preview-game="'+game+'"]')
 const overlay=(page:Page)=>page.locator('.arena-preview .arena-cover-motion')
-async function showCover(page:Page,game:string){
- await cover(page,game).evaluate(node=>node.scrollIntoView({block:'center',behavior:'instant'}))
-}
-async function watchOverlays(page:Page){
- await page.evaluate(()=>{
-  const history:string[][]=[]
-  Object.defineProperty(window,'__galleryCovers',{value:history})
-  const collect=()=>history.push(Array.from(document.querySelectorAll('.arena-preview:has(.arena-cover-motion)')).map(node=>node.getAttribute('data-preview-game')!))
-  new MutationObserver(collect).observe(document.body,{childList:true,subtree:true})
-  collect()
- })
-}
-const recorded=(page:Page)=>page.evaluate(()=>(window as unknown as {__galleryCovers:string[][]}).__galleryCovers)
+const motion=(page:Page,game:string)=>cover(page,game).locator('[data-cover-motion][data-cover-ready="true"]')
 
-test.beforeEach(async({page})=>{
- await page.addInitScript(()=>sessionStorage.setItem('imp-plan-codex-opened-v1','1'))
- await page.setViewportSize({width:911,height:780})
- await page.goto('./')
- await cover(page,'blind').waitFor({state:'attached'})
- await watchOverlays(page)
-})
-
-test('only one illustrated gallery motion can play; visible covers take turns',async({page})=>{
- await showCover(page,'blind')
- const firstRow=['blind','morris','auction']
- await expect.poll(async()=>new Set((await recorded(page)).flat().filter(game=>firstRow.includes(game))).size,{timeout:11000}).toBe(3)
- const history=await recorded(page)
- expect(Math.max(...history.map(snapshot=>snapshot.length))).toBe(1)
+test('both columns and both visible rows play together on a phone',async({page})=>{
+ await page.setViewportSize({width:390,height:844})
+ await page.goto('./#play')
+ const games=['blind','morris','auction','point']
+ await cover(page,'blind').evaluate(node=>node.scrollIntoView({block:'start',behavior:'instant'}))
+ for(const game of games)await expect(cover(page,game)).toBeInViewport({ratio:.5})
+ await expect.poll(()=>overlay(page).evaluateAll(nodes=>nodes.filter(node=>node.getAttribute('data-cover-ready')==='true')
+  .map(node=>node.closest('[data-preview-game]')?.getAttribute('data-preview-game')))).toEqual(expect.arrayContaining(games))
+ const positions=await Promise.all(games.map(game=>cover(page,game).boundingBox()))
+ expect(new Set(positions.map(rect=>Math.round(rect!.x))).size).toBe(2)
+ expect(new Set(positions.map(rect=>Math.round(rect!.y))).size).toBe(2)
+ await expect(motion(page,'colorLink')).toHaveCount(0)
  await expect(page.locator('[data-game-preview]')).toHaveCount(0)
  await expect(page.getByRole('button',{name:'Practice Blind Gomoku',exact:true})).toBeVisible()
 })
 
-test('leaving or hiding the gallery hands off without replaying a started cue',async({page})=>{
- await showCover(page,'blind')
- await expect(overlay(page).first()).toBeAttached()
- const start=await overlay(page).first().evaluate(node=>node.closest('[data-preview-game]')!.getAttribute('data-preview-game')!)
- await showCover(page,'heavy13')
- await expect(cover(page,start).locator('.arena-cover-motion')).toHaveCount(0)
- await expect.poll(async()=>{const history=(await recorded(page)).flat();return history.some(game=>!['blind','morris','auction','point','remove','knight'].includes(game))},{timeout:4000}).toBe(true)
+test('offscreen and hidden-tab covers return to the original still, then restart on return',async({page})=>{
+ await page.setViewportSize({width:390,height:600})
+ await page.goto('./#play')
+ const first=cover(page,'blind')
+ await first.evaluate(node=>node.scrollIntoView({block:'center',behavior:'instant'}))
+ await expect(motion(page,'blind')).toBeVisible()
+ await cover(page,'heavy13').evaluate(node=>node.scrollIntoView({block:'center',behavior:'instant'}))
+ await expect(first.locator('[data-cover-motion]')).toHaveCount(0)
+ await expect(first).toHaveAttribute('data-preview-state','idle')
+ await expect(motion(page,'heavy13')).toBeVisible()
  await page.evaluate(()=>{
   Object.defineProperty(document,'hidden',{value:true,configurable:true})
   document.dispatchEvent(new Event('visibilitychange'))
  })
  await expect(overlay(page)).toHaveCount(0)
- await expect(cover(page,start)).toHaveAttribute('data-preview-state','played')
  await page.evaluate(()=>{
   Reflect.deleteProperty(document,'hidden')
   document.dispatchEvent(new Event('visibilitychange'))
  })
- await expect(overlay(page).first()).toBeAttached()
- expect(Math.max(...(await recorded(page)).map(snapshot=>snapshot.length))).toBe(1)
+ await expect(motion(page,'heavy13')).toBeVisible()
+ await first.evaluate(node=>node.scrollIntoView({block:'center',behavior:'instant'}))
+ await expect(motion(page,'blind')).toBeVisible()
 })

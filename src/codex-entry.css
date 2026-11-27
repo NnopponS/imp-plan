@@ -1,10 +1,11 @@
-/* A short, non-modal transition. Nothing on the page waits for it. */
+/* Non-modal opening. Nothing on the page waits for the story. */
 .codex-entry{
- --entry-length:1480ms;
+ --entry-length:1820ms;
  position:fixed;inset:0;z-index:100;isolation:isolate;overflow:hidden;pointer-events:none;
- animation:codex-entry-expire var(--entry-length) linear both;
+ animation:codex-entry-arrive 30s linear both;
 }
-.codex-entry-covers{position:absolute;inset:0;pointer-events:none}
+.codex-entry-covers{position:absolute;inset:0;pointer-events:none;animation:codex-entry-covers-end var(--entry-length) step-end both}
+@keyframes codex-entry-covers-end{to{visibility:hidden}}
 .codex-entry-leaf{
  position:absolute;inset-block:0;inline-size:calc(50% + 1px);
  background:
@@ -52,7 +53,10 @@
 }
 .codex-entry .codex-entry-skip:hover:not(:disabled){background:#553327;border-color:#e3be85;color:#fff1d7}
 .codex-entry .codex-entry-skip:focus-visible{outline:3px solid #f2ce81;outline-offset:3px}
-@keyframes codex-entry-expire{0%,99.9%{visibility:visible}100%{visibility:hidden}}
+@keyframes codex-entry-arrive{0%,98%{opacity:1}100%{opacity:0}}
+.codex-entry-progress{position:absolute;inset:auto clamp(18px,5vw,60px) max(19px,env(safe-area-inset-bottom));height:2px;background:#705a42}
+.codex-entry-progress i{display:block;width:100%;height:100%;background:#edc78c;transform-origin:left;animation:intro-progress 30s linear both}
+@keyframes intro-progress{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 @keyframes codex-entry-part{
  0%,32%{transform:translateX(0)}
  44%{transform:translateX(calc(var(--entry-slide) * .035))}

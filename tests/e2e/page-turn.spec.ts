@@ -37,6 +37,28 @@ test('native chapter links and Back turn the page without re-opening Home intro'
  await expect(page.getByRole('link',{name:'Browse games',exact:true})).toBeInViewport()
 })
 
+test('the engraved page turn completes its full cinematic beat without blocking the page',async({page})=>{
+ await page.addInitScript(()=>{
+  const log:{phase:string;ms:number}[]=[]
+  Object.defineProperty(window,'__pageTurnTiming',{value:log})
+  for(const phase of ['animationstart','animationend']){
+   document.addEventListener(phase,event=>{
+    const animation=event as AnimationEvent
+    if(animation.animationName==='turn-leaf')log.push({phase,ms:Math.round(animation.elapsedTime*1000)})
+   },true)
+  }
+ })
+ await page.goto('./season/1/')
+ await season(page,3).click()
+ await expect(page.getByRole('heading',{name:'Dead Again',exact:true,level:1})).toBeVisible()
+ const timings=()=>page.evaluate(()=>(window as Window&{__pageTurnTiming?:{phase:string;ms:number}[]}).__pageTurnTiming)
+ await expect.poll(timings).toEqual([
+  {phase:'animationstart',ms:0},
+  {phase:'animationend',ms:780},
+ ])
+ await expect(turn(page)).toHaveCount(0)
+})
+
 test('large visible leaf yields to the first tap, preserves anchors and practice focus',async({page})=>{
  await page.setViewportSize({width:390,height:844})
  await recordTurns(page)

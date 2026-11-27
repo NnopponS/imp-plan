@@ -24,12 +24,36 @@ test('opening leaves never swallow the first interaction on the actual Home',asy
  await expect(page.getByRole('searchbox',{name:'Find playable games'})).toBeInViewport()
 })
 
-test('first Home opens itself without touching anything',async({page})=>{
+test('sixteen players make four different plays before the 30 second story ends',async({page,context})=>{
+ await page.clock.install()
+ await page.clock.pauseAt(new Date(Date.now()+1000))
  await page.goto('./')
  const intro=page.locator('.codex-entry')
- await expect(intro).toBeAttached()
- await expect(intro).toHaveCount(0,{timeout:2200})
+ await expect(intro).toHaveAttribute('data-story-duration','30000')
+ const cast=intro.locator('[data-story-player]')
+ await expect(cast).toHaveCount(16)
+ expect(new Set(await cast.evaluateAll(nodes=>nodes.map(node=>node.getAttribute('data-story-player')))).size).toBe(16)
+ let elapsed=0
+ for(const [at,scene,move] of [[4000,'mill','close-the-mill'],[9100,'auction','reveal-bids'],[14200,'fence','place-last-fence'],[19300,'color','complete-route']] as const){
+  await page.clock.fastForward(at-elapsed)
+  elapsed=at
+  await expect(intro).toHaveAttribute('data-story-chapter',scene)
+  await expect(cast).toHaveCount(4)
+  const prop=intro.locator('[data-story-move="'+move+'"]')
+  await expect(prop).toHaveCount(1)
+  expect(await prop.evaluate(node=>node.getAnimations({subtree:true}).length)).toBeGreaterThan(0)
+ }
+ await page.clock.fastForward(28000-elapsed)
+ await expect(intro).toHaveAttribute('data-story-chapter','seal')
+ await expect(cast).toHaveCount(16)
+ await expect(intro.locator('[data-story-door="open"]')).toHaveCount(1)
+ await page.clock.fastForward(2400)
+ await expect(intro).toHaveCount(0)
  await expect(page.getByRole('link',{name:'Browse games',exact:true})).toBeInViewport()
+ const anotherTab=await context.newPage()
+ await anotherTab.goto('./')
+ await expect(anotherTab.getByRole('searchbox',{name:'Find playable games'})).toBeAttached()
+ await expect(anotherTab.locator('.codex-entry')).toHaveCount(0)
 })
 
 test.describe('touch skip',()=>{

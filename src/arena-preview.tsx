@@ -6,43 +6,41 @@ import './arena-preview.css'
 type EntryHandler=(entry:IntersectionObserverEntry)=>void
 const watched=new Map<Element,EntryHandler>()
 let observer:IntersectionObserver|undefined
-const seen=new Set<Game>()
-type GalleryTurn=()=>boolean
-const waiting=new Set<GalleryTurn>()
-let activeTurn:GalleryTurn|undefined
-let scheduled=false
-
-function scheduleTurn(){
- if(activeTurn||scheduled||!waiting.size)return
- scheduled=true
- // Let the whole intersection batch report before we offer the next turn.
- queueMicrotask(()=>{
-  scheduled=false
-  if(activeTurn)return
-  for(const take of waiting){
-   waiting.delete(take)
-   if(!take())continue
-   activeTurn=take
-   break
-  }
- })
-}
 
 const SVG_NS='http://www.w3.org/2000/svg'
 const animationTags=['animate','animateTransform','animateMotion']
-const durationMs=1600
+const coverCycle=2.2
 type MotionCopy={url:string;source:string;objectFit:string;objectPosition:string}
 
 function activateArtwork(contents:string){
- const document=new DOMParser().parseFromString(contents,'image/svg+xml')
- const svg=document.documentElement
+ const parsed=new DOMParser().parseFromString(contents,'image/svg+xml')
+ const svg=parsed.documentElement
  if(svg.namespaceURI!==SVG_NS||svg.localName!=='svg')return
  let activated=false
  for(const tag of animationTags){
   for(const cue of svg.getElementsByTagNameNS(SVG_NS,tag)){
    const at=cue.getAttribute('data-cover-at')
-   if(!at||!/^0\.\d{1,3}s$/.test(at)||cue.getAttribute('begin')!=='indefinite')continue
+   const duration=cue.getAttribute('dur')
+   const times=cue.getAttribute('keyTimes')?.split(';').map(Number)
+   const valueAttr=tag==='animateMotion'?'keyPoints':'values'
+   const values=cue.getAttribute(valueAttr)?.split(';')
+   if(!at||!/^0\.\d{1,3}s$/.test(at)||cue.getAttribute('begin')!=='indefinite'||
+    !duration||!/^\d+(?:\.\d+)?s$/.test(duration)||!times||!values||
+    values.length!==times.length||times[0]!==0||times.at(-1)!==1||
+    !times.every((time,i)=>Number.isFinite(time)&&time>=0&&time<=1&&(i===0||time>times[i-1])))continue
+   const original=Number.parseFloat(duration)
+   if(original<=0||original>=coverCycle)continue
+   // Preserve all authored movements and their staggered starts. Extend each
+   // layer's final still pose so native SMIL can repeat them on one shared beat.
+   cue.setAttribute('keyTimes',[...times.map(time=>(time*original/coverCycle).toFixed(6)),'1'].join(';'))
+   cue.setAttribute(valueAttr,[...values,values.at(-1)].join(';'))
+   if(cue.getAttribute('calcMode')==='spline'){
+    const splines=cue.getAttribute('keySplines')
+    if(splines)cue.setAttribute('keySplines',splines+';0 0 1 1')
+   }
    cue.setAttribute('begin',at)
+   cue.setAttribute('dur',coverCycle+'s')
+   cue.setAttribute('repeatCount','indefinite')
    activated=true
   }
  }
@@ -50,10 +48,10 @@ function activateArtwork(contents:string){
  if(activated)return new XMLSerializer().serializeToString(svg)
 }
 
-function watch(element:Element,handler:EntryHandler){
+export function watchPreview(element:Element,handler:EntryHandler){
  if(!observer)observer=new IntersectionObserver(entries=>{
   for(const entry of entries)watched.get(entry.target)?.(entry)
- },{threshold:[0,.5]})
+ },{threshold:[0,.25,.5]})
  watched.set(element,handler)
  observer.observe(element)
  return ()=>{
@@ -63,117 +61,137 @@ function watch(element:Element,handler:EntryHandler){
  }
 }
 
+const modalListeners=new Set<()=>void>()
+let modalObserver:MutationObserver|undefined
+export function watchPreviewDialogs(changed:()=>void){
+ if(!modalObserver&&typeof MutationObserver==='function'){
+  modalObserver=new MutationObserver(records=>{
+   if(records.some(record=>record.target instanceof HTMLDialogElement))modalListeners.forEach(listener=>listener())
+  })
+  modalObserver.observe(document.body,{subtree:true,attributes:true,attributeFilter:['open']})
+ }
+ modalListeners.add(changed)
+ return ()=>{
+  modalListeners.delete(changed)
+  if(!modalListeners.size){modalObserver?.disconnect();modalObserver=undefined}
+ }
+}
+export function previewDialogIsActive(target:Element){
+ const dialog=document.querySelectorAll('dialog[open]')
+ return !dialog.length||dialog[dialog.length-1].contains(target)
+}
+
 export function ArenaPreview({game,posterClass,motionOff=false,children}:{game:Game;posterClass:string;motionOff?:boolean;children:ReactNode}){
  const node=useRef<HTMLDivElement>(null)
  const [copy,setCopy]=useState<MotionCopy|null>(null)
  const [ready,setReady]=useState(false)
- const stop=useRef<()=>void>(()=>{})
+ const loaded=useRef<(url:string)=>void>(()=>{})
+ const failed=useRef<(url:string)=>void>(()=>{})
  useEffect(()=>{
-  const target=node.current
   setCopy(null)
   setReady(false)
+  const target=node.current
   const poster=target?.querySelector<HTMLImageElement>('img[data-arena-art]')
-  if(!target||!poster||motionOff||seen.has(game)||typeof IntersectionObserver!=='function')return
+  if(!target||!poster||motionOff||typeof IntersectionObserver!=='function')return
   const motion=window.matchMedia?.('(prefers-reduced-motion: reduce)')
   let currentRatio=0
-  let ended=false
-  let release:(()=>void)|undefined
-  let fallback:number|undefined
   let url:string|undefined
   let source=''
-  let contents:string|undefined
+  let artwork:string|undefined
+  let couldNotLoad=false
   let request:AbortController|undefined
+  let deadline:number|undefined
   function visible(){
-   return currentRatio>=.5&&!motion?.matches&&!document.hidden&&
+   return currentRatio>=.5&&!motion?.matches&&!document.hidden&&previewDialogIsActive(target!)&&
     document.documentElement.dataset.gameMotion!=='off'&&poster!.complete&&poster!.naturalWidth>0
   }
-  function eligible(){return !ended&&!seen.has(game)&&visible()&&poster!.currentSrc===source&&!!contents}
-  function takeTurn(){
-   if(!eligible())return false
-   const activated=activateArtwork(contents!)
-   contents=undefined
-   if(!activated)return false
-   const style=getComputedStyle(poster!)
-   seen.add(game)
-   url=URL.createObjectURL(new Blob([activated],{type:'image/svg+xml'}))
-   setCopy({url,source,objectFit:style.objectFit,objectPosition:style.objectPosition})
-   fallback=window.setTimeout(finish,2500) // A failed/slow decode cannot hold the queue.
-   return true
-  }
-  function stopWatching(){
-   ended=true
-   waiting.delete(takeTurn)
-   release?.()
-   release=undefined
-   window.clearTimeout(fallback)
-   request?.abort()
-   if(url)URL.revokeObjectURL(url)
-   poster?.removeEventListener('load',changed)
-   document.removeEventListener('visibilitychange',changed)
-   motion?.removeEventListener?.('change',changed)
-   if(activeTurn===takeTurn)activeTurn=undefined
-   scheduleTurn()
-  }
-  function finish(){
-   if(activeTurn!==takeTurn)return
+  function stopCopy(){
+   if(!url)return
+   window.clearTimeout(deadline)
+   URL.revokeObjectURL(url)
+   url=undefined
    setCopy(null)
    setReady(false)
-   stopWatching()
   }
-  function loadCopy(){
-   if(!visible()||poster!.currentSrc===source)return
+  function makeCopy(){
+   const style=getComputedStyle(poster!)
+   const created=URL.createObjectURL(new Blob([artwork!],{type:'image/svg+xml'}))
+   url=created
+   setCopy({url:created,source,objectFit:style.objectFit,objectPosition:style.objectPosition})
+   deadline=window.setTimeout(()=>failed.current(created),2500) // A slow/failed decode leaves the still.
+  }
+  function changed(){
+   if(!visible()){
+    stopCopy()
+    request?.abort()
+    request=undefined
+    return
+   }
    const selected=new URL(poster!.currentSrc)
-   if(selected.origin!==location.origin||!selected.pathname.startsWith(base+'art/')||!selected.pathname.endsWith('.svg'))return
-   request?.abort()
-   contents=undefined
-   source=selected.href
+   if(selected.href!==source){
+    stopCopy()
+    request?.abort()
+    request=undefined
+    couldNotLoad=false
+    artwork=undefined
+    source=selected.href
+   }
+   if(url||request||couldNotLoad||selected.origin!==location.origin||
+    !selected.pathname.startsWith(base+'art/')||!selected.pathname.endsWith('.svg'))return
+   if(artwork){makeCopy();return}
    const pending=new AbortController()
    request=pending
    void fetch(source,{signal:pending.signal}).then(response=>{
     if(!response.ok)throw new Error('Cover unavailable')
     return response.text()
    }).then(svg=>{
-    if(ended||request!==pending)return
-    contents=svg
-    changed()
-   }).catch(()=>{}) // When the original cannot be fetched, leave its poster visible.
-  }
-  function changed(){
-   if(activeTurn===takeTurn){
-    if(!visible()||poster!.currentSrc!==source)finish()
-    return
-   }
-   if(!visible()){
-    request?.abort()
+    if(request!==pending)return
     request=undefined
-    if(contents)contents=undefined
-    source=''
-   }else loadCopy()
-   if(eligible())waiting.add(takeTurn)
-   else waiting.delete(takeTurn)
-   scheduleTurn()
+    artwork=activateArtwork(svg)
+    couldNotLoad=!artwork
+    changed()
+   }).catch(()=>{
+    if(request!==pending)return
+    request=undefined
+    couldNotLoad=true
+   })
   }
-  stop.current=()=>{
-   if(activeTurn!==takeTurn)return
-   window.clearTimeout(fallback)
+  loaded.current=(candidate)=>{
+   if(candidate!==url)return
+   window.clearTimeout(deadline)
    setReady(true)
-   fallback=window.setTimeout(finish,durationMs)
   }
-  release=watch(target,entry=>{
+  failed.current=(candidate)=>{
+   if(candidate!==url)return
+   couldNotLoad=true
+   stopCopy()
+  }
+  const release=watchPreview(target,entry=>{
    currentRatio=entry.isIntersecting?entry.intersectionRatio:0
    changed()
   })
+  const releaseDialogs=watchPreviewDialogs(changed)
   poster.addEventListener('load',changed)
   document.addEventListener('visibilitychange',changed)
   motion?.addEventListener?.('change',changed)
-  return stopWatching
+  return ()=>{
+   release()
+   releaseDialogs()
+   window.clearTimeout(deadline)
+   request?.abort()
+   request=undefined
+   if(url)URL.revokeObjectURL(url)
+   poster.removeEventListener('load',changed)
+   document.removeEventListener('visibilitychange',changed)
+   motion?.removeEventListener?.('change',changed)
+  }
  },[game,motionOff])
- return <div ref={node} className={'game-art arena-preview '+posterClass} data-preview-game={game} data-preview-painted={ready||undefined} data-preview-state={copy?'playing':seen.has(game)?'played':'idle'}>
+ return <div ref={node} className={'game-art arena-preview '+posterClass} data-preview-game={game} data-preview-painted={ready||undefined} data-preview-state={copy?'playing':'idle'}>
   {children}
   {copy&&!motionOff&&<img className="arena-cover-motion" src={copy.url} alt="" aria-hidden="true" draggable={false}
    data-cover-motion data-cover-original={copy.source} data-cover-ready={ready}
    style={{objectFit:copy.objectFit as CSSProperties['objectFit'],objectPosition:copy.objectPosition}}
-   onLoad={()=>stop.current()}/>}
+   onLoad={event=>loaded.current(event.currentTarget.src)} onError={event=>failed.current(event.currentTarget.src)}/>}
  </div>
 }
 
@@ -194,6 +212,8 @@ export function ArenaStill({game}:{game:Game}){
   {previewScenes[game].draw()}
  </svg>
 }
+
+export const gamePreviewPlaybackTime=(game:Game)=>previewScenes[game].ms
 
 const time=(ms:number)=>({'--ap-wait':ms+'ms'} as CSSProperties)
 const color=(key='')=>key?' ap-'+key:''

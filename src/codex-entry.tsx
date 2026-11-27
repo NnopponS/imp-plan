@@ -2,17 +2,17 @@ import {useEffect,useRef,useState} from 'react'
 import {base} from './brand'
 import {KeeperCharacter} from './keeper-character'
 import {chapterArrival} from './page-turn'
+import {IntroStory,storyBeats,storyLength} from './intro-story'
 import './codex-entry.css'
 
-const sessionKey='imp-plan-codex-opened-v1'
+const visitKey='imp-plan-sixteen-seats-v1'
 const reducedMotion='(prefers-reduced-motion: reduce)'
-const fallbackTime=1560
 
 function shouldOpen(motionOff:boolean){
  if(motionOff||typeof window==='undefined'||location.hash||location.search||document.hidden||scrollY>24||window.matchMedia?.(reducedMotion)?.matches)return false
  try{
-  if(chapterArrival()){sessionStorage.setItem(sessionKey,'1');return false}
-  return sessionStorage.getItem(sessionKey)!=='1'
+  if(chapterArrival())return false
+  return sessionStorage.getItem(visitKey)!=='1'&&localStorage.getItem(visitKey)!=='1'
  }
  catch{return false}
 }
@@ -36,6 +36,7 @@ function FolioLeaf({side}:{side:'west'|'east'}){
 export function CodexEntry({motionOff}:{motionOff:boolean}){
  const [open,setOpen]=useState(()=>shouldOpen(motionOff))
  const skip=useRef<HTMLButtonElement>(null)
+ const [chapter,setChapter]=useState(0)
  function dismiss(){
   if(document.activeElement===skip.current)document.querySelector<HTMLElement>('.landing-bar .brand')?.focus({preventScroll:true})
   setOpen(false)
@@ -43,7 +44,7 @@ export function CodexEntry({motionOff}:{motionOff:boolean}){
  useEffect(()=>{
   if(motionOff){setOpen(false);return}
   if(!open)return
-  try{sessionStorage.setItem(sessionKey,'1')}
+  try{sessionStorage.setItem(visitKey,'1');localStorage.setItem(visitKey,'1')}
   catch{dismiss();return}
   const motion=window.matchMedia?.(reducedMotion)
   const key=(event:KeyboardEvent)=>{
@@ -52,7 +53,8 @@ export function CodexEntry({motionOff}:{motionOff:boolean}){
   const interaction=(event:Event)=>{if(event.target!==skip.current)dismiss()}
   const onVisibility=()=>{if(document.hidden)dismiss()}
   const onMotion=()=>{if(motion?.matches)dismiss()}
-  const timer=window.setTimeout(dismiss,fallbackTime)
+  const timers=storyBeats.slice(1).map((beat,index)=>window.setTimeout(()=>setChapter(index+1),beat.at))
+  timers.push(window.setTimeout(dismiss,storyLength))
   document.addEventListener('keydown',key,true)
   document.addEventListener('pointerdown',interaction,true)
   document.addEventListener('focusin',interaction,true)
@@ -61,7 +63,7 @@ export function CodexEntry({motionOff}:{motionOff:boolean}){
   window.addEventListener('hashchange',dismiss)
   motion?.addEventListener?.('change',onMotion)
   return ()=>{
-   window.clearTimeout(timer)
+   timers.forEach(timer=>window.clearTimeout(timer))
    document.removeEventListener('keydown',key,true)
    document.removeEventListener('pointerdown',interaction,true)
    document.removeEventListener('focusin',interaction,true)
@@ -72,7 +74,8 @@ export function CodexEntry({motionOff}:{motionOff:boolean}){
   }
  },[open,motionOff])
  if(!open||motionOff)return null
- return <div className="codex-entry" onAnimationEnd={event=>{if(event.target===event.currentTarget)dismiss()}}>
+ return <div className="codex-entry" data-story-duration={storyLength} data-story-chapter={storyBeats[chapter].id}>
+  <IntroStory beat={storyBeats[chapter]}/>
   <div className="codex-entry-covers" aria-hidden="true">
    <FolioLeaf side="west"/><FolioLeaf side="east"/>
    <div className="codex-entry-stamp">
@@ -84,6 +87,7 @@ export function CodexEntry({motionOff}:{motionOff:boolean}){
     <small>The Strategy Chambers</small>
    </div>
   </div>
+  <div className="codex-entry-progress" aria-hidden="true"><i/></div>
   <button ref={skip} className="codex-entry-skip" type="button" onClick={dismiss}>Skip intro</button>
  </div>
 }

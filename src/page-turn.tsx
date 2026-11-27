@@ -1,10 +1,12 @@
-import {useEffect,useLayoutEffect,useRef,useState} from 'react'
+import {useEffect,useLayoutEffect,useRef,useState,type CSSProperties} from 'react'
 import {base} from './brand'
 import './page-turn.css'
 
 export type PageTurnScreen='home'|'season-1'|'season-2'|'season-3'|'invite'|'practice'|'party'|'match'|'result'
 const intentKey='imp-plan-chapter-turn-v1'
 const mediaQuery='(prefers-reduced-motion: reduce)'
+const turnMs=780
+const turnTiming={'--turn-time':turnMs+'ms'} as CSSProperties
 const order:Record<PageTurnScreen,number>={home:0,'season-1':1,'season-2':2,'season-3':3,invite:4,practice:5,party:5,match:6,result:7}
 
 function chapterPath(url:URL){
@@ -83,7 +85,9 @@ export function PageTurn({screen,motionOff}:{screen?:PageTurnScreen;motionOff:bo
   const media=window.matchMedia?.(mediaQuery)
   const reduce=()=>{if(media?.matches)stop()}
   const hide=()=>{if(document.hidden)stop()}
-  const timer=window.setTimeout(stop,420)
+  // CSS normally clears the cue when the leaf exits. Allow first-paint
+  // scheduling slack before this stuck-animation guard releases it.
+  const timer=window.setTimeout(stop,turnMs+320)
   const skipKeys=(event:KeyboardEvent)=>{if(!event.altKey&&!event.ctrlKey&&!event.metaKey)stop()}
   document.addEventListener('pointerdown',stop,true)
   document.addEventListener('keydown',skipKeys,true)
@@ -100,12 +104,13 @@ export function PageTurn({screen,motionOff}:{screen?:PageTurnScreen;motionOff:bo
   }
  },[cue])
  if(!cue||motionOff)return null
- return <div key={cue.serial} className="page-turn" data-page-turn={cue.screen} data-turn-back={cue.back||undefined} aria-hidden="true">
+ return <div key={cue.serial} className="page-turn" style={turnTiming} data-page-turn={cue.screen} data-turn-back={cue.back||undefined} aria-hidden="true">
   <span className="page-turn-shadow"/>
   <svg className="page-turn-leaf" viewBox="0 0 520 1000" preserveAspectRatio="none" focusable="false"
    onAnimationEnd={()=>setCue(null)}>
    <path className="page-turn-paper" d="M78-12H540v1024H57Q116 788 63 641 29 510 43 364 49 186 78-12Z"/>
    <path className="page-turn-fold" d="M78-12h66Q86 177 86 375 78 513 115 645 154 817 98 1012H57Q116 788 63 641 29 510 43 364 49 186 78-12Z"/>
+   <path className="page-turn-edge" d="M78-12Q49 186 43 364 29 510 63 641 116 788 57 1012"/>
    <path className="page-turn-ink" d="M101-9Q60 190 60 369 50 520 90 648 136 817 72 1009M130-7Q82 176 80 368 62 517 106 650 150 820 91 1010M246-10q-49 92-112 106m389 807q-138 9-187 108M146 109q32 75 7 145m-10 484q51 120 1 184"/>
    <path className="page-turn-rule" d="M203 15H524m-332 6H524M179 975h345m-340 7h340M170 174q87 15 149-8m-141 20q77 15 124-8m-138 642q96-18 161-1m-152 13q78-13 147 2"/>
    <path className="page-turn-rule" d="m103 490 13 12-10 14-12-13Zm35-15 20 26-19 23-20-23Zm35 12 13 15-13 13-12-13Zm18 15 69-1m-177-10 8 11-8 11-8-10Z"/>

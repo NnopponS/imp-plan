@@ -14,7 +14,7 @@ async function motions(copy:Locator){
  })
 }
 
-test('the painting itself moves once; rules remain behind Details',async({page})=>{
+test('the painting itself loops; rules remain behind Details',async({page})=>{
  await page.setViewportSize({width:911,height:660})
  await page.goto('./')
  await expect(page.locator('.featured .card')).toHaveCount(30)
@@ -30,12 +30,24 @@ test('the painting itself moves once; rules remain behind Details',async({page})
  expect(await motions(copy)).not.toHaveLength(0)
  await expect(gamePreview(page)).toHaveCount(0)
  await expect(page.getByRole('button',{name:'Practice Blind Gomoku',exact:true})).toBeVisible()
- await expect(copy).toHaveCount(0,{timeout:3000})
+ const token=await copy.getAttribute('src')
+ const rules=await copy.evaluate(async image=>{
+  const svg=new DOMParser().parseFromString(await(await fetch((image as HTMLImageElement).src)).text(),'image/svg+xml')
+  return Array.from(svg.querySelectorAll('[data-cover-at]')).map(cue=>[cue.getAttribute('dur'),cue.getAttribute('repeatCount')])
+ })
+ expect(rules.length).toBeGreaterThan(0)
+ expect(rules.every(([duration,repeat])=>duration==='2.2s'&&repeat==='indefinite')).toBe(true)
+ // Inspect rendered art after the previous one-shot would have stopped. A
+ // stable blob plus different pixels proves native repeat, not image refresh.
+ await page.waitForTimeout(2400)
+ const frame=await copy.screenshot()
+ await expect.poll(async()=>!(await copy.screenshot()).equals(frame),{timeout:2800,intervals:[170,235,310]}).toBe(true)
+ await expect(copy).toHaveAttribute('src',token!)
  await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}))
  await expect(cover(page,'blind')).not.toBeInViewport()
- await meet(page,'blind')
- await expect(cover(page,'blind')).toHaveAttribute('data-preview-state','played')
  await expect(copy).toHaveCount(0)
+ await meet(page,'blind')
+ await expect(copy).toHaveAttribute('data-cover-ready','true')
 })
 
 test('two covers move different original subjects, respect the mobile artwork and cancel offscreen',async({page})=>{
@@ -93,4 +105,20 @@ test('all 30 original covers and the three mobile crops have dormant authored mo
   }
   if(signatures.size<29)throw new Error('Some paintings share too many cues: '+signatures.size)
  },coverSources)
+})
+
+test('gallery gives a mobile visitor a persistent way to pause looping covers',async({page})=>{
+ await page.setViewportSize({width:390,height:844})
+ await page.goto('./#play')
+ const art=page.locator('[data-preview-game="blind"]')
+ await art.scrollIntoViewIfNeeded()
+ await expect(art).toHaveAttribute('data-preview-state','playing')
+ await page.getByRole('button',{name:'Pause previews',exact:true}).click()
+ await expect(art).toHaveAttribute('data-preview-state','idle')
+ await page.reload()
+ await expect(page.getByRole('button',{name:'Play previews',exact:true})).toBeVisible()
+ await expect(art).toHaveAttribute('data-preview-state','idle')
+ await page.getByRole('button',{name:'Play previews',exact:true}).click()
+ await art.scrollIntoViewIfNeeded()
+ await expect(art).toHaveAttribute('data-preview-state','playing')
 })

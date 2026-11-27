@@ -1,6 +1,6 @@
 /* Incoming page curl. The actual screen underneath never transforms, moves or loses input. */
 .page-turn{
- --turn-time:360ms;--turn-paper:#3c281b;--turn-fold:#745337;--turn-gilt:#d4ad70;
+ --turn-paper:#3c281b;--turn-fold:#745337;--turn-gilt:#d4ad70;
  position:fixed;inset:0;z-index:89;isolation:isolate;overflow:hidden;pointer-events:none;user-select:none;
 }
 .page-turn[data-turn-back]{transform:scaleX(-1)}
@@ -9,25 +9,30 @@
 .page-turn-shadow{
  position:absolute;inset:0;
  background:linear-gradient(90deg,transparent 28%,#23150f48 53%,#170c0bb8 95%);
- animation:turn-shadow var(--turn-time) cubic-bezier(.24,.5,.24,1) both;
+ animation:turn-shadow var(--turn-time) ease-in-out both;
 }
 .page-turn-leaf{
  position:absolute;inset-block:0;inset-inline-end:-2px;display:block;
- inline-size:min(63vw,1020px);block-size:100%;overflow:visible;
- animation:turn-leaf var(--turn-time) cubic-bezier(.25,.57,.22,1) both;
+ inline-size:min(69vw,1020px);block-size:100%;overflow:visible;transform-origin:100% 52%;
+ animation:turn-leaf var(--turn-time) linear both;
 }
 .page-turn-paper{fill:var(--turn-paper)}
 .page-turn-fold{fill:var(--turn-fold);opacity:.86}
-.page-turn-ink,.page-turn-rule{fill:none;stroke:var(--turn-gilt);stroke-width:1;vector-effect:non-scaling-stroke}
+.page-turn-edge,.page-turn-ink,.page-turn-rule{fill:none;stroke:var(--turn-gilt);stroke-width:1;vector-effect:non-scaling-stroke}
+.page-turn-edge{stroke-width:1.5;opacity:.67}
 .page-turn-rule{stroke-width:.7;opacity:.57}
 @keyframes turn-leaf{
- from{transform:translateX(9%) scaleX(1.17);opacity:.87}
- 48%{opacity:.8}
- to{transform:translateX(106%) scaleX(.68);opacity:0}
+ /* Catch the fore-edge, bow the leaf, then let its weight carry the turn. */
+ 0%{transform:translateX(7%) scaleX(1.04);opacity:.88;animation-timing-function:cubic-bezier(.22,.61,.28,1)}
+ 24%{transform:translateX(-3%) scaleX(1.10);opacity:.93;animation-timing-function:cubic-bezier(.57,.12,.57,.96)}
+ 76%{transform:translateX(65%) scaleX(.75);opacity:.72;animation-timing-function:cubic-bezier(.32,.66,.43,1)}
+ 100%{transform:translateX(103%) scaleX(.54);opacity:0}
 }
 @keyframes turn-shadow{
- from{opacity:.7;transform:translateX(0)}
- to{opacity:0;transform:translateX(36%)}
+ 0%{opacity:.55;transform:translateX(0)}
+ 25%{opacity:.74;transform:translateX(-3%)}
+ 73%{opacity:.21;transform:translateX(17%)}
+ 100%{opacity:0;transform:translateX(31%)}
 }
 /* A screen turn supersedes the tiny heading cue; briefing and result art still exist independently. */
 :root:has(.page-turn) .stage-folio-slot{visibility:hidden}

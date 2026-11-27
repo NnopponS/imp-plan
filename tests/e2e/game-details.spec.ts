@@ -2,6 +2,7 @@ import {expect,test} from '@playwright/test'
 
 test('the home keyboard Details button alone opens Blind Gomoku mechanics and rules',async({page})=>{
  await page.emulateMedia({reducedMotion:'no-preference'})
+ await page.clock.install()
  await page.goto('./')
  const card=page.locator('.card').filter({has:page.getByRole('heading',{name:'Blind Gomoku',exact:true})})
  const details=card.getByRole('button',{name:'Details for Blind Gomoku',exact:true})
@@ -13,7 +14,23 @@ test('the home keyboard Details button alone opens Blind Gomoku mechanics and ru
  const dialog=page.getByRole('dialog',{name:'Blind Gomoku',exact:true})
  const preview=dialog.locator('[data-game-preview="blind"]')
  await expect(preview).toBeVisible()
- expect(await preview.evaluate(node=>node.getAnimations({subtree:true}).some(animation=>animation.playState==='running'))).toBe(true)
+ await expect.poll(()=>preview.evaluate(node=>node.getAnimations({subtree:true}).some(animation=>animation.playState==='running'))).toBe(true)
+ const playback=dialog.locator('.game-rule-preview')
+ await expect(playback).toHaveAttribute('data-preview-loop','playing')
+ const cycle=Number(await playback.getAttribute('data-preview-cycle'))
+ await page.clock.fastForward(3100)
+ await expect.poll(async()=>Number(await playback.getAttribute('data-preview-cycle'))).toBeGreaterThan(cycle)
+ await page.evaluate(()=>{
+  Object.defineProperty(document,'hidden',{value:true,configurable:true})
+  document.dispatchEvent(new Event('visibilitychange'))
+ })
+ await expect(playback).toHaveAttribute('data-preview-loop','paused')
+ await expect.poll(()=>preview.evaluate(node=>node.getAnimations({subtree:true}).every(animation=>animation.playState!=='running'))).toBe(true)
+ await page.evaluate(()=>{
+  Reflect.deleteProperty(document,'hidden')
+  document.dispatchEvent(new Event('visibilitychange'))
+ })
+ await expect(playback).toHaveAttribute('data-preview-loop','playing')
  await expect(dialog.getByRole('heading',{name:'Rules',exact:true})).toBeVisible()
  await expect(dialog.getByText(/Choose any cover/)).toBeVisible()
  await page.keyboard.press('Escape')

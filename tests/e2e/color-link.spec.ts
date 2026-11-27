@@ -127,7 +127,7 @@ test('static shells index Color Link and the actual playable counts without clie
  }
 })
 
-test('Color Link moves its own painted traces once, shows its final venue, and keeps rules behind Details',async({page,baseURL})=>{
+test('Color Link loops its own painted traces, shows its final venue, and keeps rules behind Details',async({page,baseURL})=>{
  await page.setViewportSize({width:390,height:420})
  await page.goto(baseURL!+'season/3/',{waitUntil:'domcontentloaded'})
  const cover=page.locator('[data-preview-game="colorLink"]')
@@ -146,11 +146,10 @@ test('Color Link moves its own painted traces once, shows its final venue, and k
   ...Array(3).fill(['polyline','stroke-dashoffset','0.37s']),
  ])
  await expect(page.locator('[data-game-preview="colorLink"]')).toHaveCount(0)
- await expect(copy).toHaveCount(0)
  await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}))
- await cover.evaluate(node=>node.scrollIntoView({block:'center',behavior:'instant'}))
- await expect(cover).toHaveAttribute('data-preview-state','played')
  await expect(copy).toHaveCount(0)
+ await cover.evaluate(node=>node.scrollIntoView({block:'center',behavior:'instant'}))
+ await expect(copy).toHaveAttribute('data-cover-ready','true')
  await card.getByRole('button',{name:'Details for Color Link'}).click()
  const details=page.getByRole('dialog',{name:'Color Link'})
  await expect(details.locator('[data-game-preview="colorLink"]')).toBeVisible()

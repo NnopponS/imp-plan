@@ -1,0 +1,75 @@
+/* A small, self-contained illustrated paper theatre. The app remains live behind it. */
+.intro-story{
+ position:absolute;inset:0;display:grid;place-items:center;overflow:hidden;
+ padding:48px 16px 38px;color:#fae8c2;
+ background:radial-gradient(ellipse at 50% 45%,#33271f 0,#201916 55%,#110e0d 96%);
+}
+.intro-story::before{
+ content:"";position:absolute;inset:clamp(6px,2.45vw,38px);
+ border:1px solid #966e47aa;outline:1px solid #75523155;outline-offset:5px;
+ background:repeating-linear-gradient(38deg,transparent 0 7px,#ac865a12 7px 8px);
+}
+.intro-story-frame{
+ position:relative;inline-size:min(100%,940px);min-inline-size:0;
+ display:grid;justify-items:center;gap:clamp(9px,2vh,22px);text-align:center;
+}
+.intro-engraving{
+ position:relative;inline-size:min(100%,calc((100svh - 185px) * 1.33),758px);min-inline-size:0;
+ border:1px solid #b88c5a;box-shadow:0 0 0 4px #281e19,0 0 0 5px #755438,0 24px 70px #0e0909aa;
+}
+.intro-stage{display:block;width:100%;height:auto}
+.intro-story-copy{min-block-size:98px;padding-inline:10px;animation:intro-caption .68s ease-out both}
+.intro-story-copy p{margin:0 0 6px;color:#dbb480;font:700 .68rem/1.2 system-ui,sans-serif;letter-spacing:.19em}
+.intro-story-copy strong{display:block;color:#f9e9c9;font:400 clamp(1.85rem,5.8vmin,3.9rem)/1.02 Georgia,serif;margin-block-end:7px}
+.intro-story-copy span{display:block;color:#e4c8a3;font:500 clamp(.72rem,2.1vmin,.96rem)/1.48 system-ui,sans-serif}
+.intro-table-shot{transform-box:fill-box;transform-origin:center;animation:intro-approach 1s cubic-bezier(.19,.61,.27,1) both}
+.intro-puppet{transform-box:fill-box;transform-origin:center 90%;animation:intro-seat-in .85s ease-out both;animation-delay:var(--actor-delay)}
+.intro-puppet-head{transform-origin:0 -19px;animation:intro-tilt 3.9s ease-in-out both;animation-delay:var(--actor-delay)}
+.intro-puppet-arm{transform-origin:23px 4px}
+[data-reaching=true] .intro-puppet-arm{animation:intro-reach 4.7s cubic-bezier(.28,.53,.25,1) both;animation-delay:var(--actor-delay)}
+.intro-candle{animation:intro-candle 2.4s ease-in-out infinite alternate}
+.intro-completion,.intro-winning-bid path{animation:intro-reveal 4.75s ease-out both}
+.intro-stone{animation:intro-stone 4.45s cubic-bezier(.27,.65,.29,1) both}
+.intro-bids{animation:intro-bids 4.7s ease both;transform-origin:0 17px}
+.intro-fence{animation:intro-fence 4.6s ease both}
+.intro-clock-needle{transform-origin:0 -12px;animation:intro-clock 3.2s linear both}
+.intro-route path,.intro-dash-route{stroke-dasharray:1;animation:intro-draw 4.65s cubic-bezier(.35,.3,.22,1) both}
+.intro-seals{animation:intro-seals 2s cubic-bezier(.16,.83,.31,1) both}
+.intro-story[data-act=seal] .intro-seals{animation:intro-uncut 1.7s ease-out both}
+.intro-story[data-act=seal] .intro-ring{animation:intro-ring 1.5s ease-out both}
+@keyframes intro-caption{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes intro-approach{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:scale(1)}}
+@keyframes intro-seat-in{from{opacity:0;transform:translateY(-19px) rotate(-4deg)}to{opacity:1;transform:translateY(0) rotate(0)}}
+@keyframes intro-tilt{0%,23%,100%{transform:rotate(0)}45%,65%{transform:rotate(8deg)}}
+@keyframes intro-reach{0%,28%,100%{transform:rotate(0)}52%,66%{transform:rotate(-31deg) translate(5px,-7px)}}
+@keyframes intro-candle{from{opacity:.09}to{opacity:.23}}
+@keyframes intro-reveal{0%,76%{opacity:0}84%,100%{opacity:1}}
+@keyframes intro-stone{0%,25%{transform:translate(-45px,-28px);opacity:0}34%{opacity:1}68%,100%{transform:translate(0,0);opacity:1}}
+@keyframes intro-bids{0%,56%{transform:scaleX(.16);opacity:.13}70%,100%{transform:scaleX(1);opacity:1}}
+@keyframes intro-clock{from{transform:rotate(-60deg)}to{transform:rotate(330deg)}}
+@keyframes intro-fence{0%,24%{transform:translate(34px,18px);opacity:0}35%{opacity:1}64%,100%{transform:translate(0,0);opacity:1}}
+@keyframes intro-draw{0%,55%{stroke-dashoffset:1}90%,100%{stroke-dashoffset:0}}
+@keyframes intro-seals{0%{opacity:0;transform:translateY(10px)}75%,100%{opacity:1}}
+@keyframes intro-uncut{0%{opacity:.52}100%{opacity:1}}
+@keyframes intro-ring{0%{stroke-width:1;fill:#201714}100%{stroke-width:3;fill:#4b2a20}}
+@media(max-width:480px) and (orientation:portrait){
+ .intro-story{padding-inline:14px}
+ .intro-story::before{inset:10px;outline-offset:2px}
+ .intro-engraving{inline-size:100%}
+ .intro-story-copy{min-block-size:114px}
+}
+@media(max-height:485px) and (orientation:landscape){
+ .intro-story{padding:34px 7% 27px}
+ .intro-story-frame{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);align-items:center;gap:4%}
+ .intro-engraving{inline-size:min(100%,calc((100svh - 79px) * 1.33))}
+ .intro-story-copy{min-block-size:0;padding-inline:0;text-align:start}
+ .intro-story-copy strong{font-size:clamp(1.24rem,7vmin,2rem)}
+}
+.intro-door-left{transform-origin:-53px 0}
+.intro-door-right{transform-origin:53px 0}
+.intro-story[data-act=seal] .intro-door-leaf{animation:intro-door-open 1.42s cubic-bezier(.3,.5,.27,1) both}
+.intro-door-light{animation:intro-door-light 1.65s ease-out both}
+@keyframes intro-door-open{from{transform:scaleX(1)}to{transform:scaleX(.22)}}
+@keyframes intro-door-light{from{opacity:0}to{opacity:.25}}
+[data-reaching=true] .intro-puppet-gesture{animation:intro-lean 4.65s ease-in-out both;animation-delay:var(--actor-delay)}
+@keyframes intro-lean{0%,30%,100%{transform:translate(0,0)}52%,69%{transform:translate(28px,-8px)}}

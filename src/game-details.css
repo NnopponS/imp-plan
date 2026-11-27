@@ -41,6 +41,11 @@
 @keyframes party-sow{0%{opacity:0;transform:translate(var(--sow-x),var(--sow-y))}35%{opacity:1}100%{transform:none}}
 @keyframes party-release{0%{transform:scaleX(0)}100%{transform:scaleX(1)}}
 @keyframes party-pick{0%{opacity:.28}45%{opacity:.5}100%{opacity:1}}
+/* Keep in-progress SVG keyframes frozen with the loop timer. */
+.game-rule-preview[data-preview-loop="paused"] .game-rule-illustration *{animation-play-state:paused}
+@media(prefers-reduced-motion:reduce){
+ .game-rule-preview .game-rule-illustration *{animation:none!important}
+}
 @media(max-width:420px){
  .game-details-head .game-token{width:29px;height:29px}
  .game-details-head button{padding-inline:8px}
