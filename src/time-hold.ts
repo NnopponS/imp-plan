@@ -22,7 +22,7 @@ type Phase='arming'|'live'|'review'|'finished'
 type HoldStatus='idle'|'holding'|'closed'
 type Slot={reserve:number;status:HoldStatus;leaseUntil:number;bid:number}
 export type TimeHoldRound={round:number;winner:string|null;elapsedTenths:number}
-export type TimeHoldAction={kind:'hold'|'pulse'|'release';round:number}
+export type TimeHoldAction={kind:'hold'|'pulse'|'release'|'cancel';round:number}
 export type TimeHold={
  readonly seats:readonly string[]
  readonly round:number
@@ -108,9 +108,9 @@ export function timeHoldAction(s:TimeHold,seat:string,action:TimeHoldAction,host
  }else if(action.kind==='pulse'){
   if(old.status!=='holding'||now+leaseMs<=old.leaseUntil)return null
   slot={...old,leaseUntil:now+leaseMs}
- }else if(action.kind==='release'){
+ }else if(action.kind==='release'||action.kind==='cancel'){
   if(old.status!=='holding')return null
-  slot=close(old,current.bidAt,now,true)
+  slot=close(old,current.bidAt,now,action.kind==='release')
  }else return null
  const next={...current,lastHostAt:now,slots:current.slots.map((p,j)=>i===j?slot:p)}
  return settle(next,now)

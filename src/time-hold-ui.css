@@ -1,0 +1,115 @@
+.time-hold {
+ --th-charcoal:#191715;
+ --th-rim:#65533b;
+ --th-gold:#e9bf78;
+ --th-ivory:#f3e6cf;
+ --th-muted:#c8b69a;
+ --th-crimson:#f9afa9;
+ color:var(--th-ivory);
+ color-scheme:dark;
+ isolation:isolate;
+ container:time-hold / inline-size;
+ min-inline-size:0;
+ padding:clamp(13px,3vw,29px);
+ background:repeating-linear-gradient(174deg,#fff1d503 0 1px,transparent 1px 4px),var(--th-charcoal);
+ border:1px solid var(--th-rim);
+}
+.time-hold-head {padding-block-end:13px;border-block-end:1px solid var(--th-rim)}
+.time-hold-kicker {
+ display:block;color:var(--th-muted);
+ font:700 .65rem/1.4 ui-sans-serif,system-ui,sans-serif;letter-spacing:.13em;text-transform:uppercase;
+}
+.time-hold-kicker span {color:var(--th-gold)}
+.time-hold h2 {
+ margin:.35rem 0 0;font:600 clamp(1.4rem,4vw,2.2rem)/1 Georgia,serif;
+}
+.time-hold h2 span {color:var(--th-gold);font-variant-numeric:tabular-nums}
+.time-hold h2 small {color:var(--th-muted);font-size:.58em}
+.time-hold-field {
+ display:grid;grid-template-columns:minmax(0,1.03fr) minmax(0,.97fr);
+ gap:clamp(20px,4vw,50px);align-items:start;padding-block-start:clamp(15px,3vw,25px);
+}
+.time-hold-instrument {display:grid;justify-items:center;min-inline-size:0;gap:9px}
+.time-hold-dial {position:relative;width:clamp(148px,52vw,230px);max-width:100%;aspect-ratio:1}
+.time-hold-dial svg {display:block;width:100%;height:auto;overflow:visible;filter:drop-shadow(0 8px 12px #0009)}
+.time-hold-dial-case {fill:#120f0d;stroke:#79644a;stroke-width:1.6}
+.time-hold-dial-rim {fill:#544230;stroke:#bd965e;stroke-width:3}
+.time-hold-dial-face {fill:#211a15;stroke:#79644a;stroke-width:1.3}
+.time-hold-dial-rule {fill:none;stroke:#8f7853;stroke-width:1}
+.time-hold-major {stroke:var(--th-gold);stroke-width:1.55}
+.time-hold-minor {stroke:#9a8365;stroke-width:1}
+.time-hold-dial-pointer {fill:var(--th-gold);stroke:#372414;stroke-width:.5}
+.time-hold-dial-copy {
+ position:absolute;inset:27% 18%;display:grid;align-content:center;justify-items:center;gap:.35rem;text-align:center;
+}
+.time-hold-dial-label {font:700 clamp(.61rem,2vw,.74rem)/1.25 ui-sans-serif,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--th-muted)}
+.time-hold-value {font:600 clamp(1.65rem,7vw,2.8rem)/.94 Georgia,serif;font-variant-numeric:lining-nums tabular-nums;white-space:nowrap}
+.time-hold-unit {font:600 .48em/1 ui-sans-serif,system-ui,sans-serif;color:var(--th-muted)}
+.time-hold-reserve,.time-hold-grace,.time-hold-status,.time-hold-notice {margin:0;text-align:center;overflow-wrap:anywhere}
+.time-hold-reserve,.time-hold-grace,.time-hold-status {
+ color:var(--th-muted);font:500 .81rem/1.4 ui-sans-serif,system-ui,sans-serif;
+}
+.time-hold-reserve strong {margin-inline-start:.35rem;color:var(--th-gold);font-variant-numeric:tabular-nums;white-space:nowrap}
+.time-hold-reserve strong span {font-weight:normal}
+.time-hold-status {min-block-size:2.3em}
+.time-hold-notice {color:var(--th-crimson);font:600 .82rem/1.4 ui-sans-serif,system-ui,sans-serif}
+.time-hold .time-hold-plunger {
+ position:relative;display:flex;justify-content:center;align-items:center;gap:9px;text-align:center;
+ inline-size:min(100%,230px);min-block-size:54px;margin-block:2px 1px;
+ padding:11px;border:1px solid #e0b775;border-radius:3px;background:#d9b477;color:#1b140d;
+ box-shadow:inset 0 0 0 2px #3c2c20a0,inset 0 0 0 4px #f4d5969e,0 4px 0 #5d4832;
+ font:800 .79rem/1.25 ui-sans-serif,system-ui,sans-serif;letter-spacing:.075em;text-transform:uppercase;
+ cursor:pointer;user-select:none;touch-action:none;-webkit-touch-callout:none;
+ transition:transform 120ms ease,box-shadow 120ms ease,background-color 120ms ease;
+}
+.time-hold .time-hold-plunger[aria-disabled="true"] {background:#3a3025;color:var(--th-muted);border-color:#80684c;box-shadow:inset 0 0 0 2px #211a15;cursor:default}
+@media (hover:hover) {
+ .time-hold .time-hold-plunger:not([aria-disabled="true"]):hover {background:#e8c58a}
+}
+.time-hold .time-hold-plunger[data-held="yes"] {
+ background:#eed09a;transform:translateY(3px);
+ box-shadow:inset 0 0 0 2px #3c2c20,inset 0 0 0 4px #eed5a5,0 1px 0 #5d4832;
+}
+.time-hold .time-hold-plunger:focus-visible {outline:2px solid #fff0c6;outline-offset:4px}
+.time-hold-plunger svg {flex:none}
+.time-hold-ledger {
+ min-inline-size:0;color:var(--th-muted);font:500 .85rem/1.52 ui-sans-serif,system-ui,sans-serif;
+ overflow-wrap:anywhere;
+}
+.time-hold-rule {margin:0}
+.time-hold-keys {margin:.55rem 0 1.1rem;color:var(--th-muted);font-size:.77rem}
+.time-hold-keys kbd {
+ display:inline-block;vertical-align:baseline;margin-inline-end:.25rem;padding:1px 5px;border:1px solid #9a8059;
+ border-radius:2px;color:var(--th-ivory);font-size:.75rem;
+}
+.time-hold-ledger h3 {
+ margin:1rem 0 .36rem;border-block-start:1px solid #554632;padding-block-start:.75rem;
+ color:var(--th-gold);font:700 .67rem/1.25 ui-sans-serif,system-ui,sans-serif;letter-spacing:.105em;text-transform:uppercase;
+}
+.time-hold-tally {margin:0;padding:0;list-style:none}
+.time-hold-tally li {
+ min-width:0;display:grid;grid-template-columns:minmax(0,1fr) max-content;gap:.75em;
+ padding:.34rem 0;border-block-end:1px solid #544435;color:var(--th-ivory);
+}
+.time-hold-tally strong {color:var(--th-gold);font-variant-numeric:tabular-nums}
+.time-hold-tally small {color:var(--th-muted)}
+.time-hold-previous p {margin:.3em 0}
+.time-hold-foot {margin:1rem 0 0;color:var(--th-muted);font-size:.74rem}
+@media (max-width:600px) {
+ .time-hold-field {grid-template-columns:minmax(0,1fr);gap:15px}
+ .time-hold-dial {width:min(195px,62vw)}
+ .time-hold-ledger {border-block-start:1px solid var(--th-rim);padding-block-start:13px}
+}
+@container time-hold (max-width:505px) {
+ .time-hold-field {grid-template-columns:minmax(0,1fr);gap:15px}
+ .time-hold-dial {width:min(195px,100%)}
+ .time-hold-ledger {border-block-start:1px solid var(--th-rim);padding-block-start:13px}
+}
+@media (prefers-reduced-motion:reduce) {
+ .time-hold .time-hold-plunger {transition:none;transform:none}
+ .time-hold-dial-pointer {display:none}
+}
+[data-game-motion="off"] .time-hold .time-hold-plunger,
+.time-hold[data-reduced-motion="yes"] .time-hold-plunger {transition:none;transform:none}
+[data-game-motion="off"] .time-hold-dial-pointer,
+.time-hold[data-reduced-motion="yes"] .time-hold-dial-pointer {display:none}

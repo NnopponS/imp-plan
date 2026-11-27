@@ -1,7 +1,7 @@
 # Imp Plan
 Private strategy game nights in your browser. Pick a nickname, open a room, and invite friends with a six-character code. Practice solo or play against heuristic bots in supported games.
 
-**Status: playable alpha.** The challenge index tracks 64 entries across *The Devil’s Plan* Seasons 1–3 (including minigames and unaired slots). Playable fan adaptations: Blind Gomoku, Nine Men’s Morris, Time Auction (sealed bids), Point Gomoku, Remove One, Knight’s Tour, Hexagon, Count the Rectangles, Balance Mancala, Count the Cubes, Bagh Chal, Secret Number, Laying Grass, Lay the Grass, Exile Rectangle Counting, Divine Test, Equation Lights, Secret Code, Equation Pyramid, Fragments of Memory, Spot the Difference, Scale Game, Loop Fence Puzzle, Word Tower, Piece Puzzle, Memory Poker, and Wall Go. The rest are tracked, not playable. No original broadcast mode is verified yet.
+**Status: playable alpha.** The challenge index tracks 64 entries across *The Devil’s Plan* Seasons 1–3 (including minigames and unaired slots). Playable fan adaptations: Blind Gomoku, Nine Men’s Morris, Time Auction (sealed bids or optional Hold & release), Point Gomoku, Remove One, Knight’s Tour, Hexagon, Count the Rectangles, Balance Mancala, Count the Cubes, Bagh Chal, Secret Number, Laying Grass, Lay the Grass, Exile Rectangle Counting, Divine Test, Equation Lights, Secret Code, Equation Pyramid, Fragments of Memory, Spot the Difference, Scale Game, Loop Fence Puzzle, Word Tower, Piece Puzzle, Memory Poker, and Wall Go. The rest are tracked, not playable. No original broadcast mode is verified yet.
 
 ## Run
 ```sh

@@ -4,9 +4,9 @@ type Endpoint=PeerType|TestPeer
 type Channel=DataConnection|ReturnType<TestPeer['connect']>
 import {Host,decode,id,roomCode,type Snapshot,type Command} from './room'
 export type ConnectOptions={iceServers?:RTCIceServer[]}
-export type SessionState={phase:'connecting'|'online'|'offline',snapshot:Snapshot|null,error:string}
+export type SessionState={phase:'connecting'|'online'|'offline',snapshot:Snapshot|null,error:string,receivedAt?:number,holdRejection?:string}
 type Listener=(s:SessionState)=>void
-type Session={send:(c:Command)=>void;close:()=>void}
+export type Session={send:(c:Command,expectedMatch?:string)=>string|false;close:()=>void}
 const namespace='imp-plan-v5-'
 const sessionKey=(code:string)=>'arena-resume-'+code
 const defaultIce=[{urls:'stun:stun.l.google.com:19302'}]
@@ -31,11 +31,11 @@ function notify(text:string){
 }
 export function practice(name:string,listener:Listener):Session{
  const h=new Host(name,()=>Math.floor(performance.timeOrigin+performance.now()),true)
- const update=(error='')=>listener({phase:'online',snapshot:h.snapshot('host'),error})
+ const update=(error='')=>listener({phase:'online',snapshot:h.snapshot('host'),error,receivedAt:performance.now()})
  h.command('host',id(),h.rev,{kind:'bot'})
  const timer=setInterval(()=>{if(h.tick())update()},200)
  update()
- return {send:c=>update(h.command('host',id(),h.rev,c)??''),close:()=>clearInterval(timer)}
+ return {send:c=>{const request=id();update(h.command('host',request,h.rev,c)??'');return request},close:()=>clearInterval(timer)}
 }
 export async function hostRoom(name:string,listener:Listener,options:ConnectOptions):Promise<Session&{code:string}>{
  listener(initial)
@@ -49,16 +49,21 @@ export async function hostRoom(name:string,listener:Listener,options:ConnectOpti
  const service=peer
  const h=new Host(name,()=>Math.floor(performance.timeOrigin+performance.now()))
  const clients=new Map<string,{c:Channel,authorized:boolean,seq:number,seen:number,window:number,count:number}>()
- const update=(error='')=>{
-  listener({phase:'online',snapshot:h.snapshot('host'),error})
-  for(const [key,info] of clients){
-   if(!info.authorized)continue
-   const state=h.snapshot(key)
-   if(state)send(info.c,{type:'snapshot',state})
-   else{send(info.c,{type:'closed',reason:'The host removed this seat.'});setTimeout(()=>info.c.close(),200)}
-  }
+ let holdRejection:string|undefined
+ const ownUpdate=(error='')=>listener({phase:'online',snapshot:h.snapshot('host'),error,receivedAt:performance.now(),holdRejection})
+ const sendState=(key:string)=>{
+  const info=clients.get(key)
+  if(!info?.authorized)return
+  const state=h.snapshot(key)
+  if(state)send(info.c,{type:'snapshot',state})
+  else{send(info.c,{type:'closed',reason:'The host removed this seat.'});setTimeout(()=>info.c.close(),200)}
  }
- service.on('error',()=>listener({phase:'online',snapshot:h.snapshot('host'),error:'Signaling reported an error. New joins may be unavailable.'}))
+ const update=(error='')=>{
+  ownUpdate(error)
+  for(const key of clients.keys())sendState(key)
+  h.takeTimeHoldUpdates()
+ }
+ service.on('error',()=>ownUpdate('Signaling reported an error. New joins may be unavailable.'))
  service.on('disconnected',()=>{if(!service.destroyed)try{service.reconnect()}catch{/* already reconnecting */}})
  service.on('connection',c=>{
   if(clients.size>=32){c.on('open',()=>c.close());return}
@@ -66,7 +71,7 @@ export async function hostRoom(name:string,listener:Listener,options:ConnectOpti
   clients.set(key,info)
   const drop=()=>{
    if(!clients.delete(key))return
-   h.disconnect(key);update()
+   const before=h.rev;h.disconnect(key);if(h.rev!==before)update()
   }
   c.on('close',drop);c.on('error',()=>{c.close();drop()})
   c.on('data',(raw:unknown)=>{
@@ -81,19 +86,24 @@ export async function hostRoom(name:string,listener:Listener,options:ConnectOpti
     const result=h.join(key,m.name,m.token)
     if(!result){send(c,{type:'closed',reason:'Room is locked, full, playing, or this seat cannot be resumed.'});setTimeout(()=>c.close(),250);return}
     info.authorized=true
-    const previous=clients.get(result.old);if(previous)previous.c.close()
+    const previous=clients.get(result.old);if(previous){clients.delete(result.old);previous.c.close()}
     send(c,{type:'accepted',token:result.token});update();return
    }
    if(!info.authorized)return
    if(m.type==='ping'){send(c,{type:'pong'});return}
+   const privateHold=m.command.kind==='time-hold'
+   const rejected=(reason:string)=>{
+    if(m.command.kind==='time-hold'&&m.command.action==='hold')send(c,{type:'error',reason,holdRejection:m.request})
+    else if(m.command.kind!=='time-hold')send(c,{type:'error',reason})
+   }
    if(m.epoch!==h.epoch||m.match!==h.match||m.seq<=info.seq){
-    send(c,{type:'error',reason:'This action no longer matches the current game.'});return
+    rejected('This action no longer matches the current game.');return
    }
    info.seq=m.seq
    const before=h.rev,err=h.command(key,m.request,m.rev,m.command)
-   if(err||m.command.kind==='memory-lock'&&h.rev===before){
-    if(err)send(c,{type:'error',reason:err})
-    const state=h.snapshot(key);if(state)send(c,{type:'snapshot',state})
+   if(privateHold||err||m.command.kind==='memory-lock'&&h.rev===before){
+    if(err)rejected(err)
+    sendState(key)
    }else update()
   })
  })
@@ -102,12 +112,21 @@ export async function hostRoom(name:string,listener:Listener,options:ConnectOpti
    clients.delete(k);h.disconnect(k);v.c.close();update()
   }
   if(h.tick())update()
+  else for(const key of h.takeTimeHoldUpdates()){
+   if(key==='host')ownUpdate()
+   else sendState(key)
+  }
  },200)
  update()
- return {code,send:c=>{
-  const before=h.rev,error=h.command('host',id(),h.rev,c)??''
-  if(c.kind==='memory-lock'&&h.rev===before)listener({phase:'online',snapshot:h.snapshot('host'),error})
+ return {code,send:(c,expectedMatch)=>{
+  if(expectedMatch!==undefined&&expectedMatch!==h.match)return false
+  const request=id(),before=h.rev,error=h.command('host',request,h.rev,c)??''
+  if(c.kind==='time-hold'){
+   if(error&&c.action==='hold')holdRejection=request
+   ownUpdate(c.action==='hold'?error:'')
+  }else if(c.kind==='memory-lock'&&h.rev===before)ownUpdate(error)
   else update(error)
+  return request
  },close:()=>{
   clearInterval(timer)
   for(const v of clients.values())send(v.c,{type:'closed',reason:'The host ended this room.'})
@@ -117,9 +136,10 @@ export async function hostRoom(name:string,listener:Listener,options:ConnectOpti
 export function joinRoom(code:string,name:string,listener:Listener,options:ConnectOptions):Session{
  let peer:Endpoint|undefined,conn:Channel|undefined,closed=false,terminal=false,seq=0,seen=0,error=''
  let snapshot:Snapshot|null=null
+ let receivedAt:number|undefined,holdRejection:string|undefined,authorized=false
  let token:string|undefined
  try{const st=JSON.parse(sessionStorage.getItem(sessionKey(code))??'null');if(st?.name===name)token=st.token}catch{/* storage unavailable */}
- const tell=(phase:SessionState['phase'],err='')=>listener({phase,snapshot,error:err})
+ const tell=(phase:SessionState['phase'],err='')=>listener({phase,snapshot,error:err,receivedAt,holdRejection})
  const stop=()=>{conn?.close();peer?.destroy()}
  async function attempt(){
   tell('connecting')
@@ -128,7 +148,7 @@ export function joinRoom(code:string,name:string,listener:Listener,options:Conne
   const p=peer
   await new Promise<void>((resolve,reject)=>{
    const c=p.connect(namespace+code,{reliable:true,serialization:'raw'})
-   conn=c;seq=0;seen=performance.now()
+   conn=c;authorized=false;seq=0;seen=performance.now()
    let accepted=false
    const timer=setTimeout(()=>reject(new Error('Couldn’t reach this room. Check the code and try again.')),9000)
    const finish=(e?:Error)=>{clearTimeout(timer);e?reject(e):resolve()}
@@ -142,13 +162,16 @@ export function joinRoom(code:string,name:string,listener:Listener,options:Conne
      const m=JSON.parse(raw)
      seen=performance.now()
      if(m.type==='accepted'&&/^[a-f0-9]{32}$/.test(m.token)){
-      accepted=true;token=m.token;clearTimeout(timer)
+      accepted=true;authorized=true;token=m.token;clearTimeout(timer)
       try{sessionStorage.setItem(sessionKey(code),JSON.stringify({name,token}))}catch{/* storage unavailable */}
      }
      if(m.type==='snapshot'&&accepted&&m.state&&typeof m.state.match==='string'){
-      snapshot=m.state;tell('online',error);error=''
+      snapshot=m.state;receivedAt=performance.now();tell('online',error);error=''
      }
-     if(m.type==='error'&&typeof m.reason==='string'){error=notify(m.reason);tell(snapshot?'online':'connecting',error)}
+     if(m.type==='error'&&typeof m.reason==='string'){
+      if(typeof m.holdRejection==='string'&&/^[a-f0-9]{32}$/.test(m.holdRejection))holdRejection=m.holdRejection
+      error=notify(m.reason);tell(snapshot?'online':'connecting',error)
+     }
      if(m.type==='closed'&&typeof m.reason==='string'){terminal=true;error=m.reason;finish()}
     }catch{/* ignore invalid host data */}
    })
@@ -172,8 +195,10 @@ export function joinRoom(code:string,name:string,listener:Listener,options:Conne
   }
  },5000)
  void loop()
- return {send:command=>{
-  if(!snapshot||!conn?.open)return
-  send(conn,{version:1,type:'command',epoch:snapshot.epoch,match:snapshot.match,seq:++seq,request:id(),rev:snapshot.rev,command})
+ return {send:(command,expectedMatch)=>{
+  if(!snapshot||!conn?.open||!authorized||(expectedMatch!==undefined&&expectedMatch!==snapshot.match))return false
+  const request=id()
+  send(conn,{version:1,type:'command',epoch:snapshot.epoch,match:snapshot.match,seq:++seq,request,rev:snapshot.rev,command})
+  return request
  },close:()=>{closed=true;clearInterval(heartbeat);stop()}}
 }

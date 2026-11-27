@@ -1,0 +1,176 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="660" viewBox="0 0 1200 660" role="img" aria-labelledby="title desc">
+<title id="title">The timekeepers’ cabinet</title>
+<desc id="desc">Two duelists sit on opposite sides of an engraved public clock. A judge watches from behind it. At the private controls beneath each hood, one gloved hand holds an actuator down and the other lifts away.</desc>
+<defs>
+ <linearGradient id="wall" x1=".32" y1="0" x2=".72" y2="1"><stop stop-color="#514337"/><stop offset=".42" stop-color="#29282c"/><stop offset="1" stop-color="#14171d"/></linearGradient>
+ <linearGradient id="walnut" x1=".18" x2=".87" y2="1"><stop stop-color="#6e5140"/><stop offset=".52" stop-color="#443439"/><stop offset="1" stop-color="#211f27"/></linearGradient>
+ <linearGradient id="rim" x1="0" x2=".85" y2=".98"><stop stop-color="#e0b781"/><stop offset=".36" stop-color="#a37a4a"/><stop offset=".76" stop-color="#695045"/><stop offset="1" stop-color="#3d3034"/></linearGradient>
+ <linearGradient id="ivory" x1=".2" x2=".6" y2="1"><stop stop-color="#f8e6b7"/><stop offset=".43" stop-color="#dbbf8c"/><stop offset="1" stop-color="#a18056"/></linearGradient>
+ <linearGradient id="bronze" x1=".11" x2=".83" y2="1"><stop stop-color="#ae8b5d"/><stop offset=".38" stop-color="#735946"/><stop offset="1" stop-color="#392f32"/></linearGradient>
+ <linearGradient id="cloak" x1=".08" x2=".86" y2="1"><stop stop-color="#665762"/><stop offset=".5" stop-color="#353640"/><stop offset="1" stop-color="#21242b"/></linearGradient>
+ <linearGradient id="teal" x1=".28" x2=".85" y2="1"><stop stop-color="#5e5e5e"/><stop offset=".26" stop-color="#444a50"/><stop offset=".74" stop-color="#29343d"/><stop offset="1" stop-color="#1d242c"/></linearGradient>
+ <linearGradient id="maroon" x1=".21" x2=".54" y2="1"><stop stop-color="#79505b"/><stop offset=".39" stop-color="#523843"/><stop offset="1" stop-color="#22222c"/></linearGradient>
+ <linearGradient id="skin" x1=".17" x2=".87" y2=".85"><stop stop-color="#d6aa7e"/><stop offset=".54" stop-color="#a26f54"/><stop offset="1" stop-color="#69464b"/></linearGradient>
+ <linearGradient id="skinR" x1=".02" x2="1" y2="1"><stop stop-color="#c09373"/><stop offset=".46" stop-color="#97634f"/><stop offset="1" stop-color="#593943"/></linearGradient>
+ <linearGradient id="glove" x1=".26" x2=".84" y2="1"><stop stop-color="#60516d"/><stop offset=".42" stop-color="#44384f"/><stop offset="1" stop-color="#272632"/></linearGradient>
+ <radialGradient id="beam" cx=".5" cy=".19" r=".65"><stop stop-color="#f9d3a0" stop-opacity=".39"/><stop offset=".61" stop-color="#ca9068" stop-opacity=".13"/><stop offset="1" stop-color="#935950" stop-opacity="0"/></radialGradient>
+ <radialGradient id="fade" r=".7"><stop offset=".43" stop-color="#13141b" stop-opacity="0"/><stop offset="1" stop-color="#111219" stop-opacity=".74"/></radialGradient>
+ <pattern id="grain" width="23" height="17" patternUnits="userSpaceOnUse"><path d="M2 5h7m3 3h5m-9 7h9m-4-12h5" stroke="#fff0b0" stroke-opacity=".23" stroke-width=".5"/><path d="M2 11h9m5-5h6m-3 8h4" stroke="#20151c" stroke-opacity=".32" stroke-width=".84"/></pattern>
+ <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(25)"><path d="M0 1h8M0 5h8" stroke="#d9b097" stroke-opacity=".27" stroke-width=".64"/></pattern>
+ <filter id="ink"><feTurbulence type="fractalNoise" baseFrequency=".63" seed="27" numOctaves="3"/><feColorMatrix type="matrix" values="0 0 0 0 .62 0 0 0 0 .58 0 0 0 0 .56 .24 .24 .24 0 -.25"/></filter>
+ <g id="pin"><circle r="5.8" fill="#453332" stroke="#caa274" stroke-width="1"/><path d="M-2.3 1l4.6-2" fill="none" stroke="#d6b381" stroke-width="1.1"/></g>
+</defs>
+<path d="M0 0h1200v660H0z" fill="url(#wall)"/>
+<path d="M0 0h1200v660H0z" fill="url(#beam)"/>
+<!-- Ribbed masonry kept below the contrast of the playable apparatus. -->
+<g fill="none" stroke-linecap="round">
+ <path d="M67-20v438M86-20v439M297-20v444m205-444v418m215-418v420m193-420v440m223-440v440m17-440v434M0 61h1200M0 148h1200M0 259h1200M0 354h1200M0 437h1200" stroke="#1b1920" stroke-width="2" opacity=".77"/>
+ <path d="M89 0v434M300 0v428M505 1v419M719 1v416M912 0v433M1153 0v427M0 64h1200M0 151h1200M0 262h1200M0 357h1200" stroke="#b5a181" opacity=".29"/>
+ <path d="M414 425V159q0-83 79-132 46-28 91-27 47 0 94 28 79 49 79 131v266M430 425V163q0-78 74-124 39-26 81-26 43 1 83 25 73 46 73 125v263" stroke="#c5a575" stroke-width="1.8" opacity=".38"/>
+ <path d="M449 419V167q0-109 134-134 137 25 137 134v254" stroke="#14151b" stroke-width="11" opacity=".39"/>
+ <path d="M104 74l82-3m25 6 59 1m770 81 61 1m-881 97 65-3m619 91 73 4m-687 92 29-3m-209 5 81-6m814-136 75-3m-375-215 24-1m-564 92 16-2m843 30 40-1" stroke="#dbbe97" opacity=".24"/>
+</g>
+<!-- The adjudicator: a separate human reference, behind the equipment. -->
+<path d="M736 236q35-18 82-9 41 5 80 31l52 127-218 48-111-43 37-89q22-44 78-65Z" fill="url(#cloak)" stroke="#191920" stroke-width="4"/>
+<path d="M805 239q52-5 89 23l48 112-62 18-112-41 3-92Z" fill="url(#hatch)" opacity=".81"/>
+<path d="M749 230q20 7 45 5l30 9-25 112-30 13-45-88Z" fill="#d3c3a7" stroke="#4a3b40" stroke-width="2.5"/>
+<path d="m768 264 15 5 7 15-12 88-22-31 14-58Z" fill="#7d4d49"/>
+<path d="M753 238l-37 27 26 29-7 20 31 52-5-75Zm48 3 36 13-13 39 8 14-40 49 13-65Z" fill="#4e414d" stroke="#2b252e" stroke-width="2.7"/>
+<path d="M720 269l24 25-8 19 26 48m77-103-15 34 7 14-34 44m-47-53 10 16m105-35q43 25 57 56m-45-44q25 21 33 49m-159 32 21 41" fill="none" stroke="#b49b89" opacity=".67" stroke-width="1.35"/>
+<path d="M767 194q10-23 34-19l9 17 5 37-21 31-25-6-14-18Z" fill="url(#skin)" stroke="#53353c" stroke-width="2.8"/>
+<path d="M780 212q14 15 34 16l-1 10q-23 12-46-4Z" fill="#6a4447"/>
+<path d="M769 99q46-17 73 15 24 24 10 63l-16 12-16 25-27 11q-36-10-47-34l-10-5 6-26 1-29Z" fill="url(#skin)" stroke="#64454a" stroke-width="2.7"/>
+<path d="M744 138q26-25 61-28 19 16 29 45-8 39-28 56l-15 8 3 5 29-17 16-24 14-14 7-31-44-36-49 4Z" fill="#86594d"/>
+<path d="M744 171q0-10 7-15l14 2m-13 8q6-3 11 0m20-8q11-6 22 2m-19 3q10-4 16 0m-23 0-9 19 9 4m7 14 17-3m-17 9q9 5 18-1m-46-14q10 19 25 23" fill="none" stroke="#57363c" stroke-width="1.4" stroke-linecap="round"/>
+<path d="M753 166q4 1 2 4m38-7q5 0 3 4m-20 19 5 2" fill="none" stroke="#332631" stroke-width="2" stroke-linecap="round"/>
+<path d="M767 146q18-13 48-3m-48 48q5 11 14 17m38-33 4-8m-40 43 4 3m7-5 6-2" fill="none" stroke="#e2b88c" opacity=".72" stroke-width="1.09"/>
+<path d="M834 163q8-13 16-6 5 5 0 14-4 9-16 11Z" fill="#9b6958" stroke="#52353e" stroke-width="1.4"/>
+<path d="M837 169q3-9 10-8m-7 9 2 4" fill="none" stroke="#643f43" stroke-width="1.24"/>
+<path d="M744 136q-4-37 26-54 42-19 74 9 21 20 20 49l-12 24-15-7-16-30q-35-4-77 9Z" fill="#3a292b" stroke="#241f25" stroke-width="2.7"/>
+<path d="M747 124q23-28 67-27m-62 29q22-26 61-29m-54 19q27-18 56-16 22 6 32 24m-69-19q20-2 37-1 23 7 32 32m-26-30q26 11 34 36m-80-45q27-15 56-3m-67 5q14-8 31-13m34 12 10 5" fill="none" stroke="#bf8a6b" stroke-width="1.2" opacity=".68" stroke-linecap="round"/>
+<path d="M752 172q5-1 11 0m21-2q14-1 24-8" fill="none" stroke="#6d4a47" stroke-width=".83"/>
+<!-- Judge's cuff and hand rest by the cabinet flange. -->
+<path d="M853 288q27 17 18 53-23 22-89 28l-83 2-14-35 99-16q38-15 69-32Z" fill="#41404a" stroke="#212028" stroke-width="2.8"/>
+<path d="M851 295q20 17 11 44m-17-33q13 12 11 28m-28 8-62 11" fill="none" stroke="#ae8e7d" stroke-width="1" opacity=".62"/>
+<path d="M716 332l16-1 6 34-20 6-13-11Z" fill="#aa9c88" stroke="#54434b" stroke-width="1.6"/>
+<path d="M718 335q-19-6-33 6l-18 12q-4 7 3 11l23 2q11 2 28-8Z" fill="url(#skin)" stroke="#593840" stroke-width="2"/>
+<path d="m675 359 15-3m-16 7 17-3m4-12q7-7 17-7" fill="none" stroke="#783e43" stroke-width="1.1"/>
+<!-- Public timekeeping cabinet, its dial and the weight below it. -->
+<path d="M442 372V170Q452 83 566 60q92-7 150 59 16 20 20 52v217Z" fill="#291f23" opacity=".6"/>
+<path d="M453 392V174Q453 94 540 71q92-22 159 44 20 28 20 54v236Z" fill="url(#walnut)" stroke="#191920" stroke-width="4"/>
+<path d="M691 112q28 31 28 64v219l-24-13-17-245Z" fill="#4c3836" stroke="#30262b" stroke-width="2.4"/>
+<path d="M463 387V174q3-65 63-89 76-31 140 14 38 31 40 79v207Z" fill="none" stroke="#a47a50" stroke-width="2.3" opacity=".73"/>
+<path d="M474 386V177q2-58 57-81 73-29 128 13 34 27 34 72v212Z" fill="none" stroke="#6f503e" stroke-width="1.6"/>
+<path d="M463 353q31 12 54 14m154-30 19-12m-211 59 31-4m169-27 15-7" fill="none" stroke="#c2996d" opacity=".56" stroke-width="1.56"/>
+<path d="M531 319q57 10 110-1v92H531Z" fill="#30272d" stroke="#a1835e" stroke-width="1.8"/>
+<path d="M548 331q34 4 75-1v62h-75Z" fill="#3b362f" stroke="#634c3d" stroke-width="1.6"/>
+<path d="M578 329v40" fill="none" stroke="#8e633c" stroke-width="4"/>
+<ellipse cx="577" cy="374" rx="14" ry="15" fill="url(#rim)" stroke="#32262b" stroke-width="1.7"/>
+<ellipse cx="577" cy="374" rx="9" ry="10" fill="none" stroke="#e3b988" stroke-width="1" opacity=".74"/>
+<ellipse cx="577" cy="374" rx="6" ry="6.7" fill="none" stroke="#825b3f" stroke-width=".95"/>
+<path d="M475 124q23 46-7 139m229-119q-39 28-16 119m-213-144q21 54 4 108m218-68q-30 18-22 55" fill="none" stroke="#a38165" stroke-width=".85" opacity=".4"/>
+<circle cx="580" cy="216" r="117" fill="#211b23" stroke="#a47c56" stroke-width="3"/>
+<circle cx="580" cy="216" r="112" fill="url(#rim)" stroke="#2f2427" stroke-width="2.6"/>
+<circle cx="580" cy="216" r="105" fill="#593f32" stroke="#ecc79b" stroke-width="1.6"/>
+<circle cx="580" cy="216" r="98.5" fill="url(#ivory)" stroke="#503c33" stroke-width="2.3"/>
+<circle cx="580" cy="216" r="95" fill="url(#grain)" opacity=".8"/>
+<circle cx="580" cy="216" r="81.7" fill="none" stroke="#7c5c40" stroke-width="1.23" opacity=".76"/>
+<circle cx="580" cy="216" r="71.1" fill="none" stroke="#a17b52" stroke-width="1" opacity=".76" stroke-dasharray="1 4"/>
+<path d="M580.00 139.00L580.00 122.00" stroke="#614637" stroke-width="2.7" stroke-linecap="round"/><path d="M589.20 128.48L589.83 122.51" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M598.30 129.92L599.54 124.05" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M607.19 132.31L609.05 126.60" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M615.79 135.61L618.23 130.13" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M618.50 149.32L627.00 134.59" stroke="#614637" stroke-width="2.7" stroke-linecap="round"/><path d="M631.73 144.81L635.25 139.95" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M638.88 150.60L642.90 146.14" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M645.40 157.12L649.86 153.10" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M651.19 164.27L656.05 160.75" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M646.68 177.50L661.41 169.00" stroke="#614637" stroke-width="2.7" stroke-linecap="round"/><path d="M660.39 180.21L665.87 177.77" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M663.69 188.81L669.40 186.95" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M666.08 197.70L671.95 196.46" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M667.52 206.80L673.49 206.17" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M657.00 216.00L674.00 216.00" stroke="#614637" stroke-width="2.7" stroke-linecap="round"/><path d="M667.52 225.20L673.49 225.83" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M666.08 234.30L671.95 235.54" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M663.69 243.19L669.40 245.05" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M660.39 251.79L665.87 254.23" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M646.68 254.50L661.41 263.00" stroke="#614637" stroke-width="2.7" stroke-linecap="round"/><path d="M651.19 267.73L656.05 271.25" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M645.40 274.88L649.86 278.90" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M638.88 281.40L642.90 285.86" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M631.73 287.19L635.25 292.05" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M618.50 282.68L627.00 297.41" stroke="#614637" stroke-width="2.7" stroke-linecap="round"/><path d="M615.79 296.39L618.23 301.87" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M607.19 299.69L609.05 305.40" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M598.30 302.08L599.54 307.95" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M589.20 303.52L589.83 309.49" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M580.00 293.00L580.00 310.00" stroke="#614637" stroke-width="2.7" stroke-linecap="round"/><path d="M570.80 303.52L570.17 309.49" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M561.70 302.08L560.46 307.95" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M552.81 299.69L550.95 305.40" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M544.21 296.39L541.77 301.87" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M541.50 282.68L533.00 297.41" stroke="#614637" stroke-width="2.7" stroke-linecap="round"/><path d="M528.27 287.19L524.75 292.05" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M521.12 281.40L517.10 285.86" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M514.60 274.88L510.14 278.90" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M508.81 267.73L503.95 271.25" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M513.32 254.50L498.59 263.00" stroke="#614637" stroke-width="2.7" stroke-linecap="round"/><path d="M499.61 251.79L494.13 254.23" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M496.31 243.19L490.60 245.05" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M493.92 234.30L488.05 235.54" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M492.48 225.20L486.51 225.83" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M503.00 216.00L486.00 216.00" stroke="#614637" stroke-width="2.7" stroke-linecap="round"/><path d="M492.48 206.80L486.51 206.17" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M493.92 197.70L488.05 196.46" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M496.31 188.81L490.60 186.95" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M499.61 180.21L494.13 177.77" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M513.32 177.50L498.59 169.00" stroke="#614637" stroke-width="2.7" stroke-linecap="round"/><path d="M508.81 164.27L503.95 160.75" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M514.60 157.12L510.14 153.10" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M521.12 150.60L517.10 146.14" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M528.27 144.81L524.75 139.95" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M541.50 149.32L533.00 134.59" stroke="#614637" stroke-width="2.7" stroke-linecap="round"/><path d="M544.21 135.61L541.77 130.13" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M552.81 132.31L550.95 126.60" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M561.70 129.92L560.46 124.05" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/><path d="M570.80 128.48L570.17 122.51" stroke="#614637" stroke-width="1.15" stroke-linecap="round"/>
+<path d="M580 144a72 72 0 0 1 36 9.65" fill="none" stroke="#8d423a" stroke-width="2.5" opacity=".76"/>
+<path d="M580 216l40 14 10 10-14 0-36-17-10-3Z" fill="#4a3834"/>
+<path d="M579 219l-18-67 1-16 9 13 16 68-4 8Z" fill="#844631" stroke="#4a3632" stroke-width="1.1"/>
+<circle cx="580" cy="216" r="7.5" fill="#845d3c" stroke="#513d34" stroke-width="1.5"/>
+<circle cx="579.5" cy="215.6" r="2.7" fill="#dfbb87"/>
+<path d="M503 186q26-58 83-61" fill="none" stroke="#fff2bd" stroke-width="1.5" opacity=".61"/>
+<use href="#pin" x="467" y="351"/><use href="#pin" x="686" y="347"/><use href="#pin" x="477" y="368"/><use href="#pin" x="681" y="368"/>
+<!-- Slate table and brass channels. -->
+<path d="M0 470q260-35 570-65 368 10 630 72v183H0Z" fill="#243037" stroke="#1b1b22" stroke-width="3"/>
+<path d="M0 477q263-42 570-65 383 14 630 70v178H0Z" fill="url(#grain)" opacity=".77"/>
+<path d="M0 530q229-62 545-108m-444 238q144-101 344-191m752 62q-240-72-566-107m448 236q-176-125-382-191" fill="none" stroke="#ada178" stroke-width="1.25" opacity=".38"/>
+<path d="m491 411 178-6 96 121-342 22Z" fill="url(#walnut)" stroke="#27212a" stroke-width="2.8"/>
+<path d="m499 419 162-5 85 102-305 22Z" fill="none" stroke="#be9467" stroke-width="1.15" opacity=".78"/>
+<path d="M493 443q94 8 190-10m-209 31q125 6 228-9m-245 29q129 12 258-10m-267 34q133 14 289-13" fill="none" stroke="#886550" stroke-width=".8" opacity=".56"/>
+<path d="M463 401q104-12 243-7l-9 20-218 4Z" fill="#4c3936" stroke="#292128" stroke-width="2"/>
+<path d="M477 402q113-12 219-6" fill="none" stroke="#d3ae73" stroke-width="1.24" opacity=".72"/>
+<!-- Left duelist, short curls and narrow wire glasses. -->
+<path d="M0 411q42-57 147-75 62 0 97 62l31 122-43 140H0Z" fill="url(#maroon)" stroke="#22212a" stroke-width="3.8"/>
+<path d="M4 448q69-64 149-78 48 13 71 52l28 65-29 111-166 62H0Z" fill="url(#hatch)" opacity=".53"/>
+<path d="M142 334l45-23 20 15-10 56-60 11-13-27Z" fill="url(#skinR)" stroke="#533746" stroke-width="2.7"/>
+<path d="M138 364q31 9 61-11l-4 11q-23 18-51 15Z" fill="#614045"/>
+<path d="M137 374q30 7 61-17l14 39-42 22-37-14Z" fill="#7a4d57" stroke="#3b2b3b" stroke-width="2.2"/>
+<path d="M148 386q33-4 49-21m-46 28q25-2 47-20m-49 27q28-1 52-18" fill="none" stroke="#c09582" stroke-width="1.2" opacity=".63"/>
+<path d="M132 210q47-22 81 12 23 27 26 60l15 24q8 10-3 16l-12 4-5 15q-10 18-28 25-39 3-72-17l-22-37-10-53Z" fill="url(#skinR)" stroke="#5a3c41" stroke-width="2.7"/>
+<path d="M223 251q-35-4-64 17l-5 57-20 22q30 22 63 17l19-16q-37 7-34-21 17-8 24-18l12-21Z" fill="#80514c" opacity=".69"/>
+<path d="M226 285q9-8 19-4m-16 8q5-2 11 0l-8 2m6 18q5 5 12 4m-18 18 7-1m-22 7 14 4m-23 8 14 3m-39 8 12-2" fill="none" stroke="#50333b" stroke-width="1.42" stroke-linecap="round"/>
+<path d="M220 286q15-11 27-2m-91 11 22-3m68-8q-2 14-7 16-8 2-14-5-4-4-4-10m13 2 5-1" fill="none" stroke="#c6a47e" stroke-width="1.67" stroke-linecap="round"/>
+<path d="M232 290q5-1 5 2t-5-1" fill="#342830"/>
+<path d="M159 293q-12-11-21 0-4 10 4 21 9 11 18 5" fill="#9b6555" stroke="#623c41" stroke-width="1.6"/>
+<path d="M143 301q3-8 10-1l-4 7 7 4" fill="none" stroke="#6a4143" stroke-width="1.31"/>
+<path d="M105 288q-21-15-17-42-3-15 16-21 2-15 18-18 11-12 28-7 11-14 27-6 13-10 26-1 21 1 27 18 14 4 11 23 6 13-4 22-20 0-40-7-12 18-28 26l-7 18-10-9-10 11 6 28-17 22q-20-29-26-57Z" fill="#29232b" stroke="#211d25" stroke-width="3.2"/>
+<path d="M96 255q5-23 30-24m-20-14q12-16 36-5m-14 3q11-9 28-7m-1-10q15-7 25 4m5-5q11-6 24 3m4 3q15 4 20 17m-104 8q6-13 25-13m3 11q4-13 22-13m4 7q14-12 29 1m-6 5q15 1 23 10m-108-4q-15 13-10 32m19-16q-13 14-8 37m20-41q-11 10-10 31m66-36q-1 13-18 22m8-20q-9 13-23 18" fill="none" stroke="#ba8a78" opacity=".47" stroke-width="1.45" stroke-linecap="round"/>
+<path d="M7 460q53-53 120-54m-113 69q68-40 114-49m-55 24q35-12 63-13m-117 63 55-25m49 10 28 20m-128 24q59-30 116-24m-133 46q72-38 131-39m-72 43 78-27m-88 64 99-34m-65 43 57-15m20-154q17 28 26 57m-17-59q25 30 29 63m-6-47 13 22" fill="none" stroke="#bc8b83" stroke-width="1.55" opacity=".41" stroke-linecap="round"/>
+<!-- Right duelist, braided hair and angular posture. -->
+<path d="M1199 411q-80-44-165-44-69-4-119 72l-43 128 30 93h298Z" fill="url(#teal)" stroke="#1f232b" stroke-width="4.1"/>
+<path d="M1199 440q-83-53-168-45-83 20-118 100l14 149 273 16Z" fill="url(#hatch)" opacity=".47"/>
+<path d="M1020 334l-62-26-18 20 6 53 49 19 38-27Z" fill="url(#skin)" stroke="#55363c" stroke-width="2.6"/>
+<path d="M958 352q24 20 61 14l-9 15q-42-5-57-17Z" fill="#78524b"/>
+<path d="M1027 365q-34 16-80 7l-16 33 77 20 43-37Z" fill="#665d61" stroke="#30313c" stroke-width="2.7"/>
+<path d="M944 385q36 18 85-5m-89 12 58 23m7-4 27-17" fill="none" stroke="#b4a191" stroke-width="1.5" opacity=".63"/>
+<path d="M1043 240q-49-35-85-8-28 27-32 61l-19 24q-5 8 5 12l11 4 5 20q11 22 39 26 41-4 66-34l19-36 9-48Z" fill="url(#skin)" stroke="#623e3f" stroke-width="2.6"/>
+<path d="M958 252q26-4 62 26l-9 51q7 9 11 22-24 27-55 26l-17-9q26 6 42-12-1-9-1-20-30 0-37-11l8-19-23-2q-10 5-13 8l16-19Z" fill="#8d5f51" opacity=".62"/>
+<path d="M928 297q15-12 29-6m-22 10q8-6 17-3-7 8-14 6m-16 14q0 5-9 7m15 14q8 3 17 0m-14 7q9 3 15-2m-9 12 15 7m14-1 10-5" fill="none" stroke="#66393c" stroke-width="1.42" stroke-linecap="round"/>
+<path d="M939 300q4-4 6 0-1 4-6 1" fill="#3b2a30"/>
+<path d="M937 280q13-5 21-1m31 60q13-6 16-16m-62 31 2 5" fill="none" stroke="#efbc8f" stroke-width="1.13" opacity=".63"/>
+<path d="M1004 298q9-15 19-4 6 12-7 24-10 6-16 2Z" fill="#ad775f" stroke="#734744" stroke-width="1.49"/>
+<path d="M1007 307q7-12 12-9m-10 11 6 3" fill="none" stroke="#69403f" stroke-width="1.25"/>
+<path d="M933 255q16-36 47-46 54-18 93 25 19 28 13 65-6 26-25 45l-19 26-13-15 13-32-11-18-9-24q-20-6-41-37-19 21-48 11Z" fill="#28242c" stroke="#1a1c23" stroke-width="3.15"/>
+<path d="M1018 237q34 1 49 28 18 28-6 67m-113-88q22 1 37-19m-28 23q20-3 31-16m-24-15q37-12 69 3m-63 1q35-6 59 7m-43 10q13 29 38 35m-32-31q14 23 37 31m21-35q20 16 26 48m-14-29q9 22 2 53m-8-28q6 28-16 48m3-38q2 22-11 42" fill="none" stroke="#b99278" stroke-width="1.48" opacity=".54" stroke-linecap="round"/>
+<path d="M1052 347q19 6 20 26-3 12-19 19-11 5-35 11l-6-10 25-19-6-13Z" fill="#342b37" stroke="#22212b" stroke-width="2.1"/>
+<path d="M1056 358l9 12-17 12m-5-17 9 10-23 17m12-19 9 10m-22-2 9 7" fill="none" stroke="#ba967c" stroke-width="1.05" opacity=".62"/>
+<path d="M1194 443q-82-45-156-41m154 58q-60-44-136-48m129 65q-39-25-94-33m98 64q-59-48-131-52m101 59-68-29m106 62-71-41m64 76q-34-31-84-49m78 68q-52-41-120-53m-103-102q-23 24-34 57m26-52-11 39m46-55q-20 27-24 74" fill="none" stroke="#a99b91" stroke-width="1.42" opacity=".44" stroke-linecap="round"/>
+<!-- Hooded private mechanisms. The public cannot read a player's dial from eye level. -->
+<path d="M306 498l200-35 39 51-17 51-214 32Z" fill="#14151d" opacity=".49"/>
+<path d="M323 533l180-32 34 40-209 44Z" fill="url(#bronze)" stroke="#31242b" stroke-width="3"/>
+<path d="M328 541l176-33 24 29-192 37Z" fill="#61483f" stroke="#cfaa73" stroke-width="1.1"/>
+<path d="M342 527q-2-78 39-88l89-19q43-5 54 73l-22 6q-5-52-25-54l-85 17q-25 9-27 58Z" fill="#26242c" stroke="#241e27" stroke-width="3.7"/>
+<path d="M342 525q0-78 45-88l82-17q44-3 55 72l-19 3q-7-55-28-61l-88 16q-27 11-29 69Z" fill="url(#walnut)" stroke="#715446" stroke-width="2.1"/>
+<path d="M347 519q2-68 41-80l82-15q43-1 51 63m-160 30q3-64 32-74l79-15m-90 39 9-8m111 3q8 12 11 31" fill="none" stroke="#c39965" stroke-width="1.2" opacity=".72"/>
+<path d="M370 502l111-23 26 38-132 22Z" fill="#2b2830" opacity=".87"/>
+<ellipse cx="454" cy="519" rx="27" ry="11" fill="#342931" stroke="#886247" stroke-width="2"/>
+<ellipse cx="453" cy="514" rx="21" ry="10" fill="#69453c" stroke="#432f33" stroke-width="2"/>
+<ellipse cx="453" cy="509" rx="20.7" ry="10.2" fill="#964f52" stroke="#321f2c" stroke-width="1.4"/>
+<ellipse cx="453" cy="507.5" rx="16.6" ry="6.9" fill="none" stroke="#de9c81" stroke-width="1.05"/>
+<path d="M734 480l172 30 13 76-192-18-18-50Z" fill="#13161d" opacity=".55"/>
+<path d="M722 537l194 31-4 23-203-38Z" fill="url(#walnut)" stroke="#2a242b" stroke-width="3"/>
+<path d="M743 500l159 28 14 39-194-31Z" fill="url(#bronze)" stroke="#3a2d31" stroke-width="2.7"/>
+<path d="M750 505l147 27 8 27-169-28Z" fill="#655046" stroke="#c6a273" stroke-width="1.25"/>
+<path d="M725 506q11-79 57-74l78 16q35 12 37 83l-24-4q-2-53-25-61l-68-15q-26-1-35 58Z" fill="#26252c" stroke="#272129" stroke-width="3.2"/>
+<path d="M726 504q8-79 57-72l76 16q35 11 37 82l-21-4q-3-54-23-63l-71-15q-30-3-39 60Z" fill="url(#walnut)" stroke="#735748" stroke-width="2.15"/>
+<path d="M731 498q10-70 51-62l74 16q32 11 35 75m-140-24q8-55 31-57l72 16m-100 17q5-11 12-16m112 37 4 24" fill="none" stroke="#dec08b" stroke-width="1.25" opacity=".67"/>
+<path d="M756 500l117 24 6 24-135-26Z" fill="#2d2830" opacity=".81"/>
+<ellipse cx="791" cy="529" rx="27" ry="11" fill="#2b2731" stroke="#936d4c" stroke-width="1.45"/>
+<ellipse cx="791" cy="525.8" rx="21" ry="8.75" fill="#a37545" stroke="#513935" stroke-width="1.7"/>
+<ellipse cx="791" cy="525" rx="16.2" ry="5.7" fill="none" stroke="#ecc596" stroke-width="1.03"/>
+<!-- Five small divisions on each private actuator plate. -->
+<path d="M456 539.00l2 4" fill="none" stroke="#e4be83" opacity=".76" stroke-width="1.18"/><path d="M760 540.00l-2 4" fill="none" stroke="#e4be83" opacity=".76" stroke-width="1.18"/><path d="M463 537.87l2 4" fill="none" stroke="#e4be83" opacity=".76" stroke-width="1.18"/><path d="M767 541.19l-2 4" fill="none" stroke="#e4be83" opacity=".76" stroke-width="1.18"/><path d="M470 536.74l2 4" fill="none" stroke="#e4be83" opacity=".76" stroke-width="1.18"/><path d="M774 542.38l-2 4" fill="none" stroke="#e4be83" opacity=".76" stroke-width="1.18"/><path d="M477 535.61l2 4" fill="none" stroke="#e4be83" opacity=".76" stroke-width="1.18"/><path d="M781 543.57l-2 4" fill="none" stroke="#e4be83" opacity=".76" stroke-width="1.18"/><path d="M484 534.48l2 4" fill="none" stroke="#e4be83" opacity=".76" stroke-width="1.18"/><path d="M788 544.76l-2 4" fill="none" stroke="#e4be83" opacity=".76" stroke-width="1.18"/>
+<!-- Outer arms complete the silhouette without showing the controls to either opponent. -->
+<path d="M148 433q62-34 109 8l85 49q26 1 53-4l31 41-55 23q-48 13-86-6l-124-55q-37-16-13-56Z" fill="url(#maroon)" stroke="#252029" stroke-width="3.7"/>
+<path d="M162 437q58-23 102 18l72 47 40-1m-216-53q47-14 89 17m-75-7q47-11 78 14m-57-8q33 7 68 29m-37-9 58 28m-28-20 47 25m-14-22q31 21 71 17m-53 15q29 10 64-3" fill="none" stroke="#c49690" stroke-width="1.55" opacity=".46" stroke-linecap="round"/>
+<path d="m374 492 31-9 26 39-32 15Z" fill="#654551" stroke="#382935" stroke-width="2.9"/>
+<path d="m379 497 24-9m-17 18 21-8m-15 17 20-7m-15 18 20-8m-14 13 17-7" fill="none" stroke="#bd927d" stroke-width="1.22" opacity=".72"/>
+<!-- Release: lifted index, negative space beneath the fingertip. -->
+<path d="M402 486q19-18 31-19l22-1q14 3 22 10 7 7 2 11-4 4-11 0l-13-7-15 4 14 6q8 3 5 8-3 4-11 0l-15-4-7 5 14 5q7 4 3 8-5 2-12-1l-13-2-13 6-13-25Z" fill="url(#glove)" stroke="#241e2b" stroke-width="2.5" stroke-linejoin="round"/>
+<path d="M415 487q9-12 27-15m-21 20q7-6 18-8m-15 15 12-5m-7 12 9-3m12-27 12 2m5 3 8 4" fill="none" stroke="#a58a9c" stroke-width="1.25" stroke-linecap="round" opacity=".83"/>
+<path d="m416 478 9 4-6 7m21-15 7 2-4 6m-8 21 3 3m20-18 4 4" fill="none" stroke="#302738" stroke-width="1"/>
+<path d="M1049 450q-37-41-87-17l-91 45-43 8-27 43 44 21q51 4 89-11l125-50q20-13-10-39Z" fill="url(#teal)" stroke="#21232b" stroke-width="3.8"/>
+<path d="M1051 456q-40-26-79-13l-89 51-50 9m221-46q-29-18-67-5m47 5q-25-7-55 7m40-6q-33 1-77 31m43-12-55 27m33-28-48 24m29 0q-39 19-72 16m54 9q-37 9-64-2" fill="none" stroke="#a2948f" stroke-width="1.46" opacity=".52" stroke-linecap="round"/>
+<path d="m844 481-31 8-20 34 32 21 27-49Z" fill="#5e535a" stroke="#2b2832" stroke-width="2.8"/>
+<path d="m837 488-17 5m14 1-12 30m14-26-12 32m15-31-14 34m18-32-14 37m15-32-12 31" fill="none" stroke="#c0a386" stroke-width="1.13" opacity=".82"/>
+<!-- Hold: finger curls into the surface of the depressed brass lever. -->
+<path d="M822 491q-17-8-34-3l-27 7q-9 6-3 10 4 3 12 0l13-3-3 8-8 10q-5 7-1 10 4 4 12 0l9-6 9 1 9 5 13-15Z" fill="url(#glove)" stroke="#2a2230" stroke-width="2.65" stroke-linejoin="round"/>
+<path d="M801 494q-10 2-18 7l-3 10-8 14m22-26q-8 9-9 18m17-15q-6 10-6 19m9-19 10 5m-44-8-8 3m12 23 5-3" fill="none" stroke="#af909c" stroke-width="1.34" stroke-linecap="round"/>
+<path d="M789 521q-4-5-14 2l-3 4q4 4 7 1Z" fill="#57465e"/>
+<path d="M0 0h1200v660H0z" fill="url(#fade)"/>
+<path d="M0 0h1200v660H0z" filter="url(#ink)" opacity=".51" pointer-events="none"/>
+</svg>

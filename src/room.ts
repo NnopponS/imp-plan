@@ -1,8 +1,9 @@
+import {timeHoldAction,timeHoldAdvance,timeHoldDisconnect,timeHoldRules,timeHoldView,type TimeHold} from './time-hold'
 import {memoryDuelDeal} from './memory-duel'
 import {isGrass} from './grass'
 import {isPuzzle} from './puzzles'
 import {z} from 'zod'
-import {start,move,schedule,view,timeout,blindCoverAction,botAction,botLevels,isDuel,minSeats,secretBotIntentKey,simultaneous,redealMemoryDuel,type State,type Game,type GameView} from './engine'
+import {start,move,schedule,view,timeout,blindCoverAction,botAction,botLevels,isDuel,minSeats,secretBotIntentKey,simultaneous,redealMemoryDuel,syncTimeHold,type State,type Game,type GameView} from './engine'
 const codeAlphabet='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
 export const roomCode=()=>Array.from(crypto.getRandomValues(new Uint8Array(6)),x=>codeAlphabet[x&31]).join('')
 export const validCode=(x:string)=>/^[A-HJ-NP-Z2-9]{6}$/.test(x)
@@ -15,7 +16,7 @@ export function nickname(value:string):string|null{
  const n=[...new Intl.Segmenter('en',{granularity:'grapheme'}).segment(s)].length
  return n>=1&&n<=24?s:null
 }
-const settings=z.strictObject({game:z.enum(['blind','morris','auction','point','remove','knight','hex','rectangles','mancala','cubes','bagh','secret','grass1','grass3','exile','divine','equations','codeLock','pyramid','fragments','spot','scale','fence','tower','piece','memoryPoker','wallGo']),seconds:z.number().int().min(10).max(900),size:z.union([z.literal(5),z.literal(6),z.literal(8)]).optional(),closed:z.boolean().optional(),divineSide:z.union([z.literal(3),z.literal(5),z.literal(7)]).optional(),divineHard:z.boolean().optional(),fragmentStrict:z.boolean().optional(),fragmentCount:z.union([z.literal(8),z.literal(12),z.literal(16),z.literal(24)]).optional(),capacity:z.number().int().min(2).max(16),locked:z.boolean(),botLevel:z.enum(botLevels).optional(),memoryPokerPeek:z.boolean().optional(),memoryPokerMode:z.enum(['fan','episode']).optional()})
+const settings=z.strictObject({game:z.enum(['blind','morris','auction','point','remove','knight','hex','rectangles','mancala','cubes','bagh','secret','grass1','grass3','exile','divine','equations','codeLock','pyramid','fragments','spot','scale','fence','tower','piece','memoryPoker','wallGo']),seconds:z.number().int().min(10).max(900),size:z.union([z.literal(5),z.literal(6),z.literal(8)]).optional(),closed:z.boolean().optional(),divineSide:z.union([z.literal(3),z.literal(5),z.literal(7)]).optional(),divineHard:z.boolean().optional(),fragmentStrict:z.boolean().optional(),fragmentCount:z.union([z.literal(8),z.literal(12),z.literal(16),z.literal(24)]).optional(),capacity:z.number().int().min(2).max(16),locked:z.boolean(),botLevel:z.enum(botLevels).optional(),memoryPokerPeek:z.boolean().optional(),memoryPokerMode:z.enum(['fan','episode']).optional(),auctionMode:z.enum(['sealed','hold']).optional()})
 const schema=z.discriminatedUnion('kind',[
  z.strictObject({kind:z.literal('ready')}),
  z.strictObject({kind:z.literal('config'),settings}),
@@ -26,6 +27,7 @@ const schema=z.discriminatedUnion('kind',[
  z.strictObject({kind:z.literal('kick'),seat:z.string().max(32)}),
  z.strictObject({kind:z.literal('chat'),text:z.string().min(1).max(240)}),
  z.strictObject({kind:z.literal('memory-lock'),deal:z.number().int().min(1).max(1e8),action:z.number().int().min(0).max(255)}),
+ z.strictObject({kind:z.literal('time-hold'),round:z.number().int().min(1).max(timeHoldRules.rounds),action:z.enum(['hold','pulse','release','cancel'])}),
  z.strictObject({kind:z.literal('move'),round:z.number().int().min(1).max(24).optional(),action:z.union([z.number().int().min(-1).max(300000000),z.string().length(8).regex(/^[0-9+*/=\-]+$/),z.strictObject({from:z.number().int().min(0).max(24),to:z.number().int().min(0).max(24)})])})
 ])
 /** Unbiased partial-deck draws without deriving secret cards from public cards. */
@@ -37,6 +39,8 @@ const liveMemoryDeal=()=>memoryDuelDeal(upper=>{
 export const episodePokerRules='Study sixteen cards for twenty seconds. After the board turns over, three shared cards appear. Privately lock two positions within sixty seconds to complete your five-card hand. Exact ties deal a fresh board. No betting.'
 export const episodePokerRoster=(seats:readonly {bot:boolean;online:boolean}[])=>seats.length===2&&seats.every(s=>s.online&&!s.bot)
 const isEpisodePoker=(config:Settings)=>config.game==='memoryPoker'&&config.memoryPokerMode==='episode'
+export const holdAuctionRules='Start with ten minutes for nineteen rounds. Press and hold during the countdown to enter; release before five seconds to pass for free. At five seconds or more, your full held time is spent. The highest hold wins a token only if untied. Final standings use tokens, then time left. An interrupted hold cannot win.'
+export const isHoldAuction=(config:Settings)=>config.game==='auction'&&config.auctionMode==='hold'
 export type Command=z.infer<typeof schema>
 export type Settings=z.infer<typeof settings>
 export const humanOnly=(g:Game)=>g==='knight'||g==='divine'||g==='codeLock'||g==='pyramid'||g==='fragments'||g==='spot'||g==='scale'||g==='fence'||g==='tower'||g==='piece'||g==='memoryPoker'||isPuzzle(g)
@@ -70,6 +74,10 @@ export class Host{
  private botSeed=0
  private secretBotRejected=new Map<string,Set<number>>()
  private seats:PrivateSeat[]
+ // Private reducer changes may occur between pulses of the shared clock. Only tick
+ // promotes phase/result to the public projection; transient state never advances rev.
+ private publishedHold:State|null=null
+ private holdUpdates=new Set<string>()
  private requests=new Map<string,Map<string,string|null>>()
  private lastChat=new Map<string,number>()
  constructor(name:string,clock=()=>Date.now(),private readonly solo=false){
@@ -83,6 +91,7 @@ export class Host{
    const s=this.seats.find(s=>s.token===token&&s.name===name&&!s.bot)
    if(!s)return null
    const old=s.connection
+   this.forfeitHold(s)
    s.connection=connection;s.online=true;s.token=id();this.rev++
    return {id:s.id,token:s.token,old}
   }
@@ -93,13 +102,20 @@ export class Host{
  }
  disconnect(connection:string){
   const s=this.seats.find(s=>s.connection===connection)
-  if(s&&s.online&&s.id!==this.owner){s.online=false;this.rev++}
+  if(s&&s.online&&s.id!==this.owner){this.forfeitHold(s);s.online=false;this.rev++}
  }
  snapshot(connection:string):Snapshot|null{
   const u=this.seats.find(s=>s.connection===connection&&s.online)
   if(!u)return null
-  const hostNow=this.clock(), game=this.game?.memoryDuel?timeout(this.game,hostNow):this.game
-  return {you:u.id,host:this.owner,epoch:this.epoch,match:this.match,rev:this.rev,settings:this.settings,seats:this.seats.map(({id,name,ready,bot,online})=>({id,name,ready,bot,online})),game:game?view(game,u.id,hostNow):null,fixture:this.fixture,count:isDuel(this.settings.game)?this.fixtures.length:1,fixtures:this.fixtures.map(f=>({...f})),seriesDone:!!game?.done&&(!isDuel(this.settings.game)||this.fixture+1===this.fixtures.length),chat:this.chat,hostNow}
+  const hostNow=this.clock(), game=this.publishedHold??(this.game?.memoryDuel?timeout(this.game,hostNow):this.game)
+  const projected=game?view(game,u.id,hostNow):null
+  const own=this.game?.timeHold
+  if(projected?.timeHold&&own&&own.round===projected.round){
+   const mine=timeHoldView(own,u.id,hostNow).mine
+   if(mine&&projected.timeHold.phase!=='live')mine.remainingTenths=null
+   projected.timeHold.mine=mine
+  }
+  return {you:u.id,host:this.owner,epoch:this.epoch,match:this.match,rev:this.rev,settings:this.settings,seats:this.seats.map(({id,name,ready,bot,online})=>({id,name,ready,bot,online})),game:projected,fixture:this.fixture,count:isDuel(this.settings.game)?this.fixtures.length:1,fixtures:this.fixtures.map(f=>({...f})),seriesDone:!!game?.done&&(!isDuel(this.settings.game)||this.fixture+1===this.fixtures.length),chat:this.chat,hostNow}
  }
  command(connection:string,request:string,rev:number,c:Command):string|null{
   const seat=this.seats.find(s=>s.connection===connection&&s.online)
@@ -110,14 +126,15 @@ export class Host{
   const result=this.apply(seat,rev,c)
   prior.set(request,result)
   if(prior.size>128)prior.delete(prior.keys().next().value!)
-  if(result===null&&!(c.kind==='memory-lock'&&this.game?.memoryDuel?.phase==='select'))this.rev++
+  if(result===null&&c.kind!=='time-hold'&&!(c.kind==='memory-lock'&&this.game?.memoryDuel?.phase==='select'))this.rev++
   return result
  }
  private apply(s:PrivateSeat,rev:number,c:Command):string|null{
+  const sameHoldRound=c.kind==='time-hold'&&c.round===this.publishedHold?.round
   const concurrentBid=c.kind==='move'&&this.game&&simultaneous(this.game.game)&&c.round===this.game.round
   if(c.kind==='move'&&this.game&&simultaneous(this.game.game)&&c.round!==undefined&&c.round!==this.game.round)return 'That round has ended.'
   const sameDuelDeal=c.kind==='memory-lock'&&this.game?.memoryDuel?.dealNumber===c.deal
-  if(rev>this.rev||(rev!==this.rev&&!concurrentBid&&!sameDuelDeal))return 'The room updated. Try again.'
+  if(rev>this.rev||(rev!==this.rev&&!concurrentBid&&!sameDuelDeal&&!sameHoldRound))return 'The room updated. Try again.'
   if(c.kind==='chat'){
    if(this.game?.fragments?.strict&&!this.game.done)return 'Discussion is off during the strict challenge.'
    const msg=c.text.trim()
@@ -125,6 +142,14 @@ export class Host{
    const now=this.clock()
    if(now-(this.lastChat.get(s.id)??-Infinity)<750)return 'Please slow down.'
    this.lastChat.set(s.id,now);this.chat=[...this.chat.slice(-39),{seat:s.id,name:s.name,text:msg}];return null
+  }
+  if(c.kind==='time-hold'){
+   const hold=this.game?.timeHold
+   if(!hold||!sameHoldRound||hold.round!==c.round)return 'That hold round has ended.'
+   const now=this.clock(), current=this.advanceHold(hold,now)
+   const next=timeHoldAction(current,s.id,{kind:c.action,round:c.round},now)
+   this.setHold(next??current,s.id)
+   return next?null:c.action==='hold'?'Could not enter this round. Hold during the countdown with at least five seconds left.':'That hold is no longer active.'
   }
   if(c.kind==='memory-lock'){
    if(this.game?.memoryDuel?.dealNumber!==c.deal)return 'That deal has ended.'
@@ -145,11 +170,11 @@ export class Host{
   }
   if(s.id!==this.owner)return 'Only the host can do that.'
   if(c.kind==='lobby'){
-   this.game=null;this.fixtures=[];this.fixture=0;this.match='';for(const seat of this.seats)if(!seat.bot&&seat.id!==this.owner)seat.ready=false
+   this.game=null;this.publishedHold=null;this.holdUpdates.clear();this.fixtures=[];this.fixture=0;this.match='';for(const seat of this.seats)if(!seat.bot&&seat.id!==this.owner)seat.ready=false
    return null
   }
   if(c.kind==='next'){
-   if(!this.game?.done)return 'Finish the current game first.'
+   if(!(this.publishedHold??this.game)?.done)return 'Finish the current game first.'
    if(isDuel(this.settings.game)&&this.fixture+1<this.fixtures.length)this.fixture++
    else{
     if(this.seats.some(s=>!s.online))return 'A seat is offline. Return to the lobby to adjust the roster.'
@@ -160,6 +185,8 @@ export class Host{
   if(this.game)return 'Settings are locked during a match.'
   if(c.kind==='config'){
    const changes=c.settings
+   if(isHoldAuction(changes)&&this.solo)return 'Hold & release needs two or more connected human players.'
+   if(isHoldAuction(changes)&&this.seats.some(s=>s.bot))return 'Remove the bots before selecting Hold & release.'
    if(isEpisodePoker(changes)&&(this.solo||!episodePokerRoster(this.seats)))return 'Episode-style duel needs exactly two connected human players.'
    const reseat=this.solo&&changes.game!==this.settings.game
    const roster=reseat?this.seats.filter(s=>!s.bot):this.seats
@@ -169,7 +196,7 @@ export class Host{
    if(changes.game==='grass1'&&roster.length>nativeMax)return 'Laying Grass seats up to twelve players.'
    if(capacity<roster.length)return 'Capacity cannot be below the current roster.'
    const seconds=changes.game==='wallGo'&&this.settings.game!=='wallGo'?25:changes.game==='fence'||changes.game==='tower'||changes.game==='piece'?240:changes.game==='scale'?300:changes.game==='spot'?90:changes.game==='fragments'?20:changes.game==='pyramid'?45:changes.game==='codeLock'?180:changes.game==='divine'?(this.settings.game!=='divine'?600:Math.max(60,changes.seconds)):changes.game==='knight'?Math.max(180,Math.min(480,changes.seconds)):changes.game==='hex'?20:changes.game==='rectangles'?45:changes.game==='cubes'?25:changes.game==='exile'?90:changes.game==='secret'&&this.settings.game!=='secret'?90:Math.min(90,changes.seconds)
-   this.settings={...changes,memoryPokerMode:changes.game==='memoryPoker'?changes.memoryPokerMode:undefined,botLevel:changes.botLevel??'normal',capacity,seconds,closed:changes.size===5||!changes.size?false:changes.closed}
+   this.settings={...changes,auctionMode:changes.game==='auction'?changes.auctionMode:undefined,memoryPokerMode:changes.game==='memoryPoker'?changes.memoryPokerMode:undefined,botLevel:changes.botLevel??'normal',capacity,seconds,closed:changes.size===5||!changes.size?false:changes.closed}
    if(this.solo){
     this.seats=roster
     for(let i=this.seats.length;i<minSeats(changes.game);i++)this.addBot()
@@ -178,6 +205,7 @@ export class Host{
   }
   if(c.kind==='bot'){
    if(this.seats.length>=this.settings.capacity)return 'The room is full.'
+   if(isHoldAuction(this.settings))return 'Hold & release uses human seats only.'
    if(humanOnly(this.settings.game))return 'This puzzle uses human seats only.'
    this.addBot()
    return null
@@ -188,6 +216,7 @@ export class Host{
   }
   if(isEpisodePoker(this.settings)&&(this.solo||!episodePokerRoster(this.seats)))return 'Episode-style duel needs exactly two connected human players.'
   if(this.seats.length<minSeats(this.settings.game)||this.seats.some(s=>!s.ready||!s.online))return 'More connected, ready seats are needed.'
+  if(isHoldAuction(this.settings)&&(this.solo||this.seats.some(s=>s.bot)))return 'Hold & release needs connected human players only.'
   if(humanOnly(this.settings.game)&&this.seats.some(s=>s.bot))return 'Remove the bots before starting this puzzle.'
   this.prepare(false);this.begin();return null
  }
@@ -206,7 +235,9 @@ export class Host{
   this.botSeed=botSeed
   const {game,seconds,size,closed,divineSide,divineHard,fragmentStrict,fragmentCount,memoryPokerPeek}=this.settings
   const seats=isDuel(game)?this.fixtures[this.fixture].sides:this.seats.map(s=>s.id)
-  this.setGame(start(game,seats,seconds*1000,this.clock(),{seed:gameSeed,size,closed,divineSide,divineHard,fragmentStrict,fragmentCount,memoryPokerPeek,memoryDuelDeal:isEpisodePoker(this.settings)?liveMemoryDeal():undefined,solo:this.solo}))
+  this.setGame(start(game,seats,seconds*1000,this.clock(),{seed:gameSeed,size,closed,divineSide,divineHard,fragmentStrict,fragmentCount,memoryPokerPeek,memoryDuelDeal:isEpisodePoker(this.settings)?liveMemoryDeal():undefined,holdAuction:isHoldAuction(this.settings),solo:this.solo}))
+  this.publishedHold=this.game?.timeHold?this.game:null
+  this.holdUpdates.clear()
  }
  private setGame(g:State){
   if(g.round!==this.game?.round)this.secretBotRejected.clear()
@@ -214,9 +245,42 @@ export class Host{
   this.game=g
   if(g.done&&this.fixtures[this.fixture])this.fixtures[this.fixture].winner=g.winner
  }
+ /** Same-phase private deliveries, consumed by the room transport on its normal tick. */
+ takeTimeHoldUpdates(){
+  const connections=this.seats.filter(s=>s.online&&this.holdUpdates.has(s.id)).map(s=>s.connection)
+  this.holdUpdates.clear()
+  return connections
+ }
+ private setHold(next:TimeHold,alreadyNotified?:string){
+  const current=this.game?.timeHold
+  if(!current||current===next)return
+  if(current.round===next.round)current.slots.forEach(({status},i)=>{
+   if(status!==next.slots[i].status&&current.seats[i]!==alreadyNotified)this.holdUpdates.add(current.seats[i])
+  })
+  this.setGame(syncTimeHold(this.game!,next))
+ }
+ private advanceHold(hold:TimeHold,now:number){
+  // If a release caused a review between ticks, don't let a suspended host
+  // skip that unannounced review on wake.
+  return hold.phase==='review'&&this.publishedHold?.timeHold?.phase!=='review'?hold:timeHoldAdvance(hold,now)
+ }
+ private forfeitHold(s:PrivateSeat){
+  const hold=this.game?.timeHold
+  if(hold&&(hold.phase==='arming'||hold.phase==='live'))this.setHold(timeHoldDisconnect(hold,s.id,this.clock()),s.id)
+ }
  tick(){
-  if(!this.game||this.game.done)return false
+  if(!this.game)return false
   const now=this.clock()
+  if(this.game.timeHold){
+   const old=this.publishedHold?.timeHold
+   if(!old||old.phase==='finished')return false
+   let next=this.advanceHold(this.game.timeHold,now)
+   if(next.phase==='review'&&old.phase!=='review')next={...next,nextAt:Math.max(next.nextAt!,now+timeHoldRules.reviewMs)}
+   this.setHold(next)
+   if(old.phase===next.phase&&old.round===next.round)return false
+   this.publishedHold=this.game;this.holdUpdates.clear();this.rev++;return true
+  }
+  if(this.game.done)return false
   if(!this.game.wallGo&&this.game.game!=='piece'&&!this.game.seats.every(id=>this.seats.find(s=>s.id===id)?.online)&&!simultaneous(this.game.game))return false
   const past=this.game
   let g=past.memoryDuel?.phase==='tie'&&now>=past.deadline?redealMemoryDuel(past,liveMemoryDeal(),now):timeout(past,now)
