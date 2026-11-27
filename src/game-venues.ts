@@ -19,6 +19,7 @@ const details:Readonly<Record<string,VenueDetail>>={
  'S3-24':{kind:'secret',label:'Hidden Stage',detail:'Exile Zone'},
  'S3-25':{kind:'secret',label:'Hidden Stage',detail:'Living quarters'},
  'S3-26':{kind:'exile',label:'Exile Showdown',detail:'Exile Zone finale'},
+ 'S3-28':{kind:'final',label:'Final Match',detail:'Final game 2'},
  'S3-29':{kind:'final',label:'Final Match',detail:'Final game 3'},
 }
 

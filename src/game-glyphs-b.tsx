@@ -26,6 +26,11 @@ export const glyphsB={
  divine:<><path d="M20 7 33 20 20 33 7 20z" fill="none" stroke="var(--token-accent,#f2ce8d)" strokeWidth="2.0"/><path d="M20 10v20m-10-10h20M13 13l14 14m-14 0 14-14" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round"/><path d="m20 15 5 5-5 5-5-5z" fill="currentColor"/><circle cx="20" cy="20" r="1.35" fill="var(--token-body,#31231c)"/></>,
  // Aligned scoring stones, with point tally ticks.
  point:<><path d="M10 11v16h21M17 11v16m7-16v16m7-16v16M10 13h21" fill="none" stroke="currentColor" strokeWidth="1.45" opacity=".65"/><path d="M10 20h21" stroke="var(--token-accent,#f2ce8d)" strokeWidth="2.4"/><path d="M10 20h.1m6.9 0h.1m6.9 0h.1m6.9 0h.1" stroke="currentColor" strokeWidth="5.4" strokeLinecap="round"/><path d="M17 29v3m6-3v3m6-3v3" stroke="var(--token-accent,#f2ce8d)" strokeWidth="2" strokeLinecap="round"/></>,
+ // Separate orthogonal inlays and four matching terminal pads.
+ colorLink:<><path d="M10 11h12v18H11" stroke="currentColor" strokeWidth="2.55"/><path d="M29 12v14" stroke="var(--token-accent,#9dd1c6)" strokeWidth="2.55"/>
+  <g fill="var(--token-body,#24413f)" strokeWidth="2.25"><circle cx="10" cy="11" r="2.5" stroke="currentColor"/><circle cx="11" cy="29" r="2.5" stroke="currentColor"/>
+   <circle cx="29" cy="12" r="2.5" stroke="var(--token-accent,#9dd1c6)"/><circle cx="29" cy="26" r="2.5" stroke="var(--token-accent,#9dd1c6)"/>
+  </g></>,
  // Patterned stoplight feedback paired with arithmetic.
  equations:<><rect x="8" y="8" width="12" height="24" rx="5" fill="currentColor"/><circle cx="14" cy="14" r="2.3" fill="var(--token-body,#31231c)"/><path d="m12 20 2-2 2 2-2 2zM12 25h4v4h-4z" fill="var(--token-body,#31231c)"/><path d="M24 15h7m-3.5-3.5v7M24 23h7m-7 4h7" stroke="var(--token-accent,#f2ce8d)" strokeWidth="2" strokeLinecap="round"/></>,
 }

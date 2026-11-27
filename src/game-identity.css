@@ -8,6 +8,7 @@
 .game-token[data-enamel=green]{--token-body:#293c31;--token-accent:#c3c48a}
 .game-token[data-enamel=red]{--token-body:#562b2b;--token-accent:#ffca95}
 .game-token[data-enamel=blue]{--token-body:#303c4a;--token-accent:#c9cdae}
+.game-token[data-enamel=teal]{--token-body:#24413f;--token-accent:#9dd1c6}
 .game-token .token-rim{fill:#c09a63;stroke:#493122;stroke-width:1.25}
 .game-token .token-inlay{fill:var(--token-body);stroke:#43281e;stroke-width:.8}
 .game-card-title .game-token{width:clamp(23px,4.7vw,31px)}

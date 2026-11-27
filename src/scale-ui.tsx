@@ -78,6 +78,56 @@ function Balance({sign,reading,left,right,selected,editable,choose,draftLeft,dra
  </div>
 }
 
+function ScaleAssay({menu,answer,enabled,setWeight,submit}:{menu:number[];answer:number[];enabled:boolean;setWeight:(index:number,value:number)=>void;submit:()=>void}){
+ const [selected,choose]=useState(1)
+ const assigned=answer.slice(1).filter(Boolean).length
+ const duplicate=(value:number)=>value>0&&answer.filter(v=>v===value).length>1
+ const hasDuplicate=answer.some(duplicate)
+ const ready=!answer.includes(0)&&new Set(answer).size===5
+ const activeMineral=scaleNames[selected]
+ return <details className="scale-notes scale-assay">
+  <summary>Lock one team answer</summary>
+  <div className="scale-answer-minerals" role="group" aria-label="Choose a mineral">
+   <div className="scale-answer-reference">
+    <MineralIcon index={0}/><span>Brass</span><b aria-label={answer[0]+' units'}>{answer[0]}</b><small>Reference</small>
+   </div>
+   {scaleNames.slice(1).map((mineral,index)=>{
+    const i=index+1,value=answer[i],repeated=duplicate(value)
+    return <button type="button" className="scale-answer-mineral" key={mineral} aria-label={`Assign ${mineral} weight`}
+     aria-description={value?`${value} units${repeated?', also assigned to another mineral':''}`:'No weight assigned'}
+     aria-pressed={selected===i} data-assigned={value||undefined} data-duplicate={repeated||undefined}
+     disabled={!enabled} onClick={()=>choose(i)}>
+     <MineralIcon index={i}/><span>{mineral}</span><b>{value||'—'}{repeated&&<i aria-hidden="true">!</i>}</b>
+    </button>
+   })}
+  </div>
+  <div className="scale-weight-tray">
+   <div className="scale-weight-heading">
+    <p><strong>{activeMineral}</strong> <small>Weight tokens</small></p>
+    <button type="button" className="scale-clear-weight" aria-label={`Clear ${activeMineral} weight`}
+     disabled={!enabled||!answer[selected]} onClick={()=>setWeight(selected,0)}>Clear</button>
+   </div>
+   <div role="group" aria-label={`Weight tokens for ${activeMineral}`} className="scale-weight-tokens">
+    {menu.map(value=>{
+     const elsewhere=scaleNames.filter((_,i)=>i!==selected&&answer[i]===value)
+     return <button type="button" key={value} className="scale-weight-token" aria-label={value+' units'}
+      aria-description={elsewhere.length?'Also assigned to '+elsewhere.join(', '):undefined}
+      aria-pressed={answer[selected]===value} data-used={elsewhere.length>0||undefined}
+      disabled={!enabled} onClick={()=>setWeight(selected,value)}>
+      <b>{value}</b>{elsewhere.length>0&&<small aria-hidden="true">Used</small>}
+     </button>
+    })}
+   </div>
+  </div>
+  <div className="scale-answer-footer">
+   <p aria-live="polite" data-invalid={hasDuplicate||undefined}>
+    {hasDuplicate?'Use a different weight for each mineral.':assigned+' / 4 assigned'}
+   </p>
+   <button type="button" className="primary" disabled={!enabled||!ready} onClick={submit}>Submit final weights</button>
+  </div>
+ </details>
+}
+
 export function ScaleBoard({snap,active,name,submit}:{snap:Snapshot;active:boolean;name:(id:string)=>string;submit:(a:number)=>void}){
  const g=snap.game!,s=g.scale!
  const [left,setLeft]=useState(empty),[right,setRight]=useState(empty),[pan,choose]=useState<Pan>('left')
@@ -127,11 +177,9 @@ export function ScaleBoard({snap,active,name,submit}:{snap:Snapshot;active:boole
     </>}
    </div>
   </div>
-  {!g.done&&<><details className="scale-notes"><summary>Lock one team answer</summary>
-   <p>Every mineral has a different weight. Submitting ends the challenge for everyone.</p>
-   <div className="scale-answer">{scaleNames.map((mineral,i)=><label key={mineral}>{mineral}<select aria-label={mineral+' weight'} value={answer[i]} disabled={i===0||!enabled} onChange={e=>setAnswer(answer.map((v,j)=>i===j?Number(e.target.value):v))}><option value={0}>Choose</option>{(i===0?[s.reference]:s.menu).map(v=><option key={v}>{v}</option>)}</select></label>)}</div>
-   <button type="button" className="primary" disabled={!enabled||answer.includes(0)||new Set(answer).size!==5} onClick={()=>submit(packAnswer(answer))}>Submit final weights</button>
-  </details>
+  {!g.done&&<><ScaleAssay menu={s.menu} answer={answer} enabled={enabled}
+   setWeight={(index,value)=>setAnswer(previous=>previous.map((v,i)=>i===index?value:v))}
+   submit={()=>submit(packAnswer(answer))}/>
   <details className="scale-notes"><summary>How to use the reference</summary><p>To test whether Jade weighs a candidate amount, place it against Brass in whole multiples that would balance if that candidate were true. Brass’s rank starts at the lightest of all five minerals.</p></details></>}
   {!!s.log.length&&<details className="scale-notes" open={g.done}><summary>Weighing history · {s.log.length}</summary><ol>{s.log.map(({left,right,sign},i)=><li key={i}><strong>{relation[sign+1]}</strong><span>{describe(left)} vs {describe(right)}</span></li>)}</ol></details>}
   {s.solution&&<ul className="scale-solution">{scaleNames.map((m,i)=><li key={m}><MineralIcon index={i}/><span><strong>{m}</strong> {s.solution![i]}{s.answer&&s.answer[i]!==s.solution![i]?' · guessed '+s.answer[i]:''}</span></li>)}</ul>}

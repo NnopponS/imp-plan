@@ -6,6 +6,7 @@
 |---|---:|---:|---|
 | Blind Gomoku, Nine Men’s Morris, Point Gomoku, Equation Lights, Wall Go | 2–4 | 1 human + 1 bot | Two on each board; tested rotation for larger rooms. Four keeps the league finite (12 legs). |
 | Bagh Chal | 2 | 1 human + 1 bot | One pair plays both roles. |
+| Color Link | 2 | 1 human + 1 bot | Pair placement, opponent challenge and private proof race form one two-player series. |
 | Heavy 13 | 2–7 | 1 human + 1–6 bots | Native seven-player inventory and circular placement. |
 | Balance Mancala | 2–8 | 1 human + 1–7 bots | One growing shared board; tested through eight. |
 | Laying Grass (S1) | 2–12 | 1 human + 1–11 bots | Shared board scaled and tested through twelve. |

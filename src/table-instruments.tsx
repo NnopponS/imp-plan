@@ -137,7 +137,7 @@ export function TableInstruments({snap,solo,readOnly,config}:{snap:Snapshot;solo
  const noBots=hold||humanOnly(s.game)
  const hasBots=snap.seats.some(seat=>seat.bot)
  const dualGame=s.game==='divine'||s.game==='knight'
- const gameTimer=s.game==='auction'&&!hold||s.game==='remove'||s.game==='secret'||s.game==='heavy13'||s.game==='wallGo'
+ const gameTimer=s.game==='auction'&&!hold||s.game==='remove'||s.game==='secret'||s.game==='heavy13'||s.game==='wallGo'||s.game==='colorLink'
  const switches=[
   ...(s.game==='divine'?[{label:'Deduce the numeral key',face:'Hidden numerals',mark:'key' as const,checked:s.divineHard??false,change:()=>config({divineHard:!s.divineHard})}]:[]),
   ...(s.game==='knight'?[{label:'Closed tour',mark:'loop' as const,checked:s.closed??false,disabled:(s.size??5)===5,change:()=>config({closed:!s.closed})}]:[]),
@@ -155,9 +155,9 @@ export function TableInstruments({snap,solo,readOnly,config}:{snap:Snapshot;solo
    {s.game==='knight'&&<Timer name="Minutes" seconds={s.seconds} presets={[180,240,300,360,420,480]} readOnly={readOnly} minutes config={config}/>}
    {s.game==='auction'&&!solo&&<Choices name="Time Auction mode" caption="Auction mode" value={hold?'hold':'sealed'} readOnly={readOnly} choose={v=>config({auctionMode:v==='hold'?'hold':'sealed'})}
     choices={[{value:'sealed',label:'Sealed bids',face:'Sealed',art:<Mark name="sealed"/>},{value:'hold',label:'Hold & release (episode-inspired)',face:'Hold & release',art:<Mark name="hold"/>,unavailable:hasBots?'Remove bots to use Hold & release.':undefined}]}/>}
-   {gameTimer&&<Timer name={s.game==='secret'?'Seconds per contact round':s.game==='heavy13'?'Seconds per selection or placement':s.game==='wallGo'?'Seconds per turn':'Seconds to submit'}
-    caption={s.game==='secret'?'Contact clock':s.game==='heavy13'?'Play clock':s.game==='wallGo'?'Turn clock':'Submission clock'}
-    seconds={s.seconds} presets={s.game==='heavy13'?[15,25,45,60,90]:[10,15,25,45,60,90]} readOnly={readOnly} config={config}/>}
+   {gameTimer&&<Timer name={s.game==='colorLink'?'Seconds to place or respond':s.game==='secret'?'Seconds per contact round':s.game==='heavy13'?'Seconds per selection or placement':s.game==='wallGo'?'Seconds per turn':'Seconds to submit'}
+    caption={s.game==='colorLink'?'Link clock':s.game==='secret'?'Contact clock':s.game==='heavy13'?'Play clock':s.game==='wallGo'?'Turn clock':'Submission clock'}
+    seconds={s.seconds} presets={s.game==='colorLink'?[15,30,45,60,90]:s.game==='heavy13'?[15,25,45,60,90]:[10,15,25,45,60,90]} readOnly={readOnly} config={config}/>}
    {s.game==='fragments'&&<>
     <Choices name="Questions" value={String(s.fragmentCount??12)} readOnly={readOnly} choose={v=>config({fragmentCount:Number(v) as FragmentCount})}
      choices={fragmentCounts.map(n=>({value:String(n),label:n+' questions',face:String(n),art:<Pips count={n}/>}))}/>

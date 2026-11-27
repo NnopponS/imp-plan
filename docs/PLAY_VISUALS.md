@@ -1,6 +1,6 @@
 # Imp Plan: live-table visual parity audit
 
-**Status:** Read-only audit of all 29 playable entries in `.imp-cover-motion/src/catalog.json` and their actual React controls. Below is an implementation and acceptance checklist; nothing in a row is claimed shipped. Public-reference checks cover all 13 Dice Devil Play cards, their rule pages, and the reachable Wall Go local scene. They are public-HTML observations, not playthroughs, screenshots, or verification of the TV rules. Some JavaScript modes stay on the landing route; Memory Poker practice and Bagh Chal local subroutes were unavailable to the web reader. No private files are embedded. Preserve Imp Plan’s actual rules and original visual identity.
+**Status:** Read-only audit of all 30 playable entries in `src/catalog.json` and their actual React controls. Below is an implementation and acceptance checklist; nothing in a row is claimed shipped. Public-reference checks cover all 13 Dice Devil Play cards, their rule pages, and the reachable Wall Go local scene. They are public-HTML observations, not playthroughs, screenshots, or verification of the TV rules. Some JavaScript modes stay on the landing route; Memory Poker practice and Bagh Chal local subroutes were unavailable to the web reader. No private files are embedded. Preserve Imp Plan’s actual rules and original visual identity.
 
 ## The 13 Dice Devil examples
 
@@ -20,7 +20,7 @@
 | [Blind Gomoku](https://quoridorgame.com/en/blind-gomoku/) · [rules](https://quoridorgame.com/en/blind-gomoku/rules/) | The reveal is the payoff. Do not copy visual assets or equate their hidden ownership/color presentation with the local authoritative projection. |
 | [Nine Men’s Morris](https://quoridorgame.com/en/nine-mens-morris/) · [rules](https://quoridorgame.com/en/nine-mens-morris/rules/) | A clear three-piece line leads to capture, then play returns to board. Asset geometry and optional rule-card variation remain ours. |
 
-## 29 live-table checklists
+## 30 live-table checklists
 
 Each row specifies the existing live action to surface, a bespoke object for the illustrator, and one runnable pass condition. “Direct” refers to a same-title example above; “analogue” is a UX pattern only.
 
@@ -36,6 +36,8 @@ Each row specifies the existing live action to surface, a bespoke object for the
 | **Balance Mancala** (`mancala-ui`): select a pit and press Place/Sow. | Preview existing landing pit, then distribute only confirmed stones in sequence; draw scooped wooden pits and distinct etched stones with counts on overflow. | On 390px choose a legal pit and sow; verify last pit and totals match engine, then switch seats; reduced motion never changes timing/rules. **Analogue: Heavy 13’s physical object flow.** |
 | **Laying Grass (S1)** (`grass-ui`): choose tile, rotate/mirror, select anchor, commit or redraw coupon. | Show whole polyomino footprint at the active anchor before confirming; draw sod with ragged roots and the single redraw coupon as a stamped paper notch. | Rotate/mirror a legal tile; an overlapping ghost cannot commit; spend redraw once only and maintain seat ownership from authoritative state. **Analogue: Symmetrical Puzzle for manipulation.** |
 | **Lay the Grass (S3)** (`grass-ui`): pre-draft swap/accept, then plant tiles over bonus squares. | Distinguish offered-vs-accepted swap with two seat medallions and coin stack; show exact bonus markers beneath the transparent placement preview without hinting hidden choices; draw gold-inlaid sod and exchange tokens. | Offer a priced swap in two contexts, deny/accept as eligible, verify balances and draft order; place legally on the visible bonus. **Analogue: Symmetrical Puzzle + Heavy 13 turn order.** |
+
+| **Color Link** (`color-link-ui`): place two matching endpoints, accept or challenge, then trace six private disjoint proofs. | Use the original painted routes and engraved A–F terminals; tiny matching route radios show the selected local trace without broadcasting it. | At 320px, switch routes by keyboard, extend only legal cells, and commit a complete private proof once; only accepted paths reach the opponent. **Original six-pair fan table, not broadcast rules.** |
 
 ### Memory decks, bidding, social selection
 

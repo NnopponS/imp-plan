@@ -366,6 +366,22 @@ function Heavy(){
   <Cube x={100} y={44} kind="jade" label="5" motion="heavy-drop" delay={400}/><Caption x={145} y={48} text="13" delay={870}/></>
 }
 
+function ColorLink(){
+ // Two pairs on cells of the same grid: A detours below B, leaving B an independent elbow.
+ const tracks=[
+  {letter:'A',d:'M77.5 41.5v18h27v-18',ends:[[77.5,41.5],[104.5,41.5]],tone:'gold',delay:290},
+  {letter:'B',d:'M86.5 41.5v9h9',ends:[[86.5,41.5],[95.5,50.5]],tone:'jade',delay:785}
+ ]
+ return <><Grid x={73} y={37} cols={6} rows={6} cell={9}/>
+  {tracks.map(({letter,d,ends,tone,delay})=><g key={letter}>
+   <path d={d} className={'ap-draw '+(tone==='gold'?'ap-gold-line':'ap-secondary-line')} style={time(delay)} data-preview-link={letter}/>
+   {ends.map(([x,y])=><g key={x} className="ap-pop" style={time(85)}>
+    <circle className={'ap-'+tone+'-fill'} cx={x} cy={y} r="4"/>
+    <text className="ap-dark-label" x={x} y={y+.5}>{letter}</text>
+   </g>)}
+  </g>)}</>
+}
+
 const previewScenes={
  blind:{ms:2240,draw:()=> <Gomoku/>},morris:{ms:1920,draw:Morris},
  auction:{ms:2100,draw:Auction},point:{ms:2060,draw:()=> <Gomoku point/>},
@@ -379,5 +395,5 @@ const previewScenes={
  fragments:{ms:2280,draw:Fragments},spot:{ms:1930,draw:Spot},scale:{ms:2190,draw:Scale},
  fence:{ms:1850,draw:Fence},tower:{ms:1990,draw:Tower},piece:{ms:2030,draw:PieceFit},
  memoryPoker:{ms:2050,draw:Poker},wallGo:{ms:2130,draw:WallGo},
- montage:{ms:2350,draw:Montage},heavy13:{ms:2360,draw:Heavy},
+ montage:{ms:2350,draw:Montage},heavy13:{ms:2360,draw:Heavy},colorLink:{ms:2040,draw:ColorLink},
 } satisfies Record<Game,{ms:number;draw:()=>ReactNode}>

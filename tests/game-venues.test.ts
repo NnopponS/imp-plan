@@ -13,6 +13,7 @@ it('distinguishes where featured matches were played instead of collapsing them 
  expect(byId('S3-23')).toMatchObject({kind:'exile',label:'Exile Match',caption:'Season 3 · Exile Zone match 7'})
  expect(byId('S3-24')).toMatchObject({kind:'secret',label:'Hidden Stage',caption:'Season 3 · Exile Zone'})
  expect(byId('S3-26')).toMatchObject({kind:'exile',label:'Exile Showdown',caption:'Season 3 · Exile Zone finale'})
+ expect(byId('S3-28')).toMatchObject({kind:'final',label:'Final Match',caption:'Season 3 · Final game 2'})
  expect(byId('S3-29')).toMatchObject({kind:'final',label:'Final Match',caption:'Season 3 · Final game 3'})
 })
 

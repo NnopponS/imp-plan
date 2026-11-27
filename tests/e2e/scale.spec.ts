@@ -55,8 +55,18 @@ test('two players solve the shared scale with ternary observations and rotating 
   expect(turn).toBeLessThanOrEqual(8)
   const operator=turn%2?guest:host
   await bench(operator).getByText('Lock one team answer').click()
-  for(let i=1;i<5;i++)await bench(operator).getByLabel(scaleNames[i]+' weight').selectOption(String(answer[i]))
-  await bench(operator).getByRole('button',{name:'Submit final weights'}).press('Enter')
+  const waiting=operator===host?guest:host
+ await bench(waiting).getByText('Lock one team answer').click()
+ await expect(bench(waiting).getByRole('button',{name:'Assign Jade weight'})).toBeDisabled()
+ await expect(bench(waiting).getByRole('button',{name:'Submit final weights'})).toBeDisabled()
+ for(let i=1;i<5;i++){
+  const mineral=scaleNames[i]
+  await bench(operator).getByRole('button',{name:'Assign '+mineral+' weight'}).press('Enter')
+  await bench(operator).getByRole('group',{name:'Weight tokens for '+mineral}).getByRole('button',{name:answer[i]+' units',exact:true}).press('Enter')
+  await expect(bench(operator).getByRole('button',{name:'Assign '+mineral+' weight'})).toHaveAttribute('data-assigned',String(answer[i]))
+ }
+  await expect(bench(waiting).locator('[data-assigned]')).toHaveCount(0)
+ await bench(operator).getByRole('button',{name:'Submit final weights'}).press('Enter')
   for(const p of [host,guest]){
    await expect(p.getByRole('heading',{name:'Weights solved'})).toBeVisible()
    await expect(bench(p).getByRole('status')).toHaveText('Team score: 5 / 5.')

@@ -26,8 +26,9 @@ source leads for each entry.
   separately places Divine Test in a hidden Exile stage and Point Gomoku in the
   Exile Zone's final showdown, not the season finale. [Netflix's Exile Zone clip](https://www.youtube.com/watch?v=Da10EtgGbzY)
   corroborates the existence of the separate setting.
-- Equation Traffic Light was actually played as the third game of the Season 3
+- Color Link and Equation Traffic Light were games two and three of the Season 3
   finale according to the [episode 14 transcript mirror](https://transcripts.foreverdreaming.org/viewtopic.php?p=385991).
-  Its nine-cell show format is not the eight-character fan adaptation. Conversely,
+  Color Link’s [six-pair fan duel](rules/S3-28.md) is not its timed on-air proof game.
+  Equation Traffic Light’s nine-cell show format is not the eight-character fan adaptation. Conversely,
   Season 1's third final slot, Dice Poker, is indexed as planned but not played
   on air; it remains unplayable here.

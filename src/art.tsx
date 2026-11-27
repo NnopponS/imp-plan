@@ -8,6 +8,7 @@ const chamberCovers={
  wallGo:{stem:'wall-go',className:'wall-go-cover',width:1200,height:620},
 } as const
 export function gameArtSources(mode:Game):{src:string;mobile?:string;width:number;height:number;className:string}{
+ if(mode==='colorLink')return {src:base+'art/color-link-board.svg',width:960,height:540,className:'color-link-cover'}
  if(hasIllustratedGame(mode))return {src:illustratedSource(mode),width:960,height:540,className:'engraved-game '+mode}
  if(mode==='heavy13'||mode==='montage'||mode==='wallGo'){
   const {stem,width,height,className}=chamberCovers[mode]

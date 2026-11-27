@@ -7,12 +7,12 @@ import './game-identity.css'
 
 type VenueEntry=Parameters<typeof getGameVenue>[0]
 const engravings={...glyphsA,...glyphsB} satisfies Record<Game,JSX.Element>
-const tokenEnamel:Record<Game,'wood'|'green'|'red'|'blue'>={
+const tokenEnamel:Record<Game,'wood'|'green'|'red'|'blue'|'teal'>={
  fragments:'wood',secret:'red',tower:'green',scale:'wood',grass1:'green',
  montage:'blue',blind:'red',morris:'wood',hex:'blue',remove:'red',auction:'wood',
  mancala:'green',wallGo:'blue',pyramid:'wood',bagh:'red',knight:'blue',cubes:'blue',
  rectangles:'wood',grass3:'green',memoryPoker:'red',heavy13:'red',piece:'wood',
- spot:'blue',codeLock:'red',fence:'green',exile:'green',divine:'red',point:'wood',equations:'blue',
+ spot:'blue',codeLock:'red',fence:'green',exile:'green',divine:'red',point:'wood',equations:'blue',colorLink:'teal',
 }
 export function GameToken({game}:{game:Game}){
  return <svg className="game-token" data-enamel={tokenEnamel[game]} viewBox="0 0 40 40" width="40" height="40" aria-hidden="true" focusable="false">

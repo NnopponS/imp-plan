@@ -77,17 +77,11 @@
 .room[data-game=scale] .match .scale-lift button:not(.primary){padding-inline:7px}
 .scale-lift button span{color:#efca8e}
 .scale-weigh .primary{min-height:44px;padding:5px 10px}
-.scale-answer{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.25rem .6rem}
 .scale-notes{
  min-width:0;margin:0;padding:5px 9px;border:1px solid #805d44;background:#30221c;color:#f1d4a4;
 }
 .scale-notes summary{padding:5px 2px;color:#f4d8aa}
 .scale-notes p{font-size:.85rem}
-.scale-answer label{display:flex;align-items:center;gap:.3rem;font-size:.8rem}
-.room[data-game=scale] .match .scale-answer select{
- width:auto;min-width:0;margin:0 0 0 auto;padding:.42rem .25rem;min-height:44px;
- font-size:.83rem;color:#f5dfb8;background:#231b17;border-color:#977653;
-}
 .scale-notes ol{margin:.55rem 0 0;padding-left:1.25rem}
 .scale-notes li span{display:block;color:#ddbd96;font-size:.82rem}
 .scale-notes li+li{margin-top:.35rem}
@@ -124,4 +118,71 @@
  .scale-operator,.scale-weigh{justify-content:flex-start}
  .scale-operator{display:grid;gap:4px}
  .scale-weigh{display:grid;gap:7px;margin-top:8px}
+}
+
+/* One assayer's tray, not one form control for every possible weight. */
+.scale-assay{padding:0 9px}
+.scale-assay > summary{box-sizing:border-box;min-height:44px;padding:11px 2px}
+.scale-assay[open] > summary{border-bottom:1px solid #8e6a48;margin-bottom:6px}
+.scale-answer-minerals{
+ display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;
+ padding:4px;border:1px solid #8c6746;background:#231916;
+}
+.scale-answer-reference,.room[data-game=scale] .match .scale-answer-mineral:not(.primary){
+ display:grid;place-items:center;align-content:center;gap:2px;min-width:0;min-height:54px;
+ padding:4px 2px;border:1px solid #896344;border-radius:3px;
+ background:linear-gradient(142deg,#3d2c24,#2b211a);color:#f0d7ad;
+ font:700 clamp(.63rem,1.25vw,.86rem)/1.1 system-ui,sans-serif;
+}
+.scale-answer-reference{border-color:#9a764f;background:#3b2d20}
+.scale-answer-reference small{font-size:clamp(.49rem,1.1vw,.68rem);color:#ecc791}
+.scale-answer-minerals .scale-mineral-icon{width:clamp(25px,4.2vw,38px)}
+.scale-answer-minerals b{
+ display:inline-flex;align-items:center;gap:3px;min-width:22px;justify-content:center;
+ padding:2px 4px;font:700 clamp(.66rem,1.3vw,.92rem) ui-monospace,monospace;
+ color:#f2ce94;background:#201614;border:1px solid #8d6647;
+}
+.scale-answer-minerals b i{font-style:normal;color:#ffb5a2}
+.room[data-game=scale] .match .scale-answer-mineral[aria-pressed=true]:not(:disabled){
+ color:#fff0cc;border-color:#ffdda3;box-shadow:inset 0 0 0 1px #c69d61;background:#604831;
+}
+.room[data-game=scale] .match .scale-answer-mineral[data-duplicate] b{background:#6a342b;border-color:#cf8674;color:#ffdcc4}
+.scale-weight-tray{
+ margin-block:7px;padding:5px 7px 7px;border:1px solid #a47b52;
+ background:repeating-linear-gradient(151deg,#bf7f5020 0 .75px,transparent .75px 7px),#392822;
+}
+.scale-weight-heading,.scale-answer-footer{display:flex;align-items:center;justify-content:space-between;gap:5px 12px;flex-wrap:wrap}
+.scale-weight-heading{margin-bottom:5px}
+.scale-weight-heading strong{font:700 clamp(.77rem,1.65vw,.98rem) Georgia,serif;color:#ffe2ac}
+.scale-weight-heading small{margin-inline-start:5px;font-size:.68rem}
+.scale-weight-tokens{display:grid;grid-template-columns:repeat(auto-fit,minmax(44px,1fr));gap:4px}
+.room[data-game=scale] .match .scale-weight-token:not(.primary){
+ display:grid;place-content:center;justify-items:center;gap:1px;
+ min-inline-size:44px;min-height:44px;padding:3px 2px;border-radius:7px;
+ color:#f2d49d;border:1px solid #ad8459;box-shadow:inset 0 0 0 2px #402c22,0 2px 0 #241a16;
+ background:linear-gradient(151deg,#654932,#3f2b22);
+}
+.room[data-game=scale] .match .scale-weight-token[aria-pressed=true]:not(:disabled){
+ background:linear-gradient(151deg,#edcb8d,#c1955f);color:#261b13;border-color:#ffdda2;box-shadow:inset 0 0 0 2px #6e4e33,0 2px 0 #241a16;
+}
+.scale-weight-token b{font:700 clamp(.9rem,2vw,1.35rem)/1 Georgia,serif}
+.room[data-game=scale] .match .scale-weight-token small{font-size:.53rem;color:inherit;opacity:.9}
+.room[data-game=scale] .match .scale-weight-token[data-used][aria-pressed=true]:not(:disabled){background:#a85545;color:#ffe5be;border-color:#eaa38c}
+.room[data-game=scale] .match :is(.scale-answer-mineral,.scale-weight-token):hover:not(:disabled):not([aria-pressed=true]){
+ background:#745138;border-color:#e9b67a;color:#fff0d0;
+}
+.room[data-game=scale] .match .scale-clear-weight:not(.primary){
+ min-height:44px;min-width:44px;padding:3px 7px;border-color:#a88461;
+ background:#29201a;color:#efd0a1;font-size:.7rem;
+}
+.scale-answer-footer{padding-bottom:8px}
+.scale-answer-footer p{font:700 clamp(.65rem,1.35vw,.82rem) system-ui,sans-serif}
+.room[data-game=scale] .match .scale-answer-footer [data-invalid]{color:#ffc1aa}
+.scale-answer-footer .primary{min-height:44px}
+@media(max-width:365px){
+ .scale-assay{padding-inline:5px}
+ .scale-answer-minerals{gap:3px;padding:3px}
+ .scale-answer-reference,.room[data-game=scale] .match .scale-answer-mineral:not(.primary){font-size:.63rem}
+ .scale-answer-reference small{font-size:.48rem}
+ .scale-answer-footer .primary{font-size:.8rem}
 }

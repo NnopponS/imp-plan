@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" width="960" height="540" role="img" aria-label="Engraved six-column board with colored connecting paths">
+<defs>
+ <pattern id="grain" width="12" height="12" patternUnits="userSpaceOnUse"><path d="M0 3h12M0 9h12" stroke="#8b633d" stroke-width=".55" opacity=".26"/></pattern>
+ <pattern id="hatch" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(32)"><path d="M0 0v5" stroke="#ac875c" stroke-width=".6" opacity=".37"/></pattern>
+ <linearGradient id="light" x2="0" y2="1"><stop stop-color="#38291e"/><stop offset="1" stop-color="#171411"/></linearGradient>
+ <pattern id="grid" width="65" height="65" patternUnits="userSpaceOnUse" x="285" y="77"><path d="M65 0H0v65" fill="none" stroke="#8b6d4b" stroke-width="2"/><circle cx="32.5" cy="32.5" r="1.8" fill="#8b6d4b"/></pattern>
+</defs>
+<path fill="url(#light)" d="M0 0h960v540H0z"/>
+<path fill="url(#grain)" d="M0 0h960v540H0z"/>
+<g fill="none" stroke="#977047" opacity=".65">
+ <path d="M40 13h880l27 27v460l-27 27H40l-27-27V40z"/>
+ <path d="M43 21h874l22 22v454l-22 22H43l-22-22V43z"/>
+ <path d="M39 43h183v125M921 43H738v125M39 497h183V372M921 497H738V372" stroke-dasharray="2 4"/>
+</g>
+<g fill="url(#hatch)" stroke="#977047" opacity=".72">
+ <path d="M54 186h124l36 36v96l-36 36H54l-25-25V211z"/>
+ <path d="M906 186H782l-36 36v96l36 36h124l25-25V211z"/>
+</g>
+<path d="M247 42h461l19 19v428l-19 19H247l-17-18V61z" fill="#181512" stroke="#ae8254" stroke-width="2"/>
+<path d="M252 49h449l17 18v414l-17 18H252l-13-14V67z" fill="#382d24" stroke="#836448" stroke-width="2"/>
+<path d="M285 77h390v390H285z" fill="#2a231d"/>
+<path d="M285 77h390v390H285z" fill="url(#grid)" stroke="#c19d6e" stroke-width="1.7"/>
+<g font-family="monospace" fill="#d4b084" text-anchor="middle" font-weight="600" font-size="15">
+<text x="317.5" y="68">A</text><text x="266" y="115.5">1</text>
+<text x="382.5" y="68">B</text><text x="266" y="180.5">2</text>
+<text x="447.5" y="68">C</text><text x="266" y="245.5">3</text>
+<text x="512.5" y="68">D</text><text x="266" y="310.5">4</text>
+<text x="577.5" y="68">E</text><text x="266" y="375.5">5</text>
+<text x="642.5" y="68">F</text><text x="266" y="440.5">6</text>
+</g>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="317.5,109.5 317.5,174.5 317.5,239.5 382.5,239.5 447.5,239.5 447.5,174.5 447.5,109.5" stroke="#110f0c" stroke-width="19" stroke-dasharray="422 422"><animate attributeName="stroke-dashoffset" begin="indefinite" data-cover-at="0.12s" dur="0.86s" values="0;422;0;0" keyTimes="0;.19;.88;1" fill="remove"/></polyline><polyline points="317.5,109.5 317.5,174.5 317.5,239.5 382.5,239.5 447.5,239.5 447.5,174.5 447.5,109.5" stroke="#e8bd6c" stroke-width="12" stroke-dasharray="422 422"><animate attributeName="stroke-dashoffset" begin="indefinite" data-cover-at="0.12s" dur="0.86s" values="0;422;0;0" keyTimes="0;.19;.88;1" fill="remove"/></polyline><polyline points="317.5,109.5 317.5,174.5 317.5,239.5 382.5,239.5 447.5,239.5 447.5,174.5 447.5,109.5" stroke="#fff1d7" stroke-width="1.1" opacity=".62" stroke-dasharray="422 422"><animate attributeName="stroke-dashoffset" begin="indefinite" data-cover-at="0.12s" dur="0.86s" values="0;422;0;0" keyTimes="0;.19;.88;1" fill="remove"/></polyline></g>
+<circle cx="317.5" cy="109.5" r="20" fill="#140f0c" stroke="#e8bd6c" stroke-width="1.25"/><circle cx="317.5" cy="109.5" r="16" fill="#e8bd6c" stroke="#654b32"/><text x="317.5" y="114.5" fill="#211b15" text-anchor="middle" font-family="monospace" font-size="16" font-weight="700">A</text>
+<circle cx="447.5" cy="109.5" r="20" fill="#140f0c" stroke="#e8bd6c" stroke-width="1.25"/><circle cx="447.5" cy="109.5" r="16" fill="#e8bd6c" stroke="#654b32"/><text x="447.5" y="114.5" fill="#211b15" text-anchor="middle" font-family="monospace" font-size="16" font-weight="700">A</text>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="382.5,109.5 382.5,174.5" stroke="#110f0c" stroke-width="19"/><polyline points="382.5,109.5 382.5,174.5" stroke="#9dd1c6" stroke-width="12"/><polyline points="382.5,109.5 382.5,174.5" stroke="#fff1d7" stroke-width="1.1" opacity=".62"/></g>
+<circle cx="382.5" cy="109.5" r="20" fill="#140f0c" stroke="#9dd1c6" stroke-width="1.25"/><circle cx="382.5" cy="109.5" r="16" fill="#9dd1c6" stroke="#654b32"/><text x="382.5" y="114.5" fill="#211b15" text-anchor="middle" font-family="monospace" font-size="16" font-weight="700">B</text>
+<circle cx="382.5" cy="174.5" r="20" fill="#140f0c" stroke="#9dd1c6" stroke-width="1.25"/><circle cx="382.5" cy="174.5" r="16" fill="#9dd1c6" stroke="#654b32"/><text x="382.5" y="179.5" fill="#211b15" text-anchor="middle" font-family="monospace" font-size="16" font-weight="700">B</text>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="512.5,109.5 512.5,174.5 577.5,174.5 577.5,239.5 577.5,304.5 512.5,304.5" stroke="#110f0c" stroke-width="19" stroke-dasharray="357 357"><animate attributeName="stroke-dashoffset" begin="indefinite" data-cover-at="0.37s" dur="0.91s" values="0;357;0;0" keyTimes="0;.19;.88;1" fill="remove"/></polyline><polyline points="512.5,109.5 512.5,174.5 577.5,174.5 577.5,239.5 577.5,304.5 512.5,304.5" stroke="#ee9c97" stroke-width="12" stroke-dasharray="357 357"><animate attributeName="stroke-dashoffset" begin="indefinite" data-cover-at="0.37s" dur="0.91s" values="0;357;0;0" keyTimes="0;.19;.88;1" fill="remove"/></polyline><polyline points="512.5,109.5 512.5,174.5 577.5,174.5 577.5,239.5 577.5,304.5 512.5,304.5" stroke="#fff1d7" stroke-width="1.1" opacity=".62" stroke-dasharray="357 357"><animate attributeName="stroke-dashoffset" begin="indefinite" data-cover-at="0.37s" dur="0.91s" values="0;357;0;0" keyTimes="0;.19;.88;1" fill="remove"/></polyline></g>
+<circle cx="512.5" cy="109.5" r="20" fill="#140f0c" stroke="#ee9c97" stroke-width="1.25"/><circle cx="512.5" cy="109.5" r="16" fill="#ee9c97" stroke="#654b32"/><text x="512.5" y="114.5" fill="#211b15" text-anchor="middle" font-family="monospace" font-size="16" font-weight="700">C</text>
+<circle cx="512.5" cy="304.5" r="20" fill="#140f0c" stroke="#ee9c97" stroke-width="1.25"/><circle cx="512.5" cy="304.5" r="16" fill="#ee9c97" stroke="#654b32"/><text x="512.5" y="309.5" fill="#211b15" text-anchor="middle" font-family="monospace" font-size="16" font-weight="700">C</text>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="642.5,109.5 642.5,174.5 642.5,239.5 642.5,304.5 642.5,369.5 642.5,434.5 577.5,434.5" stroke="#110f0c" stroke-width="19"/><polyline points="642.5,109.5 642.5,174.5 642.5,239.5 642.5,304.5 642.5,369.5 642.5,434.5 577.5,434.5" stroke="#b7c789" stroke-width="12"/><polyline points="642.5,109.5 642.5,174.5 642.5,239.5 642.5,304.5 642.5,369.5 642.5,434.5 577.5,434.5" stroke="#fff1d7" stroke-width="1.1" opacity=".62"/></g>
+<circle cx="642.5" cy="109.5" r="20" fill="#140f0c" stroke="#b7c789" stroke-width="1.25"/><circle cx="642.5" cy="109.5" r="16" fill="#b7c789" stroke="#654b32"/><text x="642.5" y="114.5" fill="#211b15" text-anchor="middle" font-family="monospace" font-size="16" font-weight="700">D</text>
+<circle cx="577.5" cy="434.5" r="20" fill="#140f0c" stroke="#b7c789" stroke-width="1.25"/><circle cx="577.5" cy="434.5" r="16" fill="#b7c789" stroke="#654b32"/><text x="577.5" y="439.5" fill="#211b15" text-anchor="middle" font-family="monospace" font-size="16" font-weight="700">D</text>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="317.5,304.5 382.5,304.5 447.5,304.5 447.5,369.5 447.5,434.5 512.5,434.5" stroke="#110f0c" stroke-width="19"/><polyline points="317.5,304.5 382.5,304.5 447.5,304.5 447.5,369.5 447.5,434.5 512.5,434.5" stroke="#bfb1e8" stroke-width="12"/><polyline points="317.5,304.5 382.5,304.5 447.5,304.5 447.5,369.5 447.5,434.5 512.5,434.5" stroke="#fff1d7" stroke-width="1.1" opacity=".62"/></g>
+<circle cx="317.5" cy="304.5" r="20" fill="#140f0c" stroke="#bfb1e8" stroke-width="1.25"/><circle cx="317.5" cy="304.5" r="16" fill="#bfb1e8" stroke="#654b32"/><text x="317.5" y="309.5" fill="#211b15" text-anchor="middle" font-family="monospace" font-size="16" font-weight="700">E</text>
+<circle cx="512.5" cy="434.5" r="20" fill="#140f0c" stroke="#bfb1e8" stroke-width="1.25"/><circle cx="512.5" cy="434.5" r="16" fill="#bfb1e8" stroke="#654b32"/><text x="512.5" y="439.5" fill="#211b15" text-anchor="middle" font-family="monospace" font-size="16" font-weight="700">E</text>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="317.5,369.5 382.5,369.5 382.5,434.5 317.5,434.5" stroke="#110f0c" stroke-width="19"/><polyline points="317.5,369.5 382.5,369.5 382.5,434.5 317.5,434.5" stroke="#94c7ef" stroke-width="12"/><polyline points="317.5,369.5 382.5,369.5 382.5,434.5 317.5,434.5" stroke="#fff1d7" stroke-width="1.1" opacity=".62"/></g>
+<circle cx="317.5" cy="369.5" r="20" fill="#140f0c" stroke="#94c7ef" stroke-width="1.25"/><circle cx="317.5" cy="369.5" r="16" fill="#94c7ef" stroke="#654b32"/><text x="317.5" y="374.5" fill="#211b15" text-anchor="middle" font-family="monospace" font-size="16" font-weight="700">F</text>
+<circle cx="317.5" cy="434.5" r="20" fill="#140f0c" stroke="#94c7ef" stroke-width="1.25"/><circle cx="317.5" cy="434.5" r="16" fill="#94c7ef" stroke="#654b32"/><text x="317.5" y="439.5" fill="#211b15" text-anchor="middle" font-family="monospace" font-size="16" font-weight="700">F</text>
+<g fill="none" stroke="#bc9364" stroke-width="1.4" opacity=".8">
+ <circle cx="120" cy="270" r="38"/><circle cx="120" cy="270" r="31"/><path d="m120 245 24 25-24 25-24-25zM87 270h66m-33-32v65"/>
+ <circle cx="840" cy="270" r="38"/><circle cx="840" cy="270" r="31"/><path d="m840 245 24 25-24 25-24-25zM807 270h66m-33-32v65"/>
+</g></svg>
