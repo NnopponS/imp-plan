@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="173" height="131" viewBox="0 0 173 131">
+ <!-- Authored linework, not generated turbulence. Transparent into every material. -->
+ <g fill="none" stroke="#bb9468" stroke-linecap="round" opacity=".25">
+  <path stroke-width=".58" d="m2 9 8 .2m6 .3 7-.4m15 .3 15-.8m9 1.5 5-.1m12-1 10 .2m11 .6 6-.6m28 .3 13-.3m9-.4 13 .8M7 32l12 .4m7-.5 12 .8m19-.8 12 .7m14-.4 8 .1m16 .1 4-.2m12 .8 20-.7m9-.3 14 .6M2 65l9-.2m12 .6 5-.4m16 .1 16-.3m21 .9 8-.7m15 .5 6 .5m16-.6 16-.3m13 .8 11-.4M10 102l15-.9m10 .9 5 .2m18-.9 11 .6m29-.4 13 .9m12-.5 6-.5m18 1.1 12-.5m4 .5 5-.2"/>
+  <path stroke-width=".62" d="m12 23 2-1.5m1 3.8 5-3.6m.1 3.1 4-2.3m32 29.8 4.2-3.3m-.3 4.7 5.5-4m-.6 3.4 4.3-3.3m-1.2 3.9 4-2.8m66-35.3 3.1-2.5m.3 3.2 4.9-3.7m-.8 4.9 4-3.3m-5.5 64.9 4-2.7m-.4 3.3 5.4-3.8m-.9 3.5 3.3-2m-126.4 7 4.7-3.4m-.2 4 4.1-3.2m-1 4.1 5-3.3m38.8 30.6 3.7-3m-.4 4 5.4-3.8m-.4 4.2 4-3m56.8 7.4 6.4-4.7m-.2 4.5 2.4-2m1.7 2.7 3.7-2.7"/>
+ </g>
+ <path stroke="#0d0907" stroke-width="1.3" opacity=".15" stroke-linecap="round" d="M4 45q18 2 31 0m62 38q20-3 38-1m-72 38q20-3 29 0M101 20q11 1 26-.6m29 31 17 1M29 13q14 1 27 .4M18 110q11 1 28-.4" fill="none"/>
+ <path d="M14 55h.5m26-36h.3m41 3h.7m39 25h.5m44 3h.4M12 76h.6m45-8h.4m33 29h.5m44-40h.3M43 121h.5m47-70h.4m35 74h.5m29-69h.3m-31 26h.6m-86 8h.3" stroke="#f2c594" fill="none" stroke-width="1" stroke-linecap="round" opacity=".32"/>
+</svg>

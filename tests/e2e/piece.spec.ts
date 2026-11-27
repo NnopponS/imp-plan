@@ -1,4 +1,5 @@
 import {test,expect} from '@playwright/test'
+import {chooseGame} from '../lobby-controls'
 import {startMatch} from './start-match'
 import {pieceSide,type PieceCell} from '../../src/piece'
 import {solvePiece} from '../piece-solver'
@@ -10,7 +11,7 @@ test('two players rotate and fit the visible Piece Puzzle, alternating keyboard 
   await host.goto(baseURL!+'season/3/')
   await host.getByLabel('Nickname').fill('Ari')
   await host.getByRole('button',{name:'Create party'}).click()
-  await host.getByLabel('Game').selectOption('piece')
+  await chooseGame(host,'piece')
   const code=(await host.getByTestId('room-code').textContent())!
   await guest.goto(baseURL!+'#/join?room='+code)
   await guest.getByLabel('Nickname').fill('Bee')

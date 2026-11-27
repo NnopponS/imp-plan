@@ -1,4 +1,5 @@
 import {expect,test,type Page} from '@playwright/test'
+import {chooseGame,selectedGame,chooseSetting} from '../lobby-controls'
 import {startMatch} from './start-match'
 
 const arena=(page:Page)=>page.getByRole('region',{name:'Wall Go territory board'})
@@ -30,13 +31,13 @@ test('Wall Go commits on board edges by keyboard, touch and mouse without sharin
   await host.goto(baseURL!+'season/2/')
   const card=host.locator('article').filter({has:host.getByRole('heading',{name:'Wall Go',exact:true})})
   await expect(card.getByRole('button',{name:'Practice Wall Go'})).toBeVisible()
-  await expect.poll(()=>card.locator('img').evaluate((n:HTMLImageElement)=>n.complete&&n.naturalWidth>0)).toBe(true)
+  await expect.poll(()=>card.locator('img[data-arena-art]').evaluate((n:HTMLImageElement)=>n.complete&&n.naturalWidth>0)).toBe(true)
   await host.getByLabel('Nickname').fill('Ada')
   await host.getByRole('button',{name:'Create party'}).click()
   const code=(await host.getByTestId('room-code').textContent())!
-  await host.getByRole('combobox',{name:'Game',exact:true}).selectOption('wallGo')
-  await expect(host.getByRole('combobox',{name:'Game',exact:true})).toHaveValue('wallGo')
-  await host.getByRole('combobox',{name:'Seconds per turn'}).selectOption('45')
+  await chooseGame(host,'wallGo')
+  await expect(selectedGame(host,'wallGo')).toBeVisible()
+  await chooseSetting(host,'Seconds per turn','45')
   await guest.goto(baseURL!+'#/join?room='+code)
   await guest.getByLabel('Nickname').fill('Mina')
   await guest.getByRole('button',{name:'Join party'}).click()
@@ -129,7 +130,7 @@ for(const width of [320,390]) test('Wall Go practice at '+width+'px exposes four
  await page.setViewportSize({width,height:844})
  await page.goto(baseURL!+'season/2/')
  await page.getByRole('button',{name:'Practice Wall Go'}).click()
- await page.getByLabel('Bot difficulty').selectOption('hard')
+ await chooseSetting(page,'Bot difficulty','hard')
  await startMatch(page)
  await cell(page,'B2').click()
  const edges=choices(page).getByRole('button')

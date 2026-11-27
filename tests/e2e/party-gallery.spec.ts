@@ -1,4 +1,5 @@
 import {expect,test,type Page} from '@playwright/test'
+import {selectedGame,tableSetting} from '../lobby-controls'
 
 const stage=(page:Page)=>page.getByRole('region',{name:'Current table'})
 const picker=(page:Page)=>page.getByRole('dialog',{name:'Choose a game'})
@@ -28,7 +29,7 @@ test('a keyboard host curates the table and a separate phone guest sees only the
   await guest.getByRole('button',{name:'Join party'}).tap()
   await expect(stage(guest).getByRole('heading',{name:'Blind Gomoku'})).toBeVisible()
   await expect(guest.getByRole('button',{name:'Choose game'})).toHaveCount(0)
-  await expect(guest.getByLabel('Game',{exact:true})).toBeDisabled()
+  await expect(stage(guest).getByRole('combobox')).toHaveCount(0)
   const trigger=host.getByRole('button',{name:'Choose game'})
   await trigger.focus()
   await host.keyboard.press('Enter')
@@ -44,7 +45,7 @@ test('a keyboard host curates the table and a separate phone guest sees only the
   await host.keyboard.press('Enter')
   await host.keyboard.type('mancala')
   const card=picker(host).getByRole('button',{name:/^Balance Mancala/})
-  await expect(card.locator('img')).toHaveAttribute('src',/seasonal-mancala\.svg$/)
+  await expect(card.locator('img[data-arena-art]')).toHaveAttribute('src',/seasonal-mancala\.svg$/)
   await card.focus()
   await host.keyboard.press('Enter')
   await expect(picker(host)).toHaveCount(0)
@@ -53,7 +54,7 @@ test('a keyboard host curates the table and a separate phone guest sees only the
    await expect(stage(p).getByRole('heading',{name:'Balance Mancala'})).toBeVisible()
    await expect(stage(p).locator('img[data-arena-art]')).toHaveAttribute('src',/seasonal-mancala\.svg$/)
    await expect(p.locator('[data-game-preview]')).toHaveCount(0)
-   await expect(p.getByLabel('Game',{exact:true})).toHaveValue('mancala')
+   await expect(selectedGame(p,'mancala')).toBeVisible()
   }
   const guestSeat=seats(host).getByRole('listitem').filter({hasText:'Example Guest'})
   await expect(guestSeat).toContainText('Not ready')
@@ -95,13 +96,13 @@ test('a 320px touch host filters the image-first shelf by season and switches ga
   await expect(dialog.getByText('1 game',{exact:true})).toBeVisible()
   await search.fill('')
   const card=dialog.getByRole('button',{name:/^Time Auction/})
-  await expect(card.locator('img')).toHaveAttribute('src',/seasonal-auction\.svg$/)
+  await expect(card.locator('img[data-arena-art]')).toHaveAttribute('src',/seasonal-auction\.svg$/)
   expect(await dialog.evaluate(node=>node.scrollWidth<=node.clientWidth)).toBe(true)
   const details=dialog.getByRole('button',{name:'Details for Time Auction',exact:true})
   await details.tap()
   const gameDetails=host.getByRole('dialog',{name:'Time Auction',exact:true})
   await expect(gameDetails.locator('[data-game-preview="auction"]')).toBeVisible()
-  await expect(host.getByLabel('Game',{exact:true})).toHaveValue('blind')
+  await expect(host.locator('[data-party-game]')).toHaveAttribute('data-party-game','blind')
   await gameDetails.getByRole('button',{name:'Close details',exact:true}).tap()
   await expect(gameDetails).toHaveCount(0)
   await expect(details).toBeFocused()
@@ -109,7 +110,7 @@ test('a 320px touch host filters the image-first shelf by season and switches ga
   await expect(dialog).toHaveCount(0)
   await expect(stage(host).getByRole('heading',{name:'Time Auction'})).toBeVisible()
   await expect(host.locator('[data-game-preview]')).toHaveCount(0)
-  await expect(host.getByLabel('Time Auction mode')).toBeVisible()
+  await expect(tableSetting(host,'Time Auction mode')).toBeVisible()
   expect(await host.evaluate(()=>document.documentElement.scrollWidth)).toBe(320)
  }finally{await context.close()}
 })

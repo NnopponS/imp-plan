@@ -509,7 +509,7 @@
 <path d="M111.0 516.0 L131.0 514.0" fill="none" stroke="#d29972" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
 <polygon points="122.0,537.0 146.0,535.0 156.0,551.0 132.0,554.0" fill="#a56d55" stroke="#5b3940" stroke-width="1.1" stroke-linejoin="round" />
 <path d="M124.0 538.0 L144.0 536.0" fill="none" stroke="#d29972" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
-<polygon points="606.5,402.5 651.9,397.8 657.5,422.7 609.9,427.6" fill="#394b49" stroke="#36282e" stroke-width="0.6" stroke-linejoin="round" />
+<g data-cover-object="fit-jade-cut"><animateTransform attributeName="transform" type="translate" begin="indefinite" data-cover-at="0.08s" dur="1.31s" fill="remove" values="0 0;18 -34;4 -20;-4 -7;0 0" keyTimes="0;.26;.48;.70;1" calcMode="spline" keySplines=".23 .02 .30 1;.23 .02 .30 1;.23 .02 .30 1;.23 .02 .30 1"/><polygon points="606.5,402.5 651.9,397.8 657.5,422.7 609.9,427.6" fill="#394b49" stroke="#36282e" stroke-width="0.6" stroke-linejoin="round" />
 <polygon points="606.5,398.5 651.9,393.8 657.5,418.7 609.9,423.6" fill="#70836b" stroke="#394b49" stroke-width="1.1" stroke-linejoin="round" />
 <path d="M609.9 423.6 L606.5 398.5 L651.9 393.8" fill="none" stroke="#b7be8c" stroke-width="0.95" stroke-linecap="round" stroke-linejoin="round" />
 <path d="M618.3 416.5 L625.6 407.0" fill="none" stroke="#4b6051" stroke-width="0.65" stroke-linecap="round" stroke-linejoin="round" opacity=".66"/>
@@ -526,7 +526,7 @@
 <path d="M664.7 444.2 L659.1 419.3 L706.7 414.4" fill="none" stroke="#b7be8c" stroke-width="0.95" stroke-linecap="round" stroke-linejoin="round" />
 <path d="M672.9 437.1 L679.9 427.7" fill="none" stroke="#4b6051" stroke-width="0.65" stroke-linecap="round" stroke-linejoin="round" opacity=".66"/>
 <path d="M681.6 436.2 L688.4 426.8" fill="none" stroke="#4b6051" stroke-width="0.65" stroke-linecap="round" stroke-linejoin="round" opacity=".66"/>
-<path d="M690.2 435.3 L696.9 426.0" fill="none" stroke="#4b6051" stroke-width="0.65" stroke-linecap="round" stroke-linejoin="round" opacity=".66"/>
+<path d="M690.2 435.3 L696.9 426.0" fill="none" stroke="#4b6051" stroke-width="0.65" stroke-linecap="round" stroke-linejoin="round" opacity=".66"/></g>
 <path d="M1049 275Q1116 283 1120 327V388Q1027 424 920 419L768 425 677 407 680 370 806 355Q951 321 1049 275Z" fill="#4c4a42" stroke="#24202b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
 <path d="M1075 295q-85 64-193 86m128-53-69 40m31 30-91 7m15-28-82 15m95 23 72-9m-199-8-63-10" fill="none" stroke="#a68b70" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" opacity=".62"/>
 <path d="M736 363 687 360 660 394 723 412Z" fill="#6a5148" stroke="#392c35" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />

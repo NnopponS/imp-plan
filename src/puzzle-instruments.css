@@ -58,37 +58,150 @@
 }
 .room[data-playing] .match .puzzle-lock button.primary:not(:disabled):hover{background:#ffe8ae}
 .puzzle-instrument button:focus-visible,.puzzle-instrument select:focus-visible,.puzzle-instrument input:focus-visible{outline:2px solid #fff0b8;outline-offset:2px;z-index:3}
-.puzzle-record{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px;min-width:0}
-.puzzle-record>div{
+.puzzle-record{display:flex;flex-wrap:wrap;gap:4px;margin:7px 0 0;padding:0;min-width:0;list-style:none}
+.puzzle-record>li{
  display:flex;flex-wrap:wrap;align-items:center;gap:3px 7px;max-width:100%;overflow-wrap:anywhere;line-height:1.24;
  color:#eed9b3;border:1px solid #665038;background:#2c231b;border-radius:3px;padding:4px 7px;font-size:.7rem;
 }
 .puzzle-record small{color:#d7bea0;font-size:.63rem}
+.puzzle-record strong{font-variant-numeric:tabular-nums}
+.puzzle-instrument[data-closed=true] .puzzle-record>li{display:grid;flex:1 1 13rem;grid-template-columns:minmax(0,1fr) auto;padding:8px;gap:5px 8px}
+.puzzle-instrument[data-closed=true] .puzzle-record small{grid-column:1/-1}
+.puzzle-score-pips{display:flex;gap:4px;grid-column:1/-1;align-items:center;margin:2px 0}
+.puzzle-score-pips i{display:grid;place-items:center;width:13px;height:13px;border:1px solid #a58159;border-radius:50%;background:#1e1814}
+.puzzle-score-pips i[data-correct=true]{background:#e4bb7a;border-color:#f3d89e}
+.puzzle-score-pips i[data-correct=true]::after{content:'';display:block;width:5px;height:5px;border:1px solid #694a2c;transform:rotate(45deg)}
 
-/* Hexagon: wax seals on a pointed honeycomb. Links are drawn only for a valid selected line. */
-.puzzle-instrument[data-instrument=hex] .puzzle-visual{
- background:var(--pb-etch),radial-gradient(ellipse at center,#60404b,#31242d 72%);padding:5px;
+/* Hexagon's illustrated chamber holds one actual lattice. No puzzle information is painted into the room. */
+.room[data-game=hex][data-playing] .match:has(.hex-stage){
+ padding:clamp(4px,1vw,12px);background:#221b1b;border-color:#7d5b3c;box-shadow:inset 0 0 0 2px #120f12;
 }
-.puzzle-instrument .hex-instrument{max-width:29rem;aspect-ratio:530/435;position:relative;isolation:isolate}
-.hex-circuit,.hex-trace{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;fill:none}
-.hex-circuit{stroke:#dbb892;stroke-width:1.1;opacity:.54}
-.hex-trace{z-index:0;stroke:#ffe193;stroke-width:9;stroke-linejoin:round;stroke-linecap:round;filter:drop-shadow(0 0 3px #ffd998)}
-.room[data-playing] .match .puzzle-instrument .hex-instrument button{
- position:absolute;transform:translate(-50%,-50%);isolation:isolate;
- width:17.1%;height:22.35%;min-height:0;border:none;background:none;color:#ffedce;
- font:700 clamp(.96rem,4vw,1.45rem)/1 Georgia,serif;text-shadow:0 1px #321c23;
- box-shadow:none;opacity:1;z-index:1;
+.hex-stage{
+ display:grid;grid-template-areas:"title" "visual" "answer";grid-template-columns:minmax(0,1fr);
+ isolation:isolate;position:relative;overflow:hidden;border:1px solid #94704c;border-radius:5px;
+ background:#3b2b28;box-shadow:inset 0 0 0 2px #1e1514,0 2px 0 #100d0e;
 }
-.room[data-playing] .match .puzzle-instrument .hex-instrument button:not(:disabled):hover{background:none}
-.hex-instrument button::before,.hex-instrument button::after{
- content:"";position:absolute;inset:0;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);z-index:-1;
- background:#b58b66;
+.hex-scene-picture,.hex-chamber-art,.hex-stage::before{
+ display:block;position:absolute;inset:0;width:100%;height:100%;pointer-events:none;
 }
-.hex-instrument button::after{inset:2px;background:var(--pb-etch),linear-gradient(148deg,#83545d,#532f41 57%,#402a35)}
-.room[data-playing] .match .puzzle-instrument .hex-instrument button[aria-pressed=true]{color:#392620;text-shadow:0 1px #ffe4a5}
-.hex-instrument button[aria-pressed=true]::before{background:#fff0b0}
-.hex-instrument button[aria-pressed=true]::after{background:var(--pb-etch),linear-gradient(150deg,#efd298,#c6995d)}
-.hex-instrument button:not([aria-pressed=true]):hover:not(:disabled)::after{background:var(--pb-etch),#945a70}
+.hex-scene-picture{z-index:-2}
+.hex-chamber-art{object-fit:cover;object-position:50% 47%;color:transparent}
+.hex-stage::before{
+ content:"";z-index:-1;
+ background:linear-gradient(180deg,#17151ccd 0,transparent 27%,transparent 73%,#201517bf 100%);
+ box-shadow:inset 0 0 0 2px #3e2c2b,inset 0 0 30px #18111670;
+}
+.hex-stage .puzzle-titleplate{
+ grid-area:title;position:relative;justify-content:initial;align-items:start;margin:clamp(8px,1.4vw,19px) clamp(8px,1.5vw,22px) 0;
+ padding:0;border:0;border-radius:0;background:none;box-shadow:none;text-shadow:0 1px 3px #141116;
+}
+.hex-stage .puzzle-titlemark{gap:9px;padding:5px 0}
+.hex-stage .puzzle-titlemark>svg{color:#e1b67a;transform:rotate(-10deg);height:33px;width:33px}
+.hex-stage .puzzle-titlemark h3{color:#fff0d5;font-size:clamp(1rem,3.2vw,2rem);line-height:1.04}
+.hex-stage .puzzle-titlemark .puzzle-imprint{color:#f0c78d;font-size:clamp(.56rem,.9vw,.68rem)}
+.hex-stage .puzzle-phase{display:flex;flex-direction:column-reverse;flex:none;align-items:center;gap:3px;margin-left:auto;color:#f6dfbd}
+.hex-stage .puzzle-phase>span[role=timer]{
+ min-width:3.4rem;padding:2px 6px;color:#f5d698;background:#271c1b;border:1px solid #bb905e;border-radius:45% 45% 8px 8px/32% 32% 8px 8px;
+ box-shadow:inset 0 0 0 2px #392a22,0 2px 5px #170f12;
+ font:700 clamp(.92rem,1.7vw,1.22rem)/1.22 Georgia,serif;text-align:center;
+}
+.hex-stage .puzzle-phase>span[data-urgent=true]{background:#63352e;color:#fff2dc;border-color:#e2ad85}
+.hex-stage .puzzle-titleplate .puzzle-target{
+ display:flex;flex-direction:column-reverse;gap:3px;align-items:center;
+ margin:0 6px 0 auto;color:#ffe8c4;text-align:center;font-size:.69rem;font-weight:700;
+}
+.hex-stage .puzzle-target+.puzzle-phase{margin-left:0}
+.hex-stage .puzzle-target strong{
+ min-width:2.8rem;padding:2px 7px;border:1px solid #e1b877;border-radius:45% 45% 10px 10px/32% 32% 10px 10px;
+ color:#35231d;background:radial-gradient(ellipse at 40% 25%,#edcd95,#ac7c53);text-shadow:0 1px #f4c483;
+ box-shadow:inset 0 0 0 2px #9b68496e,0 2px 5px #1f1516;
+}
+.hex-stage .puzzle-visual{padding:clamp(9px,1.4vw,18px) 5px 0;background:none;border:0;border-radius:0;box-shadow:none}
+.hex-stage .hex-instrument{width:min(100%,clamp(20rem,44vw,33rem));aspect-ratio:530/435;position:relative;isolation:isolate}
+.hex-cradle,.hex-trace{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;fill:none}
+.hex-cradle{overflow:visible;filter:drop-shadow(0 9px 10px #160f15c9)}
+.hex-cradle-edge{fill:#654531;stroke:#35242a;stroke-width:5;stroke-linejoin:round}
+.hex-cradle-ink{fill:#2b2328;stroke:#ad8153;stroke-width:2}
+.hex-cradle-wear{stroke:#e1ad73;stroke-width:1.6;stroke-linecap:round;opacity:.67}
+.hex-trace{z-index:1;stroke-linejoin:round;stroke-linecap:round}
+.hex-trace>:first-child{stroke:#88623d;stroke-width:13}
+.hex-trace>:last-child{stroke:#edc977;stroke-width:7;stroke-dasharray:3 1.5}
+.room[data-playing] .match .hex-stage .hex-instrument button{
+ --stone:#6d594d;--bevel:#ae885d;--edge:#e5bd85;--vein:#f1caa0;--stamp:transparent;
+ position:absolute;transform:translate(-50%,-50%);isolation:isolate;z-index:2;
+ width:17.3%;height:22%;min-height:0;padding:0;border:none;background:none;color:#fff2d0;
+ clip-path:polygon(50% 0,99% 24%,100% 73%,51% 100%,1% 76%,0 27%);
+ font:700 clamp(1rem,3.7vw,2rem)/1 Georgia,serif;text-shadow:0 2px #39252a;
+ box-shadow:none;opacity:1;display:grid;place-items:center;touch-action:manipulation;
+}
+.room[data-playing] .match .hex-stage .hex-instrument button:is(:hover,:focus-visible):not(:disabled){background:none}
+.hex-seal{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none}
+.hex-seal-depth{fill:#3d2628}
+.hex-seal-bevel{fill:var(--bevel);stroke:#47312f;stroke-width:1.1;stroke-linejoin:round}
+.hex-seal-face{fill:var(--stone);stroke:#403138;stroke-width:1.2;stroke-linejoin:round}
+.hex-seal-edge,.hex-seal-vein,.hex-seal-crease,.hex-seal-focus{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.hex-seal-edge{stroke:var(--edge);stroke-width:1.3}
+.hex-seal-vein{stroke:var(--vein);stroke-width:1.15;opacity:.44}
+.hex-seal-crease{stroke:#392c30;stroke-width:1.5;opacity:.7}
+.hex-seal-stamp{fill:var(--stamp)}
+.hex-seal-focus{stroke:transparent;stroke-width:3}
+.hex-seal-letter{transform:translateY(-5%);pointer-events:none}
+.hex-stage[data-phase=recall] .hex-instrument button:not([aria-pressed=true]){
+ --stone:#594a4a;--bevel:#a57b56;--edge:#d9ae79;color:#f4e1c1;
+}
+.room[data-playing] .match .hex-stage .hex-instrument button:nth-of-type(4n+2):not([aria-pressed=true]){--stone:#766056}
+.room[data-playing] .match .hex-stage .hex-instrument button:nth-of-type(4n+3):not([aria-pressed=true]){--stone:#67564e}
+.room[data-playing] .match .hex-stage .hex-instrument button:not([aria-pressed=true]):hover:not(:disabled){--stone:#937156;--bevel:#d3a471}
+.room[data-playing] .match .hex-stage .hex-instrument button[aria-pressed=true]{
+ --stone:#e8c587;--bevel:#a6764e;--edge:#ffe5a7;--vein:#6c4438;--stamp:#573730;
+ color:#3a2823;text-shadow:0 1px #f8dfa2;
+}
+.hex-instrument button:focus-visible .hex-seal-focus{stroke:#fff6bf}
+.hex-stage .puzzle-answer{
+ justify-self:center;align-self:center;position:relative;z-index:2;
+ align-items:center;max-width:100%;border:0;border-radius:0;background:none;box-shadow:none;
+ padding:9px 6px 11px;text-align:center;gap:5px;
+}
+.hex-stage .puzzle-cue{font-size:.81rem;color:#fff0d2;text-shadow:0 1px 3px #171216}
+.hex-stage .puzzle-lock{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.room[data-playing] .match .hex-stage .puzzle-lock button{min-height:44px}
+.room[data-playing] .match .hex-stage .puzzle-lock button:disabled{opacity:1;filter:saturate(.42) brightness(.82)}
+.hex-peg-rail{display:flex;justify-content:center;gap:9px}
+.hex-peg-rail i{
+ width:8px;height:8px;transform:rotate(45deg);background:#392724;border:1px solid #c19462;
+ box-shadow:0 1px 2px #130e11;
+}
+.hex-peg-rail i[data-occupied=true]{background:#f2d08b}
+@media(max-width:600px){
+ .hex-stage .puzzle-titlemark>svg{height:23px;width:23px}
+ .hex-stage .puzzle-titlemark{gap:5px}
+ .hex-stage .puzzle-titleplate .puzzle-target{font-size:.58rem;margin-right:5px}
+ .hex-stage .puzzle-phase{font-size:.62rem}
+ .hex-stage .puzzle-visual{padding:clamp(44px,16vw,94px) 4px 0}
+ .hex-stage .hex-instrument{width:min(100%,31rem)}
+ .hex-stage .puzzle-answer{padding-block:7px 9px}
+ .hex-chamber-art{object-position:50% 45%}
+}
+@media(min-width:601px) and (max-height:540px) and (orientation:landscape){
+ .hex-stage{grid-template-columns:minmax(0,1fr) minmax(265px,1.45fr) minmax(117px,1fr);grid-template-areas:"title title title" ". visual answer"}
+ .hex-stage .puzzle-titleplate{margin-block-start:5px}
+ .hex-stage .puzzle-titlemark{padding:1px 0}
+ .hex-stage .puzzle-titlemark h3{font-size:1.24rem}
+ .hex-stage .puzzle-titlemark>svg{width:25px;height:25px}
+ .hex-stage .puzzle-visual{padding:1px 0 6px}
+ .hex-stage .hex-instrument{width:min(100%,clamp(265px,calc((100svh - 158px)*1.19),384px))}
+ .hex-stage .hex-instrument button{font-size:1.26rem}
+ .hex-stage .puzzle-answer{padding:3px}
+ .hex-stage .puzzle-lock{grid-template-columns:1fr}
+ .hex-stage .puzzle-cue{font-size:.72rem}
+ .hex-chamber-art{object-position:center 39%}
+}
+@media(forced-colors:active){
+ .hex-instrument button .hex-seal-face{fill:Canvas;stroke:CanvasText}
+ .hex-instrument button[aria-pressed=true] .hex-seal-face{fill:Highlight;stroke:HighlightText}
+ .hex-instrument button[aria-pressed=true] .hex-seal-letter{color:HighlightText}
+ .hex-instrument button:focus-visible .hex-seal-focus{stroke:Highlight}
+}
 
 /* Rectangle ledger and Exile audit: a Cartesian sheet vs. a dark signed abacus. */
 .puzzle-instrument .rect-chart{
@@ -164,10 +277,29 @@
 .cube-engraved-base polygon:nth-of-type(3){fill:#c8af7b}
 .cube-engraved-base polyline{fill:none;stroke:#826c4d;stroke-width:.65}
 .cube-chisel{fill:none;stroke:#997546;stroke-width:.55;opacity:.72}
-.cube-cross-section{margin-top:6px;padding:6px;background:var(--pb-etch),#344337;border:1px solid #748567;border-radius:3px;}
-.cube-cross-section label{display:flex;align-items:center;justify-content:center;gap:6px;margin:0;color:#f7e6c2;font-size:.74rem}
-.room[data-playing] .match .puzzle-instrument .cube-cross-section select{width:auto;min-width:58px;min-height:37px;margin:0;padding:2px 4px}
-.puzzle-instrument .cube-layer{width:min(100%,13rem);margin:6px auto 0;gap:3px}
+.cube-cross-section{
+ display:grid;grid-template-columns:minmax(98px,.84fr) minmax(0,1.16fr);align-items:center;gap:8px;
+ margin-top:6px;padding:6px;background:var(--pb-etch),#344337;border:1px solid #748567;border-radius:3px;
+}
+.cube-levels{
+ display:grid;grid-template-columns:repeat(2,minmax(44px,1fr));gap:4px;width:min(100%,9rem);
+ justify-self:end;align-self:center;padding:2px;border:1px solid #78846b;box-shadow:inset 0 0 0 1px #26332b;
+}
+.room[data-playing] .match .cube-levels button:not(.primary){
+ position:relative;box-sizing:border-box;min-width:44px;min-height:44px;padding:2px;border:1px solid #98a27c;
+ background:var(--pb-etch),#303b31;color:#f0dfaf;border-radius:2px;box-shadow:inset 0 0 0 1px #242f28;
+}
+.room[data-playing] .match .cube-levels button:hover:not(.primary):not([aria-checked=true]){background:#4a5a41;color:#ffedbf}
+.room[data-playing] .match .cube-levels button[aria-checked=true]:not(.primary){
+ background:var(--pb-etch),#e1c991;border-color:#fff0ba;color:#39291c;box-shadow:inset 0 0 0 2px #7d6038;
+}
+.cube-level-face{display:flex;justify-content:center;align-items:center;gap:2px;font:800 .8rem/1 ui-monospace,monospace}
+.cube-level-face svg{width:18px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.45;stroke-linejoin:round}
+@media(forced-colors:active){
+ .room .match .puzzle-instrument .cube-levels button[aria-checked=true]{outline:2px solid Highlight;outline-offset:-3px}
+ .room .match .puzzle-instrument .cube-levels button:focus-visible{outline:2px solid Highlight;outline-offset:2px}
+}
+.puzzle-instrument .cube-layer{width:min(100%,13rem);margin:0 auto;gap:3px}
 .puzzle-instrument .cube-layer span{color:#e4cf9f;border-color:#96a178;background:#2c372e;font-size:.88rem}
 .puzzle-instrument .cube-layer .occupied{color:#4a3927;border-color:#dabe87;background:var(--pb-etch),linear-gradient(145deg,#e0c894,#c09d61)}
 .puzzle-cube-index{display:flex;align-items:center;gap:7px;color:#f2e4bd;font:700 .98rem/1.15 Georgia,serif}
@@ -206,9 +338,8 @@
  .puzzle-titlemark h3{font-size:1.27rem}
  .puzzle-visual{padding:5px}
  .puzzle-answer{padding:7px}
- .puzzle-instrument .hex-instrument,.puzzle-instrument .rect-chart{max-width:min(100%,calc(100svh - 145px))}
+ .puzzle-instrument .rect-chart{max-width:min(100%,calc(100svh - 145px))}
  .puzzle-instrument .voxel-diagram{width:auto;max-width:100%;height:max(90px,min(170px,calc(100svh - 205px)))}
- .cube-cross-section{display:grid;grid-template-columns:minmax(0,1fr) 7rem minmax(0,1fr);gap:8px;align-items:center}
- .cube-cross-section label{justify-self:end;flex-direction:column}
- .puzzle-instrument .cube-layer{width:100%;margin:0;grid-column:2}
+ .cube-cross-section{grid-template-columns:minmax(100px,1fr) minmax(0,1fr);gap:8px}
+ .puzzle-instrument .cube-layer{width:min(100%,7rem);margin:0}
 }

@@ -32,7 +32,7 @@
 .party-ident{display:flex;align-items:center;justify-content:space-between;gap:9px 13px;flex-wrap:wrap;margin-top:14px}
 .party-ident>div:first-child{min-width:0}
 .party-ident .eyebrow{margin:0 0 2px;font-size:.65rem}
-.room[data-party-lobby] .party-ident h2{
+.room:is([data-party-lobby],[data-practice-lobby]) .party-ident h2{
  margin:0;padding:0;border:0;font:normal clamp(1.85rem,4.7vw,3.55rem)/1.02 Georgia,serif;letter-spacing:-.045em;overflow-wrap:anywhere;
 }
 .party-game-meta{margin:5px 0 0;color:var(--party-muted);font-size:.83rem}
@@ -45,15 +45,8 @@
  margin:13px 0 0;padding:10px 0 1px;border-top:1px solid #8a684773;
 }
 .party-action-bar p{margin:0;font-size:.79rem;color:var(--party-muted)}
-.room[data-party-lobby] .lobby .party-setting-title{font-size:1.36rem;padding-bottom:7px}
+.room:is([data-party-lobby],[data-practice-lobby]) .lobby .party-setting-title{font-size:1.36rem;padding-bottom:7px}
 .party-settings{grid-area:party-settings}
-.party-settings-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px}
-.party-settings-fields>:is(.actions,details,p){grid-column:1/-1}
-.party-settings-fields .actions{align-items:center;margin:0;gap:6px 12px}
-.party-settings-fields p{font-size:.89rem;margin:7px 0 0}
-.party-settings-fields label{max-width:100%;margin:8px 0 2px}
-.party-settings-fields select,.party-settings-fields input:not([type=checkbox]){min-height:42px}
-.party-settings-fields label:has(select:disabled) select{color:#d8c4a9;opacity:.82}
 .room[data-party-lobby] .party-roster,.room[data-party-lobby] .chat{--folio-ink:#30251f;padding:13px clamp(10px,1.6vw,18px)}
 .party-roster>header{display:flex;align-items:center;justify-content:space-between;gap:7px;padding-right:5px}
 .party-roster>header h2{font:normal 1.43rem/1 Georgia,serif;margin:0}
@@ -148,7 +141,31 @@
  .party-cover img{object-position:55% 52%}
  .party-chapter{left:5px;top:5px;padding:3px 4px;font-size:.55rem}
  .party-pick-actions button,.party-main-actions button{padding-inline:8px;font-size:.76rem}
- .party-settings-fields{grid-template-columns:minmax(0,1fr);gap:0}
  .party-chapters button{padding-inline:6px;min-height:42px}
  .party-card-caption{padding-inline:6px}
+}
+
+
+/* Practice keeps its original foreground placement and never looks like a metadata form. */
+.room[data-practice-lobby]{padding-top:clamp(12px,2.8vw,30px)}
+.room[data-practice-lobby]>.section-head{align-items:center;gap:7px;margin-bottom:12px}
+.room[data-practice-lobby]>.section-head h1{font-size:clamp(2.2rem,5vw,3.85rem)}
+.room[data-practice-lobby]>.section-head .eyebrow{margin-bottom:4px}
+.room[data-practice-lobby] .party-workspace{--folio-ink:#2c221d;--folio-edge:#a67d51;--party-edge:#836345;--party-muted:#d3bda1;padding:clamp(9px,1.55vw,17px)}
+.room[data-practice-lobby] .table-instruments{margin-top:12px}
+@media(max-width:540px){
+ .room[data-practice-lobby]>.section-head h1{font-size:clamp(1.65rem,6.5vw,2.2rem)}
+ .room[data-practice-lobby] .room-leave{min-height:44px;padding:5px 8px;font-size:.74rem}
+ .room[data-practice-lobby] .settings-gear{width:38px}
+ .room[data-practice-lobby] .room-controls{gap:4px}
+ .room[data-practice-lobby] .party-table{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);align-items:center;gap:8px}
+ .room[data-practice-lobby] .party-cover{aspect-ratio:1.08}
+ .room[data-practice-lobby] .party-cover>.game-art{position:absolute;inset:0;width:100%;height:100%}
+ .room[data-practice-lobby] .party-ident{margin:0;gap:5px}
+ .room[data-practice-lobby] .party-ident h2{font-size:clamp(1.32rem,6.1vw,1.8rem)}
+ .room[data-practice-lobby] .party-game-meta{font-size:.69rem;line-height:1.25}
+ .room[data-practice-lobby] .party-pick-actions{gap:3px}
+ .room[data-practice-lobby] .party-pick-actions button{padding-inline:5px;font-size:.69rem}
+ .room[data-practice-lobby] .party-pick-actions svg{width:13px;height:13px}
+ .room[data-practice-lobby] .party-action-bar{margin-top:8px;padding-top:7px}
 }

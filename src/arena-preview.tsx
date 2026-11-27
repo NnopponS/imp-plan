@@ -1,7 +1,6 @@
 import {useEffect,useRef,useState,type CSSProperties,type ReactNode} from 'react'
 import {titles,type Game} from './engine'
 import {base} from './brand'
-import {KeeperCharacter,type CharacterCue} from './keeper-character'
 import './arena-preview.css'
 
 type EntryHandler=(entry:IntersectionObserverEntry)=>void
@@ -29,14 +28,27 @@ function scheduleTurn(){
  })
 }
 
-const poses={
- blind:'glance',morris:'nod',auction:'signal',point:'nod',remove:'glance',knight:'signal',
- hex:'glance',rectangles:'nod',cubes:'signal',exile:'glance',mancala:'nod',bagh:'signal',
- secret:'glance',grass1:'nod',grass3:'signal',divine:'nod',equations:'signal',codeLock:'glance',
- pyramid:'nod',fragments:'glance',spot:'signal',scale:'nod',fence:'glance',tower:'signal',
- piece:'nod',memoryPoker:'glance',wallGo:'nod',montage:'glance',heavy13:'signal',
-} satisfies Record<Game,CharacterCue>
-const eastCards=new Set<Game>(['morris','point','knight','cubes','mancala','grass3','equations','pyramid','scale','tower','wallGo','heavy13'])
+const SVG_NS='http://www.w3.org/2000/svg'
+const animationTags=['animate','animateTransform','animateMotion']
+const durationMs=1600
+type MotionCopy={url:string;source:string;objectFit:string;objectPosition:string}
+
+function activateArtwork(contents:string){
+ const document=new DOMParser().parseFromString(contents,'image/svg+xml')
+ const svg=document.documentElement
+ if(svg.namespaceURI!==SVG_NS||svg.localName!=='svg')return
+ let activated=false
+ for(const tag of animationTags){
+  for(const cue of svg.getElementsByTagNameNS(SVG_NS,tag)){
+   const at=cue.getAttribute('data-cover-at')
+   if(!at||!/^0\.\d{1,3}s$/.test(at)||cue.getAttribute('begin')!=='indefinite')continue
+   cue.setAttribute('begin',at)
+   activated=true
+  }
+ }
+ // Assigned to an <img>, never imported into the app document or run as markup.
+ if(activated)return new XMLSerializer().serializeToString(svg)
+}
 
 function watch(element:Element,handler:EntryHandler){
  if(!observer)observer=new IntersectionObserver(entries=>{
@@ -53,28 +65,39 @@ function watch(element:Element,handler:EntryHandler){
 
 export function ArenaPreview({game,posterClass,motionOff=false,children}:{game:Game;posterClass:string;motionOff?:boolean;children:ReactNode}){
  const node=useRef<HTMLDivElement>(null)
- const [playing,setPlaying]=useState(false)
+ const [copy,setCopy]=useState<MotionCopy|null>(null)
+ const [ready,setReady]=useState(false)
  const stop=useRef<()=>void>(()=>{})
  useEffect(()=>{
   const target=node.current
-  if(!target||motionOff||seen.has(game)||typeof IntersectionObserver!=='function'){setPlaying(false);return}
+  setCopy(null)
+  setReady(false)
+  const poster=target?.querySelector<HTMLImageElement>('img[data-arena-art]')
+  if(!target||!poster||motionOff||seen.has(game)||typeof IntersectionObserver!=='function')return
   const motion=window.matchMedia?.('(prefers-reduced-motion: reduce)')
-  const poster=target.querySelector('img[data-arena-art]')
   let currentRatio=0
   let ended=false
   let release:(()=>void)|undefined
   let fallback:number|undefined
-  function eligible(){
-   return !ended&&!seen.has(game)&&currentRatio>=.5&&!motion?.matches&&!document.hidden&&
-    document.documentElement.dataset.gameMotion!=='off'&&
-    (!(poster instanceof HTMLImageElement)||(poster.complete&&poster.naturalWidth>0))
+  let url:string|undefined
+  let source=''
+  let contents:string|undefined
+  let request:AbortController|undefined
+  function visible(){
+   return currentRatio>=.5&&!motion?.matches&&!document.hidden&&
+    document.documentElement.dataset.gameMotion!=='off'&&poster!.complete&&poster!.naturalWidth>0
   }
+  function eligible(){return !ended&&!seen.has(game)&&visible()&&poster!.currentSrc===source&&!!contents}
   function takeTurn(){
    if(!eligible())return false
+   const activated=activateArtwork(contents!)
+   contents=undefined
+   if(!activated)return false
+   const style=getComputedStyle(poster!)
    seen.add(game)
-   setPlaying(true)
-   // Normally released by animationend. Don't hold the queue if styles suppress it.
-   fallback=window.setTimeout(finish,1900)
+   url=URL.createObjectURL(new Blob([activated],{type:'image/svg+xml'}))
+   setCopy({url,source,objectFit:style.objectFit,objectPosition:style.objectPosition})
+   fallback=window.setTimeout(finish,2500) // A failed/slow decode cannot hold the queue.
    return true
   }
   function stopWatching(){
@@ -83,6 +106,8 @@ export function ArenaPreview({game,posterClass,motionOff=false,children}:{game:G
    release?.()
    release=undefined
    window.clearTimeout(fallback)
+   request?.abort()
+   if(url)URL.revokeObjectURL(url)
    poster?.removeEventListener('load',changed)
    document.removeEventListener('visibilitychange',changed)
    motion?.removeEventListener?.('change',changed)
@@ -91,33 +116,64 @@ export function ArenaPreview({game,posterClass,motionOff=false,children}:{game:G
   }
   function finish(){
    if(activeTurn!==takeTurn)return
-   setPlaying(false)
+   setCopy(null)
+   setReady(false)
    stopWatching()
+  }
+  function loadCopy(){
+   if(!visible()||poster!.currentSrc===source)return
+   const selected=new URL(poster!.currentSrc)
+   if(selected.origin!==location.origin||!selected.pathname.startsWith(base+'art/')||!selected.pathname.endsWith('.svg'))return
+   request?.abort()
+   contents=undefined
+   source=selected.href
+   const pending=new AbortController()
+   request=pending
+   void fetch(source,{signal:pending.signal}).then(response=>{
+    if(!response.ok)throw new Error('Cover unavailable')
+    return response.text()
+   }).then(svg=>{
+    if(ended||request!==pending)return
+    contents=svg
+    changed()
+   }).catch(()=>{}) // When the original cannot be fetched, leave its poster visible.
   }
   function changed(){
    if(activeTurn===takeTurn){
-    if(currentRatio<.5||document.hidden||motion?.matches||document.documentElement.dataset.gameMotion==='off')finish()
+    if(!visible()||poster!.currentSrc!==source)finish()
     return
    }
+   if(!visible()){
+    request?.abort()
+    request=undefined
+    if(contents)contents=undefined
+    source=''
+   }else loadCopy()
    if(eligible())waiting.add(takeTurn)
    else waiting.delete(takeTurn)
    scheduleTurn()
   }
-  stop.current=finish
+  stop.current=()=>{
+   if(activeTurn!==takeTurn)return
+   window.clearTimeout(fallback)
+   setReady(true)
+   fallback=window.setTimeout(finish,durationMs)
+  }
   release=watch(target,entry=>{
    currentRatio=entry.isIntersecting?entry.intersectionRatio:0
    changed()
   })
-  poster?.addEventListener('load',changed)
+  poster.addEventListener('load',changed)
   document.addEventListener('visibilitychange',changed)
   motion?.addEventListener?.('change',changed)
   return stopWatching
  },[game,motionOff])
- return <div ref={node} className={'game-art arena-preview '+posterClass} data-preview-game={game} data-preview-state={playing?'playing':seen.has(game)?'played':'idle'}>
+ return <div ref={node} className={'game-art arena-preview '+posterClass} data-preview-game={game} data-preview-painted={ready||undefined} data-preview-state={copy?'playing':seen.has(game)?'played':'idle'}>
   {children}
-  {playing&&!motionOff&&<span className="arena-character-overlay" data-edge={eastCards.has(game)?'end':'start'} aria-hidden="true" onAnimationEnd={event=>{
-   if(event.target===event.currentTarget)stop.current()
-  }}><KeeperCharacter cue={poses[game]}/></span>}
+  {copy&&!motionOff&&<img className="arena-cover-motion" src={copy.url} alt="" aria-hidden="true" draggable={false}
+   data-cover-motion data-cover-original={copy.source} data-cover-ready={ready}
+   style={{objectFit:copy.objectFit as CSSProperties['objectFit'],objectPosition:copy.objectPosition}}
+   onLoad={()=>stop.current()}/>}
  </div>
 }
 

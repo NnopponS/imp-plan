@@ -107,7 +107,7 @@ async function main() {
   await button(guest,'Back to lobby').tap();
   console.log('PASS: selected gallery card and matching guest rules on separate clients.');
   stage = 'checking native Wall Go turn replication';
-  await pick('Wall Go'); await host.getByLabel('Seconds per turn').selectOption('45');
+  await pick('Wall Go'); await host.getByRole('radiogroup',{name:'Seconds per turn',exact:true}).getByRole('radio',{name:'45 seconds',exact:true}).press('Enter');
   await button(guest,'Ready up').tap(); await button(host,'Start match').click();
   await button(host,'Enter match').click();
   await board(host).getByRole('button',{name:/^B2\b/}).click();

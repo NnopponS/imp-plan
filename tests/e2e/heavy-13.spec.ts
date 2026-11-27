@@ -1,4 +1,5 @@
 import {expect,test} from '@playwright/test'
+import {chooseGame,chooseSetting} from '../lobby-controls'
 import {startMatch} from './start-match'
 
 test('private Heavy 13 keeps picks hidden, reverses a pass, counts old zero cubes, and continues across rounds',async({browser,baseURL})=>{
@@ -8,12 +9,12 @@ test('private Heavy 13 keeps picks hidden, reverses a pass, counts old zero cube
   await host.goto(baseURL!+'season/3/')
   await host.getByRole('button',{name:'Practice Heavy 13'}).scrollIntoViewIfNeeded()
   const card=host.getByRole('article').filter({has:host.getByRole('heading',{name:'Heavy 13',exact:true})}).first()
-  await expect.poll(()=>card.locator('img').evaluate((n:HTMLImageElement)=>n.complete&&n.naturalWidth>0)).toBe(true)
+  await expect.poll(()=>card.locator('img[data-arena-art]').evaluate((n:HTMLImageElement)=>n.complete&&n.naturalWidth>0)).toBe(true)
   await host.getByLabel('Nickname').fill('Ada')
   await host.getByRole('button',{name:'Create party'}).click()
   const code=(await host.getByTestId('room-code').textContent())!
-  await host.getByRole('combobox',{name:'Game',exact:true}).selectOption('heavy13')
-  await host.getByRole('combobox',{name:'Seconds per selection or placement'}).selectOption('45')
+  await chooseGame(host,'heavy13')
+  await chooseSetting(host,'Seconds per selection or placement','45')
   await guest.goto(baseURL!+'#/join?room='+code)
   await guest.getByLabel('Nickname').fill('Mina')
   await guest.getByRole('button',{name:'Join party'}).click()
@@ -68,7 +69,7 @@ test('Heavy 13 solo starts with one bot, accepts keyboard choices, and reaches t
  await page.goto(baseURL!+'season/3/')
  await page.getByLabel('Nickname').fill('Ada')
  await page.getByRole('button',{name:'Practice Heavy 13'}).click()
- await page.getByRole('combobox',{name:/Bot difficulty/}).selectOption('hard')
+ await chooseSetting(page,'Bot difficulty','hard')
  await startMatch(page)
  const board=page.getByRole('region',{name:'Heavy 13 table'})
  await expect(board.getByText('Bot 1',{exact:true})).toBeVisible()

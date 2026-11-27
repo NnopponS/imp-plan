@@ -1,4 +1,5 @@
 import {expect,test} from '@playwright/test'
+import {selectedGame} from '../lobby-controls'
 
 const seasons=[
  {number:1,title:'The First Plan',firstGame:'Blind Gomoku'},
@@ -51,16 +52,16 @@ test('challenge index opens from the gallery and only playable search results ca
  await live.focus()
  await page.keyboard.press('Enter')
  await expect(page.getByRole('heading',{name:'Practice lobby'})).toBeVisible()
- await expect(page.getByRole('combobox',{name:'Game',exact:true})).toHaveValue('fragments')
+ await expect(selectedGame(page,'fragments')).toBeVisible()
 })
 
 test('two season games can be opened in succession without a nickname',async({page})=>{
  await page.goto('./season/3/')
  await page.getByRole('button',{name:'Practice Point Gomoku',exact:true}).click()
- await expect(page.getByRole('combobox',{name:'Game',exact:true})).toHaveValue('point')
+ await expect(selectedGame(page,'point')).toBeVisible()
  await page.getByRole('button',{name:'Leave room',exact:true}).click()
  await expect(page.getByLabel('Nickname')).toHaveValue('')
  await page.getByRole('button',{name:'Practice Memory Poker',exact:true}).click()
- await expect(page.getByRole('combobox',{name:'Game',exact:true})).toHaveValue('memoryPoker')
+ await expect(selectedGame(page,'memoryPoker')).toBeVisible()
  await expect(page.getByLabel('Nickname')).toHaveCount(0)
 })

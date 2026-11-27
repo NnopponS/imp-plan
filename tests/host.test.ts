@@ -61,3 +61,62 @@ it('accepts concurrent bids against the same round without accepting a prior rou
  expect(h.command('guest','c',h.rev,{kind:'move',action:2000,round:1})).toMatch(/round/i)
  expect(h.snapshot('guest')?.game?.round).toBe(2)
 })
+
+it('automatically deals different appearances to all 16 seats and hides private seat fields',()=>{
+ const room=new Host('Host',()=>10)
+ for(let i=1;i<16;i++)expect(room.join('p'+i,'Player '+i)).not.toBeNull()
+ const publicSeats=room.snapshot('p15')!.seats
+ const appearances=publicSeats.map(s=>s.appearance)
+ expect(new Set(appearances).size).toBe(16)
+ expect(appearances.every(n=>Number.isInteger(n)&&n!>=0&&n!<27)).toBe(true)
+ expect(room.snapshot('host')!.seats).toEqual(publicSeats)
+ for(const seat of publicSeats){expect(seat).not.toHaveProperty('token');expect(seat).not.toHaveProperty('connection')}
+})
+
+it('honors explicit presets, avoids their collisions on automatic assignment and never redresses a resumed seat',()=>{
+ const room=new Host('Host',()=>10,false,0)
+ const manual=room.join('manual','Manual',undefined,0)!
+ const fresh=room.join('fresh','Fresh')!
+ const appearance=(id:string)=>room.snapshot('host')!.seats.find(seat=>seat.id===id)?.appearance
+ expect(appearance(room.owner)).toBe(0)
+ expect(appearance(manual.id)).toBe(0)
+ const before=appearance(fresh.id)!
+ expect(before).not.toBe(0)
+ room.disconnect('fresh')
+ expect(room.join('resumed','Fresh',fresh.token,(before+1)%27)?.id).toBe(fresh.id)
+ expect(appearance(fresh.id)).toBe(before)
+ expect(room.command('host','remove',room.rev,{kind:'kick',seat:fresh.id})).toBeNull()
+ expect(room.join('try-again','Fresh',fresh.token)).toBeNull()
+ expect(room.join('next','Next')).not.toBeNull()
+ expect(room.snapshot('host')!.seats.at(-1)?.appearance).not.toBe(before)
+})
+
+it('reuses only currently vacant looks even after all 27 presets have been dealt',()=>{
+ const room=new Host('Host',()=>10,false,26)
+ const persistent=room.join('persistent','Persistent')!
+ const issued=new Set<number>(room.snapshot('host')!.seats.map(seat=>seat.appearance!))
+ for(let i=0;i<40;i++){
+  const fresh=room.join('p'+i,'Guest')!
+  const seats=room.snapshot('host')!.seats
+  expect(new Set(seats.map(seat=>seat.appearance)).size).toBe(3)
+  if(i<25)expect(issued.has(seats.at(-1)!.appearance!)).toBe(false)
+  issued.add(seats.at(-1)!.appearance!)
+  expect(room.command('host','kick'+i,room.rev,{kind:'kick',seat:fresh.id})).toBeNull()
+ }
+ expect(issued.size).toBe(27)
+ expect(room.snapshot('persistent')!.you).toBe(persistent.id)
+ expect(room.command('host','bot',room.rev,{kind:'bot'})).toBeNull()
+ expect(new Set(room.snapshot('host')!.seats.map(seat=>seat.appearance)).size).toBe(3)
+})
+
+it('accepts the legacy hello and sanitizes only the additive preset field',()=>{
+ const hello={version:1,type:'hello',name:'Guest'}
+ expect(decode(JSON.stringify(hello))).toEqual(hello)
+ for(const appearance of [0,26])expect(decode(JSON.stringify({...hello,appearance}))).toEqual({...hello,appearance})
+ for(const appearance of [-1,27,6.25,[],{},'12',null,false]){
+  expect(decode(JSON.stringify({...hello,appearance}))).toMatchObject(hello)
+  const parsed=decode(JSON.stringify({...hello,appearance}))
+  expect(parsed?.type==='hello'?parsed.appearance:NaN).toBeUndefined()
+ }
+ expect(decode(JSON.stringify({...hello,appearance:4,host:true}))).toBeNull()
+})

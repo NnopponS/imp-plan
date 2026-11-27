@@ -1,4 +1,5 @@
 import {test,expect,type Browser,type Page} from '@playwright/test'
+import {chooseGame,chooseSetting,settingChoice} from '../lobby-controls'
 import {rankPokerHand} from '../../src/memory-poker'
 import {startMatch} from './start-match'
 
@@ -62,9 +63,9 @@ test('actual copied invite opens a clean guest, finishes a Memory duel, and rest
    if(reason)throw new Error('Guest did not reach the lobby: '+reason,{cause:error})
    throw error
   })
-  await host.getByLabel('Game').selectOption('memoryPoker')
-  await host.getByLabel('Memory Poker mode').selectOption('episode')
-  await expect(guest.getByLabel('Memory Poker mode')).toHaveValue('episode')
+  await chooseGame(host,'memoryPoker')
+  await chooseSetting(host,'Memory Poker mode','episode')
+  await expect(settingChoice(guest,'Memory Poker mode','episode')).toBeChecked()
   await guest.getByRole('button',{name:'Ready up'}).click()
   await startMatch(host)
 

@@ -1,4 +1,5 @@
 import {test,expect,type Page} from '@playwright/test'
+import {chooseGame,chooseSetting,settingChoice,tableSwitch} from '../lobby-controls'
 import {rankPokerHand} from '../../src/memory-poker'
 
 const table=(page:Page)=>page.getByRole('region',{name:'Episode-style Memory Poker duel'})
@@ -30,19 +31,19 @@ test('episode-style two-human duel waits for Enter, seals picks, redeals a tie a
   await host.goto(baseURL!)
   await host.getByLabel('Nickname').fill('Ari')
   await host.getByRole('button',{name:'Create party'}).click()
-  await host.getByLabel('Game').selectOption('memoryPoker')
-  await expect(host.getByLabel('Memory Poker mode')).toHaveValue('fan')
-  await expect(host.getByRole('option',{name:'Episode-style duel'})).toHaveAttribute('disabled','')
+  await chooseGame(host,'memoryPoker')
+  await expect(settingChoice(host,'Memory Poker mode','fan')).toBeChecked()
+  await expect(settingChoice(host,'Memory Poker mode','episode')).toBeDisabled()
   const code=(await host.getByTestId('room-code').textContent())!
   const guestWire:string[]=[]
   guest.on('websocket',ws=>ws.on('framereceived',({payload})=>{if(typeof payload==='string'&&payload.includes('snapshot'))guestWire.push(payload)}))
   await guest.goto(baseURL!+'#/join?room='+code)
   await guest.getByLabel('Nickname').fill('Bee')
   await guest.getByRole('button',{name:'Join party'}).click()
-  await expect(host.getByRole('option',{name:'Episode-style duel'})).not.toHaveAttribute('disabled','')
-  await host.getByLabel('Memory Poker mode').selectOption('episode')
-  await expect(guest.getByLabel('Memory Poker mode')).toHaveValue('episode')
-  await expect(host.getByLabel('Allow one-card peek (−1 point)')).toHaveCount(0)
+  await expect(settingChoice(host,'Memory Poker mode','episode')).toBeEnabled()
+  await chooseSetting(host,'Memory Poker mode','episode')
+  await expect(settingChoice(guest,'Memory Poker mode','episode')).toBeChecked()
+  await expect(tableSwitch(host,'Allow one-card peek (−1 point)')).toHaveCount(0)
   await guest.getByRole('button',{name:'Ready up'}).click()
   await host.getByRole('button',{name:'Start match',exact:true}).click()
   const briefing=host.getByRole('dialog')
@@ -103,8 +104,8 @@ test('episode-style two-human duel waits for Enter, seals picks, redeals a tie a
   }
   expect(await guest.evaluate(()=>document.documentElement.scrollWidth)).toBe(360)
   await host.getByRole('button',{name:'Return to lobby'}).click()
-  await expect(host.getByLabel('Memory Poker mode')).toHaveValue('episode')
-  await host.getByLabel('Memory Poker mode').selectOption('fan')
-  await expect(host.getByLabel('Allow one-card peek (−1 point)')).toBeVisible()
+  await expect(settingChoice(host,'Memory Poker mode','episode')).toBeChecked()
+  await chooseSetting(host,'Memory Poker mode','fan')
+  await expect(tableSwitch(host,'Allow one-card peek (−1 point)')).toBeVisible()
  }finally{await desktop.close();await mobile.close()}
 })

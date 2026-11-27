@@ -588,13 +588,13 @@
 <text x="808.1" y="514.7" fill="#c7c1a4" font-family="Georgia,serif" font-size="22.0" font-weight="bold" text-anchor="middle" >1</text>
 <path d="M 838.6 488.2 L 911.3 487.3 L 923.0 527.0 L 846.2 528.6 Z" fill="#3d4545" stroke="#8f8672" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" />
 <text x="883.4" y="513.3" fill="#eadabc" font-family="Georgia,serif" font-size="22.0" font-weight="bold" text-anchor="middle" >−1</text>
-<path d="M 512.8 359.1 L 755.2 365.2 L 762.3 447.8 L 487.7 447.9 Z" fill="none" stroke="#3d3836" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+<g data-cover-part="zero-sum-frame"><animate attributeName="opacity" values="1;.56;1;1" keyTimes="0;.23;.57;1" calcMode="spline" keySplines=".35 0 .29 1;.35 0 .29 1;.35 0 .29 1" begin="indefinite" data-cover-at="0.32s" dur="1.02s" fill="remove"/><path d="M 512.8 359.1 L 755.2 365.2 L 762.3 447.8 L 487.7 447.9 Z" fill="none" stroke="#3d3836" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
 <path d="M 512.8 359.1 L 755.2 365.2 L 762.3 447.8 L 487.7 447.9 Z" fill="none" stroke="#e2bb7a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
 <circle cx="512.8" cy="359.1" r="3.8" fill="#e2bb7a" stroke="#78634e" stroke-width="0.85"/>
 <circle cx="755.2" cy="365.2" r="3.8" fill="#e2bb7a" stroke="#78634e" stroke-width="0.85"/>
 <circle cx="762.3" cy="447.8" r="3.8" fill="#e2bb7a" stroke="#78634e" stroke-width="0.85"/>
 <circle cx="487.7" cy="447.9" r="3.8" fill="#e2bb7a" stroke="#78634e" stroke-width="0.85"/>
-<path d="M 643.0 276.5 L 853.0 289.0 L 864.7 328.7 L 638.5 319.3 Z" fill="none" stroke="#3d3836" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+</g><path d="M 643.0 276.5 L 853.0 289.0 L 864.7 328.7 L 638.5 319.3 Z" fill="none" stroke="#3d3836" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
 <path d="M 643.0 276.5 L 853.0 289.0 L 864.7 328.7 L 638.5 319.3 Z" fill="none" stroke="#adbc91" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
 <circle cx="643.0" cy="276.5" r="3.8" fill="#adbc91" stroke="#78634e" stroke-width="0.85"/>
 <circle cx="853.0" cy="289.0" r="3.8" fill="#adbc91" stroke="#78634e" stroke-width="0.85"/>
@@ -634,12 +634,12 @@
 <path d="M1181 278Q1077 259 971 271" fill="none" stroke="#a08777" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity=".52"/>
 <path d="M1164 317Q1088 294 983 294" fill="none" stroke="#a87663" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round" opacity=".52"/>
 <path d="M1058 233q55-4 98 11" fill="none" stroke="#a08777" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity=".52"/>
-<g transform="translate(854 343) rotate(-9)" >
+<g data-cover-part="tracing-stylus" transform="translate(0 0)"><animateTransform attributeName="transform" type="rotate" values="0 976 324;8 976 324;1 976 324;-3 976 324;0 976 324;0 976 324" keyTimes="0.00;0.2436;0.4785;0.6264;0.87;1" calcMode="spline" keySplines=".35 0 .29 1;.35 0 .29 1;.35 0 .29 1;.35 0 .29 1;.35 0 .29 1" begin="indefinite" data-cover-at="0.12s" dur="1.28s" fill="remove"/><g transform="translate(854 343) rotate(-9)" >
 <path d="M-123 20L95-8 131 2 97 12-122 28-148 25Z" fill="url(#brass)" stroke="#36313c" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" />
 <path d="M-129 24L96-4 113 0" fill="none" stroke="#e0ba87" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" />
 <path d="M-148 25L-122 20-120 28Z" fill="#d6af86" stroke="#4d3d43" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
 </g>
-<g transform="translate(937 266) rotate(-2) scale(-1.12 1.12)" >
+</g><g transform="translate(937 266) rotate(-2) scale(-1.12 1.12)" >
 <path d="M-42-26Q-20-22-5-33Q17-46 31-39L57-28Q65-23 63-17Q60-9 50-13L25-25Q27-12 38-8L64 0Q72 4 68 10Q65 17 56 14L36 11Q41 18 46 23Q50 29 45 33Q38 38 31 29L18 19Q5 25-9 21L-42 15Z" fill="url(#skin2)" stroke="#342330" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
 <path d="M-37-22Q-26-18-13-25Q7-35 15-31Q7-23-10-18L-34-10Z" fill="#dfb084" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" opacity=".40"/>
 <path d="M-17-15Q4-29 18-28" fill="none" stroke="#e0b08b" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" opacity=".73"/>

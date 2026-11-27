@@ -1,0 +1,62 @@
+/* A local wardrobe on the landing workbench, not part of joining a room. */
+.player-wardrobe{
+ display:grid;gap:7px;padding:clamp(8px,1.25vw,15px);min-width:0;color:#f5e4c4;
+ background:#2b211e;border:1px solid #94704f;box-shadow:inset 0 0 0 3px #3d2c24
+}
+.wardrobe-title{
+ display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:3px 7px;
+ padding:0 0 5px;margin:0;border-bottom:1px solid #76573e
+}
+.wardrobe-title h2{margin:0;color:#faebcf;font:400 clamp(1.1rem,3.8vw,1.54rem)/1.12 Georgia,serif}
+.wardrobe-title>span{
+ color:#dfbf92;font-size:.62rem;font-weight:750;text-transform:uppercase;letter-spacing:.1em
+}
+.wardrobe-body{
+ display:grid;grid-template-columns:minmax(66px,1fr) minmax(136px,1.12fr);
+ align-items:center;gap:clamp(4px,1.4vw,16px);min-width:0
+}
+.wardrobe-frame{display:grid;place-items:center;gap:4px;min-width:0}
+.wardrobe-frame>span{color:#d9bd9c;font-size:.63rem;line-height:1.18;text-align:center}
+.wardrobe-portrait{display:block;width:min(100%,10rem);height:auto;max-height:196px}
+.wardrobe-controls{display:grid;gap:4px;min-width:0}
+.wardrobe-choices{margin:0;padding:0;border:0;min-inline-size:0}
+.wardrobe-choices legend{padding:0;margin:0 0 3px;color:#ead0a9;font-size:.67rem;font-weight:740;line-height:1.08}
+.wardrobe-options{display:grid;grid-template-columns:repeat(3,minmax(44px,1fr));gap:2px}
+.wardrobe-options label{
+ display:grid;place-items:center;position:relative;min-width:44px;min-height:44px;margin:0;cursor:pointer;
+ background:#382920;border:1px solid #826044;border-radius:3px;color:#e8c58d
+}
+.wardrobe-options label:has(input:checked){
+ background:#50392b;border-color:#dfb679;box-shadow:inset 0 0 0 1px #a9774b
+}
+.wardrobe-options label:has(input:checked)::after{
+ content:"";position:absolute;inset-inline-end:4px;inset-block-start:4px;width:4px;height:4px;
+ transform:rotate(45deg);border:1px solid #f2d09d;background:#c89962
+}
+.wardrobe-options label:hover{border-color:#cbab7d}
+.wardrobe-options label:has(input:focus-visible){outline:2px solid #ffdd9c;outline-offset:1px;z-index:1}
+.wardrobe-options svg{display:block;width:35px;height:35px;max-width:calc(100% - 6px);pointer-events:none}
+.wardrobe-foot{
+ display:flex;justify-content:space-between;align-items:center;gap:4px 7px;
+ border-top:1px solid #76573e;color:#d9bd9c;font-size:.71rem
+}
+.wardrobe-foot :is(a,button){
+ display:inline-flex;justify-content:center;align-items:center;gap:5px;min-width:44px;min-height:44px;padding:0 3px;
+ color:#f2d395;text-underline-offset:3px;text-align:end;font-weight:700
+}
+.wardrobe-foot button{
+ border:1px solid transparent;border-radius:2px;background:transparent;text-decoration:none;text-align:start
+}
+.wardrobe-foot button:hover:not(:disabled){color:#ffedc7;border-color:#a77d55;background:#3b2a20}
+.wardrobe-foot :is(a,button) svg{width:16px;height:16px;flex:none}
+.wardrobe-foot :is(a,button):focus-visible{outline:2px solid #ffdd9c;outline-offset:0}
+@media(min-width:760px){
+ .wardrobe-options{gap:4px}
+ .wardrobe-foot :is(a,button){padding-inline:8px}
+}
+
+/* Hold the same portrait on actual seats; names and ready badges stay on their own rails. */
+.party-roster .party-seat[data-seat-look] .avatar svg,
+.roster .seat .avatar[data-seat-look] svg{width:100%;height:100%;display:block;object-fit:cover}
+.party-roster .party-seat[data-seat-look] .avatar,
+.roster .seat .avatar[data-seat-look]{overflow:hidden;background:#2d221c;color:#e8ca92}

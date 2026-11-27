@@ -1,4 +1,5 @@
 import {test,expect,type Page} from '@playwright/test'
+import {chooseGame,chooseSetting,settingChoice} from '../lobby-controls'
 const table=(p:Page)=>p.getByRole('region',{name:'Episode-style Memory Poker duel'})
 const cards=(p:Page)=>table(p).getByRole('group',{name:'Duel card layout'}).getByRole('button')
 // Advance both browser clocks, letting heartbeat traffic arrive before the
@@ -44,11 +45,11 @@ for(const [width,height] of [[320,568],[390,844]])test('Memory duel at '+width+'
  const h=await desk.newPage(),g=await phone.newPage()
  h.setDefaultTimeout(6000);g.setDefaultTimeout(6000)
  await Promise.all([h.clock.install(),g.clock.install()])
- await h.goto(baseURL!);await h.getByLabel('Nickname').fill('H');await h.getByRole('button',{name:'Create party'}).click();await h.getByLabel('Game').selectOption('memoryPoker')
+ await h.goto(baseURL!);await h.getByLabel('Nickname').fill('H');await h.getByRole('button',{name:'Create party'}).click();await chooseGame(h,'memoryPoker')
  const code=await h.getByTestId('room-code').innerText()
  await g.goto(baseURL!+'#/join?room='+code);await g.getByLabel('Nickname').fill('G');await g.getByRole('button',{name:'Join party'}).click()
- await expect(h.getByRole('option',{name:'Episode-style duel'})).not.toHaveAttribute('disabled','')
- await h.getByLabel('Memory Poker mode').selectOption('episode');await expect(g.getByLabel('Memory Poker mode')).toHaveValue('episode');await g.getByRole('button',{name:'Ready up'}).tap();await h.getByRole('button',{name:'Start match',exact:true}).click();await h.getByRole('button',{name:'Enter match',exact:true}).click()
+ await expect(settingChoice(h,'Memory Poker mode','episode')).toBeEnabled()
+ await chooseSetting(h,'Memory Poker mode','episode');await expect(settingChoice(g,'Memory Poker mode','episode')).toBeChecked();await g.getByRole('button',{name:'Ready up'}).tap();await h.getByRole('button',{name:'Start match',exact:true}).click();await h.getByRole('button',{name:'Enter match',exact:true}).click()
  await expect(cards(g)).toHaveCount(16)
  await validateGeom(g,'study');const first=await names(g)
  await reload(g);await expect(cards(g)).toHaveCount(16);expect(await names(g)).toEqual(first);await validateGeom(g,'resumed study')

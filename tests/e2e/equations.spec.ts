@@ -1,4 +1,5 @@
 import {startMatch} from './start-match'
+import {chooseGame} from '../lobby-controls'
 import {test,expect} from '@playwright/test'
 
 test('Equation Lights keeps equations private and gives the guest a final response on mobile',async({browser,baseURL})=>{
@@ -9,7 +10,7 @@ test('Equation Lights keeps equations private and gives the guest a final respon
   await h.getByLabel('Nickname').fill('Setter')
   await h.getByRole('button',{name:'Create party'}).click()
   const invite=(await h.getByTestId('room-code').textContent())!
-  await h.getByLabel('Game').selectOption('equations')
+  await chooseGame(h,'equations')
   await v.goto(baseURL!+'#/join?room='+invite)
   await v.getByLabel('Nickname').fill('Challenger')
   await v.getByRole('button',{name:'Join party'}).click()

@@ -1,4 +1,5 @@
 import {expect,test,type Page} from '@playwright/test'
+import {chooseGame} from '../lobby-controls'
 import {startMatch} from './start-match'
 
 const stage=(page:Page)=>page.getByRole('region',{name:'Montage portrait gallery'})
@@ -23,11 +24,11 @@ test('Montage opens host-paced rounds and accepts synchronized keyboard and mobi
   await host.goto(baseURL!+'season/1/')
   const card=host.locator('article').filter({has:host.getByRole('heading',{name:'Montage',exact:true})})
   await expect(card.getByRole('button',{name:'Practice Montage'})).toBeVisible()
-  await expect.poll(()=>card.locator('img').evaluate((img:HTMLImageElement)=>img.complete&&img.naturalWidth>0)).toBe(true)
+  await expect.poll(()=>card.locator('img[data-arena-art]').evaluate((img:HTMLImageElement)=>img.complete&&img.naturalWidth>0)).toBe(true)
   await host.getByLabel('Nickname').fill('Ada')
   await host.getByRole('button',{name:'Create party'}).click()
   const code=(await host.getByTestId('room-code').textContent())!
-  await host.getByRole('combobox',{name:'Game',exact:true}).selectOption('montage')
+  await chooseGame(host,'montage')
   await expect(host.getByRole('button',{name:'Start match'})).toBeDisabled()
   await guest.goto(baseURL!+'#/join?room='+code)
   await guest.getByLabel('Nickname').fill('Mina')
@@ -83,7 +84,10 @@ test('Montage solo finishes a slower, unscored gallery at 320 pixels',async({pag
  await page.getByLabel('Nickname').fill('Ada')
  const card=page.locator('article').filter({has:page.getByRole('heading',{name:'Montage',exact:true})})
  await card.getByRole('button',{name:'Practice Montage'}).click()
- await expect(page.getByText('One gallery round in solo practice.',{exact:false})).toBeVisible()
+ await page.getByRole('button',{name:'Details',exact:true}).click()
+ const details=page.getByRole('dialog',{name:'Montage',exact:true})
+ await expect(details.getByText('One gallery round in solo practice.',{exact:false})).toBeVisible()
+ await details.getByRole('button',{name:'Back to lobby',exact:true}).click()
  await startMatch(page)
  await pause(page)
  await expect(stage(page).getByText('SOLO PRACTICE',{exact:false})).toBeVisible()

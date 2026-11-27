@@ -821,7 +821,7 @@
 <circle cx="689.0" cy="248.46" r="2" fill="#bfc3a1" stroke="none" stroke-width="1"/>
 <path d="M 659.1 266.82 L 665.325 274.32 L 659.1 281.82 L 652.875 274.32 Z" fill="none" stroke="#cf9c72" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
 <path d="M707.2 270.62 L694.85 269.55" fill="none" stroke="#dcb18b" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round" opacity=".52"/>
-<path d="M 689 201 L 624 170 L 624 228 L 689 259 Z" fill="#626e69" stroke="#3b3034" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+<g data-cover-object="lift-top-mineral-cube"><animateTransform attributeName="transform" type="translate" begin="indefinite" data-cover-at="0.11s" dur="1.29s" fill="remove" values="0 0;0 -69;0 -69;0 0;0 -4;0 0" keyTimes="0;.30;.56;.84;.92;1" calcMode="spline" keySplines=".23 .02 .30 1;.23 .02 .30 1;.23 .02 .30 1;.23 .02 .30 1;.23 .02 .30 1"/><path d="M 689 201 L 624 170 L 624 228 L 689 259 Z" fill="#626e69" stroke="#3b3034" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
 <path d="M 754 170 L 689 201 L 689 259 L 754 228 Z" fill="#505461" stroke="#3b3034" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
 <path d="M 689 139 L 754 170 L 689 201 L 624 170 Z" fill="#899286" stroke="#443337" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
 <path d="M689.0 143.96 L634.4 170.0" fill="none" stroke="#bfc3a1" stroke-width="0.83" stroke-linecap="round" stroke-linejoin="round" opacity=".52"/>
@@ -839,7 +839,7 @@
 <path d="M630.5 179.48 L679.25 203.31" fill="none" stroke="#d4a37e" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round" opacity=".32"/>
 <circle cx="689.65" cy="146.13" r="2" fill="#bfc3a1" stroke="none" stroke-width="1"/>
 <circle cx="689.0" cy="190.46" r="2" fill="#bfc3a1" stroke="none" stroke-width="1"/>
-<path d="M 659.1 208.82 L 665.325 216.32 L 659.1 223.82 L 652.875 216.32 Z" fill="none" stroke="#cf9c72" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M 659.1 208.82 L 665.325 216.32 L 659.1 223.82 L 652.875 216.32 Z" fill="none" stroke="#cf9c72" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" /></g>
 <path d="M 494 406 L 429 375 L 429 433 L 494 464 Z" fill="#77534d" stroke="#3b3034" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
 <path d="M 559 375 L 494 406 L 494 464 L 559 433 Z" fill="#56414b" stroke="#3b3034" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
 <path d="M 494 344 L 559 375 L 494 406 L 429 375 Z" fill="#b48158" stroke="#443337" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />

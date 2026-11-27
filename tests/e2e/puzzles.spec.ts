@@ -1,4 +1,5 @@
 import {startMatch} from './start-match'
+import {chooseGame,selectedGame,chooseSetting,settingChoice} from '../lobby-controls'
 import {test,expect} from '@playwright/test'
 import {countRectangles} from '../../src/puzzles'
 test('play four rectangle rounds on mobile and start a rematch',async({page})=>{
@@ -6,13 +7,15 @@ test('play four rectangle rounds on mobile and start a rematch',async({page})=>{
  await page.goto('./')
  await page.getByLabel('Nickname').fill('Puzzle fan')
  await page.getByRole('button',{name:/Practice Count the Rectangles/}).click()
- await expect(page.getByLabel('Game')).toHaveValue('rectangles')
+ await expect(selectedGame(page,'rectangles')).toBeVisible()
  await startMatch(page)
  for(let n=1;n<=4;n++){
   await expect(page.getByText('Grid '+n+' / 4')).toBeVisible()
   const grid=page.getByRole('group',{name:'Rectangle grid'})
   const tiles=grid.getByRole('button')
-  const values=(await tiles.allTextContents()).map(Number)
+  await expect(tiles).toHaveCount(19)
+ const values=(await tiles.allTextContents()).map(Number)
+ expect(values.every(value=>Number.isInteger(value)&&value>=1&&value<=20)).toBe(true)
   const target=Number(await page.locator('.puzzle-target strong').textContent())
   await tiles.first().click()
   await expect(tiles.first()).toHaveAttribute('aria-pressed','true')
@@ -31,7 +34,7 @@ test('hex launches into a 19-tile study phase without a visible target',async({p
  await page.goto('./')
  await page.getByLabel('Nickname').fill('Puzzle fan')
  await page.getByRole('button',{name:/Practice Hexagon/}).click()
- await expect(page.getByLabel('Game')).toHaveValue('hex')
+ await expect(selectedGame(page,'hex')).toBeVisible()
  await startMatch(page)
  await expect(page.getByRole('button',{name:/^Tile \d+, value \d+$/})).toHaveCount(19)
  await expect(page.getByText(/Study the board/)).toBeVisible()
@@ -54,7 +57,7 @@ test('two players complete the three Exile grids with private answers including 
   await h.getByLabel('Nickname').fill('Counter')
   await h.getByRole('button',{name:'Create party'}).click()
   const invite=(await h.getByTestId('room-code').textContent())!
-  await h.getByLabel('Game').selectOption('exile')
+  await chooseGame(h,'exile')
   await v.goto(baseURL!+'#/join?room='+invite)
   await v.getByLabel('Nickname').fill('Guest')
   await v.getByRole('button',{name:'Join party'}).click()
@@ -65,7 +68,9 @@ test('two players complete the three Exile grids with private answers including 
    const tiles=v.getByRole('group',{name:'Rectangle grid'}).getByRole('button')
    const rows=n===1?6:8
    await expect(tiles).toHaveCount(rows*8)
-   const values=(await tiles.allTextContents()).map(Number)
+   await expect(tiles).toHaveCount(19)
+ const values=(await tiles.allTextContents()).map(Number)
+ expect(values.every(value=>Number.isInteger(value)&&value>=1&&value<=20)).toBe(true)
    await expect(v.locator('.puzzle-target strong')).toHaveText('0')
    await v.evaluate(()=>window.scrollTo(0,0))
    await expect(v.locator('.puzzle-target')).toBeInViewport({ratio:1})
@@ -107,8 +112,8 @@ test('Divine Test solves with keyboard at a phone viewport and keeps its fixed t
  await page.goto('./season/3/')
  await page.getByLabel('Nickname').fill('Solver')
  await page.getByRole('button',{name:/Practice Divine Test/}).click()
- await expect(page.getByLabel('Time limit')).toHaveValue('600')
- await page.getByLabel('Square size').selectOption('3')
+ await expect(settingChoice(page,'Time limit','600')).toBeChecked()
+ await chooseSetting(page,'Square size','3')
  await startMatch(page)
  await expect(page.getByText('Every line: 15')).toBeVisible()
  const grid=page.getByRole('region',{name:'Magic square grid'})
@@ -146,7 +151,9 @@ test('hex instrument veils values and only locks a contiguous three-tile line',a
  await startMatch(page)
  const bench=page.getByRole('region',{name:'Hexagon instrument'})
  const tiles=bench.getByRole('group',{name:'Hexagon tiles'}).getByRole('button')
+ await expect(tiles).toHaveCount(19)
  const values=(await tiles.allTextContents()).map(Number)
+ expect(values.every(value=>Number.isInteger(value)&&value>=1&&value<=20)).toBe(true)
  await expect(bench.getByRole('timer',{name:'Time remaining'})).toBeVisible()
  await page.clock.fastForward(30_500)
  await expect(bench.getByText('Target sum',{exact:false})).toBeVisible()
@@ -168,6 +175,7 @@ test('hex instrument veils values and only locks a contiguous three-tile line',a
 
 test('cube instrument keeps operating angles, layers and answer visible in landscape',async({page})=>{
  await page.setViewportSize({width:844,height:390})
+ await page.emulateMedia({reducedMotion:'reduce'})
  await page.goto('./season/3/')
  await page.getByRole('button',{name:'Practice Count the Cubes',exact:true}).click()
  await startMatch(page)
@@ -179,6 +187,15 @@ test('cube instrument keeps operating angles, layers and answer visible in lands
  await expect(lock).toBeInViewport({ratio:1})
  const image=bench.getByRole('img',{name:/Isometric cube stack/})
  await expect(image).toBeVisible()
+ await views.getByRole('button',{name:'Layers'}).press('Enter')
+ await expect(bench.getByRole('group',{name:'Layer 1 occupancy'})).toBeVisible()
+ const levels=bench.getByRole('radiogroup',{name:'Stack levels'})
+ await expect(levels).toBeInViewport({ratio:1})
+ expect(await levels.evaluate(el=>el.getAnimations({subtree:true}).length)).toBe(0)
+ await expect(bench.locator('select')).toHaveCount(0)
+ await levels.getByRole('radio',{name:'Layer 1',exact:true}).press('ArrowLeft')
+ await expect(levels.getByRole('radio',{name:'Layer 4',exact:true})).toBeFocused()
+ await expect(bench.getByRole('group',{name:'Layer 4 occupancy'})).toBeVisible()
  await views.getByRole('button',{name:'Quarter turn'}).press('Enter')
  await expect(views.getByRole('button',{name:'Quarter turn'})).toHaveAttribute('aria-pressed','true')
  for(let round=1;round<=3;round++){
@@ -187,15 +204,23 @@ test('cube instrument keeps operating angles, layers and answer visible in lands
   const side=round===3?4:3
   let answer=0
   for(let layer=1;layer<=4;layer++){
-   const selector=bench.getByLabel('Layer',{exact:true})
-   await selector.selectOption(String(layer))
+   const selector=levels.getByRole('radio',{name:`Layer ${layer}`,exact:true})
+   await selector.press('Enter')
+   await expect(selector).toBeChecked()
    await page.evaluate(()=>window.scrollTo(0,0))
    const occupancy=bench.getByRole('group',{name:`Layer ${layer} occupancy`})
    await expect(occupancy.getByRole('img')).toHaveCount(side*side)
    await expect(occupancy).toBeInViewport({ratio:1})
    const gridBox=(await occupancy.boundingBox())!
    expect(gridBox.y+gridBox.height).toBeLessThanOrEqual(360)
-   expect((await selector.boundingBox())!.height).toBeGreaterThanOrEqual(37)
+   const pickerBox=(await levels.boundingBox())!
+   expect(pickerBox.x+pickerBox.width).toBeLessThanOrEqual(gridBox.x)
+   await expect(levels).toBeInViewport({ratio:1})
+   await expect(lock).toBeInViewport({ratio:1})
+   const choiceBox=(await selector.boundingBox())!
+   expect(choiceBox.width).toBeGreaterThanOrEqual(44)
+   expect(choiceBox.height).toBeGreaterThanOrEqual(44)
+   await expect(selector.locator('svg')).toBeVisible()
    for(const button of await views.getByRole('button').all()){
     expect((await button.boundingBox())!.height).toBeGreaterThanOrEqual(42)
    }

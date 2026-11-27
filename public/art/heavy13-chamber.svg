@@ -164,7 +164,9 @@
 <g transform="translate(16.4 16.7) scale(1.6)"><path d="M6.7 17V3.4L1.2 12.6h8.1" fill="none" stroke="#fff3ce" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round" opacity=".8" transform="translate(.22 .28)"/>
 <path d="M6.7 17V3.4L1.2 12.6h8.1" fill="none" stroke="#4c3028" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity=".97"/>
 </g></g><path d="M530 222v56m-8-8 8 9 8-9" fill="none" stroke="#f4d28a" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round" opacity=".86"/>
-<g transform="translate(466 87) scale(2.03) rotate(-14 30 30)"><path d="M5 14 19 5h32l5 5v31l-12 13H7l-4-4V18Z" fill="#443126" stroke="none" opacity=".39" transform="translate(1 2)"/>
+<g data-cover-subject="falling-three-cube">
+<animateTransform attributeName="transform" type="translate" begin="indefinite" data-cover-at="0.12s" dur="1.32s" fill="remove" calcMode="spline" keyTimes="0;.15;.51;.61;.70;.88;1" keySplines=".3 .05 .45 1;.64 0 .86 .5;.12 .40 .45 1;.45 0 .62 1;.35 0 .66 1;.32 .14 .52 1" values="0 0;0 -10;-16 106;-16 98;-16 104;-8 63;0 0"/>
+<g transform="translate(466 87) scale(2.03) rotate(-14 30 30)"><animateTransform attributeName="transform" type="rotate" additive="sum" begin="indefinite" data-cover-at="0.12s" dur="1.32s" fill="remove" calcMode="spline" keyTimes="0;.15;.51;.61;.70;.88;1" keySplines=".3 .05 .45 1;.64 0 .86 .5;.12 .40 .45 1;.45 0 .62 1;.35 0 .66 1;.32 .14 .52 1" values="0 30 30;-1 30 30;14 30 30;11 30 30;14 30 30;8 30 30;0 30 30"/><path d="M5 14 19 5h32l5 5v31l-12 13H7l-4-4V18Z" fill="#443126" stroke="none" opacity=".39" transform="translate(1 2)"/>
 <path d="M4 15 18 5h34l4 4-13 10H7Z" fill="url(#cubeTop)" stroke="#725139" stroke-width="1.25"/>
 <path d="M43 18 56 9v33L44 53 40 49Z" fill="url(#cubeSide)" stroke="#684431" stroke-width="1.25"/>
 <path d="M4 17q0-2 2.2-2H42q2 0 2 2.5v33q0 2-2.1 2.5H6q-2-.5-2-2.7Z" fill="url(#cubeFace)" stroke="#684632" stroke-width="1.41"/>
@@ -174,7 +176,8 @@
 <path d="M47.5 27.5v12.8m2.1-14.6v12.8m2.1-14.2v11.1" fill="none" stroke="#d29f71" stroke-width=".51" stroke-linecap="round" stroke-linejoin="round" opacity=".45"/>
 <g transform="translate(16.4 16.7) scale(1.6)"><path d="M1.6 4.4H8L4.5 9q5.1.1 3.7 5.1Q7.6 17.1 4 17q-1.9.1-2.5-1" fill="none" stroke="#fff3ce" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round" opacity=".8" transform="translate(.22 .28)"/>
 <path d="M1.6 4.4H8L4.5 9q5.1.1 3.7 5.1Q7.6 17.1 4 17q-1.9.1-2.5-1" fill="none" stroke="#4c3028" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity=".97"/>
-</g></g><g transform="translate(326 154) rotate(-15) scale(1.12)"><path d="M-177 120q-16-20 2-46 22-30 65-48l74-42 43-9 26 41-12 34-101 72q-56 30-97-2Z" fill="url(#coat)" stroke="#322b30" stroke-width="2.6"/>
+</g></g>
+</g><g transform="translate(326 154) rotate(-15) scale(1.12)"><path d="M-177 120q-16-20 2-46 22-30 65-48l74-42 43-9 26 41-12 34-101 72q-56 30-97-2Z" fill="url(#coat)" stroke="#322b30" stroke-width="2.6"/>
 <path d="M-175 100q21 10 51 13 30-8 62-30l84-51-4 19-96 71q-55 29-93-1Z" fill="#42363d" opacity=".75"/>
 <path d="M-176 99q6-34 28-51t58-27l63-34m-120 75q13-14 41-25l59-30m-105 89q10 19 40 17 24-4 55-25m-88 19q22 9 53-8" fill="none" stroke="#b3937a" stroke-width="1.23" stroke-linecap="round" stroke-linejoin="round" opacity=".68"/>
 <path d="M-32-20-2-34q23 11 34 39L27 37-5 50q-1-34-27-70Z" fill="url(#cloth)" stroke="#593c3e" stroke-width="2.1"/>

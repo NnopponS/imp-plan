@@ -1,13 +1,15 @@
 import {test,expect} from '@playwright/test'
+import {chooseGame,chooseSetting,settingChoice,tableSetting,tableSwitch} from '../lobby-controls'
 import {startMatch} from './start-match'
 
 test('Divine solo starter puts the first move, numerical value and key in reach on a short phone',async({page})=>{
  await page.setViewportSize({width:320,height:568})
  await page.goto('./season/3/')
  await page.getByRole('button',{name:'Practice Divine Test',exact:true}).click()
- await expect(page.getByLabel('Square size')).toHaveValue('3',{timeout:2500})
- const sizeLabels=await page.getByLabel('Square size').locator('option').allTextContents()
- expect(sizeLabels).toEqual(['3 × 3 (starter)','5 × 5','7 × 7'])
+ await expect(settingChoice(page,'Square size','3')).toBeChecked({timeout:2500})
+ const options=tableSetting(page,'Square size').getByRole('radio')
+ expect(await options.allTextContents()).toEqual(['3 × 3','5 × 5','7 × 7'])
+ await expect(options.first()).toHaveAttribute('aria-description','Starter board')
  await startMatch(page)
  await page.evaluate(()=>window.scrollTo(0,0))
  const grid=page.getByRole('region',{name:'Magic square grid'})
@@ -58,9 +60,9 @@ test('Divine online defaults to 7×7 and the on-screen hard rack never decodes i
   await host.getByLabel('Nickname').fill('Keeper')
   await host.getByRole('button',{name:'Create party'}).click()
   const code=await host.getByTestId('room-code').textContent()
-  await host.getByLabel('Game').selectOption('divine')
-  await expect(host.getByLabel('Square size')).toHaveValue('7')
-  await host.getByLabel('Deduce the numeral key').check()
+  await chooseGame(host,'divine')
+  await expect(settingChoice(host,'Square size','7')).toBeChecked()
+  await tableSwitch(host,'Deduce the numeral key').click()
   await guest.goto(baseURL!+'#/join?room='+code)
   await guest.getByLabel('Nickname').fill('Guest')
   await guest.getByRole('button',{name:'Join party'}).click()
@@ -98,8 +100,8 @@ test('Divine still plays a 5×5 square in solo with the selected time limit',asy
  await page.setViewportSize({width:390,height:844})
  await page.goto('./season/3/')
  await page.getByRole('button',{name:'Practice Divine Test',exact:true}).click()
- await page.getByLabel('Square size').selectOption('5')
- await page.getByLabel('Time limit').selectOption('300')
+ await chooseSetting(page,'Square size','5')
+ await chooseSetting(page,'Time limit','300')
  await startMatch(page)
  await expect(page.getByText('Every line: 65')).toBeVisible()
  await expect(page.getByRole('timer',{name:'Time remaining'})).toHaveText(/^(?:5:00|4:[0-5]\d)$/)

@@ -1,0 +1,106 @@
+/* Engraved components mounted on one folio rather than a stack of forms. */
+.room .table-instruments{
+ --instrument-brass:#c29767;--instrument-gold:#ffdc9e;--instrument-ink:#291c17;
+ --folio-edge:#b1885a;--folio-ink:#2e231e;container-type:inline-size;
+ padding:clamp(11px,2vw,18px);
+}
+.room .table-instruments .party-setting-title{margin:0;padding-block:0 8px;margin-block-end:1px;font-size:1.28rem}
+.instrument-bank{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:16px;align-items:start}
+.instrument{
+ position:relative;min-width:0;padding:10px 0;
+ border-bottom:1px solid #86634465;
+}
+.instrument-name{display:block;margin:0 0 5px;color:#ecd3ae;font-size:.76rem;font-weight:730;letter-spacing:.035em}
+.instrument-face{
+ display:flex;align-items:center;gap:clamp(5px,1.2vw,10px);min-width:0;
+}
+.instrument-choices{display:grid;gap:4px;grid-template-columns:repeat(var(--instrument-count),minmax(0,1fr));min-width:0;width:100%}
+.instrument-choices[data-length="1"]{width:fit-content;min-width:65px}
+.instrument-choices[data-length="4"]{grid-template-columns:repeat(4,minmax(0,1fr))}
+.instrument-choices button{
+ min-height:44px;min-width:44px;position:relative;display:grid;place-items:center;gap:2px;
+ padding:4px 3px;border:1px solid #8e6b49;border-radius:4px;
+ background:linear-gradient(160deg,#574031,#32251e 60%);
+ box-shadow:inset 0 -2px #251714;color:#f5d6aa;font-size:.74rem;line-height:1.1;text-align:center;
+}
+.instrument-choices button[aria-checked=true]{
+ border-color:#ebc688;background:linear-gradient(160deg,#755037,#4c3428 70%);box-shadow:inset 0 0 0 1px #ae8055;
+ color:#fff0ce;
+}
+.instrument-choices button[aria-checked=true]::after{
+ content:"";position:absolute;inset:4px 4px auto auto;width:4px;height:4px;transform:rotate(45deg);background:#fedd9e;
+}
+.instrument-choices button[aria-disabled=true]:not([aria-checked=true]){opacity:.56;cursor:not-allowed}
+.table-instruments[data-read-only] :is(button,[role=radio]){cursor:default}
+.instrument-choice-label{overflow-wrap:anywhere}
+.instrument-clock{display:block;width:57px;height:57px;flex:none;filter:drop-shadow(0 2px 3px #1b130f)}
+.instrument-metal{fill:#714b34;stroke:#c29466;stroke-width:1}
+.instrument-clock-face{fill:#281d17;stroke:#ab7a4d;stroke-width:1.1}
+.instrument-meter-tick{stroke:#a87d54;stroke-width:1}
+.instrument-meter-sweep{fill:none;stroke:#ecc489;stroke-width:1.6}
+.instrument-clock-number{fill:#ffe2ad;font:normal 20px Georgia,serif;text-anchor:middle}
+.instrument-clock-unit{fill:#d7b280;font:700 7px system-ui,sans-serif;letter-spacing:.08em;text-anchor:middle}
+.instrument-mark{
+ display:block;flex:none;width:26px;height:26px;fill:none;
+ stroke:#e3b586;stroke-width:1.65;stroke-linejoin:round;stroke-linecap:round;
+}
+.instrument-grid-mark{width:36px;height:36px;stroke-width:1}
+.instrument-grid-mark rect:first-child{fill:#31241c}
+.instrument-grid-tile{fill:#d3a46b;stroke:none}
+.instrument-stones g path{fill:#76543b;stroke-width:1}
+.instrument-stones ellipse{fill:#bd8d58;stroke-width:1.05}
+.instrument-pips{stroke-width:1.2}
+.instrument-pips path:first-child{fill:#33241b}
+.instrument-seats{display:grid;align-items:start;gap:8px}
+.instrument-seat-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.instrument-seat-top .instrument-name{margin:0}
+.instrument-stepper{display:flex;align-items:center;gap:6px}
+.instrument-stepper button{
+ min-width:44px;min-height:44px;padding:0;border-color:#9b7651;background:#3d2b21;color:#eec997;font-size:1.25rem;
+}
+.instrument-stepper strong{min-width:2ch;text-align:center;color:#ffdfa7;font:normal 1.35rem Georgia,serif;font-variant-numeric:tabular-nums}
+.instrument-seat-marks{display:flex;align-items:center;flex-wrap:wrap;gap:5px;min-height:11px}
+.instrument-seat-marks i{
+ display:block;width:10px;height:10px;border-radius:50%;border:1px solid #ad855c;background:#31261e;
+}
+.instrument-seat-marks [data-mark=occupied]{border-color:#bdcaa0;background:#a2ac83;box-shadow:0 0 0 1px #202618}
+.instrument-seat-marks [data-mark=bot]{border-color:#e2b9d6;background:#d0a5c2;border-radius:2px}
+.instrument-seat-marks [data-mark=closed]{border-color:#785b46;opacity:.5;background:none}
+.instrument-latches{display:flex;flex-wrap:wrap;gap:5px;grid-column:1/-1;padding-top:9px}
+.instrument-latch{
+ display:inline-flex;align-items:center;gap:6px;min-width:0;min-height:44px;padding:4px 7px;
+ border-color:#8d6748;background:#38291f;color:#ecd4ae;font-size:.74rem;line-height:1.1;text-align:left;
+}
+.instrument-latch>.instrument-mark{width:21px;height:21px}
+.instrument-latch[aria-disabled=true]:not([aria-checked=true]){opacity:.61}
+.instrument-latch-track{
+ order:1;display:block;position:relative;width:30px;height:16px;flex:none;border:1px solid #9d744f;border-radius:16px;background:#271a15;
+}
+.instrument-latch-track i{
+ position:absolute;display:block;top:2px;left:2px;width:10px;height:10px;border-radius:50%;
+ border:1px solid #cda67c;background:#855b3f;
+}
+.instrument-latch[aria-checked=true]{border-color:#acb58a;background:#3d3930;color:#f8f0cd}
+.instrument-latch[aria-checked=true] .instrument-latch-track{border-color:#a8b88f;background:#536142}
+.instrument-latch[aria-checked=true] .instrument-latch-track i{left:16px;border-color:#f4e8bd;background:#d4c88e}
+@media(max-width:760px){
+ .instrument-bank{column-gap:9px}
+}
+@media(max-width:540px){
+ .instrument-bank{grid-template-columns:minmax(0,1fr)}
+ .instrument-choices button{font-size:.76rem}
+ .instrument-name{margin-bottom:4px}
+}
+
+@container (max-width:500px){
+ .instrument-bank{grid-template-columns:minmax(0,1fr)}
+}
+
+.table-instruments[data-read-only] [data-dial] button{
+ padding:0;border:0;background:none;box-shadow:none;
+}
+.table-instruments[data-read-only] [data-dial] button::after{content:none}
+@container (max-width:500px){
+ .table-instruments[data-read-only] .instrument-bank{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:9px}
+ .table-instruments[data-read-only] .instrument-seats{grid-column:1/-1}
+}

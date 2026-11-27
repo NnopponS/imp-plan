@@ -1,15 +1,15 @@
 import {expect,test} from '@playwright/test'
 
-test('at 320 pixels the real warm-up precedes room creation and the winning move is visible',async({page})=>{
+test('at 320 pixels the optional portrait comes before the room form, without widening the page',async({page})=>{
  await page.setViewportSize({width:320,height:690})
  await page.goto('./')
- const warmup=page.getByRole('region',{name:'One-move warm-up'})
+ const warmup=page.getByRole('region',{name:'Player wardrobe'})
  const form=page.locator('#room-entry')
  const [board,entry]=await Promise.all([warmup.boundingBox(),form.boundingBox()])
  expect(board).not.toBeNull()
  expect(entry).not.toBeNull()
  expect(board!.y+board!.height).toBeLessThanOrEqual(entry!.y)
- await expect(warmup.getByRole('button',{name:'Row 8, column 9, empty'})).toBeInViewport({ratio:1})
+ await expect(warmup.getByRole('img',{name:/Your avatar/})).toBeVisible()
  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(320)
 })
 
@@ -22,7 +22,7 @@ test('narrow ivory briefing keeps its action visible and its rules readable on h
  await page.getByRole('button',{name:'Start match',exact:true}).click()
  const modal=page.getByRole('dialog',{name:'Blind Gomoku'})
  await expect(modal.getByRole('button',{name:'Enter match',exact:true})).toBeInViewport({ratio:1})
- const steps=modal.locator('.brief-lesson button')
+ const steps=modal.locator('.brief-theater-rules button')
  for(const i of [0,1]){
   const step=steps.nth(i)
   await step.hover()

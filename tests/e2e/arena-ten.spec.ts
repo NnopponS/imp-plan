@@ -26,12 +26,18 @@ test('Count the Cubes uses three angles and inspectable layers, accepts five ans
  await startMatch(page)
  for(let i=1;i<=5;i++){
   await expect(page.getByText('Stack '+i+' / 5')).toBeVisible()
-  await page.getByRole('button',{name:'Back',exact:true}).click()
-  await expect(page.getByRole('img',{name:/Isometric cube/})).toBeVisible()
+  for(const name of i===1?['Front','Quarter turn','Back']:['Back']){
+   const angle=page.getByRole('button',{name,exact:true})
+   await angle.click()
+   await expect(angle).toHaveAttribute('aria-pressed','true')
+   await expect(page.getByRole('img',{name:/Isometric cube/})).toBeVisible()
+  }
   await page.getByRole('button',{name:'Layers',exact:true}).click()
   let count=0
   for(const n of [1,2,3,4]){
-   await page.getByLabel('Layer',{exact:true}).selectOption(String(n))
+   const level=page.getByRole('radiogroup',{name:'Stack levels'}).getByRole('radio',{name:'Layer '+n,exact:true})
+   await level.click()
+   await expect(level).toBeChecked()
    count+=await page.getByRole('group',{name:'Layer '+n+' occupancy'}).getByRole('img',{name:/: occupied$/}).count()
   }
   await page.getByLabel('Cube count').fill(String(count))

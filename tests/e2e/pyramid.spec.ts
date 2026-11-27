@@ -18,6 +18,29 @@ test('Equation Pyramid completes all eight rounds with keyboard and touch',async
   await page.goto(baseURL!+'season/2/')
   await page.getByRole('button',{name:/Practice Equation Pyramid/}).click()
   await startMatch(page)
+  const frame=page.getByRole('region',{name:'Equation pyramid instrument'})
+  await expect(frame.locator('select')).toHaveCount(0)
+  const first=frame.getByRole('radiogroup',{name:'First operator'})
+  const second=frame.getByRole('radiogroup',{name:'Second operator'})
+  const grouping=frame.getByRole('radiogroup',{name:'Grouping'})
+  await page.evaluate(()=>window.scrollTo(0,0))
+  await expect(grouping).toBeInViewport({ratio:1})
+  await expect(page.getByRole('button',{name:'Lock answer'})).toBeInViewport({ratio:1})
+  const operators=['Add','Subtract','Multiply','Divide']
+  const groupOption=(right:boolean)=>grouping.getByRole('radio',{name:right?'Group last two tiles':'Group first two tiles',exact:true})
+  const expression=frame.getByLabel('Your expression')
+  await first.getByRole('radio',{name:'Add',exact:true}).press('ArrowLeft')
+  await expect(first.getByRole('radio',{name:'Divide',exact:true})).toBeFocused()
+  await second.getByRole('radio',{name:'Add',exact:true}).press('ArrowRight')
+  await groupOption(false).press('ArrowRight')
+  await expect(groupOption(true)).toBeChecked()
+  await expect(expression).toHaveText('□ ÷ (□ − □)')
+  await expect(grouping.locator('svg')).toHaveCount(2)
+  for(const choice of await frame.getByRole('radio').all()){
+   const {width,height}=(await choice.boundingBox())!
+   expect(width).toBeGreaterThanOrEqual(44)
+   expect(height).toBeGreaterThanOrEqual(44)
+  }
   for(let j=1;j<=8;j++){
    await expect(page.getByText(`Puzzle ${j} / 8`,{exact:true})).toBeVisible()
    const tiles=page.getByRole('group',{name:'Pyramid tiles'}).getByRole('button')
@@ -26,9 +49,9 @@ test('Equation Pyramid completes all eight rounds with keyboard and touch',async
    const values=await tiles.evaluateAll(nodes=>nodes.map(n=>Number(n.getAttribute('data-value'))))
    const {order,op1,op2,right}=solve(values,target)
    for(const i of order){const tile=tiles.nth(i);if(j===1)await tile.press('Enter');else await tile.tap()}
-   await page.getByLabel('First operator').selectOption(String(op1))
-   await page.getByLabel('Second operator').selectOption(String(op2))
-   await page.getByLabel('Grouping').selectOption(right?'right':'left')
+   await first.getByRole('radio',{name:operators[op1],exact:true}).tap()
+   await second.getByRole('radio',{name:operators[op2],exact:true}).tap()
+   await groupOption(right).tap()
    await page.getByRole('button',{name:'Lock answer'}).tap()
   }
   await expect(page.getByRole('heading',{name:'Practice complete'})).toBeVisible()

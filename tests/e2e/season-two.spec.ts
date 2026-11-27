@@ -1,4 +1,5 @@
 import {startMatch} from './start-match'
+import {chooseSetting,tableSwitch} from '../lobby-controls'
 import {test,expect} from '@playwright/test'
 test('Remove One solo discards, reveals and ends against two bots',async({page})=>{
  await page.goto('./season/2/')
@@ -22,8 +23,8 @@ test('Knight’s Tour solo uses no bots, supports keyboard moves and undo',async
  await page.getByLabel('Nickname').fill('Player')
  await page.getByRole('button',{name:/Practice Knight/}).click()
  await expect(page.getByText('Bot 1',{exact:true})).toHaveCount(0)
- await page.getByLabel('Board size').selectOption('6')
- await page.getByLabel('Closed tour').check()
+ await chooseSetting(page,'Board size','6')
+ await tableSwitch(page,'Closed tour').click()
  await startMatch(page)
  await expect(page.getByText('6 × 6 · Closed tour')).toBeVisible()
  const move=page.getByRole('button',{name:/legal move/}).first()

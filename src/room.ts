@@ -11,6 +11,9 @@ export const roomCode=()=>Array.from(crypto.getRandomValues(new Uint8Array(6)),x
 export const validCode=(x:string)=>/^[A-HJ-NP-Z2-9]{6}$/.test(x)
 export const id=()=>Array.from(crypto.getRandomValues(new Uint8Array(16)),x=>x.toString(16).padStart(2,'0')).join('')
 export const protocolVersion=1
+export const appearanceCount=27
+export const appearancePreset=(value:unknown):number|undefined=>
+ typeof value==='number'&&Number.isInteger(value)&&value>=0&&value<appearanceCount?value:undefined
 const unsafe=/[\p{Cc}\p{Cs}\p{Zl}\p{Zp}\u061c\u200b\u200e\u200f\u202a-\u202e\u2060-\u206f\ufeff]/u
 export function nickname(value:string):string|null{
  if(unsafe.test(value)||value.length>160)return null
@@ -40,12 +43,13 @@ const schema=z.discriminatedUnion('kind',[
  z.strictObject({kind:z.literal('time-hold'),round:z.number().int().min(1).max(timeHoldRules.rounds),action:z.enum(['hold','pulse','release','cancel'])}),
  z.strictObject({kind:z.literal('move'),round:z.number().int().min(1).max(24).optional(),action:z.union([z.number().int().min(-1).max(300000000),z.string().length(8).regex(/^[0-9+*/=\-]+$/),z.strictObject({from:z.number().int().min(0).max(24),to:z.number().int().min(0).max(24)})])})
 ])
-/** Unbiased partial-deck draws without deriving secret cards from public cards. */
-const liveMemoryDeal=()=>memoryDuelDeal(upper=>{
+/** Sample uniformly without modulo bias. */
+const secureIndex=(upper:number)=>{
  const buffer=new Uint32Array(1),limit=2**32-(2**32%upper)
  do crypto.getRandomValues(buffer);while(buffer[0]>=limit)
  return buffer[0]%upper
-})
+}
+const liveMemoryDeal=()=>memoryDuelDeal(secureIndex)
 export const episodePokerRules='Study sixteen cards for twenty seconds. After the board turns over, three shared cards appear. Privately lock two positions within sixty seconds to complete your five-card hand. Exact ties deal a fresh board. No betting.'
 export const episodePokerRoster=(seats:readonly {bot:boolean;online:boolean}[])=>seats.length===2&&seats.every(s=>s.online&&!s.bot)
 const isEpisodePoker=(config:Settings)=>config.game==='memoryPoker'&&config.memoryPokerMode==='episode'
@@ -56,7 +60,7 @@ export type Settings=z.infer<typeof settings>
 export const humanOnly=(g:Game)=>g==='knight'||g==='divine'||g==='codeLock'||g==='pyramid'||g==='fragments'||g==='spot'||g==='scale'||g==='fence'||g==='tower'||g==='piece'||g==='memoryPoker'||g==='montage'||isPuzzle(g)
 export const defaults:Settings={game:'blind',seconds:25,capacity:16,locked:false,botLevel:'normal'}
 const wire=z.discriminatedUnion('type',[
- z.strictObject({version:z.literal(1),type:z.literal('hello'),name:z.string().max(160),token:z.string().regex(/^[a-f0-9]{32}$/).optional()}),
+ z.strictObject({version:z.literal(1),type:z.literal('hello'),name:z.string().max(160),token:z.string().regex(/^[a-f0-9]{32}$/).optional(),appearance:z.unknown().optional().transform(appearancePreset)}),
  z.strictObject({version:z.literal(1),type:z.literal('command'),epoch:z.string().length(32),match:z.string().max(32),seq:z.number().int().positive().max(1e8),request:z.string().length(32),rev:z.number().int().nonnegative(),command:schema}),
  z.strictObject({version:z.literal(1),type:z.literal('ping')}),
 ])
@@ -64,8 +68,8 @@ export function decode(raw:unknown){
  if(typeof raw!=='string'||raw.length>4096)return null
  try{const parsed=wire.safeParse(JSON.parse(raw));return parsed.success?parsed.data:null}catch{return null}
 }
-export type Seat={id:string,name:string,ready:boolean,bot:boolean,online:boolean}
-type PrivateSeat=Seat&{token:string,connection:string}
+export type Seat={id:string,name:string,ready:boolean,bot:boolean,online:boolean,appearance?:number}
+type PrivateSeat=Seat&{token:string,connection:string,appearance:number}
 type Fixture={sides:string[],winner:string|null}
 type Chat={seat:string,name:string,text:string}
 export type Snapshot={you:string,host:string,epoch:string,match:string,rev:number,settings:Settings,seats:Seat[],game:GameView|null,fixture:number,count:number,fixtures:Fixture[],seriesDone:boolean,chat:Chat[],hostNow:number}
@@ -83,18 +87,19 @@ export class Host{
  private botDue=0
  private botSeed=0
  private secretBotRejected=new Map<string,Set<number>>()
- private seats:PrivateSeat[]
+ private seats:PrivateSeat[]=[]
+ private issuedAppearances=new Set<number>()
  // Private reducer changes may occur between pulses of the shared clock. Only tick
  // promotes phase/result to the public projection; transient state never advances rev.
  private publishedHold:State|null=null
  private holdUpdates=new Set<string>()
  private requests=new Map<string,Map<string,string|null>>()
  private lastChat=new Map<string,number>()
- constructor(name:string,clock=()=>Date.now(),private readonly solo=false){
+ constructor(name:string,clock=()=>Date.now(),private readonly solo=false,appearance?:number){
   this.clock=clock
-  this.seats=[{id:this.owner,name,ready:true,bot:false,online:true,token:'',connection:'host'}]
+  this.seats=[{id:this.owner,name,ready:true,bot:false,online:true,token:'',connection:'host',appearance:this.assignAppearance(appearance)}]
  }
- join(connection:string,raw:string,token?:string){
+ join(connection:string,raw:string,token?:string,appearance?:number){
   const name=nickname(raw)
   if(!name||this.seats.some(s=>s.connection===connection))return null
   if(token){
@@ -106,7 +111,7 @@ export class Host{
    return {id:s.id,token:s.token,old}
   }
   if(this.game||this.settings.locked||this.seats.length>=(isEpisodePoker(this.settings)?2:this.settings.capacity))return null
-  const seat={id:id(),name,ready:false,bot:false,online:true,token:id(),connection}
+  const seat={id:id(),name,ready:false,bot:false,online:true,token:id(),connection,appearance:this.assignAppearance(appearance)}
   this.seats.push(seat);this.rev++
   return {id:seat.id,token:seat.token,old:''}
  }
@@ -125,7 +130,7 @@ export class Host{
    if(mine&&projected.timeHold.phase!=='live')mine.remainingTenths=null
    projected.timeHold.mine=mine
   }
-  return {you:u.id,host:this.owner,epoch:this.epoch,match:this.match,rev:this.rev,settings:this.settings,seats:this.seats.map(({id,name,ready,bot,online})=>({id,name,ready,bot,online})),game:projected,fixture:this.fixture,count:isDuel(this.settings.game)?this.fixtures.length:1,fixtures:this.fixtures.map(f=>({...f})),seriesDone:!!game?.done&&(!isDuel(this.settings.game)||this.fixture+1===this.fixtures.length),chat:this.chat,hostNow}
+  return {you:u.id,host:this.owner,epoch:this.epoch,match:this.match,rev:this.rev,settings:this.settings,seats:this.seats.map(({id,name,ready,bot,online,appearance})=>({id,name,ready,bot,online,appearance})),game:projected,fixture:this.fixture,count:isDuel(this.settings.game)?this.fixtures.length:1,fixtures:this.fixtures.map(f=>({...f})),seriesDone:!!game?.done&&(!isDuel(this.settings.game)||this.fixture+1===this.fixtures.length),chat:this.chat,hostNow}
  }
  command(connection:string,request:string,rev:number,c:Command):string|null{
   const seat=this.seats.find(s=>s.connection===connection&&s.online)
@@ -268,8 +273,22 @@ export class Host{
   if(humanOnly(this.settings.game)&&this.seats.some(s=>s.bot))return 'Remove the bots before starting this puzzle.'
   this.prepare(false);this.begin();return null
  }
+ private assignAppearance(requested?:number){
+  let preset=appearancePreset(requested)
+  if(preset===undefined){
+   const inUse=new Set(this.seats.map(s=>s.appearance))
+   const vacant=Array.from({length:appearanceCount},(_,i)=>i).filter(i=>!inUse.has(i))
+   // Keep the entire room (including disconnected, resumable seats) distinct
+   // for automatic assignments, preferring never-used presets after a kick.
+   const fresh=vacant.filter(i=>!this.issuedAppearances.has(i))
+   const choices=fresh.length?fresh:vacant
+   preset=choices[secureIndex(choices.length)] // Maximum room size is 16.
+  }
+  this.issuedAppearances.add(preset)
+  return preset
+ }
  private addBot(){
-  this.seats.push({id:id(),name:'Bot '+(this.seats.filter(x=>x.bot).length+1),ready:true,online:true,bot:true,token:'',connection:''})
+  this.seats.push({id:id(),name:'Bot '+(this.seats.filter(x=>x.bot).length+1),ready:true,online:true,bot:true,token:'',connection:'',appearance:this.assignAppearance()})
  }
  private prepare(reverse:boolean){
   this.fixture=0

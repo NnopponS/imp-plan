@@ -1,4 +1,5 @@
 import {startMatch} from './start-match'
+import {chooseGame} from '../lobby-controls'
 import {expect,test} from '@playwright/test'
 import {calibration,scaleNames} from '../../src/scale'
 
@@ -10,7 +11,7 @@ test('two players solve the shared scale with ternary observations and rotating 
   await host.getByLabel('Nickname').fill('Ada')
   await host.getByRole('button',{name:'Create party'}).click()
   const code=(await host.getByTestId('room-code').textContent())!
-  await host.getByLabel('Game').selectOption('scale')
+  await chooseGame(host,'scale')
   await guest.goto(baseURL!+'#/join?room='+code)
   await guest.getByLabel('Nickname').fill('Mina')
   await guest.getByRole('button',{name:'Join party'}).click()

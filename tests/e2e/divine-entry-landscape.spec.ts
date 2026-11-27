@@ -1,4 +1,5 @@
 import {test,expect} from '@playwright/test'
+import {chooseSetting,tableSetting} from '../lobby-controls'
 
 test('Divine practice from a scrolled season card gives the lobby focus and restores the card on exit',async({browser,baseURL})=>{
  const context=await browser.newContext({viewport:{width:320,height:568},hasTouch:true})
@@ -13,8 +14,8 @@ test('Divine practice from a scrolled season card gives the lobby focus and rest
   await launch.tap()
   await expect(page.getByRole('heading',{name:'Practice lobby',exact:true})).toBeFocused({timeout:2500})
   expect(await page.evaluate(()=>window.scrollY)).toBe(0)
-  await expect(page.getByLabel('Game')).toBeInViewport({ratio:1})
-  await expect(page.getByLabel('Square size')).toBeInViewport({ratio:1})
+  await expect(page.getByRole('button',{name:'Choose game',exact:true})).toBeInViewport({ratio:1})
+  await expect(tableSetting(page,'Square size')).toBeInViewport({ratio:1})
   await page.getByRole('button',{name:'Leave room'}).tap()
   await expect(launch).toBeFocused()
   await expect(launch).toBeInViewport({ratio:1})
@@ -34,7 +35,7 @@ test('Divine 7×7 exposes its last row and tile tools together in touch landscap
   }))
   await page.goto(baseURL!+'season/3/')
   await page.getByRole('button',{name:'Practice Divine Test',exact:true}).tap()
-  await page.getByLabel('Square size').selectOption('7')
+  await chooseSetting(page,'Square size','7')
   await page.getByRole('button',{name:'Start match',exact:true}).tap()
   await page.getByRole('dialog').getByRole('button',{name:'Enter match',exact:true}).tap()
   const board=page.getByRole('region',{name:'Magic square grid'})

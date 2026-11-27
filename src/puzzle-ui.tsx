@@ -2,6 +2,7 @@ import {CubeView} from './cube-view'
 import {useEffect,useState,type CSSProperties} from 'react'
 import {hexCells,hexLines,isPuzzle,puzzleRounds} from './puzzles'
 import type {Snapshot} from './room'
+import {base} from './brand'
 import './puzzle-instruments.css'
 
 const instrumentNames={
@@ -13,19 +14,42 @@ const instrumentNames={
 
 const hexPoint=({q,r}:{q:number,r:number})=>[265+(q+r/2)*95,217.5+r*78]
 
+// Each seal uses the same touch footprint; only the patina changes with the casting.
+function HexSeal({index}:{index:number}){
+ const vein=[
+  'M7 31q8-9 16-10m-12 34q6 2 12 2m25 11 11-6m2-19 5-8',
+  'M12 30q6-5 13-7m-13 27 4 6m33 11q7-2 10-8m-1-30 4 7',
+  'M12 36 17 28m0 39 6 2m30-39q7 4 9 10m-9 20 5-5',
+  'M8 33q5-6 15-10m29 2 8 7m-9 36 7-5m-43-8q-1-5 2-8',
+ ][index%4]
+ return <svg className="hex-seal" viewBox="0 0 82 94" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+  <path className="hex-seal-depth" d="M41 2 79 23 80 69 42 93 3 72 2 27Z"/>
+  <path className="hex-seal-bevel" d="M41 2 79 23 78 66 42 88 4 67 3 26Z"/>
+  <path className="hex-seal-face" d="M41 7 74 26 73 63 42 82 9 64 8 29Z"/>
+  <path className="hex-seal-edge" d="m7 25 34-21 33 19M5 32l1 32m7 5 26 16m6 0 27-18M78 29l-1 29"/>
+  <path className="hex-seal-vein" d={vein}/>
+  <path className="hex-seal-crease" d="m26 16 15-8 7 3m19 58-7 4m-32 4L15 68"/>
+  <path className="hex-seal-stamp" d="m41 65 4 4-4 4-4-4Z"/>
+  <path className="hex-seal-focus" d="M41 5 76 25 75 65 42 85 8 65 6 28Z"/>
+ </svg>
+}
+
 function HexField({values,study,picked,valid,enabled,toggle}:{values:number[],study:boolean,picked:number[],valid:boolean,enabled:boolean,toggle:(n:number)=>void}){
  const path=valid?picked.map(i=>hexPoint(hexCells[i])).sort((a,b)=>a[0]-b[0]||a[1]-b[1]).map(p=>p.join(',')).join(' '):''
  return <div className="puzzle-board hex-instrument" role="group" aria-label="Hexagon tiles">
-  <svg className="hex-circuit" viewBox="0 0 530 435" aria-hidden="true">
-   <path d="M164 7H366L524 217.5 366 428H164L6 217.5ZM177 18H353L507 217.5 353 417H177L23 217.5Z"/>
-   <path d="M258 7h14m-7-4v14m-7 411h14m-7-7v14M6 210v15m518-15v15"/>
+  <svg className="hex-cradle" viewBox="0 0 530 435" aria-hidden="true" focusable="false">
+   <path className="hex-cradle-edge" d="M153 4 377 2 521 161 527 276 382 430 149 433 5 275 9 162Z"/>
+   <path className="hex-cradle-ink" d="M153 13 377 10 512 168 516 269 378 420 154 424 17 269 18 167Z"/>
+   <path className="hex-cradle-wear" d="M154 7 375 5m-221 6 102-1m77-1 41-1m7 3 67 72m68 84 3 96m-15 20-39 44m-75 84-11 10-225 2m-9-2-23-23M55 317l-38-44m-5-12 3-96m23-31 70-81m25-27 13-14"/>
   </svg>
+  {path&&<svg className="hex-trace" viewBox="0 0 530 435" aria-hidden="true" focusable="false"><polyline points={path}/><polyline points={path}/></svg>}
   {hexCells.map((cell,i)=>{
    const [x,y]=hexPoint(cell)
    return <button type="button" key={i} style={{left:x/530*100+'%',top:y/435*100+'%'}} aria-label={`Tile ${i+1}${study?', value '+values[i]:''}`}
-     aria-pressed={picked.includes(i)} disabled={!enabled} onClick={()=>toggle(i)}>{study?values[i]:String.fromCharCode(65+i)}</button>
+     aria-pressed={picked.includes(i)} disabled={!enabled} onClick={()=>toggle(i)}>
+    <HexSeal index={i}/><span className="hex-seal-letter">{study?values[i]:String.fromCharCode(65+i)}</span>
+   </button>
   })}
-  {path&&<svg className="hex-trace" viewBox="0 0 530 435" aria-hidden="true"><polyline points={path}/></svg>}
  </div>
 }
 
@@ -76,6 +100,9 @@ export function PuzzleBoard({snap,active,submit,name}:{snap:Snapshot,active:bool
  const answerPanel=<div className="puzzle-answer">
     {cubes&&<div className="puzzle-cube-index"><InstrumentMark kind="cubes"/><span>{p.cols} × {p.rows} footprint<small>Every occupied level counts</small></span></div>}
     {exile&&<div className="puzzle-signs" aria-label="Number sign key"><span data-sign="negative">− Negative</span><span data-sign="zero">0 Zero</span><span data-sign="positive">+ Positive</span></div>}
+    {hex&&!study&&<span className="hex-peg-rail" aria-hidden="true">
+     {[0,1,2].map(i=><i key={i} data-occupied={i<picked.length}/>)}
+    </span>}
     <p className="puzzle-cue" role="status">{cue}</p>
     {!study&&<form className="puzzle-lock" onSubmit={e=>{e.preventDefault();if(enabled&&valid)submit(hex?line:Number(answer))}}>
      {!hex&&<label>{cubes?'Cube count':'Rectangle count'}<input type="text" inputMode="numeric" pattern="[0-9]+" maxLength={3} value={answer} onChange={e=>setAnswer(e.target.value)} disabled={!enabled}/></label>}
@@ -83,21 +110,31 @@ export function PuzzleBoard({snap,active,submit,name}:{snap:Snapshot,active:bool
      {!cubes&&<button type="button" disabled={!enabled||!picked.length} onClick={()=>pick([])}>Clear {hex?'selection':'highlights'}</button>}
     </form>}
    </div>
- return <section className="puzzle-instrument" data-instrument={kind} data-closed={g.done} aria-label={label}>
-  <header className="puzzle-titleplate">
-   <div className="puzzle-titlemark"><InstrumentMark kind={kind}/><div><p className="puzzle-imprint">{study?'Study phase':g.done?'Final record':'Counting table'}</p><h3>{title}</h3></div></div>
+ const titleplate=<header className="puzzle-titleplate">
+   <div className="puzzle-titlemark"><InstrumentMark kind={kind}/><div><p className="puzzle-imprint">{study?'Study phase':g.done?'Final record':hex?'Recall phase':'Counting table'}</p><h3>{title}</h3></div></div>
    {!g.done&&!study&&!cubes&&<div className="puzzle-target"><span>Target sum</span><strong>{p.target}</strong></div>}
    <div className="puzzle-phase"><span>{unit} {g.round} / {rounds}</span><span role="timer" aria-label="Time remaining" data-urgent={seconds<=5&&!g.done}>{g.done?'Finished':clock}</span></div>
   </header>
-  {!g.done&&<div className="puzzle-desk">
-   {exile&&answerPanel}
-   <div className="puzzle-visual">
-    {cubes?<CubeView heights={p.values} side={p.cols}/>:
-     hex?<HexField values={p.values} study={study} picked={picked} valid={valid} enabled={enabled} toggle={toggle}/>:
-     <RectangleField values={p.values} rows={p.rows} cols={p.cols} exile={exile} picked={picked} enabled={enabled} toggle={toggle}/>}
-   </div>
-   {!exile&&answerPanel}
-  </div>}
-  <div className="puzzle-record" aria-label="Score record">{g.seats.map((s,i)=><div key={s}><span>{name(s)}</span><strong>{g.scores[i]} correct</strong>{g.last&&<small>{g.last[i]?'Previous answer correct':'Previous round: no point'}</small>}</div>)}</div>
+ const visual=<div className="puzzle-visual">
+   {cubes?<CubeView heights={p.values} side={p.cols}/>:
+    hex?<HexField values={p.values} study={study} picked={picked} valid={valid} enabled={enabled} toggle={toggle}/>:
+    <RectangleField values={p.values} rows={p.rows} cols={p.cols} exile={exile} picked={picked} enabled={enabled} toggle={toggle}/>}
+  </div>
+ return <section className="puzzle-instrument" data-instrument={kind} data-closed={g.done} aria-label={label}>
+  {hex&&!g.done?<div className="hex-stage" data-phase={study?'study':'recall'}>
+   <picture className="hex-scene-picture" aria-hidden="true">
+    {/* From seasonal-hex.svg: the original keeper, masonry, lantern and table, never the painted tiles or target. */}
+    <source media="(max-width: 600px)" srcSet={base+'art/hex-live-portrait.webp'}/>
+    <img className="hex-chamber-art" src={base+'art/hex-live-landscape.webp'} alt="" decoding="async" draggable={false}/>
+   </picture>
+   {titleplate}{visual}{answerPanel}
+  </div>:<>{titleplate}{!g.done&&<div className="puzzle-desk">
+   {exile&&answerPanel}{visual}{!exile&&answerPanel}
+  </div>}</>}
+  <ul className="puzzle-record" role="list" aria-label="Score record">{g.seats.map((s,i)=><li key={s}>
+   <span>{name(s)}</span><strong>{g.scores[i]} correct</strong>
+   {g.done&&<span className="puzzle-score-pips" aria-hidden="true">{Array.from({length:rounds},(_,pip)=><i key={pip} data-correct={pip<g.scores[i]}/>)}</span>}
+   {g.last&&<small>{g.last[i]?'Previous answer correct':'Previous round: no point'}</small>}
+  </li>)}</ul>
  </section>
 }

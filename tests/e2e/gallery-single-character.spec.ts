@@ -1,20 +1,20 @@
 import {expect,test,type Page} from '@playwright/test'
 
 const cover=(page:Page,game:string)=>page.locator('[data-preview-game="'+game+'"]')
-const overlay=(page:Page)=>page.locator('.arena-preview .arena-character-overlay')
+const overlay=(page:Page)=>page.locator('.arena-preview .arena-cover-motion')
 async function showCover(page:Page,game:string){
  await cover(page,game).evaluate(node=>node.scrollIntoView({block:'center',behavior:'instant'}))
 }
 async function watchOverlays(page:Page){
  await page.evaluate(()=>{
   const history:string[][]=[]
-  Object.defineProperty(window,'__galleryCharacters',{value:history})
-  const collect=()=>history.push(Array.from(document.querySelectorAll('.arena-preview:has(.arena-character-overlay)')).map(node=>node.getAttribute('data-preview-game')!))
+  Object.defineProperty(window,'__galleryCovers',{value:history})
+  const collect=()=>history.push(Array.from(document.querySelectorAll('.arena-preview:has(.arena-cover-motion)')).map(node=>node.getAttribute('data-preview-game')!))
   new MutationObserver(collect).observe(document.body,{childList:true,subtree:true})
   collect()
  })
 }
-const recorded=(page:Page)=>page.evaluate(()=>(window as unknown as {__galleryCharacters:string[][]}).__galleryCharacters)
+const recorded=(page:Page)=>page.evaluate(()=>(window as unknown as {__galleryCovers:string[][]}).__galleryCovers)
 
 test.beforeEach(async({page})=>{
  await page.addInitScript(()=>sessionStorage.setItem('imp-plan-codex-opened-v1','1'))
@@ -24,7 +24,7 @@ test.beforeEach(async({page})=>{
  await watchOverlays(page)
 })
 
-test('only one idle gallery character can play; visible covers take turns',async({page})=>{
+test('only one illustrated gallery motion can play; visible covers take turns',async({page})=>{
  await showCover(page,'blind')
  const firstRow=['blind','morris','auction']
  await expect.poll(async()=>new Set((await recorded(page)).flat().filter(game=>firstRow.includes(game))).size,{timeout:11000}).toBe(3)
@@ -39,7 +39,7 @@ test('leaving or hiding the gallery hands off without replaying a started cue',a
  await expect(overlay(page).first()).toBeAttached()
  const start=await overlay(page).first().evaluate(node=>node.closest('[data-preview-game]')!.getAttribute('data-preview-game')!)
  await showCover(page,'heavy13')
- await expect(cover(page,start).locator('.arena-character-overlay')).toHaveCount(0)
+ await expect(cover(page,start).locator('.arena-cover-motion')).toHaveCount(0)
  await expect.poll(async()=>{const history=(await recorded(page)).flat();return history.some(game=>!['blind','morris','auction','point','remove','knight'].includes(game))},{timeout:4000}).toBe(true)
  await page.evaluate(()=>{
   Object.defineProperty(document,'hidden',{value:true,configurable:true})

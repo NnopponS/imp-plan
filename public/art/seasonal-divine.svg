@@ -249,13 +249,13 @@
 </g>
 <polygon points="575.1,403.9 654.1,418.6 631.3,485.6 549.4,469.8" fill="#735f44" stroke="#70503d" stroke-width="2" stroke-linejoin="round" />
 <polygon points="575.1,403.9 654.1,418.6 631.3,485.6 549.4,469.8" fill="url(#divine-hatch)" stroke="none" stroke-width="0" stroke-linejoin="round" opacity=".65"/>
-<polygon points="591.9,348.7 678.4,364.4 654.2,437.3 564.0,420.2" fill="#765640" stroke="#4f3a37" stroke-width="1.1" stroke-linejoin="round" />
+<g data-cover-part="missing-round-tile" transform="translate(0 0)"><animateTransform attributeName="transform" type="translate" values="0 0;-4 18;-19 57;-20 61;-19 58;0 0;0 0" keyTimes="0.00;0.1653;0.4176;0.4959;0.6177;0.87;1" calcMode="spline" keySplines=".35 0 .29 1;.35 0 .29 1;.35 0 .29 1;.35 0 .29 1;.35 0 .29 1;.35 0 .29 1" begin="indefinite" data-cover-at="0.12s" dur="1.30s" fill="remove"/><polygon points="591.9,348.7 678.4,364.4 654.2,437.3 564.0,420.2" fill="#765640" stroke="#4f3a37" stroke-width="1.1" stroke-linejoin="round" />
 <polygon points="591.9,342.7 678.4,358.4 654.2,431.3 564.0,414.2" fill="#b99a6c" stroke="#674b3c" stroke-width="1.8" stroke-linejoin="round" />
 <path d="M591.9 342.7 L678.4 358.4 L654.2 431.3 L564.0 414.2 L591.9 342.7" fill="none" stroke="#e4c693" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" />
 <g transform="translate(621.30 384.88) scale(1.120)">
 <path d="M13 0a13 13 0 1 1-26 0 13 13 0 1 1 26 0" fill="none" stroke="#624338" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" />
 </g>
-<path d="M66 297 223 265 276 419 113 447Z" fill="#60493b" stroke="#402e33" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+</g><path d="M66 297 223 265 276 419 113 447Z" fill="#60493b" stroke="#402e33" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
 <path d="M78 301 215 272 263 415 119 439Z" fill="#433733" stroke="#a58459" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
 <path d="M107 315l19-5 4 14-19 5Z" fill="#71523e" stroke="#4f3634" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round" />
 <path d="M142 307l19-5 4 14-19 5Z" fill="#71523e" stroke="#4f3634" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round" />
@@ -269,13 +269,13 @@
 <path d="M1120 417q-80-44-211-14l-142 32m205-22q79 4 148 30m-224 8-119 5" fill="none" stroke="#9f856d" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round" opacity=".67"/>
 <path d="M729 412 675 422 679 472 742 473Z" fill="#605047" stroke="#352a37" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
 <path d="M730 420l-48 9m50 4-49 9m50 2-48 10" fill="none" stroke="#b7936d" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round" />
-<g transform="translate(701 416) scale(-.69 .65) rotate(19)">
+<g data-cover-part="warden-guiding-hand" transform="translate(0 0)"><animateTransform attributeName="transform" type="rotate" values="0 697 444;-7 697 444;-22 697 444;-25 697 444;-23 697 444;0 697 444;0 697 444" keyTimes="0.00;0.1653;0.4176;0.4959;0.6177;0.87;1" calcMode="spline" keySplines=".35 0 .29 1;.35 0 .29 1;.35 0 .29 1;.35 0 .29 1;.35 0 .29 1;.35 0 .29 1" begin="indefinite" data-cover-at="0.12s" dur="1.30s" fill="remove"/><g transform="translate(701 416) scale(-.69 .65) rotate(19)">
 <path d="M1 47Q15 37 35 33Q43 22 57 12L78 4Q91-1 109 1L128 5Q136 9 128 16L103 18 90 23Q109 20 120 25Q127 31 118 36L95 34 83 41Q98 39 110 46Q115 53 106 55L85 49 70 59Q53 71 34 64L8 76Z" fill="#a97858" stroke="#3e272c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
 <path d="M12 47Q30 46 44 37T68 24M36 56Q50 53 61 50T83 41M56 38l17-10m9-6 22-8m-29 34 10-5m20-35 18 1M108 26l10 2M98 45l10 4" fill="none" stroke="#67453b" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round" />
 <path d="M48 33Q55 23 64 20m2-4q8-6 15-6M16 48Q24 46 33 46" fill="none" stroke="#d4a479" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" opacity=".66"/>
 <path d="M38 35Q50 35 60 30Q73 22 78 22L72 39 56 47 28 56Z" fill="url(#divine-hatch)" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" opacity=".55"/>
 </g>
-<ellipse cx="924.0" cy="186.0" rx="52.0" ry="37.0" fill="#4d3c39" stroke="#705741" stroke-width="1.2" />
+</g><ellipse cx="924.0" cy="186.0" rx="52.0" ry="37.0" fill="#4d3c39" stroke="#705741" stroke-width="1.2" />
 <ellipse cx="924.0" cy="186.0" rx="42.0" ry="29.0" fill="none" stroke="#b08b61" stroke-width="1" />
 <path d="M924 168v36m-21-18h42m-26-5 10 10m-10 0 10-10" fill="none" stroke="#b08b61" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
 <rect width="1120" height="624" fill="url(#divine-edge)" pointer-events="none"/>

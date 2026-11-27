@@ -243,3 +243,233 @@
 }
 .painted-desk .warmup .warmup-objective{margin-top:8px}
 .painted-desk .warmup .warmup-key-hint{margin-top:2px}
+
+/* Etched room furniture. Four small authored plates supply the linework;
+   labels, native fields, focus and hit targets remain separate HTML. */
+:root{
+ --etch-key:url('./etched-assets/keyplate.svg');
+ --etch-seam:url('./etched-assets/folio-stitch.svg');
+ --etch-ink:url('./etched-assets/laid-ink.svg');
+ --etch-rule:url('./etched-assets/rule-rail.svg');
+ --etch-leather:#30241f;
+}
+body{
+ background:var(--etch-ink) repeat,radial-gradient(ellipse at 49% 0%,#30251f,#201b18 43rem,#1a1716 78rem);
+}
+.bar,.landing-bar{
+ border-top:1px solid #402c20;border-bottom:1px solid #654631;box-shadow:none;
+ background:var(--etch-ink) repeat,linear-gradient(175deg,#322720,#211b18 73%);
+}
+.bar .alpha-pill{
+ border-radius:0 5px 2px 3px;border-color:#8e6449;
+ color:#f2d7b1;background:var(--etch-ink) repeat,#38281f;
+}
+.bar .chapter-bookmarks .chapter-bookmark{
+ position:relative;isolation:isolate;border-color:transparent;border-radius:0;
+}
+.bar .chapter-bookmarks .chapter-bookmark:is(:hover,[aria-current=page]){
+ border-color:transparent;background:none;box-shadow:none;
+}
+.bar .chapter-bookmark:is(:hover,[aria-current=page])::after{
+ content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+ border:solid transparent;border-width:11px 15px;border-image:var(--etch-key) 11 15 fill stretch;
+ background:var(--etch-ink) repeat,linear-gradient(168deg,var(--chapter-face),#2a201a);
+ clip-path:polygon(0 7px,7px 0,calc(100% - 7px) 1px,100% 8px,100% calc(100% - 9px),calc(100% - 8px) 100%,7px 100%,0 calc(100% - 8px));
+}
+
+/* A carved segment at the start of each register; the rest is a plain rule.
+   Keeps decoration out of the copy and untouched board / poster paint. */
+body :is(.season-heading,.room:not([data-playing])>.section-head,.illustrated-landing .section-head,.featured .section-head,.footer){
+ border-bottom:0;
+ background:var(--etch-rule) left bottom / min(8rem,42%) 11px no-repeat,
+            linear-gradient(90deg,#a97850b3,#60432e6b 70%,transparent) left bottom 5px / 100% 1px no-repeat;
+}
+body :is(.season-heading,.room:not([data-playing])>.section-head,.featured .section-head){padding-bottom:12px}
+body .illustrated-landing :is(.season-directory,.featured) .section-head{
+ border-bottom:0;padding-block-end:12px;
+ background:var(--etch-rule) left bottom / min(8rem,42%) 11px no-repeat,
+            linear-gradient(90deg,#a97850b3,#60432e6b 70%,transparent) left bottom 5px / 100% 1px no-repeat;
+}
+body .footer{
+ border-top:0;
+ background:var(--etch-rule) left top / min(8rem,42%) 11px no-repeat,
+            linear-gradient(90deg,#a97850b3,#60432e6b 70%,transparent) left top 5px / 100% 1px no-repeat;
+}
+
+/* These are the folded folios already in the layout. Stitchwork is drawn
+   into the border layer; the clipped fold and existing content layout stay. */
+body :is(.front-desk .entrance,.landing-table,.library-index,.room:not([data-playing]) :is(.lobby,.roster,.chat))::after{
+ background:
+  linear-gradient(44deg,#33221b,#a17954 54%,#5d3d2d 56%,#2b201a) right top / 26px 26px no-repeat,
+  var(--etch-ink) repeat,
+  radial-gradient(ellipse at 35% 3%,#69503a58,transparent 73%),
+  linear-gradient(90deg,#251916 0 5px,#77563c 5px 6px,#3c2b23 6px 10px,transparent 10px),var(--folio-ink,var(--etch-leather));
+ border:solid transparent;border-width:24px 30px;border-image:var(--etch-seam) 24 30 fill stretch;
+}
+body .illustrated-landing .painted-desk .landing-table::after{
+ background:
+  repeating-linear-gradient(0deg,#a57b5459 0 1px,transparent 1px 3px) bottom / 100% 7px no-repeat,
+  var(--etch-ink) repeat,
+  radial-gradient(ellipse at 64% 8%,#6946306a,transparent 68%),
+  linear-gradient(90deg,#2a1d18 0 6px,#815535 6px 7px,#4d3528 7px 11px,transparent 11px),var(--folio-ink);
+}
+body .featured .card::after{
+ background:
+  linear-gradient(44deg,#aa8056,#664631) right top / 18px 18px no-repeat,
+  var(--etch-ink) repeat,linear-gradient(106deg,#3c2b23,#2c241d 68%,#241b18);
+}
+body .featured .card>.game-art{
+ border-bottom:1px solid #876446;
+}
+body .challenge-folio .folio-register article{
+ border-radius:2px 7px 2px 4px;
+ background:var(--etch-ink) repeat,linear-gradient(105deg,#a67d4f2d,transparent 38%),var(--register-ink);
+}
+body .challenge-folio .folio-register article[data-shelf="archive"]{border-style:dashed}
+body .entry-ticket-form .entry-invite-tag,
+body .room[data-party-lobby] .invite{
+ border-radius:3px 8px 3px 5px;
+ background:var(--etch-ink) repeat,linear-gradient(102deg,#4b3428,#322620);
+}
+body .front-desk .entry-ticket-form h2,body .painted-desk .landing-table .warmup header,
+body .room:not([data-playing]) .table-instruments .party-setting-title,
+body .room:not([data-playing]) .party-action-bar{
+ border-color:transparent;
+ background:var(--etch-rule) left bottom / min(7rem,40%) 9px no-repeat,
+            linear-gradient(90deg,#8662449e,transparent) center bottom 4px / 100% 1px no-repeat;
+}
+body .room:not([data-playing]) .party-action-bar{
+ background-position:left top,center top 4px;
+}
+
+/* Frames for the mounted picture, stamped award and inlay. Nothing paints
+   over gameplay or sets event handlers, and the preview image itself stays as-is. */
+.room :is(.party-cover,.match-record,.point-scoreboard li,.league-ledger){
+ position:relative;isolation:isolate;
+}
+.room .party-cover{border-color:#6f4b30;box-shadow:none}
+.room .party-cover::after{
+ content:"";position:absolute;inset:0;pointer-events:none;
+ border:solid transparent;border-width:24px 30px;border-image:var(--etch-seam) 24 30 fill stretch;
+ box-shadow:none;
+}
+body .room[data-playing] :is(.match-record,.point-scoreboard li,.league-ledger){
+ border-color:#745839;
+ background:var(--etch-ink) repeat,linear-gradient(170deg,#493424 0%,#32251e 57%,#2c231d);
+ box-shadow:none;
+}
+body .room[data-playing] .match-record{
+ color:#fae5c4;border-radius:8px 13px 6px 9px;
+}
+body .room[data-playing] .match-record::before{
+ content:"";position:absolute;inset:-1px;z-index:-1;pointer-events:none;
+ border:solid transparent;border-width:24px 30px;border-image:var(--etch-seam) 24 30 fill stretch;
+}
+body .room[data-playing] .point-scoreboard li[data-current=true]{
+ border-color:#d6aa70;background:var(--etch-ink) repeat,#503522;
+}
+body .room[data-playing] .match-record-actions{border-color:#9c734b}
+body .room[data-playing] .match-record-imprint h3{
+ font-family:Georgia,serif;font-size:.74rem;letter-spacing:.12em;color:#efd2a3;
+}
+body .room[data-playing] .match-record .match-seal{
+ filter:drop-shadow(1px 1px #241914);
+}
+body .room :is(.party-picker-head,.party-picker-tools,.settings-popover,.game-details-head,.game-details-rules){
+ background:var(--etch-ink) repeat,linear-gradient(155deg,#493328,#33261f 85%);
+}
+
+/* Individual engraved caps keep an uncut, >=44px interactive rectangle.
+   Their drawing is clipped independently and never catches mouse events. */
+body :is(
+ .front-desk .front-cta,.season-heading .front-cta,
+ .entry-ticket-form :is(.entry-create,.entry-join),
+ .landing-table .warmup-header-actions button,.landing-table .warmup footer button,
+ .featured .card .game-card-actions>button,.party-card-links button,
+ .challenge-folio :is(.archive-shelves,.archive-chapters,.archive-venues) button,
+ .folio-register .catalog-practice,.room .party-chapters button,
+ .room :is(.party-pick-actions,.party-main-actions,.invite,.chat) button,
+ .room:not([data-playing]) :is(.room-leave,.settings-gear),.room .settings-popover button,
+ .table-instruments:not([data-read-only]) :is(.instrument-stepper button,.instrument-choices button,.instrument-latch),
+ .room[data-playing] .match button.match-action,.game-details-head button
+){
+ --cap-face:#443126;
+ --cap-shadow:#2b211c;
+ --cap-ink:#fae4c0;
+ position:relative;isolation:isolate;min-height:44px;min-width:44px;
+ border-color:transparent;border-radius:0;box-shadow:none;background:none;color:var(--cap-ink);
+}
+body :is(
+ .front-desk .front-cta,.season-heading .front-cta,
+ .entry-ticket-form :is(.entry-create,.entry-join),
+ .landing-table .warmup-header-actions button,.landing-table .warmup footer button,
+ .featured .card .game-card-actions>button,.party-card-links button,
+ .challenge-folio :is(.archive-shelves,.archive-chapters,.archive-venues) button,
+ .folio-register .catalog-practice,.room .party-chapters button,
+ .room :is(.party-pick-actions,.party-main-actions,.invite,.chat) button,
+ .room:not([data-playing]) :is(.room-leave,.settings-gear),.room .settings-popover button,
+ .table-instruments:not([data-read-only]) :is(.instrument-stepper button,.instrument-choices button,.instrument-latch),
+ .room[data-playing] .match button.match-action,.game-details-head button
+)::before{
+ content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+ border:solid transparent;border-width:11px 15px;border-image:var(--etch-key) 11 15 fill stretch;
+ background:var(--etch-ink) repeat,linear-gradient(163deg,var(--cap-face),var(--cap-shadow) 78%);
+ clip-path:polygon(0 7px,7px 0,calc(100% - 7px) 1px,100% 8px,100% calc(100% - 9px),calc(100% - 8px) 100%,7px 100%,0 calc(100% - 8px));
+}
+body :is(
+ .front-desk .front-cta,.season-heading .front-cta,
+ .entry-ticket-form :is(.entry-create,.entry-join),
+ .landing-table .warmup-header-actions button,.landing-table .warmup footer button,
+ .featured .card .game-card-actions>button,.party-card-links button,
+ .challenge-folio :is(.archive-shelves,.archive-chapters,.archive-venues) button,
+ .folio-register .catalog-practice,.room .party-chapters button,
+ .room :is(.party-pick-actions,.party-main-actions,.invite,.chat) button,
+ .room:not([data-playing]) :is(.room-leave,.settings-gear),.room .settings-popover button,
+ .table-instruments:not([data-read-only]) :is(.instrument-stepper button,.instrument-choices button,.instrument-latch),
+ .room[data-playing] .match button.match-action,.game-details-head button
+):is([aria-pressed=true],[aria-checked=true],:hover:not(:disabled):not([aria-disabled=true])){
+ --cap-face:#6b492f;--cap-shadow:#483320;
+ border-color:transparent;background:none;color:var(--cap-ink);box-shadow:none;
+}
+body :is(.front-desk .front-cta,.entry-ticket-form .entry-create,.room .party-main-actions button,.room[data-playing] .match button.match-action).primary{
+ --cap-face:#f0cd8e;--cap-shadow:#cb9a5d;--cap-ink:#2b1b12;
+ border-color:transparent;background:none;color:var(--cap-ink);box-shadow:none;
+}
+body :is(.front-desk .front-cta,.entry-ticket-form .entry-create,.room .party-main-actions button,.room[data-playing] .match button.match-action).primary:hover:not(:disabled){
+ --cap-face:#ffe3a5;--cap-shadow:#d5a86b;
+ border-color:transparent;background:none;
+}
+body :is(.archive-shelves,.archive-chapters,.archive-venues,.party-chapters,.instrument-choices) button:is([aria-pressed=true],[aria-checked=true]){
+ text-decoration:underline;text-decoration-color:#e3b27b;text-decoration-thickness:2px;text-underline-offset:4px;
+}
+body .room[data-party-lobby] :is(.settings-gear,.party-seat button){min-width:44px;min-height:44px}
+body .room[data-party-lobby] .party-roster .party-seat:has(button){grid-template-columns:30px minmax(0,1fr) auto 44px}
+body .room[data-playing] .chat input,body .room[data-playing] .invite-manual input{
+ color:#f9e7c9;border-color:#9b7555;background:#251d18;
+}
+body :is(.entry-ticket-form,.gallery-tools,.challenge-folio,.party-picker-tools,.room:not([data-playing]) .chat) input:not([type=checkbox]){
+ color:#fff0d2;border-color:#a07a56;border-radius:3px 5px 2px 4px;
+ background:var(--etch-ink) repeat,#261c17;min-height:44px;
+}
+body :is(.entry-ticket-form,.gallery-tools,.challenge-folio,.party-picker-tools,.room .chat) input::placeholder{
+ color:#d6bc99;opacity:1;
+}
+body :is(.entry-ticket-form,.gallery-tools,.challenge-folio,.party-picker-tools,.room .chat) input:focus-visible{
+ outline:2px solid #ffe0a0;outline-offset:2px;
+}
+
+@media(max-width:540px){
+ body :is(.season-heading,.room:not([data-playing])>.section-head,.season-gallery .section-head){padding-bottom:7px;background-size:min(8rem,42%) 7px,100% 1px}
+ body .room .party-cover::after{border-width:16px 20px}
+ body .room[data-party-lobby] .party-roster .party-seat:has(button){grid-template-columns:28px minmax(0,1fr) auto 44px}
+}
+@media(forced-colors:active){
+ body :is(
+  .front-cta,.entry-create,.entry-join,.warmup-header-actions button,.warmup footer button,
+  .game-card-actions>button,.party-card-links button,.archive-shelves button,.archive-chapters button,.archive-venues button,
+  .catalog-practice,.party-chapters button,.party-pick-actions button,.party-main-actions button,.invite button,.chat button,
+  .settings-gear,.room-leave,.settings-popover button,.instrument-choices button,.instrument-stepper button,
+  .instrument-latch,.match button.match-action,.game-details-head button
+ ){border:1px solid ButtonText}
+ body :is(.match-record,.party-cover,.party-picker-head,.game-details-head){border:1px solid CanvasText}
+}

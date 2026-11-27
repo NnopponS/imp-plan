@@ -2,13 +2,15 @@ import type {Peer as PeerType,DataConnection} from 'peerjs'
 import type {TestPeer} from './test-transport'
 type Endpoint=PeerType|TestPeer
 type Channel=DataConnection|ReturnType<TestPeer['connect']>
-import {Host,decode,id,roomCode,type Snapshot,type Command} from './room'
-export type ConnectOptions={iceServers?:RTCIceServer[]}
+import {Host,appearancePreset,decode,id,roomCode,type Snapshot,type Command} from './room'
+export type ConnectOptions={iceServers?:RTCIceServer[],appearance?:number}
 type JoinStage='signaling'|'peer'|'snapshot'
 export type SessionState={phase:'connecting'|'online'|'offline',snapshot:Snapshot|null,error:string,joinStage?:JoinStage,receivedAt?:number,holdRejection?:string}
 type Listener=(s:SessionState)=>void
 export type Session={send:(c:Command,expectedMatch?:string)=>string|false;close:()=>void}
 const namespace='imp-plan-v5-'
+const capability='room-capabilities'
+const capabilityWait=400
 const sessionKey=(code:string)=>'arena-resume-'+code
 const defaultIce=[{urls:'stun:stun.l.google.com:19302'}]
 const sleep=(n:number)=>new Promise(r=>setTimeout(r,n))
@@ -35,8 +37,8 @@ const joinFailures:Record<JoinStage,string>={
 }
 const signalErrors=new Set(['network','disconnected','socket-error','socket-closed','server-error','ssl-unavailable','invalid-key'])
 const peerErrorType=(error:unknown)=>error&&typeof error==='object'&&'type' in error?String(error.type):''
-export function practice(listener:Listener):Session{
- const h=new Host('Player',()=>Math.floor(performance.timeOrigin+performance.now()),true)
+export function practice(listener:Listener,appearance?:number):Session{
+ const h=new Host('Player',()=>Math.floor(performance.timeOrigin+performance.now()),true,appearance)
  const update=(error='')=>listener({phase:'online',snapshot:h.snapshot('host'),error,receivedAt:performance.now()})
  h.command('host',id(),h.rev,{kind:'bot'})
  const timer=setInterval(()=>{if(h.tick())update()},200)
@@ -53,7 +55,7 @@ export async function hostRoom(name:string,listener:Listener,options:ConnectOpti
  }
  if(!peer)throw Error('Could not reserve a code.')
  const service=peer
- const h=new Host(name,()=>Math.floor(performance.timeOrigin+performance.now()))
+ const h=new Host(name,()=>Math.floor(performance.timeOrigin+performance.now()),false,options.appearance)
  const clients=new Map<string,{c:Channel,authorized:boolean,seq:number,seen:number,window:number,count:number}>()
  let holdRejection:string|undefined
  const ownUpdate=(error='')=>listener({phase:'online',snapshot:h.snapshot('host'),error,receivedAt:performance.now(),holdRejection})
@@ -75,6 +77,8 @@ export async function hostRoom(name:string,listener:Listener,options:ConnectOpti
   if(clients.size>=32){c.on('open',()=>c.close());return}
   const key=id(),now=performance.now(),info={c,authorized:false,seq:0,seen:now,window:now,count:0}
   clients.set(key,info)
+  // Legacy guests ignore this unknown envelope. Their strict hello stays unchanged.
+  c.on('open',()=>send(c,{type:capability,appearance:1}))
   const drop=()=>{
    if(!clients.delete(key))return
    const before=h.rev;h.disconnect(key);if(h.rev!==before)update()
@@ -89,7 +93,7 @@ export async function hostRoom(name:string,listener:Listener,options:ConnectOpti
    info.seen=now
    if(m.type==='hello'){
     if(info.authorized)return
-    const result=h.join(key,m.name,m.token)
+    const result=h.join(key,m.name,m.token,m.appearance)
     if(!result){send(c,{type:'closed',reason:'Room is locked, full, playing, or this seat cannot be resumed.'});setTimeout(()=>c.close(),250);return}
     info.authorized=true
     const previous=clients.get(result.old);if(previous){clients.delete(result.old);previous.c.close()}
@@ -150,6 +154,7 @@ export function joinRoom(code:string,name:string,listener:Listener,options:Conne
  let snapshot:Snapshot|null=null
  let receivedAt:number|undefined,holdRejection:string|undefined,authorized=false
  let token:string|undefined
+ const appearance=appearancePreset(options.appearance)
  try{const st=JSON.parse(sessionStorage.getItem(sessionKey(code))??'null');if(st?.name===name)token=st.token}catch{/* storage unavailable */}
  const tell=(phase:SessionState['phase'],err='',joinStage?:JoinStage)=>listener({phase,snapshot,error:err,joinStage,receivedAt,holdRejection})
  const stop=()=>{const channel=conn,endpoint=peer;conn=undefined;peer=undefined;channel?.close();endpoint?.destroy()}
@@ -160,11 +165,11 @@ export function joinRoom(code:string,name:string,listener:Listener,options:Conne
   if(closed){peer.destroy();return}
   const p=peer
   await new Promise<void>((resolve,reject)=>{
-   let c:Channel|undefined,timer:ReturnType<typeof setTimeout>|undefined
-   let stage:'peer'|'snapshot'='peer',accepted=false,firstState=false,finished=false
+   let c:Channel|undefined,timer:ReturnType<typeof setTimeout>|undefined,helloTimer:ReturnType<typeof setTimeout>|undefined
+   let stage:'peer'|'snapshot'='peer',accepted=false,firstState=false,finished=false,helloSent=false,appearanceSupported=false
    const finish=(message?:string)=>{
     if(finished)return
-    finished=true;authorized=false;clearTimeout(timer)
+    finished=true;authorized=false;clearTimeout(timer);clearTimeout(helloTimer)
     p.off('error',onPeerError);p.off('disconnected',onSignalingLost)
     if(message)reject(new Error(message));else resolve()
    }
@@ -189,10 +194,17 @@ export function joinRoom(code:string,name:string,listener:Listener,options:Conne
    if(!c){connectionLost();return}
    const channel=c
    conn=channel;authorized=false;seq=0;seen=performance.now()
+   const hello=()=>{
+    if(finished||helloSent||!channel.open)return
+    helloSent=true;clearTimeout(helloTimer)
+    send(channel,{version:1,type:'hello',name,token,...(appearanceSupported&&appearance!==undefined?{appearance}:{})})
+   }
    channel.on('open',()=>{
     if(finished)return
     waitFor('snapshot')
-    send(channel,{version:1,type:'hello',name,token})
+    // A pre-preset host rejects extra hello fields; negotiate only when needed.
+    if(appearance===undefined||appearanceSupported)hello()
+    else helloTimer=setTimeout(hello,capabilityWait)
    })
    channel.on('error',connectionLost)
    channel.on('close',connectionLost)
@@ -201,13 +213,24 @@ export function joinRoom(code:string,name:string,listener:Listener,options:Conne
     try{
      const m=JSON.parse(raw)
      seen=performance.now()
+     if(m.type===capability&&m.appearance===1&&!helloSent){
+      appearanceSupported=true
+      if(stage==='snapshot')hello()
+      return
+     }
      if(m.type==='accepted'&&!accepted&&/^[a-f0-9]{32}$/.test(m.token)){
       accepted=true;token=m.token
       try{sessionStorage.setItem(sessionKey(code),JSON.stringify({name,token}))}catch{/* storage unavailable */}
      }
      if(m.type==='snapshot'&&accepted&&m.state&&typeof m.state.match==='string'){
+      const state=m.state as Snapshot
+      if(!Array.isArray(state.seats)||!state.seats.every(s=>s&&typeof s==='object'&&!Array.isArray(s)))return
+      const seats=state.seats.map(({appearance,...seat})=>{
+       const preset=appearancePreset(appearance)
+       return preset===undefined?seat:{...seat,appearance:preset}
+      })
       firstState=true;authorized=true;clearTimeout(timer)
-      snapshot=m.state;receivedAt=performance.now();tell('online',error);error=''
+      snapshot={...state,seats};receivedAt=performance.now();tell('online',error);error=''
      }
      if(m.type==='error'&&typeof m.reason==='string'){
       if(typeof m.holdRejection==='string'&&/^[a-f0-9]{32}$/.test(m.holdRejection))holdRejection=m.holdRejection

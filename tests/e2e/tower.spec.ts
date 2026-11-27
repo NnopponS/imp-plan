@@ -1,4 +1,5 @@
 import {startMatch} from './start-match'
+import {chooseGame} from '../lobby-controls'
 import {test,expect} from '@playwright/test'
 import {towerPacks} from '../../src/tower'
 const signature=(s:string)=>s.split('').sort().join('')
@@ -18,7 +19,7 @@ test('Word Tower passes control between two browsers and clears a complete tower
   await host.getByLabel('Nickname').fill('Ari')
   await host.getByRole('button',{name:'Create party'}).click()
   const code=(await host.getByTestId('room-code').textContent())!
-  await host.getByLabel('Game').selectOption('tower')
+  await chooseGame(host,'tower')
   await guest.goto(baseURL!+'#/join?room='+code)
   await guest.getByLabel('Nickname').fill('Bee')
   await guest.getByRole('button',{name:'Join party'}).click()

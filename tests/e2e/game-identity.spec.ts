@@ -1,4 +1,5 @@
 import {expect,test} from '@playwright/test'
+import {selectedGame} from '../lobby-controls'
 import catalog from '../../src/catalog.json' with {type:'json'}
 
 const playable=new Set(catalog.filter(entry=>entry.game).map(entry=>entry.game)).size
@@ -33,5 +34,5 @@ test('a narrow season page can find prison matches by venue without obstructing 
  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(320)
  await gallery.getByRole('button',{name:'Practice Time Auction',exact:true}).click()
  await expect(page.getByRole('heading',{name:'Practice lobby'})).toBeVisible()
- await expect(page.getByRole('combobox',{name:'Game',exact:true})).toHaveValue('auction')
+ await expect(selectedGame(page,'auction')).toBeVisible()
 })

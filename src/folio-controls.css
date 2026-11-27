@@ -1,0 +1,151 @@
+/* Bookmarks, nameplate and compact catalog register. All engraving is decorative. */
+.folio-mark{display:inline-block;width:19px;height:19px;flex:0 0 auto;vertical-align:middle}
+.chapter-bookmarks{min-width:0}
+.bar .chapter-bookmarks .chapter-bookmark{
+ --chapter-edge:#a97757;--chapter-color:#ffd0a4;--chapter-face:#482a24;
+ position:relative;display:flex;align-items:center;gap:7px;min-width:44px;min-height:44px;
+ padding:4px 9px;border:1px solid transparent;border-radius:2px;
+ color:#e7d8c0;background:none;font:600 clamp(.7rem,1vw,.83rem)/1.1 system-ui,sans-serif;
+ white-space:normal;text-decoration:none;
+}
+.bar .chapter-bookmarks .chapter-bookmark:hover,.bar .chapter-bookmarks .chapter-bookmark[aria-current=page]{
+ border-color:var(--chapter-edge);background:linear-gradient(115deg,var(--chapter-face),#231c18);
+ color:#fff3db;box-shadow:inset 0 -2px var(--chapter-edge);
+}
+.bar .chapter-bookmark[data-chapter="2"],.archive-chapters [data-chapter="2"]{--chapter-edge:#92a78a;--chapter-color:#d4ecc3;--chapter-face:#283c32}
+.bar .chapter-bookmark[data-chapter="3"],.archive-chapters [data-chapter="3"]{--chapter-edge:#b19457;--chapter-color:#ffe4a6;--chapter-face:#443525}
+.chapter-seal{color:var(--chapter-color,#ffd0a4);inline-size:23px;block-size:29px;flex:none}
+.chapter-metal{fill:var(--chapter-face,#482a24);stroke:var(--chapter-edge,#a97757);stroke-width:1.15}
+.chapter-entry-link{gap:7px}
+.chapter-entry-link .folio-mark,.library-tools a .folio-mark{color:#dfb585}
+.library-tools a{display:inline-flex;align-items:center;justify-content:flex-end;gap:5px;min-height:44px}
+
+/* Keep native text controls; a punched ticket frames the invite rather than
+   replacing one code field with six or breaking copy/paste. */
+.front-desk .entry-ticket-form{grid-template-columns:minmax(0,1fr) auto;gap:8px 8px}
+.entry-ticket-form>h2,.entry-ticket-form>.join-line,.entry-ticket-form>.practice-availability,.entry-ticket-form>.error,.entry-ticket-form>.entry-connection[open]{grid-column:1/-1}
+.front-desk .entry-ticket-form>h2{display:flex;align-items:center;gap:8px}
+.entry-ticket-form>h2 .folio-mark{color:#e3bc81;width:23px;height:23px}
+.entry-nameplate,.entry-invite-tag{
+ display:grid;grid-template-columns:21px minmax(0,1fr);align-items:center;gap:2px 7px;
+ min-width:0;color:#e9c892;
+}
+.entry-nameplate{padding-inline-start:7px;border-inline-start:1px solid #9c724c}
+.entry-ticket-form :is(.entry-nameplate,.entry-invite-tag)>label{margin:0;min-width:0;font-size:.74rem;line-height:1.25}
+.entry-ticket-form :is(.entry-nameplate,.entry-invite-tag)>svg{grid-column:1;grid-row:1/3;justify-self:center}
+.entry-ticket-form :is(.entry-nameplate,.entry-invite-tag)>input{grid-column:2;min-width:0;min-height:44px;margin:0;padding:5px 8px;border-radius:2px}
+.entry-ticket-form .entry-create{
+ min-height:44px;align-self:end;justify-content:center;gap:5px;padding:5px 9px;font-size:.85rem;
+}
+.entry-ticket-form .entry-create .folio-mark{width:17px;height:17px}
+.entry-ticket-form .join-line{
+ display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:8px;
+ margin-block-start:3px;padding-block-start:8px;border-top:1px solid #91634663;
+}
+.entry-invite-tag{
+ position:relative;isolation:isolate;padding:5px 8px 5px 5px;
+ background:#473021;border:1px solid #a7794e;border-radius:3px;
+}
+.entry-invite-tag::before{content:'';position:absolute;inset:3px auto 3px 26px;border-inline-end:1px dashed #c28d5a9c;pointer-events:none}
+.entry-ticket-form .entry-invite-tag #invite{min-height:44px;letter-spacing:.12em;background:#211812;color:#fff2d4;border-color:#8d6846}
+.entry-ticket-form .entry-join{
+ display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:44px;
+ padding:5px 9px;margin-block-end:5px;font-size:.85rem;
+}
+.entry-ticket-form #practice-entry,#room-entry .entry-connection>summary{
+ display:inline-flex;align-items:center;gap:5px;min-height:44px;width:fit-content;
+ font-size:.8rem;font-weight:650;line-height:1.15;color:#eaca9a;
+}
+.front-desk .entry-ticket-form #practice-entry{grid-column:auto;justify-self:start;padding:4px 2px}
+.entry-ticket-form .entry-connection{align-self:start;justify-self:end;margin:0}
+.entry-ticket-form .entry-connection[open]{justify-self:stretch}
+#room-entry .entry-connection>summary{padding:4px 2px;list-style:none}
+.entry-connection>summary::-webkit-details-marker{display:none}
+#room-entry .entry-connection>summary::after{content:'';width:6px;height:6px;border:solid currentColor;border-width:0 1px 1px 0;transform:rotate(45deg);margin:0 2px 4px}
+.entry-ticket-form .entry-connection[open]>summary::after{transform:rotate(225deg);margin-block:4px 0}
+.entry-ticket-form .practice-availability{margin:0}
+.season-room .entry-ticket-form{max-width:40rem}
+.invite-desk .entry-nameplate{grid-column:1/-1}
+
+/* Register controls change the actual local result set, never the room. */
+.challenge-folio>summary>span:first-child,.archive-venue-controls summary>span{display:flex;align-items:center;gap:7px}
+.challenge-folio>summary>span:first-child{min-width:0;font-size:clamp(1.1rem,4vw,1.35rem)}
+.challenge-folio>summary .folio-mark,.archive-venue-controls summary .folio-mark{color:#d6ad76}
+.challenge-folio .challenge-controls{
+ display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:9px 13px;
+ padding:12px 0;border-block:1px solid #a97f535e;
+}
+.archive-search{position:relative;min-width:0}
+.archive-search>input{margin:0;min-width:0;min-height:44px;border-radius:2px;padding-inline-start:32px}
+.archive-search>.folio-mark{position:absolute;inset-block-start:13px;inset-inline-start:8px;color:#d9b681;pointer-events:none}
+.archive-shelves,.archive-chapters,.archive-venues{display:flex;flex-wrap:wrap;gap:5px;min-width:0}
+.archive-shelves button,.archive-chapters button,.archive-venues button,.challenge-folio .archive-reset{
+ display:inline-flex;align-items:center;justify-content:center;gap:4px;min-width:44px;min-height:44px;
+ padding:3px 7px;border:1px solid #7e6348;border-radius:2px;background:#29221c;color:#e3c9a5;
+ font-size:.75rem;font-weight:700;line-height:1.05;
+}
+.archive-shelves .folio-mark,.archive-venues .folio-mark,.archive-chapters .folio-mark{inline-size:17px;block-size:17px}
+.challenge-folio :is(.archive-shelves,.archive-chapters,.archive-venues) button[aria-pressed="true"]{
+ color:#fff3d5;background:#503827;border-color:#d1a26a;box-shadow:inset 0 -2px #dbac73;
+}
+.challenge-folio :is(.archive-shelves,.archive-chapters,.archive-venues) button:hover:not(:disabled){background:#463426;border-color:#c09260;color:#fff1d5}
+.archive-chapters .chapter-seal{width:19px;height:24px}
+.challenge-controls .archive-venue-controls{grid-column:1/-1;margin:0}
+.challenge-folio .archive-venue-controls summary{
+ display:inline-flex;align-items:center;gap:8px;padding:0;min-height:44px;color:#dfc49d;font-size:.8rem;
+}
+.challenge-folio .archive-venue-controls summary>span{color:inherit;font:700 .78rem system-ui,sans-serif}
+.archive-venue-controls summary::after{
+ content:'';display:block;width:6px;height:6px;margin-block-end:4px;
+ border:solid currentColor;border-width:0 1px 1px 0;transform:rotate(45deg);
+}
+.archive-venue-controls[open] summary::after{transform:rotate(225deg);margin-block:4px 0}
+.archive-venues{padding-block:0 5px}
+.archive-results{
+ display:flex;align-items:center;justify-content:space-between;gap:6px;
+ min-height:44px;padding-block:2px;color:#d7bea0;font-size:.76rem;
+}
+.challenge-folio .archive-reset{padding-inline:7px;border-color:transparent;background:none;text-decoration:underline;text-underline-offset:3px}
+.challenge-folio .folio-register{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;
+ padding-block-end:12px;border:0;
+}
+.challenge-folio .folio-register article{
+ --register-ink:#302820;--register-edge:#866c50;
+ display:grid;grid-template-columns:46px minmax(0,1fr) auto;gap:7px;
+ padding:7px;border:1px solid var(--register-edge);border-radius:3px;
+ background:linear-gradient(105deg,#a8825230,transparent 28%),var(--register-ink);
+}
+.challenge-folio .folio-register article[data-shelf="archive"]{--register-ink:#27221d;--register-edge:#695743;border-style:dashed}
+.register-seal{display:grid;justify-items:center;gap:4px;color:#c4a57f}
+.register-seal>.folio-mark{width:27px;height:27px}
+.register-seal .game-token{width:31px}
+.folio-register .register-seal .mono{font-size:.61rem;white-space:nowrap}
+.register-copy{min-width:0}
+.register-copy strong{display:block;font:600 1rem/1.13 Georgia,serif;color:#f5e9d3;overflow-wrap:anywhere}
+.challenge-folio .register-copy .game-venue{gap:2px 5px}
+.folio-register .register-copy .register-genre{font-size:.72rem;color:#ccb89c;line-height:1.17}
+.folio-register .catalog-practice{display:inline-flex;align-items:center;justify-content:center;gap:3px;min-height:44px;padding:5px 7px;line-height:1.1;font-size:.76rem}
+.folio-register .catalog-practice .folio-mark{inline-size:15px;block-size:15px}
+.folio-register .catalog-unavailable{max-width:7ch;text-align:right;line-height:1.2;font-size:.71rem}
+.challenge-folio .index-note{padding-block-end:9px}
+@media(max-width:760px){
+ .bar .chapter-bookmarks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px}
+ .bar .chapter-bookmarks .chapter-bookmark{padding-inline:3px;gap:4px;font-size:.71rem}
+ .chapter-bookmarks .chapter-seal{inline-size:19px;block-size:25px}
+ .challenge-folio .challenge-controls,.challenge-folio .folio-register{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:365px){
+ .entry-ticket-form .entry-create .folio-mark:last-child{display:none}
+ .entry-ticket-form .entry-join .folio-mark,.entry-ticket-form .entry-create .folio-mark{inline-size:15px;block-size:15px}
+ .entry-ticket-form .entry-join,.entry-ticket-form .entry-create{padding-inline:5px;font-size:.78rem}
+ .challenge-folio .folio-register article{grid-template-columns:33px minmax(0,1fr) auto;gap:4px;padding:5px}
+ .folio-register .register-copy .game-venue{margin-top:2px}
+ .register-seal .game-token{width:27px}
+ .folio-register .catalog-practice .folio-mark{display:none}
+}
+@media(forced-colors:active){
+ .chapter-metal{fill:Canvas;stroke:CanvasText}
+ .chapter-seal,.folio-mark{color:CanvasText}
+ .bar .chapter-bookmarks .chapter-bookmark[aria-current=page],.challenge-folio button[aria-pressed=true]{outline:2px solid Highlight;outline-offset:-3px}
+}

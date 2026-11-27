@@ -304,7 +304,7 @@
 </g>
 <path d="M206 496 412 447 554 503 352 583Z" fill="#73523f" stroke="#3a2a30" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
 <path d="M222 495 412 456 528 503 352 568Z" fill="#46333a" stroke="#b4875a" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" />
-<g transform="translate(350 491) scale(.72 .66) skewX(12)">
+<g data-cover-object="seat-final-N-in-FERN"><animateMotion begin="indefinite" data-cover-at="0.08s" dur="1.35s" fill="remove" path="M0 0 C116 -23 267 -302 482 -222" calcMode="linear" keyPoints="0;1;1;0" keyTimes="0;.56;.72;1"/><g transform="translate(350 491) scale(.72 .66) skewX(12)">
 <path d="M0 0l52-6 17 12v39l-51 8-18-12Z" fill="#744e4d" stroke="#392931" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
 <path d="M0 0l51-6 18 12-51 9Z" fill="#d5a487" stroke="#705345" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" />
 <path d="M0 0l18 15v37l-18-11Z" fill="#744e4d" stroke="#6b4938" stroke-width="1.0" stroke-linecap="round" stroke-linejoin="round" />
@@ -312,7 +312,7 @@
 <path d="M22 17l43-8v33l-43 6Z" fill="none" stroke="#d5a487" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round" />
 <text x="44" y="42" fill="#55363b" font-family="Georgia, serif" font-size="24" font-weight="bold" text-anchor="middle" >N</text>
 <path d="M25 45l35-5m-57-24 10 8" fill="none" stroke="#d5a487" stroke-width="0.79" stroke-linecap="round" stroke-linejoin="round" opacity=".65"/>
-</g>
+</g></g>
 <path d="M269 530q12-17 24-9q-1 13-24 9m2-1 19-8M436 489q18-11 26-6q-7 17-26 6m3 0 19-5" fill="none" stroke="#b28b63" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity=".66"/>
 <path d="M61 353Q137 336 191 376L306 435 366 447 333 487Q239 475 163 437L62 412Z" fill="url(#tower-robe)" stroke="#26222c" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round" />
 <path d="M71 378q93-9 157 46m-143-34q68 3 118 34m-25 15 46 18m36-29q44 16 79 27" fill="none" stroke="#b48e71" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" opacity=".61"/>

@@ -1,4 +1,5 @@
 import {expect,test} from '@playwright/test'
+import {chooseSetting} from '../lobby-controls'
 import {startMatch} from '../e2e/start-match'
 import {preview} from 'vite'
 
@@ -64,7 +65,7 @@ test('a fresh Pages visit saves unvisited games and can be reopened offline',asy
  await expect(reopened.getByLabel('Nickname')).toHaveValue('')
  await reopened.getByRole('button',{name:'Practice Heavy 13'}).click()
  await expect(reopened.getByText('Player',{exact:true})).toBeVisible()
- await reopened.getByRole('combobox',{name:/Bot difficulty/}).selectOption('hard')
+ await chooseSetting(reopened,'Bot difficulty','hard')
  await startMatch(reopened)
  const board=reopened.getByRole('region',{name:'Heavy 13 table'})
  await expect(board).toBeVisible()

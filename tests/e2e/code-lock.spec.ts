@@ -1,4 +1,5 @@
 import {startMatch} from './start-match'
+import {chooseGame} from '../lobby-controls'
 import {test,expect} from '@playwright/test'
 const colors=['Teal','Amber','Plum']
 const name=(n:number)=>colors[Math.floor(n/4)]+' '+(n%4+1)
@@ -22,13 +23,16 @@ test('Secret Code room hides attempts, charges time, and accepts the unique mobi
   await host.getByLabel('Nickname').fill('Keeper')
   await host.getByRole('button',{name:'Create party'}).click()
   const code=(await host.getByTestId('room-code').textContent())!
-  await host.getByLabel('Game').selectOption('codeLock')
+  await chooseGame(host,'codeLock')
   await guest.goto(baseURL!+'#/join?room='+code)
   await guest.getByLabel('Nickname').fill('Solver')
   await guest.getByRole('button',{name:'Join party'}).click()
   await guest.getByRole('button',{name:'Ready up'}).click()
   await startMatch(host)
-  const clues=await guest.getByRole('region',{name:'Clue sheet'}).getByRole('listitem').allTextContents()
+  const clueRows=guest.getByRole('region',{name:'Clue sheet'}).getByRole('listitem')
+  // The guest's board bundle loads after the authoritative match snapshot.
+  await expect(clueRows.first()).toBeVisible()
+  const clues=await clueRows.allTextContents()
   expect(clues.length).toBeGreaterThanOrEqual(6)
   const found:number[][]=[]
   for(let a=0;a<12;a++)for(let b=0;b<12;b++)for(let c=0;c<12;c++)for(let d=0;d<12;d++){

@@ -1,5 +1,16 @@
-import React,{useState} from 'react'
+import {useState} from 'react'
+import {InstrumentPicker} from './instrument-picker'
 type Point=[number,number]
+
+function LevelFace({level}:{level:number}){
+ return <span className="cube-level-face" aria-hidden="true"><svg viewBox="0 1 28 30" focusable="false">
+  {Array.from({length:level},(_,i)=>{
+   const y=22-5*i
+   return <path key={i} d={`M4 ${y}l9-4 9 4v3l-9 4-9-4zM4 ${y}l9 4 9-4m-9 4v3`}/>
+  })}
+ </svg><span>{level}</span></span>
+}
+const levels=[1,2,3,4].map(value=>({value,label:'Layer '+value,face:<LevelFace level={value}/>}))
 export function CubeView({heights,side}:{heights:number[],side:number}){
  const [angle,setAngle]=useState(0)
  const [layer,setLayer]=useState(1)
@@ -14,7 +25,8 @@ export function CubeView({heights,side}:{heights:number[],side:number}){
   <div className="cube-views" role="group" aria-label="Puzzle view">
    {['Front','Quarter turn','Back','Layers'].map((name,i)=><button type="button" key={name} aria-pressed={angle===i} onClick={()=>setAngle(i)}>{name}</button>)}
   </div>
-  {angle===3?<div className="cube-cross-section"><label>Layer <select aria-label="Layer" value={layer} onChange={e=>setLayer(Number(e.target.value))}>{[1,2,3,4].map(n=><option key={n}>{n}</option>)}</select></label>
+  {angle===3?<div className="cube-cross-section">
+   <InstrumentPicker label="Stack levels" className="cube-levels" options={levels} value={layer} select={setLayer}/>
    <div role="group" aria-label={'Layer '+layer+' occupancy'} className="cube-layer" style={{gridTemplateColumns:`repeat(${side},1fr)`}}>{heights.map((h,i)=><span key={i} role="img" aria-label={`Row ${Math.floor(i/side)+1}, column ${i%side+1}: ${h>=layer?'occupied':'empty'}`} className={h>=layer?'occupied':''}>{h>=layer?'■':'·'}</span>)}</div>
   </div>:<svg role="img" aria-label="Isometric cube stack. Use Layers to inspect individual levels." className="voxel-diagram" viewBox="20 5 252 218">
    <g className="cube-engraved-base" aria-hidden="true">

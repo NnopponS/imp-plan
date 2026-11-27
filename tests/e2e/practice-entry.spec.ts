@@ -1,4 +1,5 @@
 import {expect,test} from '@playwright/test'
+import {selectedGame} from '../lobby-controls'
 
 test('a fresh player can open the selected practice game without a nickname',async({page})=>{
  await page.setViewportSize({width:390,height:844})
@@ -7,25 +8,25 @@ test('a fresh player can open the selected practice game without a nickname',asy
  expect(await page.evaluate(async()=>navigator.serviceWorker.getRegistrations().then(registrations=>registrations.length))).toBe(0)
  await page.getByRole('button',{name:'Practice Nine Men’s Morris'}).click()
  await expect(page.getByRole('heading',{name:'Practice lobby'})).toBeVisible({timeout:3000})
- await expect(page.getByRole('combobox',{name:'Game',exact:true})).toHaveValue('morris')
+ await expect(selectedGame(page,'morris')).toBeVisible()
  await expect(page.getByLabel('Nickname')).toHaveCount(0)
  await expect(page.getByTestId('room-code')).toHaveCount(0)
  await expect(page.getByText('Player',{exact:true})).toBeVisible()
 })
 
-test('the warm-up opens full practice without using the online nickname or connection options',async({page})=>{
+test('the gallery opens full practice without using the online nickname or connection options',async({page})=>{
  await page.goto('./')
  const name=page.getByLabel('Nickname')
  await name.fill('Online handle')
  await page.getByText('Connection options',{exact:true}).click()
  await page.getByLabel('Custom STUN URLs (optional)').fill('not a STUN URL')
- await page.getByRole('region',{name:'One-move warm-up'}).getByRole('button',{name:'Full Blind Gomoku'}).press('Enter')
+ await page.getByRole('button',{name:'Practice Blind Gomoku',exact:true}).press('Enter')
  await expect(page.getByRole('heading',{name:'Practice lobby'})).toBeVisible({timeout:3000})
- await expect(page.getByRole('combobox',{name:'Game',exact:true})).toHaveValue('blind')
+ await expect(selectedGame(page,'blind')).toBeVisible()
  await expect(page.getByText('Player',{exact:true})).toBeVisible()
  await expect(page.getByText('Online handle',{exact:true})).toHaveCount(0)
  await page.getByRole('button',{name:'Leave room',exact:true}).click()
- await expect(page.getByRole('button',{name:'Full Blind Gomoku',exact:true})).toBeFocused()
+ await expect(page.getByRole('button',{name:'Practice Blind Gomoku',exact:true})).toBeFocused()
  await expect(name).toHaveValue('Online handle')
 })
 
@@ -78,7 +79,7 @@ test('dense seat markers do not intersect or clip at narrow widths',async({page}
  await page.getByRole('button',{name:'Start match',exact:true}).click()
  for(const w of [320,360,390,601,820,1280]){
   await page.setViewportSize({width:w,height:740})
-  const geometry=await page.locator('.brief-seat-ring').evaluate(ring=>{
+  const geometry=await page.locator('.brief-audience-pieces').evaluate(ring=>{
    const stage=ring.getBoundingClientRect(),nodes=Array.from(ring.querySelectorAll('[data-brief-seat]'))
    const boxes=nodes.map(node=>node.getBoundingClientRect())
    const overlaps=boxes.flatMap((a,i)=>boxes.slice(i+1).flatMap((b,j)=>a.left<b.right&&a.right>b.left&&a.top<b.bottom&&a.bottom>b.top?[[i+1,i+j+2]]:[]))

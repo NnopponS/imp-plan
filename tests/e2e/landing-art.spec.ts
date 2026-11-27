@@ -12,7 +12,7 @@ for(const [width,height] of [[320,690],[768,940],[1440,970]]){
   expect(await hero.evaluate((img:HTMLImageElement)=>img.currentSrc)).toContain(width<=685?'landing-hero-mobile.svg':'landing-hero.svg')
   await expect(home.getByRole('link',{name:'Browse games'})).toBeVisible()
   await expect(home.getByRole('link',{name:'Create or join a room'})).toBeVisible()
-  await expect(home.getByRole('region',{name:'One-move warm-up'}).getByRole('button',{name:'Row 8, column 9, empty'})).toBeInViewport()
+  await expect(home.getByRole('region',{name:'Player wardrobe'}).getByRole('img',{name:/Your avatar/})).toBeVisible()
   for(const art of await home.locator('.chapter-painting').all()){
    await art.scrollIntoViewIfNeeded()
    await expect.poll(()=>art.evaluate((img:HTMLImageElement)=>img.complete&&img.naturalWidth>0)).toBe(true)

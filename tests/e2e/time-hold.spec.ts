@@ -1,9 +1,9 @@
 import {test,expect,type Page,type Locator} from '@playwright/test'
+import {chooseGame,chooseSetting,settingChoice,tableSetting} from '../lobby-controls'
 import type {Snapshot} from '../../src/room'
 
 const plunger=(p:Page)=>p.getByRole('button',{name:'Hold to bid'})
 const board=(p:Page)=>p.locator('.time-hold')
-const select=(p:Page)=>p.getByLabel('Time Auction mode')
 const sync=(page:Page,ms:number)=>page.clock.runFor(ms)
 const click=(locator:Locator)=>locator.evaluate((el:HTMLElement)=>el.click())
 
@@ -36,9 +36,9 @@ test('optional hold/release is sealed on the wire in both directions until the s
   await host.goto(baseURL!)
   await host.getByLabel('Nickname').fill('Ari')
   await click(host.getByRole('button',{name:'Create party'}))
-  await host.getByLabel('Game').first().selectOption('auction')
-  await expect(select(host)).toHaveValue('sealed')
-  await expect(host.getByLabel('Seconds to submit')).toBeVisible()
+  await chooseGame(host,'auction')
+  await expect(settingChoice(host,'Time Auction mode','sealed')).toBeChecked()
+  await expect(tableSetting(host,'Seconds to submit')).toBeVisible()
   const code=await host.getByTestId('room-code').textContent()
   for(const [p,name] of [[guest,'Bee'],[observer,'Cam']] as const){
    await p.goto(baseURL!+'#/join?room='+code)
@@ -46,9 +46,9 @@ test('optional hold/release is sealed on the wire in both directions until the s
    await click(p.getByRole('button',{name:'Join party'}))
    await click(p.getByRole('button',{name:'Ready up'}))
   }
-  await select(host).selectOption('hold')
-  await expect(select(observer)).toHaveValue('hold')
-  await expect(host.getByLabel('Seconds to submit')).toHaveCount(0)
+  await chooseSetting(host,'Time Auction mode','hold')
+  await expect(settingChoice(observer,'Time Auction mode','hold')).toBeChecked()
+  await expect(tableSetting(host,'Seconds to submit')).toHaveCount(0)
   await expect(host.getByRole('button',{name:'Add bot'})).toBeDisabled()
   await click(host.getByRole('button',{name:'Start match'}))
   const brief=host.getByRole('dialog')

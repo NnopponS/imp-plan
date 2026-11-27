@@ -51,8 +51,11 @@
  .season-gallery .section-head {display:flex;justify-content:space-between;}
 }
 @media(max-width:355px){
- .season-heading {padding-block:12px;gap:8px;}
- .season-heading .front-cta {min-height:40px;padding:6px 10px;font-size:.8rem;}
+ /* Keep the first action in view on short phones without trimming the art
+    or shrinking the 44px bookmark and room controls. */
+ .season-heading {padding-block:8px 6px;gap:7px;}
+ .season-heading .front-cta {min-height:44px;padding:6px 10px;font-size:.8rem;}
+ .season-gallery {padding-top:9px;}
  .season-gallery .library-tools {padding-block:3px;margin-bottom:8px;}
  .library-tools a {font-size:.78rem;}
  .catalog-practice {font-size:.8rem;padding-inline:8px;}

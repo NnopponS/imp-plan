@@ -167,9 +167,9 @@
 <path d="M509.0 106.0 L505.0 106.0" fill="none" stroke="#6e543e" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round" />
 <path d="M511.9 117.0 L508.5 119.0" fill="none" stroke="#6e543e" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round" />
 <path d="M520.0 125.1 L518.0 128.5" fill="none" stroke="#6e543e" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round" />
-<path d="M518 104 531 106 547 114" fill="none" stroke="#4c3633" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round" />
+<g data-cover-object="study-clock"><animateTransform attributeName="transform" type="rotate" begin="indefinite" data-cover-at="0.07s" dur="1.3s" fill="remove" values="0 531 106;135 531 106;266 531 106;360 531 106" keyTimes="0;.39;.73;1"/><path d="M518 104 531 106 547 114" fill="none" stroke="#4c3633" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round" /></g>
 <ellipse cx="531.0" cy="106.0" rx="2.9" ry="2.9" fill="#9a634c" stroke="#543832" stroke-width="0.85" />
-<g transform="translate(352 201) scale(1.06)">
+<g data-cover-object="objects-slip-from-memory"><animate attributeName="opacity" begin="indefinite" data-cover-at="0.43s" dur="0.94s" fill="remove" values="1;1;.18;.18;1" keyTimes="0;.15;.44;.58;1"/><g transform="translate(352 201) scale(1.06)">
 <ellipse cx="4.0" cy="19.0" rx="29.0" ry="6.0" fill="#231c28" stroke="none" stroke-width="1" opacity=".65"/>
 <path d="M-13-42Q2-46 14-42L12-31Q13-23 20-19Q27-11 22 2L14 13Q0 18-14 13L-22 4Q-29-10-19-20Q-13-25-12-32Z" fill="#688578" stroke="#303634" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
 <ellipse cx="0.0" cy="-42.0" rx="13.0" ry="4.0" fill="#394944" stroke="#958f69" stroke-width="1.2" />
@@ -250,7 +250,7 @@
 <path d="M-31-29-18-40H17L26-30Q-2-23-31-29Z" fill="#a77850" stroke="#604438" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
 <path d="M0 1q-7-3-6-7q3-5 4-10q8 7 8 12q0 5-6 5Z" fill="#edbd68" stroke="#856044" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" />
 <path d="M-18-33l34-2m-30 41q16 4 29 1" fill="none" stroke="#dab67c" stroke-width="1.03" stroke-linecap="round" stroke-linejoin="round" />
-</g>
+</g></g>
 <path d="M456 504 606 504 620 518 612 539 449 539 443 520Z" fill="url(#fragments-metal)" stroke="#674734" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
 <text x="531" y="530" fill="#53382f" font-family="Georgia, serif" font-size="18" font-weight="bold" text-anchor="middle" letter-spacing="4">ATLAS</text>
 <ellipse cx="455.0" cy="520.0" rx="3.1" ry="3.2" fill="#73533d" stroke="#ca9b63" stroke-width="0.85" />

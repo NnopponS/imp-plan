@@ -17,7 +17,7 @@ test('invited guests can preview rules before readying and rejoin the match view
   const dialog=guest.getByRole('dialog',{name:'Blind Gomoku'})
   await expect(dialog.getByText('2 at the table')).toBeVisible()
   await expect(dialog.getByText('2 humans · 0 bots')).toBeVisible()
-  const rule=dialog.locator('.brief-lesson button').nth(1)
+  const rule=dialog.locator('.brief-theater-rules button').nth(1)
   await rule.click()
   await expect(rule).toHaveAttribute('aria-pressed','true')
   await expect(dialog.getByRole('button',{name:'Enter match',exact:true})).toHaveCount(0)

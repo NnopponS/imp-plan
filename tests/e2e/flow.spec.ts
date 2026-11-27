@@ -1,4 +1,5 @@
 import {startMatch} from './start-match'
+import {chooseGame} from '../lobby-controls'
 import {test,expect} from '@playwright/test'
 test('two isolated browser contexts play a duel, resume, and rematch',async({browser,baseURL})=>{
  const first=await browser.newContext(),second=await browser.newContext({viewport:{width:390,height:844},hasTouch:true})
@@ -37,13 +38,13 @@ test('mobile keyboard flow and two playable offline engines',async({page})=>{
  await page.setViewportSize({width:390,height:844})
  await page.goto('./')
  await page.getByRole('button',{name:'Solo practice'}).press('Enter')
- await page.getByLabel('Game').selectOption('morris')
+ await chooseGame(page,'morris')
  await startMatch(page)
  await expect(page.getByRole('button',{name:'Point 1, open',exact:true})).toHaveAttribute('aria-disabled','false')
  const p=page.getByRole('button',{name:'Point 1, open',exact:true});await p.focus();await page.keyboard.press('Enter')
  await expect(page.getByRole('button',{name:'Point 1, Player',exact:true})).toBeVisible()
  page.once('dialog',d=>d.accept());await page.getByRole('button',{name:'Return to lobby'}).click()
- await page.getByLabel('Game').selectOption('auction')
+ await chooseGame(page,'auction')
  await startMatch(page)
  for(let i=1;i<=8;i++){
   await expect(page.getByText('Sealed round '+i+' / 8')).toBeVisible()

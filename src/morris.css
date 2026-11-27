@@ -1,0 +1,89 @@
+.room[data-game=morris] .match{
+ --ink:#ffebcc;--sub:#dcccafa8;--line:#856649;--paper:#2b211c;--green:#deb57b;
+ padding:clamp(5px,1.05vw,12px);color:var(--ink);background:#251d18;color-scheme:dark;
+ border-color:#8d6a47;box-shadow:inset 0 0 0 2px #37281f
+}
+.room[data-game=morris] .match>.eyebrow{color:#dfb683;font-size:.62rem;line-height:1.15;margin:2px 4px 6px}
+.room[data-game=morris] .match button:not(.primary):not(.morris-point){background:#3a2a20;color:#ffedcd;border-color:#987756}
+.room[data-game=morris] .match .primary{color:#271d16}
+.room[data-game=morris] .match>details p{color:#dfc9a7}
+.room[data-game=morris] .room-grid:not(:has(.chat)){grid-template-columns:minmax(0,1fr)}
+.room[data-game=morris] .room-grid:not(:has(.chat))>aside{display:none}
+.morris-stage{
+ --morris-gold:#e5b97c;--morris-ivory:#ffedcd;
+ position:relative;isolation:isolate;display:grid;justify-items:center;align-content:start;gap:6px;
+ padding:clamp(5px,1.35vw,16px);overflow:hidden;
+ border:1px solid #97734f;background:#221a18;
+ box-shadow:inset 0 0 0 3px #3b2b24,inset 0 0 35px #100b0b
+}
+.morris-chamber-art{position:absolute;inset:0;z-index:-2;width:100%;height:100%;object-fit:cover;object-position:49% 25%;pointer-events:none}
+.morris-stage::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(100deg,#1d1715a8,#2119184d 50%,#2118157a),linear-gradient(#271a17ad,transparent 27%,#21171798)}
+.morris-score{
+ width:min(100%,500px);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px
+}
+.morris-player{
+ display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;min-width:0;gap:6px;
+ padding:3px 7px 3px 5px;color:var(--morris-ivory);background:#2b2019ed;border:1px solid #846346;
+ font:700 clamp(.74rem,2.1vw,.9rem)/1.1 system-ui,sans-serif
+}
+.morris-player span:not(.morris-stone){overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.morris-player b{color:#fff0d5;font:700 1.05rem/1 Georgia,serif}
+.morris-player[data-turn]{border-color:#dfb276;box-shadow:inset 0 -2px #d7a668;background:#493325ef}
+.morris-cue{
+ margin:0;padding:4px 9px;max-width:100%;background:#281c17f0;border:1px solid #866443;color:var(--morris-ivory);
+ font:700 clamp(.72rem,2.15vw,.87rem)/1.15 system-ui,sans-serif;text-align:center;overflow-wrap:anywhere
+}
+.morris-surface{
+ position:relative;isolation:isolate;width:min(100%,500px);aspect-ratio:1;flex:none;
+ filter:drop-shadow(0 6px 6px #100c0bac)
+}
+.morris-carving{display:block;width:100%;height:100%;pointer-events:none}
+.room[data-game=morris] .match .morris-point{
+ position:absolute;display:grid;place-items:center;transform:translate(-50%,-50%);width:min(44px,12.8%);aspect-ratio:1;
+ min-height:0;padding:0;border:0;border-radius:50%;background:transparent;color:#38271f;touch-action:manipulation;
+ cursor:default;z-index:0
+}
+.morris-point[aria-disabled=false]{cursor:pointer}
+.morris-point:focus-visible{outline:3px solid #39251d;outline-offset:-1px;box-shadow:inset 0 0 0 5px #fff0bd;z-index:2}
+.room[data-game=morris] .match .morris-point:hover:not(:disabled):not([aria-disabled=true]){background:#fff3c854}
+.morris-point-pip{
+ position:absolute;inset:29%;border-radius:50%;border:1px solid #553a2b;background:#8a5f3f;
+ box-shadow:inset 0 1px 2px #765638,0 1px #dbb47d;pointer-events:none
+}
+.morris-point:is([data-action=place],[data-action=move]) .morris-point-pip{background:#f6dfa8;border:2px solid #875931;box-shadow:0 0 0 2px #f4db9c,inset 0 1px #fff6cb}
+.morris-point[data-action=move] .morris-point-pip{inset:24%;border-color:#383326;box-shadow:0 0 0 3px #fff2bb}
+.morris-point:is([aria-pressed=true],[data-action=capture])::after{
+ content:"";position:absolute;inset:2px;border-radius:50%;border:2px solid #fff1bb;box-shadow:0 0 0 1px #5d3a25;pointer-events:none
+}
+.morris-point[data-action=capture]::after{border-style:dashed}
+.morris-stone{
+ display:grid;place-items:center;position:relative;width:76%;aspect-ratio:1;border:1px solid #61402a;border-radius:50%;z-index:1;
+ background:linear-gradient(140deg,#ffdfa5,#d2a363 55%,#885b36);
+ box-shadow:0 2px 0 #68422a,0 3px 4px #3721178f,inset 0 0 0 1px #f1cd8d;pointer-events:none
+}
+.morris-stone i{width:55%;aspect-ratio:1;border:1px solid #734c32;border-radius:50%;box-shadow:0 0 0 1px #f4cc8d,inset 0 1px #eed294}
+.morris-stone[data-morris-stone="1"]{border-color:#341f1e;background:linear-gradient(140deg,#9d655c,#653a36 58%,#3f2828);box-shadow:0 2px 0 #382220,0 3px 4px #30201de0,inset 0 0 0 1px #b47b6d}
+.morris-stone[data-morris-stone="1"] i{width:40%;border-color:#d1a389;border-radius:0;transform:rotate(45deg);box-shadow:none}
+.morris-player>.morris-stone{width:21px}
+.morris-stone[data-enter=true]{animation:morris-stone-settle 255ms ease-out both}
+@keyframes morris-stone-settle{0%{transform:translateY(-6px) scale(1.12);opacity:.52}100%{transform:none;opacity:1}}
+[data-game-motion=off] .morris-stone{animation:none}
+@media(prefers-reduced-motion:reduce){.morris-stone{animation:none}}
+@media(orientation:landscape) and (max-height:530px) and (min-width:600px){
+ .morris-stage{grid-template-columns:minmax(0,1fr) minmax(150px,.65fr);grid-template-rows:auto 1fr;justify-items:start;align-items:start;padding:6px 10px;gap:7px 12px}
+ .morris-surface{grid-row:1/3;grid-column:1;justify-self:center;width:min(100%,calc(100svh - 144px),390px)}
+ .morris-score{grid-row:1;grid-column:2;grid-template-columns:1fr}
+ .morris-cue{grid-row:2;grid-column:2}
+}
+@media(forced-colors:active){
+ .morris-chamber-art,.morris-stage::before{display:none}
+ .morris-carving>path{fill:none;stroke:CanvasText}
+ .morris-lines{stroke:CanvasText}
+ .morris-mill-lines{stroke:Highlight}
+ .morris-player[data-turn]{border-bottom:3px solid Highlight}
+ .morris-surface,.morris-player,.morris-cue{border:1px solid CanvasText}
+ .room[data-game=morris] .match .morris-point{border:1px solid CanvasText}
+ .room[data-game=morris] .match .morris-point[aria-disabled=false]{border:3px double Highlight}
+ .morris-stone,.morris-stone[data-morris-stone="1"]{background:CanvasText;border:1px solid Canvas}
+ .morris-stone i{border:1px solid Canvas}
+}

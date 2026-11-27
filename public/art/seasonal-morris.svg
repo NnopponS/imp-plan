@@ -267,13 +267,13 @@
 <ellipse cx="0.0" cy="-0.3" rx="8.2" ry="3.2" fill="#8a5b3e" stroke="#f0c985" stroke-width="0.8" />
 <path d="M-10 -1q5-3 13-2m-6 4 5-2m-2 3 7-3" fill="none" stroke="#f0c985" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/>
 </g>
-<g transform="translate(673.1 415.7) scale(0.8250000000000001)">
+<g data-cover-object="close-mill"><animateTransform attributeName="transform" type="translate" begin="indefinite" data-cover-at="0.12s" dur="1.2s" fill="remove" values="0 0;22 -44;8 -19;0 0;0 -4;0 0" keyTimes="0;.25;.47;.66;.78;1" calcMode="spline" keySplines=".23 .02 .30 1;.23 .02 .30 1;.23 .02 .30 1;.23 .02 .30 1;.23 .02 .30 1"/><g transform="translate(673.1 415.7) scale(0.8250000000000001)">
 <ellipse cx="2.0" cy="5.0" rx="15.0" ry="7.0" fill="#261e27" stroke="none" stroke-width="1" opacity=".66"/>
 <path d="M-14 1Q-10-7 9-5Q16-3 14 3L13 6Q7 10-8 8Q-14 6-14 1Z" fill="#805439" stroke="#422832" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
 <ellipse cx="0.0" cy="0.0" rx="14.0" ry="6.0" fill="#c08b51" stroke="#3f2830" stroke-width="1.1" />
 <ellipse cx="0.0" cy="-0.3" rx="8.2" ry="3.2" fill="#8a5b3e" stroke="#f0c985" stroke-width="0.8" />
 <path d="M-10 -1q5-3 13-2m-6 4 5-2m-2 3 7-3" fill="none" stroke="#f0c985" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/>
-</g>
+</g></g>
 <g transform="translate(339.8 467.4) scale(0.895)">
 <ellipse cx="2.0" cy="5.0" rx="15.0" ry="7.0" fill="#261e27" stroke="none" stroke-width="1" opacity=".66"/>
 <path d="M-14 1Q-10-7 9-5Q16-3 14 3L13 6Q7 10-8 8Q-14 6-14 1Z" fill="#805439" stroke="#422832" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />

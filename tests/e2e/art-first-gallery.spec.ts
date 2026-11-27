@@ -8,7 +8,7 @@ for(const [width,height,columns] of [[320,568,1],[390,844,2],[1440,900,3]]){
   const cards=page.locator('.featured .card')
   const first=cards.first()
   const art=first.locator('.game-art')
-  await expect(art.locator('img')).toBeInViewport()
+  await expect(art.locator('img[data-arena-art]')).toBeInViewport()
   await expect(first.locator('.game-venue-badge')).toHaveText('Prison Match')
   await expect(first.locator('.game-venue-place')).toBeHidden()
   await expect(first.locator('p,summary')).toHaveCount(0)

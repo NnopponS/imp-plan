@@ -1,4 +1,5 @@
 import {test,expect,type Page} from '@playwright/test'
+import {chooseGame,selectedGame,tableSwitch} from '../lobby-controls'
 import {startMatch} from './start-match'
 
 const table=(page:Page)=>page.getByRole('region',{name:'Memory Poker table'})
@@ -27,13 +28,13 @@ test('two players play four hands, keep locks and assistance private, then revie
   await host.goto(baseURL!+'season/3/')
   await host.getByLabel('Nickname').fill('Ari')
   await host.getByRole('button',{name:'Create party'}).click()
-  await host.getByLabel('Game').selectOption('memoryPoker')
-  await host.getByLabel('Allow one-card peek (−1 point)').check()
+  await chooseGame(host,'memoryPoker')
+  await tableSwitch(host,'Allow one-card peek (−1 point)').click()
   const code=(await host.getByTestId('room-code').textContent())!
   await guest.goto(baseURL!+'#/join?room='+code)
   await guest.getByLabel('Nickname').fill('Bee')
   await guest.getByRole('button',{name:'Join party'}).click()
-  await expect(guest.getByLabel('Allow one-card peek (−1 point)')).toBeChecked()
+  await expect(tableSwitch(guest,'Allow one-card peek (−1 point)')).toBeChecked()
   await guest.getByRole('button',{name:'Ready up'}).click()
   await startMatch(host)
 
@@ -104,8 +105,8 @@ test('unnamed mobile solo entry stays offline, starts with no bots and records a
   await page.goto(baseURL!+'season/3/')
   await page.getByRole('button',{name:'Practice Memory Poker',exact:true}).tap()
   await expect(page.getByRole('heading',{name:'Practice lobby'})).toBeVisible()
-  await expect(page.getByLabel('Game')).toHaveValue('memoryPoker')
-  await expect(page.getByLabel('Allow one-card peek (−1 point)')).not.toBeChecked()
+  await expect(selectedGame(page,'memoryPoker')).toBeVisible()
+  await expect(tableSwitch(page,'Allow one-card peek (−1 point)')).not.toBeChecked()
   await expect(page.getByRole('button',{name:'Add bot'})).toBeDisabled()
   await startMatch(page)
   await expect(table(page).getByRole('heading',{name:'Study the cards'})).toBeVisible()

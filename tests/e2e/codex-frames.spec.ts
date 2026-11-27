@@ -16,14 +16,11 @@ for(const [width,height] of [[320,690],[768,900],[911,892],[1440,950]]){
   })
   // The bottom edge actually curves downward to the binding, not a box outline.
   expect(bottomEdge).toBeGreaterThan(350)
-  const warm=page.getByRole('region',{name:'One-move warm-up'})
-  const cell=warm.getByRole('button',{name:'Row 8, column 9, empty'})
-  await expect(cell).toBeInViewport()
-  await cell.click()
-  await expect(warm.getByRole('status')).toHaveText('Five in a row. You win!')
-  await expect(warm.getByRole('button',{name:'Reset warm-up'})).toBeFocused()
-  await warm.getByRole('button',{name:'Reset warm-up'}).press('Enter')
-  await expect(warm.getByRole('button',{name:'Row 6, column 4, empty'})).toBeFocused()
+  const wardrobe=page.getByRole('region',{name:'Player wardrobe'})
+  const mask=wardrobe.getByRole('radio',{name:'Raven mask'})
+  await wardrobe.locator('label[title="Raven mask"]').click()
+  await expect(mask).toBeChecked()
+  await expect(wardrobe.getByRole('img',{name:/Raven mask/})).toBeVisible()
   const browse=page.getByRole('link',{name:'Browse games',exact:true})
   await browse.focus()
   await page.keyboard.press('Enter')
@@ -58,12 +55,12 @@ for(const [width,height] of [[320,690],[768,900],[911,892],[1440,950]]){
 
 test.describe('touch on the narrow codex',()=>{
  test.use({viewport:{width:320,height:690},hasTouch:true,isMobile:true})
- test('warm-up, anchor and room inputs all respond to touch',async({page})=>{
+ test('wardrobe, anchor and room inputs all respond to touch',async({page})=>{
   await page.emulateMedia({reducedMotion:'reduce'})
   await page.goto('./')
-  const warm=page.getByRole('region',{name:'One-move warm-up'})
-  await warm.getByRole('button',{name:'Row 8, column 9, empty'}).tap()
-  await expect(warm.getByRole('status')).toHaveText('Five in a row. You win!')
+  const wardrobe=page.getByRole('region',{name:'Player wardrobe'})
+  await wardrobe.locator('label[title="Forest cloak"]').tap()
+  await expect(wardrobe.getByRole('img',{name:/Forest cloak/})).toBeVisible()
   await page.getByRole('link',{name:'Create or join a room',exact:true}).tap()
   const code=page.getByRole('textbox',{name:'Invite code'})
   await code.tap()

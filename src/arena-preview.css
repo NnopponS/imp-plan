@@ -1,20 +1,12 @@
 .arena-preview{position:relative}
 .arena-preview>picture{display:block;width:100%;height:100%}
-.arena-character-overlay{
- position:absolute;z-index:1;inset-block-end:0;inset-inline-start:2%;block-size:78%;
- display:block;pointer-events:none;--keeper-exit:-19px;
- --keeper-motion:1440ms;animation:keeper-gallery-pass var(--keeper-motion) ease-in-out both;
+.arena-preview>.arena-cover-motion{
+ position:absolute;z-index:1;inset:0;display:block;width:100%;height:100%;
+ pointer-events:none;visibility:hidden;
 }
-.arena-character-overlay[data-edge=end]{inset-inline-start:auto;inset-inline-end:2%;--keeper-exit:19px}
-.arena-character-overlay .keeper-character{filter:drop-shadow(2px 0 2px #221111b8)}
-.arena-character-overlay[data-edge=end] .keeper-character{scale:-1 1}
-@keyframes keeper-gallery-pass{
- 0%{opacity:0;transform:translate(var(--keeper-exit),20px)}
- 19%,68%{opacity:1;transform:translate(0,0)}
- 100%{opacity:0;transform:translate(var(--keeper-exit),13px)}
-}
-[data-game-motion=off] .arena-character-overlay{display:none}
-@media(prefers-reduced-motion:reduce){.arena-character-overlay{display:none}}
+.arena-preview>.arena-cover-motion[data-cover-ready=true]{visibility:visible}
+[data-game-motion=off] .arena-preview>.arena-cover-motion{display:none}
+@media(prefers-reduced-motion:reduce){.arena-preview>.arena-cover-motion{display:none}}
 .arena-preview-scene{
  position:absolute;inset:0;width:100%;height:100%;overflow:hidden;pointer-events:none;
  color:#f6ddb0;
@@ -126,4 +118,12 @@
 @keyframes ap-hidden-side{
  0%,49.9%{fill:var(--ap-piece);stroke:var(--ap-top)}
  50%,100%{fill:#a65357;stroke:#f3ad93}
+}
+
+/* The original still holds layout. Only one version of the illustration paints. */
+.arena-preview[data-preview-painted=true]>img[data-arena-art],
+.arena-preview[data-preview-painted=true]>picture>img[data-arena-art]{visibility:hidden}
+[data-game-motion=off] .arena-preview[data-preview-painted=true] img[data-arena-art]{visibility:visible}
+@media(prefers-reduced-motion:reduce){
+ .arena-preview[data-preview-painted=true] img[data-arena-art]{visibility:visible}
 }

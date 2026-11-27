@@ -1,3 +1,4 @@
+import {PlayerPortrait} from './player-wardrobe'
 import {useEffect,useId,useLayoutEffect,useRef,useState,type ReactNode,type CSSProperties} from 'react'
 import {GameDetails,GameRulePreview} from './game-details'
 import {gameSearchKey} from './game-search'
@@ -80,8 +81,8 @@ export function PartyMechanicPreview({game,variant,motionOff}:{game:Game;variant
  const illustration=variant==='hold'?<TimingStill/>:variant==='episode'?<MemoryDuelStill/>:game==='mancala'?<MancalaStill/>:undefined
  return <GameRulePreview game={game} motionOff={motionOff} illustration={illustration}/>
 }
-type PartyTableProps={game:Game;variant?:Variant;canChoose:boolean;online:boolean;motionOff?:boolean;error:string;choose:(game:Game)=>void;preview:()=>void}
-export function PartyTable({game,variant,canChoose,online,motionOff,error,choose,preview}:PartyTableProps){
+type PartyTableProps={game:Game;practice?:boolean;variant?:Variant;canChoose:boolean;online:boolean;motionOff?:boolean;error:string;choose:(game:Game)=>void;preview:()=>void}
+export function PartyTable({game,practice,variant,canChoose,online,motionOff,error,choose,preview}:PartyTableProps){
  const row=forGame.get(game)
  const trigger=useRef<HTMLButtonElement>(null)
  const [open,setOpen]=useState(false)
@@ -94,9 +95,9 @@ export function PartyTable({game,variant,canChoose,online,motionOff,error,choose
   </div>
   <div className="party-ident">
    <div aria-live="polite" aria-atomic="true">
-    <p className="eyebrow">{canChoose?'AT THE TABLE':'HOST’S PICK'}</p>
+    <p className="eyebrow">{practice?'PRACTICE TABLE':canChoose?'AT THE TABLE':'HOST’S PICK'}</p>
     <h2>{titles[game]}</h2>
-    <p className="party-game-meta">{variant==='hold'?'Hold & release':variant==='episode'?'Episode-style duel':row?.genre}<span aria-hidden="true"> · </span>{people}</p>
+    {!practice&&<p className="party-game-meta">{variant==='hold'?'Hold & release':variant==='episode'?'Episode-style duel':row?.genre}<span aria-hidden="true"> · </span>{people}</p>}
    </div>
    <div className="party-pick-actions">
     {canChoose&&<button type="button" className="party-choose" aria-haspopup="dialog" ref={trigger} disabled={!online} onClick={()=>setOpen(true)}><PartyGlyph kind="cards"/> Choose game</button>}
@@ -139,7 +140,7 @@ function PartyPicker({selected,motionOff,choose,close,restore,error}:{selected:G
    {requested&&error&&selected!==requested&&<p className="error" role="alert">{error}</p>}
   </div></div>
   <ul className="party-cards">
-   {results.map(row=><li key={row.game}><div className="party-card" data-current={row.game===selected||undefined}><button type="button" className="party-card-pick" aria-pressed={row.game===selected} onClick={()=>{
+   {results.map(row=><li key={row.game}><div className="party-card" data-current={row.game===selected||undefined}><button type="button" className="party-card-pick" data-game-choice={row.game} aria-pressed={row.game===selected} onClick={()=>{
     if(row.game===selected){close();return}
     setRequested(row.game)
     choose(row.game)
@@ -166,8 +167,8 @@ export function PartyRoster({snap,capacity,canRemove,online,remove}:{snap:Snapsh
     const isHost=s.id===snap.host
     const state=!s.online?'offline':s.bot?'bot':s.ready?'ready':'waiting'
     const label=!s.online?'Offline':s.bot?(s.ready?'Bot ready':'Bot'):s.ready?'Ready':'Not ready'
-    return <li key={s.id} className="seat party-seat" data-seat-state={state}>
-     <span className="avatar"><PartyGlyph kind={isHost?'host':s.bot?'bot':'person'}/></span>
+    return <li key={s.id} className="seat party-seat" data-seat-state={state} data-seat-look={s.appearance}>
+     <span className="avatar">{s.appearance===undefined?<PartyGlyph kind={isHost?'host':s.bot?'bot':'person'}/>:<PlayerPortrait look={s.appearance} decorative/>}</span>
      <div><strong>{s.name}</strong><small>{isHost?'Host · ':''}Seat {i+1}{s.id===snap.you?' · You':''}</small></div>
      <span className="party-seat-status">{label}</span>
      {canRemove&&!isHost&&<button type="button" disabled={!online} aria-label={'Remove '+s.name+' from seat '+(i+1)} onClick={()=>remove(s.id)}>×</button>}
@@ -178,6 +179,6 @@ export function PartyRoster({snap,capacity,canRemove,online,remove}:{snap:Snapsh
  </section>
 }
 
-export function PartyActionBar({note,children}:{note:string;children:ReactNode}){
- return <div className="party-action-bar"><div className="party-main-actions">{children}</div><p>{note}</p></div>
+export function PartyActionBar({note,children}:{note?:string;children:ReactNode}){
+ return <div className="party-action-bar"><div className="party-main-actions">{children}</div>{note&&<p>{note}</p>}</div>
 }

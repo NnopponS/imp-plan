@@ -1,4 +1,5 @@
 import {startMatch} from './start-match'
+import {chooseSetting} from '../lobby-controls'
 import {test,expect} from '@playwright/test'
 
 test('Fragments of Memory recalls the hidden gallery through all 24 questions',async({browser,baseURL})=>{
@@ -9,7 +10,7 @@ test('Fragments of Memory recalls the hidden gallery through all 24 questions',a
   await page.goto(baseURL!+'season/1/')
   await page.getByLabel('Nickname').fill('Curator')
   await page.getByRole('button',{name:/Practice Fragments of Memory/}).click()
-  await page.getByLabel('Questions').selectOption('24')
+  await chooseSetting(page,'Questions','24')
   await startMatch(page)
   const scene=page.getByRole('figure',{name:'Study exhibit'})
   await scene.getByText('Text version of exhibit').click()

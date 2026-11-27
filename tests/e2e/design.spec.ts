@@ -1,4 +1,5 @@
 import {test,expect} from '@playwright/test'
+import {selectedGame} from '../lobby-controls'
 test('fan brand and original art are visible without motion or mobile overflow',async({page})=>{
  await page.setViewportSize({width:390,height:844})
  await page.emulateMedia({reducedMotion:'reduce'})
@@ -29,19 +30,13 @@ test('each season has a distinct path, accurate index and playable cards',async(
  }
  await page.getByRole('button',{name:/Practice Point Gomoku/}).click()
  await expect(page.getByLabel('Nickname')).toHaveCount(0)
- await expect(page.getByLabel('Game')).toHaveValue('point')
+ await expect(selectedGame(page,'point')).toBeVisible()
 })
-test('the first screen is a real Blind Gomoku warm-up, playable without a nickname',async({page})=>{
- await page.setViewportSize({width:390,height:844})
+test('a wardrobe choice takes effect without requiring a nickname',async({page})=>{
  await page.goto('./')
- const warmup=page.getByRole('region',{name:'One-move warm-up'})
- await expect(warmup).toBeVisible()
- expect(await warmup.boundingBox().then(b=>b!.y)).toBeLessThan(600)
- await expect(page.locator('video, img[src*="arena-stage"]')).toHaveCount(0)
- await warmup.getByRole('button',{name:'Row 8, column 10, empty'}).click()
- await expect(warmup.getByRole('status')).toHaveText(/Not quite/)
- await warmup.getByRole('button',{name:'Row 8, column 9, empty'}).press('Enter')
- await expect(warmup.getByRole('status')).toHaveText(/Five in a row/)
- await warmup.getByRole('button',{name:'Reset warm-up'}).click()
- await expect(warmup.getByRole('button',{name:'Row 8, column 9, empty'})).toBeEnabled()
+ const wardrobe=page.getByRole('region',{name:'Player wardrobe'})
+ await expect(wardrobe).toBeVisible()
+ await wardrobe.locator('label[title="Midnight cloak"]').click()
+ await expect(wardrobe.getByRole('img',{name:/Midnight cloak/})).toBeVisible()
+ await expect(page.getByLabel('Nickname')).toHaveValue('')
 })
