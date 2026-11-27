@@ -110,3 +110,7 @@ Implemented original fan rules on a 7 × 7 mirror bench: one to sixteen human bo
 
 ### S1-12: Four-Player Three in a Row
 The 32nd playable fan adaptation adds a shared 5 × 5 engraved print block for 3–4 seats. Place Laurel or Thorn, then seal ballots. Party can use explicit bot seats; practice begins with two bots. Incomplete ballot state is sent only to the submitting seat, and roles are revealed after the result. This is the handoff's different placement version, not a verified recreation of the broadcast stacking table.
+
+### S3-22: Flags Around the World
+
+Adds a flag memory table for solo practice and 2–16 humans, without bots. Recall and Name match share the same 40-second study and 60-second answer windows. The host only reveals standings after all submissions or timeout; numbered markers complement the descriptive flags. This is a fan adaptation, not broadcast verification. All flag assets are served locally and the atlas cover and table illustrations are original.

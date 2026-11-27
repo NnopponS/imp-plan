@@ -8,6 +8,7 @@ const chamberCovers={
  wallGo:{stem:'wall-go',className:'wall-go-cover',width:1200,height:620},
 } as const
 export function gameArtSources(mode:Game):{src:string;mobile?:string;width:number;height:number;className:string}{
+ if(mode==='flags')return {src:base+'art/season-three-flags.svg',width:1200,height:680,className:'engraved-game flags'}
  if(mode==='threeRow')return {src:base+'art/season-one-three-row.svg',width:1200,height:680,className:'engraved-game threeRow'}
  if(mode==='colorLink')return {src:base+'art/color-link-board.svg',width:960,height:540,className:'color-link-cover'}
  if(hasIllustratedGame(mode))return {src:illustratedSource(mode),width:960,height:540,className:'engraved-game '+mode}
@@ -26,9 +27,9 @@ export function GameArt({mode,motionOff}:{mode:Game;motionOff?:boolean}){
 }
 
 // Only entries with a finished, checked illustration use this new art family.
-const illustratedGameKeys=new Set<string>(['morris','grass1','hex','remove','knight','auction','codeLock','piece','fence','memoryPoker','exile','cubes','fragments','tower','scale','mancala','bagh','pyramid','equations','rectangles','grass3','spot','secret','divine','point','symmetry','threeRow'])
+const illustratedGameKeys=new Set<string>(['morris','grass1','hex','remove','knight','auction','codeLock','piece','fence','memoryPoker','exile','cubes','fragments','tower','scale','mancala','bagh','pyramid','equations','rectangles','grass3','spot','secret','divine','point','symmetry','threeRow','flags'])
 export const hasIllustratedGame=(game:string)=>illustratedGameKeys.has(game)
-const illustratedSource=(game:string)=>base+'art/'+(game==='threeRow'?'season-one-three-row.svg':'seasonal-'+game+'.svg')
+const illustratedSource=(game:string)=>base+'art/'+(game==='flags'?'season-three-flags.svg':game==='threeRow'?'season-one-three-row.svg':'seasonal-'+game+'.svg')
 export function IllustratedGame({game,className,loading='lazy'}:{game:string;className?:string;loading?:'lazy'|'eager'}){
  return <img className={className} data-arena-art src={illustratedSource(game)} width={960} height={540} alt="" loading={loading} decoding="async"/>
 }

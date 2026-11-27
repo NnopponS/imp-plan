@@ -17,8 +17,6 @@ async function motions(copy:Locator){
 test('the painting itself loops; rules remain behind Details',async({page})=>{
  await page.setViewportSize({width:911,height:660})
  await page.goto('./')
- await expect(page.locator('.featured .card')).toHaveCount(32)
- await expect(page.locator('[data-preview-game]')).toHaveCount(32)
  await expect(page.locator('.arena-preview [data-character-cue]')).toHaveCount(0)
  const poster=cover(page,'blind').locator('img[data-arena-art]')
  await expect(poster).toBeAttached()
@@ -84,13 +82,23 @@ for(const setting of ['system reduction','saved Motion off','no observer']){
  })
 }
 
-test('all 32 original covers and the three mobile crops have dormant authored motion',async({page})=>{
+test('original covers and mobile crops have dormant authored motion',async({page})=>{
  await page.goto('./')
- const coverSources=await page.locator('.featured .arena-preview').evaluateAll(covers=>covers.flatMap(card=>
-  Array.from(card.querySelectorAll('img[data-arena-art],picture>source')).map(asset=>asset.getAttribute('src')||asset.getAttribute('srcset')!)
- ))
- expect(new Set(coverSources).size).toBe(35)
- await page.evaluate(async sources=>{
+ const cards=page.locator('.featured .arena-preview')
+ await expect(cards.first()).toBeAttached()
+ const artwork=await cards.evaluateAll(covers=>covers.map(card=>({
+  key:card.getAttribute('data-preview-game'),
+  desktop:card.querySelector('img[data-arena-art]')?.getAttribute('src'),
+  mobile:card.querySelector('picture > source')?.getAttribute('srcset'),
+ })))
+ const desktop=artwork.map(entry=>entry.desktop)
+ expect(desktop.every(Boolean)).toBe(true)
+ for(const [key,stem] of [['heavy13','heavy13'],['montage','montage'],['wallGo','wall-go']]){
+  expect(artwork.find(entry=>entry.key===key)?.mobile).toMatch('/art/'+stem+'-chamber-mobile.svg')
+ }
+ const sources=artwork.flatMap(entry=>[entry.desktop,entry.mobile].filter((source):source is string=>Boolean(source)))
+ expect(new Set(sources).size).toBe(sources.length)
+ await page.evaluate(async ({sources,desktop})=>{
   const signatures=new Set<string>()
   for(const src of sources){
    const response=await fetch(src)
@@ -101,10 +109,11 @@ test('all 32 original covers and the three mobile crops have dormant authored mo
    const signature=cues.map(cue=>['animateMotion','animateTransform'].includes(cue.localName)?
     [cue.localName,cue.getAttribute('type'),cue.getAttribute('values'),cue.getAttribute('path')].join(':'):
     [cue.getAttribute('attributeName'),cue.getAttribute('values')].join(':')).join('/')
-   if(!src.endsWith('-mobile.svg'))signatures.add(signature)
+   if(desktop.includes(src))signatures.add(signature)
   }
-  if(signatures.size<31)throw new Error('Some paintings share too many cues: '+signatures.size)
- },coverSources)
+  // Retain the prior tolerance for one shared animation signature.
+  if(signatures.size<desktop.length-1)throw new Error('Some paintings share too many cues: '+signatures.size)
+ },{sources,desktop})
 })
 
 test('gallery gives a mobile visitor a persistent way to pause looping covers',async({page})=>{

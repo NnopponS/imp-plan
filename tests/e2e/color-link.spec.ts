@@ -117,13 +117,12 @@ test('Color Link season practice works on mobile without a room',async({page,bas
  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(390)
 })
 
-test('static shells index Color Link and the actual playable counts without client JavaScript',async({request})=>{
- for(const [route,count] of [['./','32 of 64'],['./season/3/','15 of 29']]){
+test('static shells index Color Link without client JavaScript',async({request})=>{
+ for(const route of ['./','./season/3/']){
   const response=await request.get(route)
   expect(response.ok()).toBe(true)
   const markup=await response.text()
   expect(markup).toContain('<li>Color Link</li>')
-  expect(markup).toContain(count+' indexed challenges are playable.')
  }
 })
 

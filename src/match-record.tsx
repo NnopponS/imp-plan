@@ -52,6 +52,8 @@ function TableSeal({kind}:{kind:ResultMark}){
 }
 
 function resultLabel(g:GameView):{mark:ResultMark,label:string}{
+ if(g.flags?.results&&g.seats.length===1)return {mark:'complete',label:'Dispatch complete'}
+ if(g.flags?.results&&g.flags.leaders.length>1)return {mark:'draw',label:'Shared lead'}
  if(g.threeRow?.scores)return g.winner?{mark:'win',label:'Saboteur wins'}:{mark:'win',label:'Allies win · shared lead'}
  if(g.symmetry?.results&&g.seats.length===1)return g.symmetry.results[0]?.score.solved?{mark:'complete',label:'Reflection complete'}:{mark:'closed',label:'Time expired'}
  if(g.symmetry?.results&&g.symmetry.results.filter(row=>row.rank===1).length>1)return {mark:'draw',label:'Shared lead'}

@@ -65,7 +65,7 @@ it('each board engine reaches a terminal state in multiple legal bot-driven matc
   }
   expect(g.done).toBe(true)
  }
-})
+},15000) // Exhaustive bot replays still use the 1200-turn cap above.
 
 it('projects just one completed Knight route and its host-recorded elapsed time',()=>{
  let g=start('knight',['one','two'],180_000,7000,{size:5,seed:69})

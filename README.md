@@ -31,13 +31,13 @@ Game cards show an original insignia and their setting in the show, such as a Ma
 
 ## Playable catalog
 
-**Playable alpha: 32 fan adaptations out of 64 indexed entries.** The index includes main, prize, prison, exile, final, and unaired entries. An indexed entry is not necessarily playable. Rules marked as fan adaptations are not verified broadcast reproductions.
+**Playable alpha: 33 fan adaptations out of 64 indexed entries.** The index includes main, prize, prison, exile, final, and unaired entries. An indexed entry is not necessarily playable. Rules marked as fan adaptations are not verified broadcast reproductions.
 
 | Season | Playable / indexed | Playable entries |
 | --- | ---: | --- |
 | [1 · The First Plan](https://nnoppons.github.io/imp-plan/season/1/) | 10 / 18 | Fragments of Memory, Secret Number, Word Tower, Scale Game, Laying Grass, Montage, Four-Player Three in a Row, Blind Gomoku, Nine Men’s Morris, Hexagon |
 | [2 · Death Room](https://nnoppons.github.io/imp-plan/season/2/) | 7 / 17 | Remove One, Time Auction, Balance Mancala, Wall Go, Equation Pyramid, Bagh Chal, Knight’s Tour |
-| [3 · Dead Again](https://nnoppons.github.io/imp-plan/season/3/) | 15 / 29 | Count the Cubes, Count the Rectangles, Lay the Grass, Memory Poker, Heavy 13, Piece Puzzle, Spot the Difference, Secret Code, Loop Fence Puzzle, Symmetrical Puzzle, Exile Rectangle Counting, Divine Test, Point Gomoku, Color Link, Equation Lights |
+| [3 · Dead Again](https://nnoppons.github.io/imp-plan/season/3/) | 16 / 29 | Count the Cubes, Count the Rectangles, Lay the Grass, Memory Poker, Heavy 13, Piece Puzzle, Spot the Difference, Secret Code, Loop Fence Puzzle, Symmetrical Puzzle, Flags Around the World, Exile Rectangle Counting, Divine Test, Point Gomoku, Color Link, Equation Lights |
 
 For a first game, try **Blind Gomoku** for a hidden-board duel, **Count the Cubes** for a solo spatial puzzle, or **Heavy 13** for private choices and shared stacks. Time Auction and Memory Poker also have separately labeled episode-inspired modes with their own conditions. Seat counts and eligible bots depend on the game. Some duels use rotated fixtures for larger parties rather than putting everyone on one board.
 

@@ -1,0 +1,54 @@
+/* An atlas proof sheet: stitched pennants, copperplate guides and red printer's ink. */
+.fa-atlas,.fa-lesson{--fa-ink:#302b24;--fa-paper:#f7efda;--fa-muted:#605441;--fa-line:#9d865e;--fa-gold:#b59963;--fa-seal:#81332f;--fa-navy:#233a41;--fa-moss:#435440;box-sizing:border-box;color:var(--fa-ink)}
+.fa-atlas{width:min(100%,64rem);margin-inline:auto;min-width:0;isolation:isolate}
+.fa-atlas *,.fa-lesson *{box-sizing:border-box}
+.fa-atlas button{font:inherit}
+.fa-atlas button:focus-visible{outline:3px solid #17637c;outline-offset:3px;z-index:2}
+.fa-bound{border:2px solid #50483b;padding:clamp(.5rem,1.8vw,1.2rem);border-radius:2px 4px 2px 3px;background:#e3d2af;box-shadow:inset 0 0 0 2px #f5e8ca,inset 0 0 0 3px #a88e64}
+.fa-head{display:flex;align-items:center;gap:.55rem;margin-bottom:.6rem;min-height:2.4rem}
+.fa-mark{width:2.8rem;height:2.8rem;color:#614d38;flex:none}
+.fa-titles{display:grid;gap:1px;flex:1;min-width:0}
+.fa-titles small,.fa-folio,.fa-stamp,.fa-section-label{font:700 .65rem/1.25 ui-sans-serif,system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase}
+.fa-titles small{color:var(--fa-muted)}.fa-titles h3{font:600 clamp(1.2rem,2.5vw,1.8rem)/1.1 Georgia,'Times New Roman',serif;margin:0;color:var(--fa-ink)}
+.fa-clock{flex:none;display:flex;align-items:center;gap:.25rem;font:700 .9rem/1.1 ui-monospace,monospace;font-variant-numeric:tabular-nums;color:var(--fa-navy);padding:.35rem .42rem;border-bottom:2px solid var(--fa-gold)}
+.fa-clock svg{width:17px;height:20px}
+.fa-sheet{overflow:visible;position:relative;padding:clamp(.45rem,1.4vw,1rem);color:var(--fa-ink);background:var(--fa-paper);border:1px solid var(--fa-line);border-radius:1px 2px 4px 2px;box-shadow:1px 2px #c4ac86}
+.fa-sheet::before,.fa-sheet::after{content:"";position:absolute;pointer-events:none;width:9px;height:9px;border:1px solid #92774e}
+.fa-sheet::before{top:2px;left:2px;border-right:0;border-bottom:0}.fa-sheet::after{bottom:2px;right:2px;border-top:0;border-left:0}
+.fa-bar,.fa-foot{display:flex;gap:.65rem;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.fa-bar{padding-bottom:.45rem;border-bottom:1px dashed var(--fa-line);margin-bottom:.65rem}
+.fa-bar p,.fa-foot p,.fa-summary p{margin:0;color:var(--fa-ink);font-size:.85rem;line-height:1.4}
+.fa-bar p{flex:1 1 13rem}.fa-bar .fa-toggle{font:600 .73rem/1.2 ui-sans-serif,system-ui,sans-serif;min-height:36px;display:inline-flex;align-items:center;gap:.25rem;color:#47402f;background:transparent;border:1px solid #968455;border-radius:1px;padding:.25rem .45rem;box-shadow:none}
+.fa-toggle svg{width:15px;height:15px}.fa-toggle[aria-pressed=true]{background:#dfcfac}
+.fa-rack{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:clamp(.35rem,.9vw,.7rem);align-items:stretch}
+.fa-slip{position:relative;margin:0;display:grid;align-content:start;gap:.25rem;min-width:0;text-align:start;appearance:none;color:var(--fa-ink);border:1px solid #9b8964;border-radius:1px 2px 2px 3px;padding:clamp(.28rem,.75vw,.55rem);background:#fbf7e8;box-shadow:1px 2px 0 #cabb9a;line-height:1;transition:transform 140ms ease,box-shadow 140ms ease}
+button.fa-slip:enabled{cursor:pointer}button.fa-slip:enabled:hover{transform:translateY(-2px);box-shadow:1px 4px 0 #ad9a72;background:#fff8de}
+.fa-atlas button.fa-slip:disabled{opacity:1;cursor:default}
+.fa-slip[aria-pressed=true],.fa-slip[data-picked=true]{border:2px solid var(--fa-navy);padding:calc(clamp(.28rem,.75vw,.55rem) - 1px);background:#e9efde}
+.fa-slip[data-correct=true]{box-shadow:inset 0 0 0 1px var(--fa-moss),1px 2px 0 #a49670}
+.fa-specimen{position:relative;display:grid;place-items:center;aspect-ratio:1.55;width:100%;min-height:0;background:#e7dcc2;border-bottom:1px solid #b7a47b}
+.fa-specimen img{width:86%;height:85%;border:0;padding:0;margin:0;max-width:none;object-fit:contain;filter:drop-shadow(0 1px 1px #332f263e);user-select:none}
+.fa-specimen::before,.fa-specimen::after{position:absolute;content:"";width:4px;height:4px;border:1px solid #92805d;opacity:.8}.fa-specimen::before{left:2px;top:2px;border-right:0;border-bottom:0}.fa-specimen::after{right:2px;bottom:2px;border-left:0;border-top:0}
+.fa-caption{display:flex;align-items:center;gap:.3rem;min-height:1.28rem;line-height:1.15;overflow-wrap:anywhere}
+.fa-folio{letter-spacing:.04em;font-size:.64rem;color:var(--fa-muted)}.fa-name{font:600 clamp(.7rem,1.4vw,.86rem)/1.18 Georgia,serif;color:var(--fa-ink)}
+.fa-pin{margin-inline-start:auto;display:grid;place-items:center;font:800 .66rem/1 ui-sans-serif,system-ui,sans-serif;color:var(--fa-navy)}.fa-pin svg{width:17px;height:17px}
+.fa-pattern{font:400 .73rem/1.35 ui-sans-serif,system-ui,sans-serif;color:var(--fa-muted);overflow-wrap:anywhere}
+.fa-foot{margin-top:.65rem;border-top:1px dashed var(--fa-line);padding-top:.55rem}
+.fa-meter{display:flex;align-items:baseline;gap:.3rem;font-size:.82rem;color:var(--fa-ink)}
+.fa-atlas .fa-send{border:1px solid #32231e;border-radius:2px 1px 3px 1px;padding:.5rem .8rem;min-height:44px;background:var(--fa-seal);color:#fff7e1;font:700 .88rem/1.1 Georgia,serif;box-shadow:inset 0 0 0 2px var(--fa-seal),inset 0 0 0 3px #cb9474}
+.fa-atlas .fa-send:disabled{background:#c8b99e;border-color:#9a8b73;color:#514a3f;box-shadow:none;cursor:not-allowed}
+.fa-stamp{color:var(--fa-moss);border:2px double currentColor;padding:.42rem .65rem;transform:rotate(-2deg);display:inline-block}
+.fa-summary{padding:.25rem 0 .65rem;display:grid;gap:.25rem}.fa-summary h4{margin:0;font:600 1.25rem Georgia,serif}
+.fa-ledger{list-style:none;display:grid;gap:.25rem;grid-template-columns:repeat(auto-fit,minmax(min(11rem,100%),1fr));margin:.6rem 0;padding:0}
+.fa-ledger li{padding:.42rem .45rem;display:flex;gap:.4rem;align-items:baseline;border-bottom:1px dashed var(--fa-line);font-size:.85rem;min-width:0}.fa-ledger li span{flex:1;min-width:0;overflow-wrap:anywhere}.fa-ledger li strong{font-variant-numeric:tabular-nums}
+.fa-lesson{margin:.35rem auto;display:grid;justify-items:center;gap:.3rem;text-align:center}.fa-lesson svg{width:min(100%,15rem);height:auto}.fa-lesson figcaption{font:500 .84rem/1.35 Georgia,serif;color:inherit}
+@media(max-width:760px){.fa-rack{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:480px){.fa-rack{gap:.35rem}.fa-bound{padding:.4rem}.fa-mark{width:2rem;height:2rem}.fa-head{margin-bottom:.4rem}.fa-sheet{padding:.4rem}.fa-bar{gap:.3rem;margin-bottom:.45rem;padding-bottom:.3rem}.fa-bar p{font-size:.77rem;flex-basis:9rem}.fa-bar .fa-toggle{min-height:36px;padding:.22rem .3rem}.fa-slip{gap:.15rem}.fa-caption{gap:.18rem;min-height:.95rem}.fa-name{font-size:.69rem}.fa-specimen{aspect-ratio:1.36}.fa-pattern{font-size:.68rem}.fa-folio{font-size:.57rem}.fa-titles small{font-size:.57rem}}
+@media(max-width:340px){.fa-rack{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.fa-slip{transition:none}button.fa-slip:enabled:hover{transform:none}}
+[data-motion=off] .fa-slip{transition:none}
+.fa-index{display:flex;flex-wrap:wrap;gap:.27rem;margin:0 0 .6rem;padding:0 0 .45rem;border-bottom:1px solid #c7b68c}.fa-atlas button.fa-tab{min-height:34px;padding:.28rem .45rem;background:#eee1be;color:#3c392f;border:1px solid #a58b5d;border-radius:1px 5px 1px 1px;font:600 .76rem/1.2 Georgia,serif;box-shadow:none}.fa-atlas .fa-tab[aria-pressed=true]{background:#34484a;color:#fff6de;border-color:#34484a}.fa-atlas .fa-tab[data-filled]:not([aria-pressed=true]){background:#d9e1c8}.fa-atlas .fa-tab:disabled{opacity:1}.fa-ledger small{display:block;font-size:.71rem;font-weight:400;margin-top:.2rem}
+.fa-display{display:flex;flex-wrap:wrap;gap:.3rem}.fa-token{color:var(--fa-navy);display:grid;place-items:center;width:100%;height:100%;border:1px dashed #9a8051}
+.fa-insignia{display:block;max-width:100%;height:100%;width:auto}.fa-token .fa-insignia{height:82%;width:auto}.fa-small-sigil{display:inline-flex;height:14px;color:var(--fa-navy)}.fa-small-sigil .fa-insignia{width:20px}.fa-bar .fa-toggle{min-height:40px}
+@media(prefers-reduced-motion:no-preference){.fa-atlas[data-fa-phase="study"] .fa-rack,.fa-atlas[data-fa-phase="answer"] .fa-rack{animation:fa-unfold .26s ease-out both}@keyframes fa-unfold{from{opacity:.7;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}}
+[data-motion=off] .fa-atlas .fa-rack,.motion-off .fa-atlas .fa-rack{animation:none}
