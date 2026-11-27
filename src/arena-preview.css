@@ -1,0 +1,103 @@
+.arena-preview{position:relative}
+.arena-preview>picture{display:block;width:100%;height:100%}
+.arena-preview-scene{
+ position:absolute;inset:0;width:100%;height:100%;overflow:hidden;pointer-events:none;
+ color:#f6ddb0;animation:ap-veil var(--ap-run) ease both;
+}
+.ap-plate{fill:#231917ed;stroke:#e7c18a;stroke-width:.75}
+.ap-ruling{fill:none;stroke:#ac885a;stroke-width:.68;opacity:.86}
+.arena-preview-scene text{fill:currentColor;font:700 10px Georgia,serif;text-anchor:middle;dominant-baseline:middle;letter-spacing:.04em}
+.arena-preview-scene .ap-fine-label{font-size:7px}
+.arena-preview-scene .ap-sigil{font-size:13px}
+.ap-grid,.ap-ink-line,.ap-gold-line,.ap-secondary-line,.ap-dark-line{
+ fill:none;stroke-linecap:round;stroke-linejoin:round
+}
+.ap-grid{stroke:#ae8b5c;stroke-width:.8;opacity:.68}
+.ap-ink-line{stroke:#e0be8e;stroke-width:1.5}
+.ap-gold-line{stroke:#ffe0a0;stroke-width:2.3}
+.ap-secondary-line{stroke:#9fcbb9;stroke-width:2}
+.ap-dark-line{stroke:#251815;stroke-width:1.05}
+.arena-preview-scene .ap-dark-label{color:#251815;font-size:7.5px}
+.ap-ivory{--ap-piece:#f8dfaa;--ap-top:#fff0c8;--ap-edge:#b9895c;--ap-letter:#33231b}
+.ap-gold{--ap-piece:#d8a66a;--ap-top:#ffdc9d;--ap-edge:#8c5c3b;--ap-letter:#352318}
+.ap-jade{--ap-piece:#83b9a6;--ap-top:#b3ddca;--ap-edge:#4c786a;--ap-letter:#182d29}
+.ap-rose{--ap-piece:#ca8584;--ap-top:#e5a5a0;--ap-edge:#7b4a4a;--ap-letter:#392223}
+.ap-gold-fill{fill:#e7b97f;stroke:#ffe5b2;stroke-width:.75}
+.ap-jade-fill{fill:#8fc5af;stroke:#badbc7;stroke-width:.75}
+.ap-rose-fill{fill:#bd7976;stroke:#f2b1a7;stroke-width:.75}
+.ap-stone ellipse,.ap-tile path,.ap-card rect,.ap-cube-front{fill:var(--ap-piece);stroke:var(--ap-top);stroke-width:.72}
+.ap-stone ellipse.ap-shadow{fill:#110c0b;stroke:none}
+.ap-stone path,.ap-card path{stroke:var(--ap-edge);stroke-width:.85}
+.ap-cube-side{fill:var(--ap-edge);stroke:var(--ap-piece);stroke-width:.48}
+.ap-cube-top{fill:var(--ap-top);stroke:var(--ap-piece);stroke-width:.48}
+.ap-tile text,.ap-card text,.ap-cube text{fill:var(--ap-letter)}
+.ap-cube text{font-size:6.8px;letter-spacing:0}
+.ap-card .ap-card-back{fill:#713d37;stroke:#e2b67d;stroke-width:1;visibility:hidden}
+.ap-card-flip .ap-card-back{animation:ap-back 530ms steps(1,end) var(--ap-wait) backwards}
+.ap-card-flip.ap-hide-card .ap-card-back{animation-direction:reverse;animation-fill-mode:both}
+.ap-caption rect{fill:#472a20;stroke:#c59765;stroke-width:.7}
+.arena-preview-scene .ap-caption text{font-size:10.4px;letter-spacing:.085em}
+.ap-ticket{fill:#694132;stroke:#ddb47d;stroke-width:1.1}
+.ap-shutter{fill:#4c3329;stroke:#c09565;stroke-width:.8}
+.ap-pop,.ap-drop,.ap-cover-turn,.ap-take,.ap-card-flip,.ap-discard,.ap-jump,.ap-sow,
+.ap-merge-right,.ap-merge-left,.ap-fit-side,.ap-fit-other,.ap-code-roll,.ap-shutter,.ap-scan,
+.ap-hour-top,.ap-hour-base,.ap-portrait-leave,.ap-portrait-enter,.ap-stack-pickup,.ap-heavy-drop{
+ transform-box:fill-box;transform-origin:center;
+}
+.ap-draw{stroke-dasharray:185;animation:ap-draw 430ms ease-out var(--ap-wait,0ms) both}
+.ap-pop{animation:ap-pop 240ms ease-out var(--ap-wait,0ms) both}
+.ap-drop{animation:ap-drop 440ms cubic-bezier(.19,.72,.31,1.09) var(--ap-wait) both}
+.ap-cover-turn{animation:ap-turn 430ms ease-in-out var(--ap-wait) both}
+.ap-take{animation:ap-take 360ms ease-in var(--ap-wait) both}
+.ap-card-flip{animation:ap-turn 530ms ease-in-out var(--ap-wait) both}
+.ap-discard{animation:ap-discard 550ms ease-in-out var(--ap-wait) both}
+.ap-hour-top{transform-origin:50% 100%;animation:ap-sand-down 1050ms ease-in-out 260ms both}
+.ap-hour-base{transform-origin:50% 100%;animation:ap-sand-up 1050ms ease-in-out 260ms both}
+.ap-jump{animation:ap-jump 460ms ease-out var(--ap-wait) both}
+.ap-sow{animation:ap-sow 500ms ease-in-out var(--ap-wait) both}
+.ap-bagh-jump{animation:ap-bagh-jump 480ms ease-in-out var(--ap-wait) both}
+.ap-merge-right{animation:ap-ticket 650ms ease-in-out var(--ap-wait) both}
+.ap-merge-left{--ap-ticket-x:-18px;animation:ap-ticket 650ms ease-in-out var(--ap-wait) both}
+.ap-fit-side{animation:ap-fit 560ms ease-out var(--ap-wait) both}
+.ap-fit-other{--ap-fit-x:-24px;--ap-fit-angle:-30deg;animation:ap-fit 560ms ease-out var(--ap-wait) both}
+.ap-code-roll{animation:ap-roll 470ms ease-out var(--ap-wait) both}
+.ap-shutter{transform-origin:left;animation:ap-shutter 520ms ease-out var(--ap-wait) both}
+.ap-scan{animation:ap-scan 780ms ease-in-out var(--ap-wait) both}
+.ap-scale-tilt{transform-box:view-box;transform-origin:100px 56px;animation:ap-scale 1020ms ease-in-out var(--ap-wait) both}
+.ap-wg-move{animation:ap-wg-move 540ms ease-in-out var(--ap-wait) both}
+.ap-portrait-leave{animation:ap-portrait-away 370ms ease-in var(--ap-wait) both}
+.ap-portrait-enter{animation:ap-portrait-in 400ms ease-out var(--ap-wait) both}
+.ap-stack-pickup{animation:ap-discard 490ms ease-in-out var(--ap-wait) both}
+.ap-heavy-drop{animation:ap-heavy-drop 1330ms ease-out var(--ap-wait) both}
+@keyframes ap-veil{0%{opacity:0}12%,81%{opacity:1}100%{opacity:0}}
+@keyframes ap-draw{from{stroke-dashoffset:185}to{stroke-dashoffset:0}}
+@keyframes ap-pop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+@keyframes ap-drop{0%{opacity:0;transform:translateY(-19px) scale(1.09)}35%{opacity:1}80%{transform:translateY(1px) scale(.96)}100%{transform:none}}
+@keyframes ap-turn{0%,100%{transform:scaleX(1)}50%{transform:scaleX(.07)}}
+@keyframes ap-back{0%{visibility:visible}55%,100%{visibility:hidden}}
+@keyframes ap-take{0%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-12px) scale(.7)}}
+@keyframes ap-discard{0%{opacity:1;transform:none}100%{opacity:0;transform:translate(-23px,10px) rotate(-20deg)}}
+@keyframes ap-sand-down{from{transform:scaleY(1)}to{transform:scaleY(.1)}}
+@keyframes ap-sand-up{from{transform:scaleY(.12)}to{transform:scaleY(1)}}
+@keyframes ap-jump{0%,100%{transform:none}48%{transform:translateY(-10px) rotate(-9deg)}}
+@keyframes ap-sow{0%{opacity:0;transform:translate(-22px,-3px)}44%{opacity:1;transform:translate(-12px,-12px)}100%{opacity:1;transform:none}}
+@keyframes ap-bagh-jump{0%{transform:none}54%{transform:translate(11px,-12px)}100%{transform:translateX(22px)}}
+@keyframes ap-ticket{0%{transform:none;opacity:1}68%{transform:translateX(var(--ap-ticket-x,18px));opacity:1}100%{transform:translateX(var(--ap-ticket-x,18px)) scale(.75);opacity:.52}}
+@keyframes ap-fit{from{opacity:0;transform:translate(var(--ap-fit-x,24px),-13px) rotate(var(--ap-fit-angle,30deg))}35%{opacity:1}to{transform:none}}
+@keyframes ap-roll{0%{opacity:0;transform:translateY(-8px) scaleY(.15)}52%{opacity:1;transform:translateY(2px) scaleY(1.07)}100%{transform:none}}
+@keyframes ap-shutter{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes ap-scan{0%{transform:translate(-57px,13px) scale(.75);opacity:.1}32%{opacity:1}100%{transform:none}}
+@keyframes ap-scale{0%{transform:none}36%{transform:rotate(-11deg)}69%{transform:rotate(5deg)}100%{transform:rotate(-6deg)}}
+@keyframes ap-wg-move{0%{transform:none}100%{transform:translateX(12px)}}
+@keyframes ap-portrait-away{from{opacity:1;transform:none}to{opacity:0;transform:translateX(11px) scaleX(.7)}}
+@keyframes ap-portrait-in{from{opacity:0;transform:translateX(-11px) scaleX(.7)}to{opacity:1;transform:none}}
+@keyframes ap-heavy-drop{0%{opacity:0;transform:translateY(-15px)}12%,68%{opacity:1;transform:none}100%{opacity:1;transform:translateY(24px)}}
+[data-game-motion=off] .arena-preview-scene{display:none}
+@media(prefers-reduced-motion:reduce){.arena-preview-scene{display:none}}
+.ap-cover-turn .ap-stone ellipse:not(.ap-shadow){
+ animation:ap-hidden-side 430ms linear var(--ap-turn-at) both;
+}
+@keyframes ap-hidden-side{
+ 0%,49.9%{fill:var(--ap-piece);stroke:var(--ap-top)}
+ 50%,100%{fill:#a65357;stroke:#f3ad93}
+}

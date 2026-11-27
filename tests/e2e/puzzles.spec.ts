@@ -117,19 +117,21 @@ test('Divine Test solves with keyboard at a phone viewport and keeps its fixed t
  const fixed=grid.getByRole('button',{name:/\(fixed\)$/})
  await expect(fixed).toBeDisabled()
  const fixedIndex=Number(await fixed.getAttribute('data-cell'))
+ await page.getByRole('button',{name:'Numeral legend'}).click()
  const legend=(await page.locator('.divine-key li').allTextContents()).map(t=>t.split(' = ')[0])
- const clue=legend.indexOf((await fixed.textContent())!)
+ await page.getByRole('button',{name:'Numeral legend'}).click()
+ const clue=legend.indexOf((await fixed.locator('.divine-glyph').textContent())!)
  expect(clue).toBeGreaterThan(0)
  const options=await import('../../src/divine')
  const solution=Array.from({length:16},(_,i)=>options.magicSolution(3,i)).find(s=>s[fixedIndex]===clue)!
  for(let i=0;i<9;i++)if(i!==fixedIndex){
   const symbol=legend[solution[i]]
-  const pick=page.getByRole('button',{name:'Tile '+symbol,exact:true})
+  const pick=page.getByRole('button',{name:'Tile '+symbol+', value '+solution[i],exact:true})
   await pick.focus()
   await page.keyboard.press('Enter')
   await expect(page.getByRole('status').filter({hasText:'Selected'})).toBeVisible()
   await tiles.nth(i).press('Enter')
-  await expect(tiles.nth(i)).toHaveText(symbol)
+  await expect(tiles.nth(i).locator('.divine-glyph')).toHaveText(symbol)
  }
  await expect(page.getByText('A valid square was completed.')).toBeVisible()
  await expect(page.getByRole('button',{name:'Rematch'})).toBeVisible()

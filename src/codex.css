@@ -1,0 +1,230 @@
+/* The codex is a scene, not a clipping mask on the page's controls. */
+.illustrated-landing .painted-desk {
+ --spread-height:clamp(296px,35vw,404px);
+ grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);
+ grid-template-rows:var(--spread-height) auto;
+ align-items:start;gap:19px clamp(16px,3vw,35px);
+ padding:0 clamp(0px,1.4vw,12px) 0;
+ border:0;background:none;box-shadow:none;
+}
+.illustrated-landing .painted-desk::before,.illustrated-landing .painted-desk::after{content:none}
+.codex-scene{position:absolute;inset:0 0 auto;height:var(--spread-height);pointer-events:none;z-index:-1}
+.painted-desk .codex-scene .landing-painting{
+ position:absolute;inset:0;max-height:none;width:100%;height:100%;z-index:0;
+ clip-path:url(#codex-leaves);background:#201714;
+}
+.painted-desk .codex-scene .landing-painting img{object-position:67% 41%}
+.codex-scene .landing-painting::after{
+ content:"";position:absolute;inset:0;
+ background:linear-gradient(90deg,#211514f2 0%,#211514e6 20%,#21151480 44%,#261a1739 61%,transparent 77%),
+ linear-gradient(0deg,#241717ae 0%,transparent 44%);
+}
+.codex-spread{
+ position:absolute;inset:0;width:100%;height:100%;overflow:visible;color:#9d7750;
+ filter:drop-shadow(0 7px 5px #0b0806b5);
+}
+.codex-spread path{vector-effect:non-scaling-stroke}
+.codex-cover{fill:#352122;stroke:#a9714c;stroke-width:1.5}
+.codex-paper-edges{fill:#866241;stroke:#c59b66;stroke-width:1}
+.codex-leaf-outline{stroke:url(#codex-metal);stroke-width:1.7}
+.codex-leaf-ruling{stroke:#d4ad75;stroke-width:.85;opacity:.7}
+.codex-gutter{fill:url(#codex-gutter);stroke:none}
+.codex-seam{stroke:#d4aa75;opacity:.32;stroke-width:1}
+.illustrated-landing .painted-desk .front-copy{
+ grid-column:1/-1;grid-row:1;align-self:center;
+ position:relative;padding:0;margin-inline-start:clamp(25px,6vw,78px);
+ margin-block:0 clamp(26px,4vw,46px);max-width:calc(100% - 46px);
+}
+.illustrated-landing .painted-desk .front-copy h1{font-size:clamp(3.05rem,7.1vw,6.4rem)}
+.illustrated-landing .painted-desk .front-copy>p:not(.eyebrow){max-width:36ch;color:#f6e7d6;line-height:1.4;margin-bottom:14px}
+.painted-desk .front-actions .front-cta{
+ min-height:44px;padding-inline:13px;border-radius:3px;font-size:.85rem;
+}
+.painted-desk .front-actions .front-cta:focus-visible{outline-color:#ffdda3}
+.painted-desk .front-actions .front-cta:not(.primary):hover{background:#382321;color:#ffebc5}
+
+/* Layered folio and dog-ear. The pseudo-elements carry the silhouette and
+   binding; fields, keyboard outlines and the 7×5 warm-up grid stay unmasked. */
+:is(.landing-table,.front-desk .entrance,.room:not([data-playing]) .lobby,.room:not([data-playing]) .roster,.room:not([data-playing]) .chat,.library-index){
+ --folio-edge:#98704c;
+ --folio-ink:#2e211c;
+ --folio-shape:polygon(0 10px,10px 0,calc(100% - 26px) 0,100% 26px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px));
+ position:relative;isolation:isolate;
+}
+:is(.landing-table,.front-desk .entrance,.room:not([data-playing]) .lobby,.room:not([data-playing]) .roster,.room:not([data-playing]) .chat,.library-index)::before,
+:is(.landing-table,.front-desk .entrance,.room:not([data-playing]) .lobby,.room:not([data-playing]) .roster,.room:not([data-playing]) .chat,.library-index)::after{
+ content:"";position:absolute;pointer-events:none;z-index:-1;clip-path:var(--folio-shape);
+}
+:is(.landing-table,.front-desk .entrance,.room:not([data-playing]) .lobby,.room:not([data-playing]) .roster,.room:not([data-playing]) .chat,.library-index)::before{
+ inset:0;background:linear-gradient(135deg,#c39a6b,var(--folio-edge) 40%,#684b37 92%);
+}
+:is(.landing-table,.front-desk .entrance,.room:not([data-playing]) .lobby,.room:not([data-playing]) .roster,.room:not([data-playing]) .chat,.library-index)::after{
+ inset:1px 1px 2px;background:
+  linear-gradient(45deg,#513629,#aa7e50 55%,#805a3c 56%,#3a2821) no-repeat right top / 26px 26px,
+  linear-gradient(90deg,#291917 0 5px,#7a583b 5px 6px,#3b2a22 6px 10px,transparent 10px),
+  radial-gradient(ellipse at 48% 7%,#68432b40,transparent 82%),var(--folio-ink);
+}
+.illustrated-landing .painted-desk .entrance,.front-desk:not(.painted-desk) .entrance,.room:not([data-playing]) .lobby,.room:not([data-playing]) :is(.roster,.chat),.illustrated-landing .library-index,.library-index{
+ background:none;border:0;border-radius:0;box-shadow:none;min-width:0;
+}
+.illustrated-landing .painted-desk .entrance,.front-desk:not(.painted-desk) .entrance,.room:not([data-playing]) .lobby{
+ padding:clamp(14px,2.45vw,24px) clamp(14px,2.5vw,29px) 10px;
+}
+.illustrated-landing .painted-desk .entrance{
+ --folio-edge:#bd9161;--folio-ink:#30231e;align-self:start;
+}
+.entrance:is(:focus,:target,:focus-within)::before{background:#deb77c}
+.illustrated-landing .painted-desk .entrance h2,.front-desk:not(.painted-desk) .entrance h2,.room:not([data-playing]) .lobby h2{
+ margin:0;padding-block:0 9px;border-bottom:1px solid #a67f4c80;
+ font:normal clamp(1.22rem,2.65vw,1.78rem)/1.12 Georgia,serif;letter-spacing:-.025em;
+}
+.illustrated-landing .painted-desk .entrance .plain{min-height:44px}
+.illustrated-landing .painted-desk .entrance details{margin:0}
+.illustrated-landing .painted-desk .entrance summary{display:list-item;min-height:44px;padding-block:10px}
+.illustrated-landing .painted-desk .landing-table{
+ --folio-ink:#33241f;--folio-edge:#ac8154;
+ --folio-shape:polygon(0 15px,14px 0,73% 0,calc(73% + 10px) 8px,calc(100% - 15px) 8px,100% 23px,100% calc(100% - 12px),calc(100% - 12px) 100%,13px 100%,0 calc(100% - 13px));
+ margin:0;padding:5px 4px 8px 9px;
+ border:0;background:none;box-shadow:none;min-width:0;
+}
+.illustrated-landing .painted-desk .landing-table::after{
+ background:
+  repeating-linear-gradient(0deg,#8c674852 0 1px,transparent 1px 3px) no-repeat bottom/100% 6px,
+  linear-gradient(90deg,#251817 0 6px,#7e5518 6px 7px,#4b3429 7px 10px,transparent 10px),
+  radial-gradient(ellipse at 74% 0,#68432b55,transparent 76%),var(--folio-ink);
+}
+.painted-desk .landing-table .warmup{padding:13px clamp(10px,2.1vw,22px) 7px;border:0;background:none;min-width:0}
+.painted-desk .landing-table .warmup header{
+ border-bottom:1px solid #a67f4c80;padding-bottom:7px;
+}
+.painted-desk .landing-table .warmup h2{font-size:clamp(1.22rem,2.65vw,1.78rem);letter-spacing:-.025em}
+.painted-desk .landing-table .warmup-header-actions button,.painted-desk .landing-table .warmup-header-actions a,
+.painted-desk .landing-table .warmup footer button{min-height:44px}
+.painted-desk .landing-table .warmup-header-actions a{display:inline-flex;align-items:center}
+
+/* Three chapter covers. The blurred engraving stays on the cover; the
+   shaped tab and metallic perimeter belong to the book, not the link focus. */
+.illustrated-landing .season-directory{margin-top:20px}
+.illustrated-landing :is(.season-directory,.featured) .section-head{
+ position:relative;gap:7px 16px;padding-block:0 9px;
+ border-bottom:1px solid #886945;
+ background:linear-gradient(90deg,#d9ae72 0 48px,transparent 48px) no-repeat left bottom/100% 2px;
+}
+.illustrated-landing :is(.season-directory,.featured) .section-head p{margin:0;color:#d7bb98}
+.illustrated-landing .season-card{
+ --cover-shape:polygon(0 13px,14px 0,calc(100% - 51px) 0,calc(100% - 34px) 11px,calc(100% - 13px) 11px,100% 24px,100% calc(100% - 13px),calc(100% - 13px) 100%,14px 100%,0 calc(100% - 13px));
+ --chapter-edge:#aa764e;
+ isolation:isolate;background:none;border:0;border-radius:0;box-shadow:none;overflow:visible;
+ min-height:185px;padding:19px 15px 16px 19px;
+}
+.illustrated-landing .season-card.jade{--chapter-edge:#789685}
+.illustrated-landing .season-card.gold{--chapter-edge:#b29355}
+.illustrated-landing .season-card::before{
+ inset:0;clip-path:var(--cover-shape);z-index:-3;
+ background:linear-gradient(155deg,#dab67f,var(--chapter-edge) 40%,#654738);
+}
+.illustrated-landing .season-card::after{
+ content:"";position:absolute;inset:1px 1px 2px;pointer-events:none;z-index:-1;clip-path:var(--cover-shape);
+ background:
+  linear-gradient(90deg,#2a1915 0 5px,var(--chapter-edge) 5px 6px,#382820 6px 9px,transparent 9px),
+  linear-gradient(0deg,#1b1314 2%,#211814e8 26%,#21191574 60%,#22171230 100%);
+}
+.illustrated-landing .season-card .chapter-painting{inset:1px 1px 2px;width:calc(100% - 2px);height:calc(100% - 3px);clip-path:var(--cover-shape);background:#2b211b}
+.illustrated-landing .season-card:hover{background:none}
+.illustrated-landing .season-card:hover::before{background:#e4ba83}
+.illustrated-landing .season-card:not(:focus):hover .chapter-painting{transform:none}
+.illustrated-landing .season-card .season-sigil{
+ height:44px;width:35px;padding-block-end:5px;border:0;border-radius:0;
+ background:linear-gradient(160deg,#b88452,#593925 4%,#523829 60%,#3d2920 98%);
+ box-shadow:inset 0 0 0 1px var(--chapter-edge);
+ clip-path:polygon(0 0,100% 0,100% 100%,50% 82%,0 100%);
+}
+.illustrated-landing .season-card .season-arrow{align-self:end;padding-bottom:3px}
+
+/* Gallery entries are loose leaves rather than replicas of chapter covers. */
+.featured .card,.illustrated-landing .featured .card{
+ position:relative;isolation:isolate;
+ background:none;border:0;border-radius:0;box-shadow:none;overflow:visible;
+ --slip-shape:polygon(0 9px,9px 0,calc(100% - 18px) 0,100% 18px,100% calc(100% - 7px),calc(100% - 7px) 100%,7px 100%,0 calc(100% - 7px));
+}
+.featured .card::before,.featured .card::after{
+ content:"";position:absolute;pointer-events:none;z-index:-1;clip-path:var(--slip-shape);
+}
+.featured .card::before{inset:0;background:linear-gradient(155deg,#a38157,#7d5c40 36%,#795638)}
+.featured .card::after{
+ inset:1px;background:linear-gradient(45deg,#ae8756,#78573d) no-repeat right top/18px 18px,
+ linear-gradient(90deg,#291b18 0 4px,#6e4932 4px 5px,transparent 5px),#2a211a;
+}
+.featured .card:is(:hover,:focus-within)::before{background:#be9761}
+.featured .card>.game-art,.illustrated-landing .featured .card>.game-art{
+ width:calc(100% - 14px);margin:7px 7px 0;overflow:hidden;
+ border:0;clip-path:polygon(0 6px,6px 0,calc(100% - 14px) 0,100% 14px,100% 100%,0 100%);
+}
+.featured .card>div:not(.game-art){padding:11px 13px 10px 15px}
+.featured .card .game-caption{border-bottom:1px solid #9a775158;padding-bottom:4px}
+.featured .card button{min-height:44px}
+.illustrated-landing .library-index,.library-index{padding:0 17px}
+.library-index::after{--folio-ink:#2b221d}
+.library-index summary{min-height:48px}
+.illustrated-landing .gallery-tools .collection-search{top:50%;transform:translateY(-50%)}
+.illustrated-landing .gallery-tools{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px}
+.illustrated-landing .gallery-tools input{margin:0;width:min(100%,19rem);min-width:0}
+.illustrated-landing .gallery-tools a{min-height:44px;text-align:right}
+
+@media(min-width:761px) and (max-width:810px){
+ .painted-desk .entrance .primary{font-size:.86rem;padding-inline:10px}
+ .painted-desk .entrance .entry-arrow{width:15px;height:15px;margin-inline-start:1px}
+}
+
+/* Narrow leaves stack; the painted book is sized independently of forms. */
+@media(max-width:760px){
+ .illustrated-landing .painted-desk{
+  --spread-height:clamp(233px,49vw,318px);
+  grid-template-columns:minmax(0,1fr);grid-template-rows:var(--spread-height) auto;
+  gap:12px;padding:0;margin-top:13px;
+ }
+ .illustrated-landing .painted-desk .front-copy{margin-inline-start:clamp(17px,5vw,48px);margin-block:0 22px}
+ .illustrated-landing .painted-desk .front-copy h1{font-size:clamp(2.45rem,10.2vw,4.4rem);margin-bottom:5px}
+ .painted-desk .front-copy .landing-kicker{margin-bottom:2px}
+ .painted-desk .front-copy .landing-kicker svg{width:18px;height:18px}
+ .illustrated-landing .painted-desk .front-copy>p:not(.eyebrow){font-size:.87rem;max-width:24ch;line-height:1.34;margin-bottom:5px}
+ .painted-desk .front-actions .front-cta{min-height:44px;padding:5px 7px;font-size:.74rem}
+ .codex-scene .landing-painting::after{background:linear-gradient(90deg,#241816f1 1%,#221916bb 36%,#2319144d 65%,#2319140a 92%),linear-gradient(0deg,#231917b3,transparent 58%)}
+ .painted-desk .codex-scene .landing-painting img{object-position:67% 36%}
+ .painted-desk .codex-seam{opacity:.22}
+ .illustrated-landing .painted-desk .landing-table{grid-column:1;grid-row:2}
+ .illustrated-landing .painted-desk .entrance{grid-column:1;grid-row:3}
+ .painted-desk .landing-table .warmup{padding-inline:9px}
+ .illustrated-landing .season-card{min-height:115px;padding:15px 13px 12px 17px}
+ .illustrated-landing .gallery-tools .collection-search{left:9px}
+}
+@media(max-width:365px){
+ .illustrated-landing .painted-desk .front-copy{max-width:calc(100% - 26px);margin-inline-start:14px}
+ .painted-desk .front-actions .front-cta{padding-inline:5px;gap:3px;font-size:.7rem}
+ .painted-desk .front-actions .front-cta svg{width:14px;height:14px}
+ .illustrated-landing .painted-desk .entrance{padding-inline:15px}
+ .painted-desk .entrance .entry-engraving{width:19px;height:19px;flex:none}
+ .illustrated-landing .gallery-tools{gap:6px}
+ .illustrated-landing .gallery-tools a{font-size:.73rem}
+ .illustrated-landing .gallery-tools a svg{width:14px;height:14px}
+ .room:not([data-playing]) :is(.lobby,.roster,.chat){padding-inline:16px}
+}
+@media(forced-colors:active){
+ .codex-spread{filter:none}
+ .codex-cover,.codex-leaf-outline{stroke:CanvasText}
+ .codex-paper-edges,.codex-gutter{fill:none}
+ .featured .card,.illustrated-landing .season-card,.illustrated-landing .painted-desk .entrance{border:1px solid CanvasText}
+}
+
+/* A local ink wash under the small-screen subtitle keeps the keeper visible
+   above and beside the copy rather than darkening the full mobile painting. */
+@media(max-width:480px){
+ .illustrated-landing .painted-desk .front-copy>p:not(.eyebrow){position:relative;isolation:isolate}
+ .illustrated-landing .painted-desk .front-copy>p:not(.eyebrow)::before{
+  content:"";position:absolute;z-index:-1;pointer-events:none;inset:-7px -15px -7px -8px;
+  background:linear-gradient(90deg,transparent,#221715e8 8%,#221715e8 87%,transparent);
+  mask-image:linear-gradient(0deg,transparent,#000 12%,#000 88%,transparent);
+ }
+}
+.painted-desk .warmup .warmup-objective{margin-top:8px}
+.painted-desk .warmup .warmup-key-hint{margin-top:2px}

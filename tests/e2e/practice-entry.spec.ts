@@ -25,6 +25,7 @@ test('the warm-up opens full practice without using the online nickname or conne
  await expect(page.getByText('Player',{exact:true})).toBeVisible()
  await expect(page.getByText('Online handle',{exact:true})).toHaveCount(0)
  await page.getByRole('button',{name:'Leave room',exact:true}).click()
+ await expect(page.getByRole('button',{name:'Full Blind Gomoku',exact:true})).toBeFocused()
  await expect(name).toHaveValue('Online handle')
 })
 

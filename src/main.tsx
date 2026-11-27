@@ -19,14 +19,15 @@ import {total} from './mancala'
 import {MancalaBoard} from './mancala-ui'
 import {PuzzleBoard} from './puzzle-ui'
 import {isPuzzle} from './puzzles'
-import React,{Suspense,lazy,useEffect,useRef,useState} from 'react'
+import React,{Suspense,lazy,useEffect,useLayoutEffect,useRef,useState} from 'react'
 import {createRoot} from 'react-dom/client'
 import {mills,points,reward,titles,tutorials,isDuel,minSeats,type Game,type GameView} from './engine'
 import {defaults,explain,episodePokerRoster,episodePokerRules,holdAuctionRules,isHoldAuction,humanOnly,nickname,validCode,type Command,type Snapshot} from './room'
 import {hostRoom,joinRoom,practice,type SessionState,type ConnectOptions,type Session} from './session'
 import catalog from './catalog.json'
 import {SeasonTwo} from './season-two-ui'
-import {Crest,GameArt} from './art'
+import {GameArt} from './art'
+import {BrandSeal} from './brand-seal'
 import {base,brand,currentSeason,seasons,seasonHref} from './brand'
 import './style.css'
 import './design.css'
@@ -40,6 +41,7 @@ import './library.css'
 import {ChapterArt,LandingMark,LandingPainting} from './landing-art'
 import './landing-art.css'
 import './room-stage.css'
+import './codex.css'
 import {BoardViewport} from './board-viewport'
 import {useOfflinePractice} from './offline-practice'
 import {loadTable,TableLoadBoundary} from './lazy-table'
@@ -78,18 +80,34 @@ function App(){
  const [pendingEntry,setPendingEntry]=useState<'join'|'host'|null>(null)
  const [page,setPage]=useState(startRoute.page)
  const matchHeading=useRef<HTMLHeadingElement>(null)
+ const practiceOrigin=useRef<{top:number,launcher:string,catalogOpen:boolean,entering:boolean}|null>(null)
  const sig=useRef(0)
  const didAuto=useRef(false)
  const session=useRef<Session|null>(null)
  const submitEntry=pendingEntry??(page==='/join'?'join':'host')
  const snap=state.snapshot
  const matchOpen=!!snap?.game
+ const practiceLobby=kind==='solo'&&!!snap&&!matchOpen
+ useLayoutEffect(()=>{
+  const origin=practiceOrigin.current
+  if(!origin)return
+  if(practiceLobby&&origin.entering){
+   origin.entering=false
+   matchHeading.current?.focus({preventScroll:true})
+   window.scrollTo(0,0)
+  }else if(!kind){
+   practiceOrigin.current=null
+   if(origin.catalogOpen)document.getElementById('catalog')?.setAttribute('open','')
+   if(origin.launcher)document.getElementById(origin.launcher)?.focus({preventScroll:true})
+   window.scrollTo(0,origin.top)
+  }
+ },[kind,practiceLobby])
  useEffect(()=>{
   if(!matchOpen||!briefing)return
   setBriefing(null)
   matchHeading.current?.focus()
  },[matchOpen,briefing])
- function connect(type:'host'|'join'|'solo',game:Game='blind'){
+ function connect(type:'host'|'join'|'solo',game:Game='blind',launcher=''){
   const options:ConnectOptions={}
   let onlineName=''
   if(type!=='solo'){
@@ -103,6 +121,7 @@ function App(){
     options.iceServers=urls.map(urls=>({urls}))
    }
   }
+  if(type==='solo'&&!kind)practiceOrigin.current={top:window.scrollY,launcher,catalogOpen:!!document.getElementById('catalog')?.hasAttribute('open'),entering:true}
   const attempt=++sig.current
   session.current?.close();session.current=null
   setPendingEntry(null);setNotice('');setInviteCopy(null);setKind(type);setState({phase:'connecting',snapshot:null,error:''});setRoom(type==='join'?code:'')
@@ -129,7 +148,7 @@ function App(){
  function leave(){
   ++sig.current;session.current?.close();session.current=null
   if(room)try{sessionStorage.removeItem('arena-resume-'+room)}catch{/* storage unavailable */}
-  setBriefing(null);setKind(null);setRoom('');setState({phase:'offline',snapshot:null,error:''});setNotice('');setInviteCopy(null);location.hash='/'
+  setBriefing(null);setKind(null);setRoom('');setState({phase:'offline',snapshot:null,error:''});setNotice('');setInviteCopy(null);if(!practiceOrigin.current)location.hash='/'
  }
  useEffect(()=>{if(inviteCopy==='manual'){inviteInput.current?.focus();inviteInput.current?.select()}},[inviteCopy])
  async function copyInvite(){
@@ -169,7 +188,7 @@ function App(){
     <div className="entry-identity"><label htmlFor="nickname">Nickname</label><input id="nickname" autoComplete="off" placeholder="e.g. Night Owl" value={name} onChange={e=>setName(e.target.value)} maxLength={160} required/></div>
     {page!=='/join'&&<button className="primary" type={submitEntry==='join'?'button':'submit'} onClick={submitEntry==='join'?()=>connect('host'):undefined}>Create party {isLanding?<LandingMark mark="arrow" className="entry-arrow"/>:<span className="arrow-text" aria-hidden="true">↗︎</span>}</button>}
     <div className="join-line"><div><label htmlFor="invite">Invite code</label><input id="invite" autoCapitalize="characters" spellCheck={false} value={code} onChange={e=>setCode(cleanCode(e.target.value))} placeholder="ABC234" maxLength={6}/></div><button type={submitEntry==='join'?'submit':'button'} onClick={submitEntry==='join'?undefined:()=>connect('join')}>Join party</button></div>
-    <button type="button" className="plain" onClick={()=>connect('solo')}>Solo practice</button>
+    <button type="button" className="plain" id="practice-entry" onClick={e=>connect('solo','blind',e.currentTarget.id)}>Solo practice</button>
     {offlinePractice&&<small className="practice-availability" role="status">{offlinePractice==='ready'?'Ready for offline practice.':offlinePractice==='saving'?'Saving games for offline practice… Keep this page open.':'Offline files aren’t saved. Open or reload this page with an internet connection.'}</small>}
     <details><summary>Connection options</summary><p>For an online room, signaling is provided by PeerJS, with Google STUN for network discovery by default. Peers can learn network information; some networks can’t connect directly.</p><label htmlFor="ice">Custom STUN URLs (optional)</label><input id="ice" value={ice} onChange={e=>setIce(e.target.value)} placeholder="stun:example.net:3478"/></details>
     {notice&&<p role="alert" className="error">{notice}</p>}
@@ -179,7 +198,7 @@ function App(){
  const playing=!!snap?.game
  return <>
   <header className={'bar'+(isLanding?' landing-bar':playing?' playing-bar':'')}><div className="wrap top">
-   <a className="brand" href={base} onClick={e=>{if(kind)e.preventDefault()}}><Crest/><span>{brand}<small>Unofficial fan project</small></span></a>
+   <a className="brand" href={base} onClick={e=>{if(kind)e.preventDefault()}}><BrandSeal/><span>{brand}<small>Unofficial fan project</small></span></a>
    {!kind&&<nav className="topright season-nav" aria-label="Seasons">{seasons.map(x=><a key={x.id} href={seasonHref(x.id)} aria-current={selected?.id===x.id?'page':undefined}>Season {x.id}</a>)}</nav>}
    <span className="pill alpha-pill">Playable alpha</span>
   </div></header>
@@ -196,7 +215,7 @@ function App(){
     <p>{selected?numberPlayable(selected.id)+' playable games and '+count(selected.id)+' indexed challenges.':page==='/join'?'Enter a nickname and your friend’s room code.':'Strategy games inspired by The Devil’s Plan. Play solo or invite friends.'}</p>
     {page!=='/join'&&<div className="front-actions"><a className="primary front-cta" href="#play"><LandingMark mark="table"/> Browse games</a><a className="front-cta" href="#room-entry"><LandingMark mark="door"/> Create or join a room</a></div>}
    </div>
-   {isLanding&&<div className="landing-table"><GomokuWarmup practice={()=>connect('solo','blind')}/></div>}
+   {isLanding&&<div className="landing-table"><GomokuWarmup practice={()=>connect('solo','blind','warmup-practice')}/></div>}
    {roomEntry}
   </section>}
   {!selected&&<section className="season-directory"><div className="section-head"><div><h2><LandingMark mark="lantern"/> Browse by season</h2></div><p>{catalog.length} indexed challenges</p></div><div className="season-cards">{seasons.map(x=><a key={x.id} className={'season-card '+x.tone} href={seasonHref(x.id)}>{isLanding&&<ChapterArt season={x.id}/>}<span className="season-sigil" aria-hidden="true">{x.roman}</span><div><p className="eyebrow">SEASON {x.id}</p><h3>{x.title}</h3><small>{numberPlayable(x.id)} playable · {count(x.id)} indexed</small></div><span className="season-arrow" aria-hidden="true"><LandingMark mark="arrow"/></span></a>)}</div></section>}
@@ -206,7 +225,7 @@ function App(){
    <a href="#catalog" onClick={openCatalog}>{isLanding&&<LandingMark mark="book"/>}Challenge index</a>
   </div>
   {shown.length===0&&<p role="status" className="gallery-empty">No playable games match this search.</p>}
-  <div className="cards">{shown.map(g=>{const entry=catalog.find(x=>x.game===g);return <article className="card" key={g}><GameArt mode={g}/><div><p className="game-caption">{entry?'S'+entry.season+' · '+entry.genre:'Fan rules'}</p><h3>{titles[g]}</h3><p>{tutorials[g].split('. ')[0]}.</p><button type="button" onClick={()=>connect('solo',g)}>Practice <span className="sr">{titles[g]}</span><span className="arrow-text" aria-hidden="true"> →</span></button><details><summary>Rules</summary><p>{tutorials[g]}</p></details></div></article>})}</div>
+  <div className="cards">{shown.map(g=>{const entry=catalog.find(x=>x.game===g);return <article className="card" key={g}><GameArt mode={g} motionOff={feedback.prefs.motion==='off'}/><div><p className="game-caption">{entry?'S'+entry.season+' · '+entry.genre:'Fan rules'}</p><h3>{titles[g]}</h3><p>{tutorials[g].split('. ')[0]}.</p><button type="button" id={'practice-gallery-'+g} onClick={e=>connect('solo',g,e.currentTarget.id)}>Practice <span className="sr">{titles[g]}</span><span className="arrow-text" aria-hidden="true"> →</span></button><details><summary>Rules</summary><p>{tutorials[g]}</p></details></div></article>})}</div>
   </section>
   {seasonLibrary&&<div className="front-desk season-room">{roomEntry}</div>}
   <details id="catalog" className="index library-index">
@@ -216,12 +235,12 @@ function App(){
    <div className="directory">{rows.map(row=>{
     const game=games.find(g=>g===row.game)
     return <article key={row.id}><span className="mono">{row.id}</span><div><strong>{row.title}</strong><br/><small>{row.category} · {row.genre}{row.original==='unaired'?' · Unaired':''}</small></div>
-     {game?<button type="button" className="catalog-practice" onClick={()=>connect('solo',game)}>Practice <span className="sr">{titles[game]}</span></button>:<small className="catalog-unavailable">Not playable</small>}
+     {game?<button type="button" className="catalog-practice" id={'practice-index-'+row.id} onClick={e=>connect('solo',game,e.currentTarget.id)}>Practice <span className="sr">{titles[game]}</span></button>:<small className="catalog-unavailable">Not playable</small>}
     </article>
    })}</div>{!rows.length&&<p role="status">No matching entries.</p>}
   </details></>
   :<section className="room" data-playing={playing||undefined} data-game={snap?.game?.game} data-layout={snap?.game?.game==='blind'?'chamber':undefined}>
-   <div className="section-head"><div><p className="eyebrow">{kind==='solo'?'OFFLINE PRACTICE':'PRIVATE PARTY'}</p><h1 ref={matchHeading} tabIndex={snap?.game?-1:undefined}>{snap?.game?titles[snap.game.game]:kind==='solo'?'Practice lobby':'Party room'}</h1></div><div className="room-controls"><GameFeedbackControls feedback={feedback}/><button className="room-leave" onClick={leave}>{snap?.game?.game==='blind'&&<ChamberGlyph icon="exit"/>}Leave room</button></div></div>
+   <div className="section-head"><div><p className="eyebrow">{kind==='solo'?'OFFLINE PRACTICE':'PRIVATE PARTY'}</p><h1 ref={matchHeading} tabIndex={snap?.game||kind==='solo'?-1:undefined}>{snap?.game?titles[snap.game.game]:kind==='solo'?'Practice lobby':'Party room'}</h1></div><div className="room-controls"><GameFeedbackControls feedback={feedback}/><button className="room-leave" onClick={leave}>{snap?.game?.game==='blind'&&<ChamberGlyph icon="exit"/>}Leave room</button></div></div>
    {room&&<div className="invite"><span>Invite code <strong data-testid="room-code">{room}</strong></span>{snap&&<button onClick={()=>{void copyInvite()}}>Copy invite</button>}
     {inviteCopy==='copied'&&<small role="status">Invite copied.</small>}
     {inviteCopy==='manual'&&<div className="invite-manual"><p id="invite-copy-help">Couldn’t copy automatically. Copy the link below or share the invite code.</p><label>Invite link<input ref={inviteInput} readOnly value={invite(room)} aria-describedby="invite-copy-help" onFocus={e=>e.currentTarget.select()}/></label></div>}
@@ -241,7 +260,7 @@ function App(){
       <label>Memory mode<select value={snap.settings.fragmentStrict?'strict':'casual'} disabled={!host} onChange={e=>command({kind:'config',settings:{...snap.settings,fragmentStrict:e.target.value==='strict'}})}><option value="casual">Casual · team discussion</option><option value="strict">Strict · no discussion</option></select></label>
      </div>}
      {snap.settings.game==='divine'&&<div className="actions">
-      <label>Square size<select value={snap.settings.divineSide??7} disabled={!host} onChange={e=>command({kind:'config',settings:{...snap.settings,divineSide:Number(e.target.value) as 3|5|7}})}>{[3,5,7].map(n=><option key={n} value={n}>{n} × {n}</option>)}</select></label>
+      <label>Square size<select value={snap.settings.divineSide??7} disabled={!host} onChange={e=>command({kind:'config',settings:{...snap.settings,divineSide:Number(e.target.value) as 3|5|7}})}>{[3,5,7].map(n=><option key={n} value={n}>{n} × {n}{kind==='solo'&&n===3?' (starter)':''}</option>)}</select></label>
       <label>Time limit<select value={snap.settings.seconds} disabled={!host} onChange={e=>command({kind:'config',settings:{...snap.settings,seconds:Number(e.target.value)}})}>{[120,300,600,900].map(n=><option key={n} value={n}>{n/60} minutes</option>)}</select></label>
       <label className="check"><input type="checkbox" checked={snap.settings.divineHard??false} disabled={!host} onChange={e=>command({kind:'config',settings:{...snap.settings,divineHard:e.target.checked}})}/> Deduce the numeral key</label>
      </div>}
@@ -279,7 +298,7 @@ function App(){
   </section>}
    {briefing&&snap&&!snap.game&&<TableBriefing key={snap.settings.game+':'+episodePoker+':'+holdAuction} game={snap.settings.game} seats={snap.seats} caption={holdAuction?'The table shares the round clock and results, never your live bid.':episodePoker?'Two duelists. The grid is read together; each pair is locked privately.':explain(snap.settings.game,snap.seats.length)} variant={holdAuction?{label:'Hold & release · episode-inspired',rules:holdAuctionRules,demo:()=> <img style={{display:'block',width:'100%',height:'auto',borderRadius:4}} src={base+'art/time-auction-chamber.svg'} alt="The timekeepers’ cabinet" width={1200} height={660}/>}:episodePoker?{label:'Episode-style duel',rules:episodePokerRules,demo:step=><MemoryDuelLesson step={step}/>} :snap.settings.game==='montage'?{label:montagePractice?'FAN RULES · SOLO PRACTICE':'FAN RULES',rules:montagePractice?montagePracticeRules:tutorials.montage,demo:step=><MontageLesson step={step}/>} :snap.settings.game==='heavy13'?{label:'FAN RULES · 2–7 SEATS',rules:tutorials.heavy13,demo:step=><TableLoadBoundary title="Heavy 13"><Suspense fallback={<span>Preparing example…</span>}><Heavy13Lesson step={step}/></Suspense></TableLoadBoundary>} :undefined} close={()=>setBriefing(null)} start={briefing==='start'&&host?{enabled:canStart,confirm:()=>command({kind:'start'})}:undefined}/>}
   </main>
-  <footer className={'wrap footer'+(isLanding?' landing-footer':'')}><strong>{isLanding&&<Crest/>}{brand}</strong><span>Fan-made and not affiliated with Netflix. No real stakes.</span></footer>
+  <footer className={'wrap footer'+(isLanding?' landing-footer':'')}><strong>{isLanding&&<BrandSeal/>}{brand}</strong><span>Fan-made and not affiliated with Netflix. No real stakes.</span></footer>
  </>
 }
 function Board({v,name,active,submit}:{v:GameView,name:(s:string)=>string,active:boolean,submit:(a:number|{from:number,to:number})=>void}){

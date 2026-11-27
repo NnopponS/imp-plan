@@ -1,10 +1,140 @@
-.divine{display:grid;gap:.75rem;min-width:0}
+/* Divine Test: incised stone squares, a brass number rack and a sealed clue. */
+.room[data-playing] .match:has(>.divine){
+ --ink:#fbecd3;--sub:#e0c9a7;--line:#70524a;
+ color:var(--ink);color-scheme:dark;background:#2c2325;border-color:#8f6b5a;
+ box-shadow:inset 0 0 0 2px #1d1719,0 3px 0 #27182045;
+}
+.room[data-playing] .match:has(>.divine[data-closed=false])>:is(.eyebrow,h2){display:none}
+.room[data-playing] .match:has(>.divine)>.eyebrow{color:#e9bc8b}
+.room[data-playing] .match:has(>.divine)>details{color:#f3dfc4}
+.room[data-playing] .match:has(>.divine)>button.plain:not(.primary):not(.cell){background:#392a2b;color:#f4dec1;border-color:#8f6b5a}
+.room[data-game=divine]>.invite{margin-bottom:7px;padding-block:2px}
+.room[data-game=divine]>.invite button{min-height:36px}
+.divine{
+ --dv-rim:#97735d;--dv-gold:#edc995;--dv-ink:#fae8ca;
+ --dv-scratch:repeating-linear-gradient(116deg,#210d112b 0 .65px,transparent .65px 4px);
+ display:grid;gap:5px;min-width:0;align-items:start;
+ grid-template-areas:"plaque" "bench" "slab";
+}
 .divine p{margin:0}
-.divine-grid{width:min(100%,28rem);margin-inline:auto;display:grid;gap:3px}
-.divine-grid button{aspect-ratio:1;min-width:0;border:1px solid #c1a485;padding:0;color:#5c3b32;background:#fbf1de;font-size:clamp(.72rem,3.2vw,1.23rem);font-family:system-ui,sans-serif}
-.divine-grid button[data-fixed=true]{color:#fff;background:#6d3c40;opacity:1;box-shadow:inset 0 0 0 2px #d4a86d}
-.divine-tray{display:flex;flex-wrap:wrap;gap:.28rem}
-.divine-tray button{padding:.25rem .4rem;min-width:2.65rem;min-height:2.65rem}
-.divine-tray button[aria-pressed=true]{background:#6d3c40;color:white}
-.divine-key ul{display:flex;flex-wrap:wrap;list-style:none;padding:0;gap:.35rem}
-.divine-key li{padding:.2rem .4rem;background:#f4e8d4;border-radius:.25rem}
+.divine-plaque{
+ grid-area:plaque;min-width:0;min-height:49px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:3px 8px;
+ padding:5px 8px;color:var(--dv-ink);border:1px solid var(--dv-rim);border-radius:3px;
+ background:var(--dv-scratch),linear-gradient(107deg,#604338,#3f2c2f 73%);
+ box-shadow:inset 0 0 0 2px #302124,0 2px 0 #1f171a;
+}
+.divine-emblem{width:30px;height:30px;flex:none;color:var(--dv-gold)}
+.divine-plaque .divine-inscription{font-size:.61rem;font-weight:750;line-height:1.15;letter-spacing:.09em;text-transform:uppercase;color:#f1cba0}
+.divine-plaque strong{font:700 clamp(1.13rem,4.7vw,1.65rem)/1.03 Georgia,serif;color:#fff0d5;white-space:nowrap}
+.divine-clock{display:grid;justify-items:end;gap:3px}
+.divine-clock small{font-size:.63rem;line-height:1;color:#eacba7}
+.divine-plaque [role=timer]{
+ background:#2a2123;border:1px solid #986e55;border-radius:3px;padding:4px 6px;
+ font:780 .78rem/1.1 ui-monospace,monospace;font-variant-numeric:tabular-nums;color:#f7d8a4;
+}
+.divine-plaque [role=timer][data-urgent=true]{background:#6b3339;border-color:#e2a093;color:#ffeed7}
+.divine-workbench{
+ grid-area:bench;display:grid;gap:4px;min-width:0;padding:5px 6px 6px;
+ background:var(--dv-scratch),linear-gradient(#3d2d2d,#332829);border:1px solid #7e5c53;border-radius:3px;
+}
+.divine p.divine-cue{grid-column:1/-1;border-top:1px solid #cbb08544;padding-top:4px;color:#fae7ca;font-size:.78rem;line-height:1.23;min-height:1.23em}
+.divine p.divine-cue[data-selected=true]{color:#ffdc97;font-weight:750}
+.divine-tools{display:grid;grid-template-columns:minmax(0,1fr) auto 44px 44px;gap:3px}
+.room[data-playing] .match .divine .divine-tools button:not(.primary):not(.cell){
+ min-height:44px;border-radius:3px;padding:3px 6px;background:#31272a;color:#f6dfbd;border-color:#98735b;
+ font-size:.76rem;line-height:1.15;white-space:nowrap
+}
+.divine-tools button[aria-label] span{font:400 1.43rem/.6 Georgia,serif}
+.divine-tools button[aria-disabled=true]{opacity:.48;cursor:default}
+.room[data-playing] .match .divine .divine-tools button:is([aria-pressed=true],[aria-expanded=true]){background:#5c3c33;color:#fff0d2;border-color:#deba81}
+.divine-key{border:1px solid #946957;background:#302628;padding:5px 7px}
+.divine-key ul{
+ display:flex;flex-wrap:wrap;gap:3px;list-style:none;padding:0;margin:0 0 4px;font:700 .78rem/1.6 ui-monospace,system-ui,sans-serif
+}
+.divine-key li{background:#513a34;border:1px solid #805b4c;border-radius:2px;padding:0 4px;color:#ffedcf}
+.divine-key small,.divine p.divine-table-note{color:#e8d0b1;font-size:.7rem;line-height:1.24}
+.divine-key:not([hidden]) small{display:block}
+.divine-tray{
+ min-width:0;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:none;
+ border:1px solid #886554;border-radius:3px;background:#20181a;scroll-padding-inline:3px;
+}
+.divine-tray::-webkit-scrollbar{display:none}
+.divine-rack{display:flex;gap:3px;width:max-content;min-width:100%;min-height:48px;padding:2px}
+.room[data-playing] .match .divine :is(.divine-rack,.divine-grid) button{
+ display:grid;place-content:center;justify-items:center;gap:1px;position:relative;
+ padding:0;min-width:0;border:1px solid #a58461;border-radius:3px;
+ font:700 1rem/.96 system-ui,sans-serif;color:#ffe9bb;
+ background:var(--dv-scratch),linear-gradient(151deg,#735244,#523b36);
+ box-shadow:inset 0 0 0 1px #24181975;touch-action:manipulation;
+}
+.room[data-playing] .match .divine .divine-rack button{min-width:44px;min-height:44px;padding-inline:3px}
+.room[data-playing] .match .divine .divine-rack button[aria-pressed=true],
+.room[data-playing] .match .divine .divine-grid button[data-lifted=true]{
+ color:#372119;background:linear-gradient(150deg,#f8dfa9,#d3a96f);border-color:#ffe9b4
+}
+.room[data-playing] .match .divine button:focus-visible{outline:2px solid #ffebaa;outline-offset:-3px;z-index:1}
+.divine-glyph{white-space:nowrap;color:inherit;line-height:1}
+.divine .divine-glyph+small{color:inherit;font:780 .66rem/1 ui-monospace,monospace}
+.divine p.divine-table-note{margin-block:1px}
+.divine-slab{
+ grid-area:slab;justify-self:center;width:min(100%,var(--dv-board));padding:4px;position:relative;
+ border:1px solid #947464;border-radius:4px;
+ background:var(--dv-scratch),radial-gradient(ellipse at 24% 12%,#957460,#5a423b 82%);
+ box-shadow:inset 0 0 0 2px #4d3733,0 3px 0 #221a1b;
+}
+.divine[data-side="3"]{--dv-board:18rem}
+.divine[data-side="5"]{--dv-board:23rem}
+.divine[data-side="7"]{--dv-board:30rem}
+.divine-grid{
+ min-width:0;display:grid;grid-template-columns:repeat(var(--divine-side),minmax(0,1fr));gap:2px;
+ background:#483432;border:1px solid #775c4d;border-radius:3px;padding:2px;
+}
+.room[data-playing] .match .divine .divine-grid button{min-height:0;aspect-ratio:1}
+.room[data-playing] .match .divine .divine-grid button[data-tile=false]{
+ background:var(--dv-scratch),radial-gradient(ellipse at 20% 15%,#c7a782,#a78365);
+ border-color:#8a654f;box-shadow:inset 0 0 0 1px #e0bb8c77
+}
+.divine-grid button[data-tile=false] .divine-pip{width:4px;height:4px;background:#6d5145;transform:rotate(45deg)}
+.room[data-playing] .match .divine .divine-grid button[data-fixed=true]{
+ color:#ffe9b9;background:var(--dv-scratch),linear-gradient(130deg,#8c434b,#593039);
+ border-color:#d39779;opacity:1;box-shadow:inset 0 0 0 2px #b57869;
+}
+.divine-grid button[data-fixed=true]::after{
+ content:"";position:absolute;width:5px;height:5px;inset-block-start:3px;inset-inline-end:3px;background:#ffe1a3;
+ border:1px solid #d79b74;border-radius:50%;filter:drop-shadow(0 1px 0 #52242a)
+}
+@media(hover:hover){
+ .room[data-playing] .match .divine .divine-tools button:not([aria-disabled=true]):not(:disabled):hover,
+ .room[data-playing] .match .divine .divine-rack button:not(:disabled):hover,
+ .room[data-playing] .match .divine .divine-grid button:not(:disabled):hover{border-color:#ffe1a3}
+}
+@media(max-width:720px){
+ .room[data-playing] .match .divine .divine-grid button{font-size:clamp(.85rem,4vw,1.12rem)}
+ .divine[data-side="3"]{--dv-board:16rem}
+ .divine p.divine-table-note{display:none}
+}
+@media(max-width:359px){
+ .divine-plaque .divine-inscription{font-size:.58rem;letter-spacing:.035em}
+ .divine[data-side="3"]{--dv-board:15rem}
+}
+@media(min-width:980px){
+ .divine{grid-template-columns:minmax(0,min(55%,var(--dv-board))) minmax(16rem,1fr);grid-template-areas:"plaque plaque" "slab bench";gap:9px}
+ .divine-workbench{padding:9px;gap:7px;width:min(100%,32rem)}
+ .divine-tools{grid-template-columns:minmax(0,1fr) auto}
+ .divine-tools button[aria-label]{display:none}
+ .divine-rack{display:grid;grid-template-columns:repeat(auto-fill,minmax(44px,1fr));width:100%;min-height:0}
+ .divine-slab{padding:8px;justify-self:start}
+ .divine-grid{gap:3px}
+ .room[data-playing] .match .divine .divine-grid button{font-size:clamp(1.16rem,2vw,1.6rem)}
+}
+/* A short, wide phone keeps its whole altar in reach without changing portrait. */
+@media(orientation:landscape) and (min-width:650px) and (max-width:979px) and (max-height:535px){
+ .divine{
+  --dv-landscape-chrome:124px;
+  grid-template-columns:minmax(0,min(45%,var(--dv-board),max(215px,calc(100svh - var(--dv-landscape-chrome))))) minmax(0,1fr);
+  grid-template-areas:"slab plaque" "slab bench";grid-template-rows:auto 1fr;gap:6px 9px;
+ }
+ .room[data-game=divine]:has(>.invite) .divine{--dv-landscape-chrome:171px}
+ .divine-slab{width:100%;justify-self:start}
+ .divine-workbench{padding:6px}
+}

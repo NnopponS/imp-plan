@@ -17,7 +17,7 @@ for(const {title,path,heading,season,description} of pages){
 <html lang="en"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${e(title)}</title><meta name="description" content="${e(description)}"><meta name="theme-color" content="#f5eee2">
-<link rel="icon" href="%BASE_URL%art/crest.svg" type="image/svg+xml">
+<link rel="icon" href="/art/imp-plan-mark.svg" type="image/svg+xml">
 <link rel="canonical" href="${location}">
 <meta property="og:type" content="website"><meta property="og:site_name" content="${e(name)}">
 <meta property="og:title" content="${e(title)}"><meta property="og:description" content="${e(description)}">

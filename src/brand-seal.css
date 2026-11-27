@@ -1,0 +1,12 @@
+.brand-seal{display:block;flex:none;object-fit:contain}
+.brand .brand-seal{inline-size:38px;block-size:38px}
+.landing-footer .brand-seal{inline-size:25px;block-size:25px}
+.playing-bar .brand .brand-seal{inline-size:24px;block-size:24px}
+@media(max-width:760px){
+ .brand .brand-seal{inline-size:32px;block-size:32px}
+ .playing-bar .brand .brand-seal{inline-size:20px;block-size:20px}
+}
+@media(max-width:355px){
+ .top .brand{gap:7px}
+ .top .brand small{letter-spacing:.035em}
+}

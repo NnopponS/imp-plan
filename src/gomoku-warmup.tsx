@@ -53,6 +53,7 @@ export function GomokuWarmup({practice}:{practice:()=>void}){
     <a href="#warmup-practice" onClick={event=>{event.preventDefault();fullGame.current?.focus()}}>Skip warm-up</a>
    </div>
   </header>
+  <p className="warmup-objective" role="status">{!result?'Find the fifth stone in the row.':won?'Five in a row. You win!':'Not quite. Look for four matching stones in a row.'}</p>
   <p className="warmup-key-hint" id="warmup-key-hint">Use the arrow keys to move between open squares.</p>
   <div className="mini-board" role="group" aria-describedby="warmup-key-hint" aria-label="Center of the 15 by 15 Blind Gomoku board">
    {crop.map(([r,c],index)=>{
@@ -65,6 +66,6 @@ export function GomokuWarmup({practice}:{practice:()=>void}){
      onClick={()=>setResult({cell,won:move(lesson,you,cell,0)?.winner===you})}><span aria-hidden="true"/></button>
    })}
   </div>
-  <footer><p role="status">{!result?'Find the fifth stone in the row.':won?'Five in a row. You win!':'Not quite. Look for four matching stones in a row.'}</p><button type="button" id="warmup-practice" ref={fullGame} className="warm-link" onClick={practice}>Full Blind Gomoku <span aria-hidden="true">→</span></button></footer>
+  <footer><button type="button" id="warmup-practice" ref={fullGame} className="warm-link" onClick={practice}>Full Blind Gomoku <span aria-hidden="true">→</span></button></footer>
  </section>
 }

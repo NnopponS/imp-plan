@@ -11,10 +11,34 @@ export function LandingMark({mark,className}:{mark:Mark;className?:string}){
  </svg>
 }
 export function LandingPainting(){
- return <picture className="landing-painting" aria-hidden="true">
-  <source media="(max-width:685px)" srcSet={base+'art/landing-hero-mobile.svg'}/>
-  <img src={base+'art/landing-hero.svg'} width={1200} height={660} alt="" loading="eager" decoding="async" fetchPriority="high"/>
- </picture>
+ return <div className="codex-scene" aria-hidden="true">
+  <picture className="landing-painting">
+   <source media="(max-width:685px)" srcSet={base+'art/landing-hero-mobile.svg'}/>
+   <img src={base+'art/landing-hero.svg'} width={1200} height={660} alt="" loading="eager" decoding="async" fetchPriority="high"/>
+  </picture>
+  <svg className="codex-spread" viewBox="0 0 1000 380" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+   <defs>
+    <clipPath id="codex-leaves" clipPathUnits="objectBoundingBox">
+     <path transform="scale(.001 .002631578947)" d="M500 39C360 1 198 2 47 27Q33 30 30 46L18 295Q17 307 32 308C212 287 370 307 500 357C630 307 788 287 968 308Q983 307 982 295L970 46Q967 30 953 27C802 2 640 1 500 39Z"/>
+    </clipPath>
+    <linearGradient id="codex-metal" x1="0" x2="0" y1="0" y2="1">
+     <stop stopColor="#dcc18c"/><stop offset=".52" stopColor="#9c764d"/><stop offset="1" stopColor="#cb9a64"/>
+    </linearGradient>
+    <linearGradient id="codex-gutter">
+     <stop stopColor="#1a0d0e" stopOpacity="0"/><stop offset=".45" stopColor="#1a0d0e" stopOpacity=".45"/><stop offset=".5" stopColor="#b18b5c" stopOpacity=".5"/><stop offset=".56" stopColor="#28170f" stopOpacity=".36"/><stop offset="1" stopColor="#2a1913" stopOpacity="0"/>
+    </linearGradient>
+   </defs>
+   <g fill="none" strokeLinejoin="round">
+    <path className="codex-cover" d="M25 35 8 53 3 315Q3 332 26 333C211 312 364 327 495 374Q500 377 505 374C636 327 789 312 974 333Q997 332 997 315L992 53 975 35 968 295 500 350 32 295Z"/>
+    <path className="codex-paper-edges" d="M30 41 16 52 10 310Q10 325 30 326C210 303 363 322 500 368C637 322 790 303 970 326Q990 325 990 310L984 52 970 41 961 290 500 350 39 290Z"/>
+    <path className="codex-leaf-ruling" d="M10 313Q11 322 29 321C209 298 364 318 500 363C636 318 791 298 971 321Q989 322 990 313M12 308Q13 315 29 315C210 293 369 313 500 360C631 313 790 293 971 315Q987 315 988 308"/>
+    <path className="codex-leaf-outline" d="M500 39C360 1 198 2 47 27Q33 30 30 46L18 295Q17 307 32 308C212 287 370 307 500 357C630 307 788 287 968 308Q983 307 982 295L970 46Q967 30 953 27C802 2 640 1 500 39Z"/>
+    <path className="codex-leaf-ruling" d="M39 46Q42 39 55 37C213 13 360 18 493 49M507 49C640 18 787 13 945 37Q958 39 961 46M31 295C204 273 369 293 491 342M509 342C631 293 796 273 969 295"/>
+    <path className="codex-gutter" d="M455 30 500 39 545 30V340L500 357 455 340Z"/>
+    <path className="codex-seam" d="M498 46V348m4-302v302"/>
+   </g>
+  </svg>
+ </div>
 }
 export function ChapterArt({season}:{season:number}){
  return <img className="chapter-painting" src={base+'art/landing-season-'+season+'.svg'} width={640} height={390} alt="" loading="lazy" decoding="async"/>

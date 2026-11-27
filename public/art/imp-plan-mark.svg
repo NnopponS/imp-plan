@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- An oxblood folio with a mask stamped into the cover. -->
+  <path fill="#211918" d="M14 4h31l13 13v34l-11 9H14A10 10 0 0 1 4 50V14A10 10 0 0 1 14 4Z"/>
+  <path fill="#d9b67a" d="M14 6h30l12 12v32l-10 8H14a8 8 0 0 1-8-8V14a8 8 0 0 1 8-8Z"/>
+  <path fill="#f0d5a2" d="M14 50h39l-8 6H14a3 3 0 0 1 0-6Z"/>
+  <path fill="#6c302b" d="M14 9h29l10 10v27l-7 5H14a9 9 0 0 0-5 1.5V14a5 5 0 0 1 5-5Z"/>
+  <path fill="#38201e" d="M14 9h3v42h-3a9 9 0 0 0-5 1.5V14a5 5 0 0 1 5-5Z"/>
+  <path fill="#e4bd83" d="M14 11h2v37h-2z"/>
+  <path fill="#f7e4bf" fill-rule="evenodd" d="M20 19c6 1 10 4 13 8l3-2 3 2c3-4 7-7 13-8l-3 13c-1 6-7 11-13 15-6-4-12-9-13-15Zm4 9c2 5 5 7 10 7-2-4-5-6-10-7Zm24 0c-5 1-8 3-10 7 5 0 8-2 10-7Z"/>
+</svg>
