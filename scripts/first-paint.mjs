@@ -86,7 +86,7 @@ export const firstPaintRecovery = `(() => {
    }
    return;
   }
-  if (!location.hash.startsWith('#/join?')) return;
+  if (!location.hash.slice(1).startsWith('/join?')) return;
   const href = link.getAttribute('href');
   if (!['#play', '#catalog', '#room-entry'].includes(href)) return;
   const section = document.getElementById(href.slice(1));
