@@ -37,6 +37,8 @@ import {GomokuWarmup} from './gomoku-warmup'
 import {GameFeedbackControls,useGameFeedback} from './game-feedback'
 import './cinematic.css'
 import './library.css'
+import {ChapterArt,LandingMark,LandingPainting} from './landing-art'
+import './landing-art.css'
 const loadTimeHold=()=>import('./time-hold-ui')
 const TimeHoldBoard=lazy(()=>loadTimeHold().then(module=>({default:module.TimeHoldBoard})))
 const games=Object.keys(titles) as Game[]
@@ -146,12 +148,13 @@ function App(){
  const numberPlayable=(n:number)=>catalog.filter(x=>x.season===n&&x.game).length
  const rows=catalog.filter(g=>(season==='all'||String(g.season)===season)&&(!filter||g.game)&&[g.title,g.genre,g.category,g.id].join(' ').toLowerCase().includes(search.toLowerCase()))
  const seasonLibrary=page==='/join'?undefined:selected
+ const isLanding=!kind&&!selected&&page!=='/join'
  const openCatalog=()=>document.getElementById('catalog')?.setAttribute('open','')
  const roomEntry=(
    <form id="room-entry" tabIndex={-1} className="panel entrance" onSubmit={e=>{e.preventDefault();connect(submitEntry)}}>
-    <h2>{submitEntry==='solo'?'Practice '+titles[privateGame]:page==='/join'?'Join a party':'Start or join a game'}</h2>
+    <h2>{isLanding&&<LandingMark mark="door" className="entry-engraving"/>}{submitEntry==='solo'?'Practice '+titles[privateGame]:page==='/join'?'Join a party':'Start or join a game'}</h2>
     <div className="entry-identity"><label htmlFor="nickname">Nickname</label><input id="nickname" autoComplete="off" placeholder="e.g. Night Owl" value={name} onChange={e=>setName(e.target.value)} maxLength={160} required/></div>
-    {(page!=='/join'||submitEntry==='solo')&&<button className="primary" type={submitEntry==='join'?'button':'submit'} onClick={submitEntry==='join'?()=>connect('host'):undefined}>{submitEntry==='solo'?'Start practice':'Create party'} <span className="arrow-text" aria-hidden="true">↗︎</span></button>}
+    {(page!=='/join'||submitEntry==='solo')&&<button className="primary" type={submitEntry==='join'?'button':'submit'} onClick={submitEntry==='join'?()=>connect('host'):undefined}>{submitEntry==='solo'?'Start practice':'Create party'} {isLanding?<LandingMark mark="arrow" className="entry-arrow"/>:<span className="arrow-text" aria-hidden="true">↗︎</span>}</button>}
     <div className="join-line"><div><label htmlFor="invite">Invite code</label><input id="invite" autoCapitalize="characters" spellCheck={false} value={code} onChange={e=>setCode(cleanCode(e.target.value))} placeholder="ABC234" maxLength={6}/></div><button type={submitEntry==='join'?'submit':'button'} onClick={submitEntry==='join'?undefined:()=>connect('join')}>Join party</button></div>
     {submitEntry==='solo'?<button type="button" className="plain" onClick={()=>connect('host')}>Create party</button>:<button type="button" className="plain" onClick={()=>connect('solo')}>Solo practice</button>}
     <details><summary>Connection options</summary><p>For an online room, signaling is provided by PeerJS, with Google STUN for network discovery by default. Peers can learn network information; some networks can’t connect directly.</p><label htmlFor="ice">Custom STUN URLs (optional)</label><input id="ice" value={ice} onChange={e=>setIce(e.target.value)} placeholder="stun:example.net:3478"/></details>
@@ -160,37 +163,39 @@ function App(){
  )
  const finished=snap?.game?.done
  return <>
-  <header className="bar"><div className="wrap top">
+  <header className={'bar'+(isLanding?' landing-bar':'')}><div className="wrap top">
    <a className="brand" href={base} onClick={e=>{if(kind)e.preventDefault()}}><Crest/><span>{brand}<small>Unofficial fan project</small></span></a>
    {!kind&&<nav className="topright season-nav" aria-label="Seasons">{seasons.map(x=><a key={x.id} href={seasonHref(x.id)} aria-current={selected?.id===x.id?'page':undefined}>Season {x.id}</a>)}</nav>}
    <span className="pill alpha-pill">Playable alpha</span>
   </div></header>
-  <main className="wrap">
+  <main className={'wrap'+(isLanding?' illustrated-landing':'')}>
   {!kind?<>{seasonLibrary?<section className="season-heading" aria-labelledby="season-title">
    <div><p className="eyebrow">Season {seasonLibrary.id} · {seasonLibrary.year}</p><h1 id="season-title">{seasonLibrary.title}</h1></div>
    <a className="front-cta" href="#room-entry">Create or join a room</a>
-  </section>:<section className={'front-desk'+(selected?' season-desk':'')+(page==='/join'?' invite-desk':'')}>
+  </section>:<section className={'front-desk'+(selected?' season-desk':'')+(page==='/join'?' invite-desk':'')+(isLanding?' painted-desk':'')}>
+   {isLanding&&<LandingPainting/>}
    <div className="front-copy">
     {selected&&<p className="eyebrow">Season {selected.id} · {selected.year}</p>}
+    {isLanding&&<p className="eyebrow landing-kicker"><LandingMark mark="lantern"/> THE STRATEGY CHAMBERS</p>}
     <h1>{selected?selected.title:page==='/join'?'Join a game':'Imp Plan'}</h1>
     <p>{selected?numberPlayable(selected.id)+' playable games and '+count(selected.id)+' indexed challenges.':page==='/join'?'Enter a nickname and your friend’s room code.':'Strategy games inspired by The Devil’s Plan. Play solo or invite friends.'}</p>
-    {page!=='/join'&&<div className="front-actions"><a className="primary front-cta" href="#play">Browse games <span aria-hidden="true">↓</span></a><a className="front-cta" href="#room-entry">Create or join a room</a></div>}
+    {page!=='/join'&&<div className="front-actions"><a className="primary front-cta" href="#play"><LandingMark mark="table"/> Browse games</a><a className="front-cta" href="#room-entry"><LandingMark mark="door"/> Create or join a room</a></div>}
    </div>
-   {!selected&&page!=='/join'&&<GomokuWarmup practice={()=>connect('solo','blind')}/>}
+   {isLanding&&<div className="landing-table"><GomokuWarmup practice={()=>connect('solo','blind')}/></div>}
    {roomEntry}
   </section>}
-  {!selected&&<section className="season-directory"><div className="section-head"><div><h2>Browse by season</h2></div><p>{catalog.length} indexed challenges</p></div><div className="season-cards">{seasons.map(x=><a key={x.id} className={'season-card '+x.tone} href={seasonHref(x.id)}><span className="season-sigil" aria-hidden="true">{x.roman}</span><div><p className="eyebrow">SEASON {x.id}</p><h3>{x.title}</h3><small>{numberPlayable(x.id)} playable · {count(x.id)} indexed</small></div><span className="season-arrow" aria-hidden="true">↗︎</span></a>)}</div></section>}
-  <section className={'featured'+(seasonLibrary?' season-gallery':'')} id="play"><div className="section-head"><h2>{selected?'Play this season':'Pick a game'}</h2><p>{playable.length} playable{!seasonLibrary&&(playable.length===1?' fan adaptation':' fan adaptations')}</p></div>
+  {!selected&&<section className="season-directory"><div className="section-head"><div><h2><LandingMark mark="lantern"/> Browse by season</h2></div><p>{catalog.length} indexed challenges</p></div><div className="season-cards">{seasons.map(x=><a key={x.id} className={'season-card '+x.tone} href={seasonHref(x.id)}>{isLanding&&<ChapterArt season={x.id}/>}<span className="season-sigil" aria-hidden="true">{x.roman}</span><div><p className="eyebrow">SEASON {x.id}</p><h3>{x.title}</h3><small>{numberPlayable(x.id)} playable · {count(x.id)} indexed</small></div><span className="season-arrow" aria-hidden="true"><LandingMark mark="arrow"/></span></a>)}</div></section>}
+  <section className={'featured'+(seasonLibrary?' season-gallery':'')} id="play"><div className="section-head"><h2>{isLanding&&<LandingMark mark="table"/>}{selected?'Play this season':'Pick a game'}</h2><p>{playable.length} playable{!seasonLibrary&&(playable.length===1?' fan adaptation':' fan adaptations')}</p></div>
   <div className="gallery-tools library-tools">
-   <label className="sr" htmlFor="gallery-search">Find playable games</label><input id="gallery-search" type="search" value={galleryQuery} onChange={e=>setGalleryQuery(e.target.value)} placeholder="Find a game" />
-   <a href="#catalog" onClick={openCatalog}>Challenge index</a>
+   <label className="sr" htmlFor="gallery-search">Find playable games</label>{isLanding&&<LandingMark className="collection-search" mark="search"/>}<input id="gallery-search" type="search" value={galleryQuery} onChange={e=>setGalleryQuery(e.target.value)} placeholder="Find a game" />
+   <a href="#catalog" onClick={openCatalog}>{isLanding&&<LandingMark mark="book"/>}Challenge index</a>
   </div>
   {shown.length===0&&<p role="status" className="gallery-empty">No playable games match this search.</p>}
   <div className="cards">{shown.map(g=>{const entry=catalog.find(x=>x.game===g);return <article className="card" key={g}><GameArt mode={g}/><div><p className="game-caption">{entry?'S'+entry.season+' · '+entry.genre:'Fan rules'}</p><h3>{titles[g]}</h3><p>{tutorials[g].split('. ')[0]}.</p><button type="button" onClick={()=>connect('solo',g)}>Practice <span className="sr">{titles[g]}</span><span className="arrow-text" aria-hidden="true"> →</span></button><details><summary>Rules</summary><p>{tutorials[g]}</p></details></div></article>})}</div>
   </section>
   {seasonLibrary&&<div className="front-desk season-room">{roomEntry}</div>}
   <details id="catalog" className="index library-index">
-   <summary><span>Challenge index</span><small>{selected?count(selected.id):catalog.length} entries</small><span className="index-toggle" aria-hidden="true"></span></summary>
+   <summary><span>{isLanding&&<LandingMark mark="book"/>}Challenge index</span><small>{selected?count(selected.id):catalog.length} entries</small><span className="index-toggle" aria-hidden="true"></span></summary>
    <p className="index-note">Includes variants and challenges without a playable fan adaptation.</p>
   <div className="filters"><label>Search challenge index<input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Find a game or mechanic"/></label>{!selected&&<label>Season<select value={season} onChange={e=>setSeason(e.target.value)}><option value="all">All seasons</option><option value="1">Season 1</option><option value="2">Season 2</option><option value="3">Season 3</option></select></label>}<label className="check"><input type="checkbox" checked={filter} onChange={e=>setFilter(e.target.checked)}/> Playable only</label></div>
    <div className="directory">{rows.map(row=>{
@@ -251,7 +256,7 @@ function App(){
   </section>}
    {briefing&&snap&&!snap.game&&<TableBriefing key={snap.settings.game+':'+episodePoker+':'+holdAuction} game={snap.settings.game} seats={snap.seats} caption={holdAuction?'The table shares the round clock and results, never your live bid.':episodePoker?'Two duelists. The grid is read together; each pair is locked privately.':explain(snap.settings.game,snap.seats.length)} variant={holdAuction?{label:'Hold & release · episode-inspired',rules:holdAuctionRules,demo:()=> <img style={{display:'block',width:'100%',height:'auto',borderRadius:4}} src={base+'art/time-auction-chamber.svg'} alt="The timekeepers’ cabinet" width={1200} height={660}/>}:episodePoker?{label:'Episode-style duel',rules:episodePokerRules,demo:step=><MemoryDuelLesson step={step}/>} :snap.settings.game==='montage'?{label:montagePractice?'FAN RULES · SOLO PRACTICE':'FAN RULES',rules:montagePractice?montagePracticeRules:tutorials.montage,demo:step=><MontageLesson step={step}/>} :undefined} close={()=>setBriefing(null)} start={briefing==='start'&&host?{enabled:canStart,confirm:()=>command({kind:'start'})}:undefined}/>}
   </main>
-  <footer className="wrap footer"><strong>{brand}</strong><span>Fan-made and not affiliated with Netflix. No real stakes.</span></footer>
+  <footer className={'wrap footer'+(isLanding?' landing-footer':'')}><strong>{isLanding&&<Crest/>}{brand}</strong><span>Fan-made and not affiliated with Netflix. No real stakes.</span></footer>
  </>
 }
 function Board({v,name,active,submit}:{v:GameView,name:(s:string)=>string,active:boolean,submit:(a:number|{from:number,to:number})=>void}){

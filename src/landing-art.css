@@ -1,0 +1,82 @@
+/* Landing: a framed illustration, engraved controls, three separate chapter scenes. */
+.illustrated-landing{--relief:#ad8852;--antique:#d9b881;--lamp:#ebce9a;--timber:#34251d;--paper-cut:#2b241e}
+.landing-bar{background:#201c19;border-bottom:1px solid #6b553b;box-shadow:0 3px 0 #211a14,0 4px 0 #5b462e7a}
+.landing-bar .top .brand .crest{filter:drop-shadow(0 2px 0 #120e0c)}
+.landing-bar .season-nav a{border:1px solid transparent;border-radius:2px}
+.landing-bar .season-nav a:hover{border-color:#a7885c;background:#392b22;color:#ffe1a8}
+.illustrated-landing .painted-desk{position:relative;isolation:isolate;grid-template-columns:minmax(0,.91fr) minmax(0,1.09fr);gap:22px clamp(18px,4vw,56px);margin-top:18px;padding:clamp(19px,4vw,48px);padding-block-end:14px;border:1px solid #93754c;background:#211a16;box-shadow:0 0 0 4px #1c1713,0 0 0 5px #614c36,0 18px 30px #100b0b66}
+.painted-desk:before,.painted-desk:after{content:"";pointer-events:none;position:absolute;inset:6px;z-index:-1;border:1px solid #d3a36048}
+.painted-desk:after{inset:0;border:0;background:linear-gradient(90deg,#1c1716f2 4%,#1d1715b5 36%,#19141431 67%),linear-gradient(0deg,#211c17 3%,transparent 38%)}
+.landing-painting{display:block;position:absolute;z-index:-2;inset:0;overflow:hidden}
+.landing-painting img{display:block;width:100%;height:100%;object-fit:cover;object-position:62% 48%}
+.painted-desk .front-copy{position:relative;align-self:start;padding-top:14px;max-width:38rem}
+.painted-desk .front-copy h1{font-size:clamp(3.1rem,6.6vw,6.3rem);color:#faead1;text-shadow:1px 2px 0 #38261e;margin-bottom:7px}
+.front-copy .landing-kicker{display:flex;align-items:center;gap:6px;color:#efd09a;font-size:.66rem;letter-spacing:.16em;margin:0 0 6px}
+.landing-kicker svg{width:22px;height:22px}
+.painted-desk .front-copy>p:not(.eyebrow){color:#eadfd1;max-width:30ch;font-size:1rem}
+.front-actions a,.illustrated-landing .gallery-tools a{display:inline-flex;align-items:center;justify-content:center;gap:7px}
+.front-actions svg,.illustrated-landing .gallery-tools svg,.illustrated-landing summary svg{width:19px;height:19px;vertical-align:middle;flex:none}
+.painted-desk .front-actions .front-cta,.painted-desk .front-actions .primary{min-height:42px;padding:7px 11px;border-radius:2px}
+.painted-desk .front-actions .front-cta:not(.primary){border:1px solid #b39467;background:#281e18e8;color:#f7deb5}
+.landing-table{padding:5px;background:#261c17b8;border:1px solid #967951;box-shadow:inset 0 0 0 2px #281a16,0 8px 16px #130d0c6b;justify-self:stretch}
+.landing-table .warmup{max-width:none;background:linear-gradient(165deg,#35271f,#25201c 74%);border-color:#a48658;border-radius:0;box-shadow:none}
+.painted-desk .mini-board{border:4px ridge #af855a;box-shadow:inset 0 0 0 1px #23170e}
+.painted-desk .mini-board button{background:#dbc097;background-image:linear-gradient(120deg,#f4e0bd60,#b6894d34);border-color:#9e774f}
+.painted-desk .mini-board button:hover:not(:disabled),.painted-desk .mini-board button[data-winning]{background:#f4d18d}
+.painted-desk .entrance{position:relative;background:#282019;border:1px solid #b19467;border-radius:2px;box-shadow:inset 0 0 0 3px #30231a}
+.painted-desk .entrance h2{display:flex;align-items:center;gap:9px;color:#f8e9cc}
+.entry-engraving{width:26px;height:26px;color:#e4be80}
+.illustrated-landing .season-directory{margin-top:23px}
+.illustrated-landing .section-head h2{display:flex;align-items:center;gap:10px}
+.illustrated-landing .section-head h2>svg{width:.85em;height:.85em;flex:none;color:#d9b57f}
+.illustrated-landing .season-card{position:relative;isolation:isolate;min-height:168px;overflow:hidden;padding:13px;align-items:end;border:1px solid #94825e;box-shadow:inset 0 0 0 3px #32261dc2,0 6px 13px #120c0999;background:#292019}
+.illustrated-landing .season-card:before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,#161212 7%,#211915b0 48%,transparent 95%);pointer-events:none}
+.chapter-painting{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 32%;z-index:-2;transition:transform 240ms ease-out}
+.illustrated-landing .season-card:not(:focus):hover .chapter-painting{transform:scale(1.035)}
+.illustrated-landing .season-card .season-sigil{border:1px solid #b48c57;background:#32241de8;color:#f2cb8c}
+.illustrated-landing .season-card .eyebrow,.illustrated-landing .season-card small{color:#eecb99}
+.illustrated-landing .season-card h3{color:#f7ead5;text-shadow:0 1px 2px #17110d}
+.illustrated-landing .gallery-tools{position:relative;border-color:#8b6741}
+.illustrated-landing .gallery-tools .collection-search{position:absolute;left:11px;top:calc(50% - 10px);pointer-events:none;color:#d3ad73}
+.illustrated-landing #gallery-search{padding-inline-start:32px;border:1px solid #745a41;background:#251f1a}
+.illustrated-landing .card{border-color:#715a42;background:#272017;box-shadow:inset 0 0 0 2px #30271e}
+.illustrated-landing .card .game-art{border-block-end:1px solid #856847;background:#372619}
+.illustrated-landing .card button,.illustrated-landing .catalog-practice{border-radius:2px;border-color:#a48053;background:#37291f}
+.illustrated-landing .library-index{border:1px solid #8b704e;background:#2b241d;padding-inline:14px;box-shadow:inset 0 0 0 3px #31271d}
+.illustrated-landing .library-index summary span:first-child{display:flex;align-items:center;gap:7px}
+.landing-footer{border-top:3px double #8e7048;color:#d5bd9f}.landing-footer strong{display:flex;align-items:center;gap:7px;color:#f0ddbc}.landing-footer .crest{width:26px;height:26px}
+@media(max-width:760px){
+ .illustrated-landing .painted-desk{grid-template-columns:1fr;padding:11px;gap:11px;margin-top:13px}
+ .painted-desk:after{background:linear-gradient(90deg,#1c1716f4 1%,#1c1716ba 39%,#21191749 91%),linear-gradient(0deg,#211c17 5%,transparent 63%)}
+ .landing-painting{max-height:330px}.landing-painting img{object-position:70% 29%}
+ .painted-desk .front-copy{padding-top:3px}
+ .painted-desk .front-copy h1{font-size:clamp(2.8rem,11vw,4.25rem)}
+ .painted-desk .front-copy>p:not(.eyebrow){font-size:.9rem;margin:0 0 7px}
+ .painted-desk .front-actions{gap:5px}
+ .painted-desk .front-actions a{font-size:.78rem}
+ .painted-desk .front-actions .front-cta,.painted-desk .front-actions .primary{min-height:39px;padding:6px 8px;gap:4px}
+ .front-actions svg{width:15px;height:15px}
+ .illustrated-landing .season-card{min-height:112px}
+ .illustrated-landing .gallery-tools .collection-search{top:30px}
+}
+@media(max-width:365px){.painted-desk .warmup{padding:8px}.painted-desk .front-actions .front-cta,.painted-desk .front-actions .primary{min-height:36px}.painted-desk .season-card{min-height:109px}.landing-bar .top{padding-block:6px}}
+@media(prefers-reduced-motion:reduce){.chapter-painting{transition:none}.illustrated-landing .season-card:not(:focus):hover .chapter-painting{transform:none}}
+.engraved-game img{object-position:50% 48%}
+.brief-engraving{display:block;width:100%;max-height:188px;object-fit:cover;object-position:center 54%;border:3px double #8b6d47;background:#2d211b}
+.engraved-rule{margin:0;background:#efdfbc;border-color:#977a56;padding:6px}
+.engraved-rule svg{display:block;width:100%;max-height:174px}
+.engraved-rule figcaption{padding:3px 5px 0;text-align:center;color:#4b3425}
+/* Give the keeper its own uninterrupted frame before the play and entry controls. */
+@media(min-width:761px){
+ .illustrated-landing .painted-desk{grid-template-columns:minmax(0,1.06fr) minmax(0,.94fr);grid-template-rows:minmax(270px,auto) auto;align-items:start}
+ .painted-desk .front-copy{grid-column:1/-1;grid-row:1;align-self:center;position:relative;z-index:1;padding-top:0;padding-bottom:22px}
+ .painted-desk .landing-painting,.painted-desk:after{inset:0 0 auto;height:clamp(322px,35vw,405px)}
+ .painted-desk .landing-painting img{object-fit:cover;object-position:67% 42%}
+ .painted-desk:after{background:linear-gradient(90deg,#1b1514ec 2%,#1c1716d4 25%,#1b161332 56%,transparent 78%),linear-gradient(0deg,#211a16 0%,transparent 20%)}
+ .painted-desk .landing-table{grid-column:1;grid-row:2;position:relative}
+ .painted-desk .entrance{grid-column:2;grid-row:2;grid-template-columns:minmax(0,1fr) auto;align-self:start;position:relative;gap:9px 10px}
+ .painted-desk .entrance .join-line{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+ .painted-desk .entrance .plain{grid-column:1/-1;text-align:left;justify-self:start}
+}
+.entry-arrow{width:17px;height:17px;display:inline-block;vertical-align:middle;margin-inline-start:3px}
+.illustrated-landing .season-arrow svg{display:block;width:23px;height:23px}
