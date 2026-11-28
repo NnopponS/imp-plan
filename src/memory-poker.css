@@ -88,32 +88,20 @@
 }
 .room .match .memory-card:focus-visible{outline:2px solid #fff0c7;outline-offset:2px;z-index:2}
 .memory-face{position:relative;display:grid;place-items:center;width:100%;height:100%;font-family:Georgia,serif}
-.memory-face strong{
- position:relative;display:grid;place-items:center;
- width:min(43%,2.7rem);aspect-ratio:.93;
- font-size:clamp(1.06rem,3.7vw,2.12rem);line-height:1;
- isolation:isolate
-}
-.memory-face strong:before{
- content:"";position:absolute;inset:0;
- border:1px solid #92644361;border-radius:49% 49% 45% 45%;box-shadow:0 0 0 2px #9e714020;
- background:repeating-linear-gradient(136deg,#c29b6661 0 1px,#e8cb9b35 1px 4px);z-index:-1
-}
+/* The central specimen carries the suit; corner indices remain typeset for reading. */
+.memory-face .deck-print{display:block;width:61%;height:83%;object-fit:contain;pointer-events:none}
 .memory-corner{position:absolute;top:4px;left:4px;display:grid;justify-items:center;line-height:.93;font-size:clamp(.76rem,2.7vw,1.07rem);font-weight:800}
 .memory-corner small{font-size:.87em;color:inherit}
 .memory-mirror{inset:auto 4px 4px auto;transform:rotate(180deg)}
 .memory-red{color:var(--card-red)}.memory-black{color:var(--card-dark)}
 .memory-back{
- display:grid;place-items:center;position:absolute;inset:3px;
- border:1px solid #d2a66e;border-radius:3px;color:#ffe4ae;isolation:isolate;
- background:radial-gradient(ellipse at center,#92495856,transparent 80%),
-  repeating-linear-gradient(45deg,#c9916a33 0 1px,transparent 1px 6px),
-  repeating-linear-gradient(-45deg,#d7ab7b31 0 1px,transparent 1px 6px)
+ display:grid;place-items:end center;position:absolute;inset:1px;
+ border:1px solid #be955f;border-radius:3px;color:#fff1cc;isolation:isolate;background:#553443
 }
-.memory-card-etch{width:80%;height:89%;position:absolute;z-index:-1;color:#c69668}
+.memory-back .deck-print{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;pointer-events:none;z-index:-1}
 .memory-back>span{
- padding:.06rem .17rem;min-width:1.05rem;line-height:1.14;background:#512b39;border:1px solid #c99d67;border-radius:3px;
- font:700 clamp(.77rem,2.7vw,.99rem)/1.2 Georgia,serif;font-variant-numeric:tabular-nums
+ padding:0 .18rem;margin-bottom:1px;min-width:1.2rem;text-align:center;background:#432a36;border:1px solid #b79c68;border-radius:45% 45% 3px 3px;
+ font:700 clamp(.7rem,2.5vw,.94rem)/1.05 Georgia,serif;font-variant-numeric:tabular-nums
 }
 .memory-back i{display:none}
 .memory-card[aria-pressed=true] .memory-back{border-color:#ffe09d;background-color:#906047}
@@ -156,7 +144,7 @@
 .memory-revealed{aspect-ratio:4/5;animation:memory-turn .25s ease-out both}
 .memory-revealed .memory-corner{top:2px;left:2px;font-size:.69rem}
 .memory-revealed .memory-mirror{display:none}
-.memory-revealed .memory-face strong{font-size:.98rem}
+
 .memory-history{margin:0;color:#e6bf92}
 .memory-history .memory-results{margin-top:7px}
 @keyframes memory-turn{from{transform:scaleX(.82);opacity:.57}to{transform:scaleX(1);opacity:1}}
@@ -176,7 +164,7 @@
 .duel-preview-board>span{position:relative;display:grid;place-items:center;aspect-ratio:1.1;background:#573443;color:#fff1c2;border:1px solid #d3a572;border-radius:3px;font-size:.55rem}
 .duel-preview-board>span:has(.memory-face){background:#fff1d4}
 .duel-preview-board>span[data-chosen]{background:#785020;outline:1px solid #a16d27}
-.duel-preview-board .memory-corner,.duel-preview-board .memory-face strong{display:none}
+.duel-preview-board .memory-corner,.duel-preview-board .memory-face .deck-print{display:none}
 .duel-preview-board .memory-corner:first-child{display:block;position:static;font-size:.49rem;text-align:center}
 .duel-preview-board .memory-corner:first-child small{margin-left:1px}
 .duel-example-note{display:grid;gap:.35rem;min-width:0;color:#664839;font-size:.78rem}
@@ -208,5 +196,5 @@
  .memory-corner{top:3px;left:3px;font-size:.77rem}
  .memory-mirror{inset:auto 3px 3px auto}
  .duel-position{bottom:2px;left:2px}
- .memory-face strong{font-size:1.1rem}
+
 }

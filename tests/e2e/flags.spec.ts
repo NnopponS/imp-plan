@@ -123,3 +123,58 @@ test('Flags cover animates original drawn objects; reduced motion preserves post
  await expect(moving).toHaveCount(0)
  await expect(cover.locator('img[data-arena-art]')).toBeAttached()
 })
+
+test('320×640: the hand-drawn atlas fits all twelve untouched flags and names at once',async({browser,baseURL},info)=>{
+ const context=await browser.newContext({viewport:{width:320,height:640},isMobile:true,hasTouch:true,reducedMotion:'reduce'})
+ try{
+  const page=await context.newPage()
+  await page.clock.install()
+  await page.goto(baseURL!+'season/3/')
+  await page.getByRole('button',{name:'Practice Flags Around the World',exact:true}).tap()
+  await page.getByRole('button',{name:'Start match',exact:true}).tap()
+  await page.getByRole('button',{name:'Enter match',exact:true}).tap()
+  await expect(study(page)).toHaveCount(12)
+  const row=page.getByRole('group',{name:'Study register'})
+  await page.screenshot({path:info.outputPath('study.png')})
+  await expect(row).toBeInViewport({ratio:1})
+  for(const img of await study(page).all()){
+   await expect(img).toHaveAttribute('src',/\/art\/flags\/f\d{2}\.svg$/)
+   await expect(img).toBeInViewport({ratio:1})
+  }
+  await expect(board(page).getByRole('timer')).toBeInViewport({ratio:1})
+  await expect.poll(() => study(page).evaluateAll(images => images.every(node => {
+   const img = node as HTMLImageElement
+   return img.complete && img.naturalWidth > 0
+  }))).toBe(true)
+  const names = row.locator('.fa-name')
+  await expect(names).toHaveCount(12)
+  for(const name of await names.all()){
+   await expect(name).toBeInViewport({ratio:1})
+   expect(await name.evaluate(node => {
+    const range = document.createRange()
+    range.selectNodeContents(node)
+    const card = node.closest('figure')!.getBoundingClientRect()
+    return !!node.textContent?.trim() && Array.from(range.getClientRects()).every(line =>
+     line.left >= card.left - 1 && line.right <= card.right + 1 &&
+     line.top >= card.top - 1 && line.bottom <= card.bottom + 1)
+   })).toBe(true)
+  }
+  await expect(page.locator('svg[data-fa-art="field"]')).toBeVisible()
+  await expect(row.locator('svg[data-fa-art="pin"]')).toHaveCount(12)
+  await endStudy(page)
+  const flags=page.getByRole('group',{name:'Flag choices'})
+  await expect(flags.getByRole('button')).toHaveCount(20)
+  await expect(option(page,0)).toBeInViewport({ratio:1})
+  const target=await option(page,0).boundingBox()
+  expect(target?.height).toBeGreaterThanOrEqual(44)
+  expect(target?.width).toBeGreaterThanOrEqual(44)
+  await option(page,0).tap()
+  await expect(option(page,0)).toHaveAttribute('aria-pressed','true')
+  await page.screenshot({path:info.outputPath('answer.png')})
+  await expect(flags).toBeInViewport({ratio:1})
+  await expect(seal(page)).toBeInViewport({ratio:1,timeout:1200})
+  await seal(page).tap()
+  await expect(board(page)).toHaveAttribute('data-fa-phase','done')
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(320)
+ }finally{await context.close()}
+})

@@ -8,11 +8,9 @@ function Card({value,visibility,selected=false}:{value?:number;visibility:'priva
  return <span className="remove-card" data-face={face} data-selected={selected||undefined}
   data-private-value={visibility==='private'?value:undefined} data-public-value={visibility==='public'?value:undefined} aria-hidden="true">
   <span className="remove-card-print">
+   {face!=='empty'&&<img className="deck-print" alt="" draggable="false" src={base+'art/decks/masked-letter-'+(face==='back'?'back':'face')+'.svg'}/>}
    {face==='front'?<><small className="remove-corner">{value}</small><span className="remove-value">{value}</span><small className="remove-corner opposite">{value}</small></>:
-    face==='back'?<svg viewBox="0 0 60 80" className="remove-card-mark" aria-hidden="true" focusable="false">
-     <path d="M30 8 52 40 30 72 8 40Zm0 8 17 24-17 24-17-24Z" fill="none" stroke="currentColor" strokeWidth="1.25"/>
-     <path fill="currentColor" fillRule="evenodd" d="M14 29q8 1 16 9 7-8 16-9l-2 11q-1 10-14 17-13-7-14-17Zm4 7q2 6 10 8-2-5-10-8Zm24 0q-8 3-10 8 8-2 10-8Z"/>
-    </svg>:<span className="remove-card-empty">·</span>}
+    face==='back'?null:<span className="remove-card-empty">·</span>}
   </span>
  </span>
 }

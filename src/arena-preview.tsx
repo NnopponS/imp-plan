@@ -1,5 +1,7 @@
+import {EquationBlockArt} from './equation-tower-figures'
 import {useEffect,useRef,useState,type CSSProperties,type ReactNode} from 'react'
 import {titles,type Game} from './engine'
+import {UnknownWorkedScene} from './unknown-art'
 import {base} from './brand'
 import './arena-preview.css'
 
@@ -489,7 +491,24 @@ function HiddenWordPreview(){
   <path d="M98 61a13 13 0 1 1 26 0 13 13 0 0 1-26 0Zm3 12-8 12m18-32v16m-7-8h14" className="ap-gold-line ap-pop" style={time(925)}/>
  </>
 }
+function DoubtBetPreview(){return <g>
+ <path className="ap-rose-fill ap-pop" d="m64 43 28 4-4 46-28-4z" style={time(250)}/>
+ <path className="ap-gold-line ap-draw" d="m69 66 9-9 7 10-9 10zm33-17 24-5 9 41-25 5Zm6 15 15-3m-12 14 14-3" style={time(620)}/>
+ <path className="ap-gold-line ap-pop" d="m142 65 8-8 8 8-8 8Zm-7 14 7-7 7 7-7 7Z" style={time(1120)}/>
+ </g>}
+function EquationTowerPreview(){
+ return <g className="et-diagram">
+  <path d="M38 80h39m3 0h39m4 0h39" stroke="#ba9260" strokeWidth="2"/>
+  <g transform="translate(80 69) scale(.6)"><EquationBlockArt id={2}/></g>
+  <g transform="translate(80 54)"><g className="et-diagram-lift"><g transform="scale(.6)"><EquationBlockArt id={3}/><g transform="translate(0 -24)"><EquationBlockArt id={0}/></g></g></g></g>
+  <g transform="translate(123 69) scale(.6)"><EquationBlockArt id={4}/></g>
+  <g transform="translate(123 54) scale(.6)"><EquationBlockArt id={1}/></g>
+  <text x="100" y="94" fill="#e6c68c" textAnchor="middle" fontSize="8">7 + 2 × 2 = 11</text>
+ </g>
+}
 const previewScenes={
+ equationTower:{ms:1900,draw:EquationTowerPreview},
+ doubtBet:{ms:2070,draw:DoubtBetPreview},
  equationHighLow:{ms:2110,draw:EquationHighLowPreview},
  bigSmall:{ms:2150,draw:BigSmall},wallGo2:{ms:2100,draw:WallGo2Preview},
  blind:{ms:2240,draw:()=> <Gomoku/>},morris:{ms:1920,draw:Morris},
@@ -504,5 +523,5 @@ const previewScenes={
  fragments:{ms:2280,draw:Fragments},spot:{ms:1930,draw:Spot},scale:{ms:2190,draw:Scale},
  fence:{ms:1850,draw:Fence},tower:{ms:1990,draw:Tower},piece:{ms:2030,draw:PieceFit},
  memoryPoker:{ms:2050,draw:Poker},wallGo:{ms:2130,draw:WallGo},
- montage:{ms:2350,draw:Montage},heavy13:{ms:2360,draw:Heavy},colorLink:{ms:2040,draw:ColorLink},symmetry:{ms:2170,draw:Symmetry},gradation:{ms:2200,draw:Gradation},threeRow:{ms:2230,draw:ThreeRow},flags:{ms:2200,draw:Flags},coopPuzzle:{ms:2040,draw:RelayPreview},tripleDice:{ms:2080,draw:TripleDicePreview},auctionBingo:{ms:2100,draw:AuctionBingoPreview},hiddenWord:{ms:1980,draw:HiddenWordPreview},
+ montage:{ms:2350,draw:Montage},heavy13:{ms:2360,draw:Heavy},colorLink:{ms:2040,draw:ColorLink},symmetry:{ms:2170,draw:Symmetry},gradation:{ms:2200,draw:Gradation},threeRow:{ms:2230,draw:ThreeRow},flags:{ms:2200,draw:Flags},coopPuzzle:{ms:2040,draw:RelayPreview},tripleDice:{ms:2080,draw:TripleDicePreview},auctionBingo:{ms:2100,draw:AuctionBingoPreview},unknown:{ms:1800,draw:UnknownWorkedScene},hiddenWord:{ms:1980,draw:HiddenWordPreview},
 } satisfies Record<Game,{ms:number;draw:()=>ReactNode}>

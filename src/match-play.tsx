@@ -5,7 +5,7 @@ import {PlayerPortrait} from './player-wardrobe'
 import './match-play.css'
 
 type ActiveSnapshot=Snapshot&{game:GameView}
-const hasTurn=(g:GameView)=>isDuel(g.game)||g.game==='mancala'||g.game==='grass1'||g.game==='grass3'||g.game==='piece'||g.game==='coopPuzzle'
+const hasTurn=(g:GameView)=>!!g.doubtBet?.turn||isDuel(g.game)||g.game==='mancala'||g.game==='grass1'||g.game==='grass3'||g.game==='piece'||g.game==='coopPuzzle'
 
 export function useBoardFocus(match:string|undefined,finishedMatch:string|undefined){
  const [chosen,setChosen]=useState<string>()

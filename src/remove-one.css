@@ -58,16 +58,12 @@
 .remove-card-print{
  position:absolute;inset:0;clip-path:polygon(0 9%,13% 0,87% 0,100% 9%,100% 91%,87% 100%,13% 100%,0 91%);
  display:grid;place-items:center;padding:8%;border:1px solid #edd099;
- background:repeating-linear-gradient(26deg,#b3876329 0 .8px,transparent .8px 5px),linear-gradient(143deg,#f2d7a2,#d4ac79);
+ background:#edd7a8;
 }
-.remove-card-print::after{content:"";position:absolute;inset:6%;border:1px solid currentColor;opacity:.54;pointer-events:none}
-.remove-card[data-face=back] .remove-card-print{
- color:#d9a56f;border-color:#c39766;
- background:repeating-linear-gradient(143deg,#c482624a 0 1px,transparent 1px 5px),radial-gradient(ellipse,#764436,#412b2a 78%);
-}
+.remove-card .deck-print{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;pointer-events:none}
+.remove-card[data-face=back] .remove-card-print{border-color:#c39766;background:#472e33}
 .remove-card[data-face=empty] .remove-card-print{color:#e9c79b;border-color:#ab8362;background:#402a26aa}
-.remove-card-mark{display:block;width:83%;height:83%;max-block-size:100%;overflow:visible}
-.remove-value{font:750 clamp(1.04rem,3.7vw,2.3rem)/1 Georgia,serif;letter-spacing:-.05em}
+.remove-value{position:absolute;top:57%;width:100%;color:#492f2c;text-align:center;font:750 clamp(.84rem,2.6vw,1.36rem)/1 Georgia,serif;font-variant-numeric:lining-nums;letter-spacing:-.045em}
 .remove-corner{position:absolute;color:inherit;inset:7% auto auto 10%;font:700 clamp(.39rem,1.1vw,.57rem) Georgia,serif}
 .remove-corner.opposite{inset:auto 10% 7% auto;transform:rotate(180deg)}
 .remove-card-empty{font-size:1.4rem}
@@ -79,7 +75,7 @@
 .remove-player .remove-private-label{color:#d7bba1;font-size:clamp(.62rem,1.45vw,.77rem)}
 .remove-hand{display:flex;align-items:center;justify-content:center;gap:7px;margin-block:3px;min-width:0}
 .remove-hand .remove-card{inline-size:clamp(55px,7.8vw,95px)}
-.remove-hand .remove-value{font-size:clamp(1.65rem,5.2vw,3.4rem)}
+.remove-hand .remove-value{font-size:clamp(1.25rem,3.6vw,2.15rem)}
 .remove-hand .remove-corner{font-size:clamp(.52rem,1.35vw,.81rem)}
 .room[data-game=remove] .match .remove-choice:not(.primary):not(.cell){
  border:1px solid transparent;background:#2c1d1a;color:#ead0aa;padding:2px;line-height:1;min-width:0;min-height:44px;

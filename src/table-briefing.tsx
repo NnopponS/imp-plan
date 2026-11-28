@@ -26,6 +26,8 @@ export function TableBriefing({game,seats,caption,close,start,variant,mechanic,s
  const reader=useRef<HTMLElement>(null)
  const back=useRef<HTMLButtonElement>(null)
  const enter=useRef<HTMLButtonElement>(null)
+ const enterTap=useRef<{id:number;x:number;y:number}|null>(null)
+ const skipTouchClick=useRef(false)
  const [reduced,setReduced]=useState(()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches)
  const staticScene=motionOff||reduced
  const instruction=variant?.rules??tutorials[game]
@@ -93,7 +95,24 @@ export function TableBriefing({game,seats,caption,close,start,variant,mechanic,s
    <details className="brief-reference"><summary>Full rules</summary><p>{instruction}</p>{caption&&<p>{caption}</p>}{setupHint&&<p>{setupHint}</p>}</details>
    <Seats seats={seats}/>
   </div>
-  <footer><span>{start?'Timers start only after you enter.':'Only the host can start the match.'}</span>{start&&<button ref={enter} className="primary" type="button" disabled={!start.enabled} onClick={start.confirm}>Enter match</button>}</footer>
+  <footer><span>{start?'Timers start only after you enter.':'Only the host can start the match.'}</span>{start&&<button ref={enter} className="primary" type="button" disabled={!start.enabled}
+   onPointerDown={e=>{
+    skipTouchClick.current=false
+    enterTap.current=e.pointerType==='touch'&&e.isPrimary?{id:e.pointerId,x:e.clientX,y:e.clientY}:null
+   }} onPointerCancel={()=>{enterTap.current=null}}
+   onPointerUp={e=>{
+    const tap=enterTap.current;enterTap.current=null
+    if(!tap||tap.id!==e.pointerId||Math.hypot(e.clientX-tap.x,e.clientY-tap.y)>12)return
+    const target=e.currentTarget.getBoundingClientRect()
+    if(e.clientX<target.left||e.clientX>target.right||e.clientY<target.top||e.clientY>target.bottom)return
+    // A carousel drag can suppress the browser's next synthetic click. Activate
+    // a deliberate touch tap directly; don't submit twice if click follows it.
+    skipTouchClick.current=true
+    start.confirm()
+   }} onClick={e=>{
+    if(skipTouchClick.current&&e.detail>0){skipTouchClick.current=false;return}
+    start.confirm()
+   }}>Enter match</button>}</footer>
  </dialog>
 }
 

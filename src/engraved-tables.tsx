@@ -5,11 +5,11 @@ import './engraved-tables.css'
 type Material='lacquer'|'brass'|'felt'|'oak'|'ink'|'vellum'
 export const tableMaterial={
  blind:'lacquer',point:'lacquer',morris:'lacquer',bagh:'lacquer',mancala:'lacquer',wallGo:'lacquer',wallGo2:'lacquer',
- gradation:'brass',scale:'brass',auction:'brass',codeLock:'brass',heavy13:'brass',fence:'brass',tripleDice:'brass',auctionBingo:'brass',equationHighLow:'brass',
+ doubtBet:'brass',gradation:'brass',scale:'brass',auction:'brass',codeLock:'brass',heavy13:'brass',fence:'brass',tripleDice:'brass',auctionBingo:'brass',equationHighLow:'brass',
  coopPuzzle:'oak',threeRow:'oak',memoryPoker:'felt',remove:'felt',secret:'felt',
  grass1:'oak',grass3:'oak',piece:'oak',tower:'oak',pyramid:'oak',
  bigSmall:'ink',flags:'ink',symmetry:'ink',colorLink:'ink',hex:'ink',knight:'ink',cubes:'ink',rectangles:'ink',exile:'ink',equations:'ink',
- montage:'vellum',divine:'vellum',fragments:'vellum',spot:'vellum',hiddenWord:'ink',
+ montage:'vellum',divine:'vellum',fragments:'vellum',spot:'vellum',hiddenWord:'ink',unknown:'lacquer',equationTower:'brass',
 } as const satisfies Record<Game,Material>
 
 export function TableMakersMark({game}:{game:Game}){

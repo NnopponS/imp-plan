@@ -1,5 +1,6 @@
 import {useEffect,useRef,useState,type KeyboardEvent} from 'react'
 import type {FlagsView} from './flags'
+import {AtlasField,AtlasPin} from './flags-figures'
 import './flags.css'
 
 const art=import.meta.env.BASE_URL+'art/flags/'
@@ -39,7 +40,7 @@ function Insignia({symbol}:{symbol:string}){
 function Specimen({card,name,patterns,picked,matched,symbolsOnly}:{card:Card;name?:string;patterns:boolean;picked?:boolean;matched?:string;symbolsOnly:boolean}){
  const t=token(card.symbol)
  const label=emblems[t.shape]+', '+t.count+' '+(t.count===1?'dot':'dots')
- return <><span className="fa-specimen">{symbolsOnly?<span className="fa-token" role="img" aria-label={label}><Insignia symbol={card.symbol}/></span>:<img src={art+encodeURIComponent(card.code)+'.svg'} alt={card.description} width="120" height="90" draggable={false}/>}</span>
+ return <><AtlasPin/><span className="fa-specimen">{symbolsOnly?<span className="fa-token" role="img" aria-label={label}><Insignia symbol={card.symbol}/></span>:<img src={art+encodeURIComponent(card.code)+'.svg'} alt={card.description} width="120" height="90" draggable={false}/>}</span>
  <span className="fa-caption"><span className="fa-folio">{card.symbol}</span>{!symbolsOnly&&<span className="fa-small-sigil" title={label}><Insignia symbol={card.symbol}/></span>}{picked&&<span className="fa-pin" aria-label="Selected"><Glyph kind="pin"/></span>}</span>
  {(name||matched)&&<span className="fa-name">{name??matched}</span>}{patterns&&<span className="fa-pattern" aria-hidden="true">{symbolsOnly?label:card.description}</span>}</>
 }
@@ -82,11 +83,11 @@ export function FlagsBoard({view:v,hostNow,you,names,active=true,send}:Props){
  }
  const who=(s:string)=>names[s]??(s===you?'You':'Player')
  const studyClosed=v.phase==='study'&&left!==null&&left<=0
- const title=studyClosed?'Waiting for host':v.phase==='study'?'Study the flag register':done?'The register is open':locked?'Answer sealed':matching?'Assign a flag':'Which flags did you see?'
+ const title=studyClosed?'Waiting for host':v.phase==='study'?'Study the flags':done?'The register is open':locked?'Answer sealed':matching?'Assign a flag':'Which flags did you see?'
  const taken=done?(v.solutions??[]):[]
  const list=studyClosed?[]:v.phase==='study'?v.study:v.options
  const point=(n:number)=>n+' '+(n===1?'point':'points')
- return <section className="fa-atlas" aria-label="Flags Around the World table" data-fa-phase={v.phase}>
+ return <section className="fa-atlas" aria-label="Flags Around the World table" data-fa-phase={v.phase} data-fa-mode={v.mode}>
   <div className="fa-bound"><header className="fa-head"><Compass/><div className="fa-titles"><small>Exile / Atlas room</small><h3 aria-live="polite">{title}</h3></div>
   {left!==null&&<span className="fa-clock" role="timer" aria-label={left+' seconds remaining'}><Glyph kind="time"/>{left}s</span>}</header>
   <div className="fa-sheet">
@@ -94,10 +95,10 @@ export function FlagsBoard({view:v,hostNow,you,names,active=true,send}:Props){
     {v.leaders.length>1&&<p>{v.leaders.map(who).join(' · ')}</p>}
     <ul className="fa-ledger" aria-label="Final scores">{(v.results??[]).map(r=><li key={r.seat}><span><b>{who(r.seat)}</b><small>{r.hits} hits · {r.misses} wrong · {r.elapsed===null?'No seal':(r.elapsed/1000).toFixed(1)+'s'}</small></span><strong>{point(r.points)}</strong></li>)}</ul></div>}
    <div className="fa-bar"><p>{studyClosed?'Study time is over. The answer rack opens when the host is ready.':v.phase==='study'?'Remember the twelve flags and their names.':done?'Outlined flags belong to the original register.':locked?'Your dispatch is locked. The key opens after everyone finishes.':!active?'Viewing only.':matching?'Select a name, then its flag.':'Mark up to twelve flags from the register.'}</p>
-    {!studyClosed&&<div className="fa-display"><button type="button" className="fa-toggle" aria-label="Use symbols only" aria-pressed={symbolsOnly} onClick={()=>setSymbolsOnly(on=>!on)}><Glyph kind="symbol"/> Symbols only</button>
-    <button type="button" className="fa-toggle" aria-label="Show pattern descriptions" aria-pressed={patterns} onClick={()=>setPatterns(p=>!p)}><Glyph kind="pattern"/> Patterns</button></div>}</div>
+    {!studyClosed&&<div className="fa-display"><button type="button" className="fa-toggle" aria-label="Use symbols only" aria-pressed={symbolsOnly} onClick={()=>setSymbolsOnly(on=>!on)}><Glyph kind="symbol"/><span className="fa-display-label">Symbols only</span></button>
+    <button type="button" className="fa-toggle" aria-label="Show pattern descriptions" aria-pressed={patterns} onClick={()=>setPatterns(p=>!p)}><Glyph kind="pattern"/><span className="fa-display-label">Patterns</span></button></div>}</div>
    {matching&&inAnswer&&<div className="fa-index" role="group" aria-label="Names to match">{v.names.map((s,j)=><button data-fa-name={j} type="button" className="fa-tab" key={j} aria-label={s+(slots[j]>=0?', assigned to '+v.options[slots[j]]?.symbol:', not assigned')} aria-pressed={j===nameAt} data-filled={slots[j]>=0||undefined} disabled={!enabled} onClick={()=>setNameAt(j)}>{s}{slots[j]>=0&&<span aria-hidden="true"> ✓</span>}</button>)}</div>}
-   <div className="fa-rack" role="group" aria-label={v.phase==='study'?'Study register':done?'Answer key':'Flag choices'}>
+   <div className="fa-field"><AtlasField/><div className="fa-rack" role="group" aria-label={v.phase==='study'?'Study register':done?'Answer key':'Flag choices'}>
     {list.map((card,i)=>{
      const picked=selected.includes(i)
      const named=v.phase==='study'?v.study[i].name:undefined
@@ -110,7 +111,7 @@ export function FlagsBoard({view:v,hostNow,you,names,active=true,send}:Props){
       onKeyDown={e=>position(e,ref.current.slice(0,list.length),i)} onClick={()=>choose(i)}>{face}</button>
       :<figure className="fa-slip" key={v.phase+':'+i} data-fa-study={v.phase==='study'?i:undefined} data-correct={right||undefined} aria-label={done?(right?'Correct flag: ':'Distractor: ')+card.description:undefined}>{face}{done&&right&&<span className="fa-name">In register ✓</span>}</figure>
     })}
-   </div>
+   </div></div>
    <footer className="fa-foot">
     {v.phase==='study'?<span className="fa-meter">{studyClosed?'Register closed':'Plate I · 12 specimens'}</span>:done?<span className="fa-stamp">Archive closed</span>:<>
      <span className="fa-meter" role="status">{locked?'Sealed':!active?'Watching':matching?'Assigned':'Marked'}{(active||locked)&&' '+selected.length+' / '+capacity} · {v.submitted}/{v.players} sealed</span>

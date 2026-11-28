@@ -1,0 +1,69 @@
+.db-board,.db-example{--db-ivory:#f3e2c9;--db-mild:#dfc0a0;--db-gold:#e3b77c;--db-border:#b5825dbb;min-width:0}
+.db-board{max-width:46rem;margin-inline:auto;width:100%;display:grid;gap:.55rem;color:var(--db-ivory);font-family:system-ui,sans-serif}
+.db-round,.db-shield,.db-roster,.db-open,.db-example{
+ background:#38252d radial-gradient(ellipse at 42% 32%,#543440,#38252d 82%);border:1px solid var(--db-border);box-shadow:inset 0 0 0 2px #291c23
+}
+.db-round{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:.4rem;padding:.38rem .62rem;font-size:.77rem;color:var(--db-mild);line-height:1.25}
+.db-round>span:last-child{text-align:right;justify-self:end;grid-column:3;overflow-wrap:anywhere}
+.db-clock{font-variant-numeric:tabular-nums;color:#fce3b0;font-weight:750;min-width:3ch;text-align:center}
+.db-shield{padding:.53rem .62rem;display:grid;gap:.62rem;position:relative}
+.db-claim{display:grid;grid-template-columns:2.1rem minmax(0,1fr) auto;gap:.5rem;align-items:center;border-bottom:1px solid #8d615d;padding-bottom:.4rem}
+.db-claim p,.db-hint,.db-final,.db-example p{margin:0}
+.db-claim p span,.db-settlement span{display:block;font-size:.75rem;color:var(--db-mild)}
+.db-claim strong,.db-settlement strong{display:block;font:700 1.11rem Georgia,serif;line-height:1.15;color:#ffdfae}
+.db-claim ul,.db-roster{list-style:none;margin:0;padding:0;min-width:0}
+.db-claim ul{font-size:.7rem;display:grid;gap:.2rem}
+.db-claim li{display:flex;align-items:center;flex-wrap:wrap;gap:.1rem .3rem;justify-content:flex-end;text-align:right}
+.db-claim li>span:first-child{max-width:10ch;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
+.db-card-art{width:100%;display:block;color:var(--db-ivory);aspect-ratio:10/13;overflow:visible}
+.db-card-art[data-db-hit]{filter:drop-shadow(0 0 2px #ffd77b);outline:1px solid #ffdb8d;outline-offset:1px}
+.db-private{display:grid;gap:.3rem;padding:.36rem .5rem .45rem;background:#291b25;border:1px solid #885f56}
+.db-private>span{color:#e1c29f;letter-spacing:.15em;font-weight:700;font-size:.61rem}
+.db-hand,.db-palette{display:flex;gap:.33rem;align-items:center}
+.db-hand .db-card-art{flex:0 1 2.55rem;min-width:0}
+.db-actions{display:grid;gap:.44rem;min-width:0}
+.db-actions button,.db-actions select,.db-advance{font-family:inherit;min-height:44px}
+.db-actions button:focus-visible,.db-actions select:focus-visible,.db-advance:focus-visible{outline:2px solid #ffd58b;outline-offset:2px}
+.db-actions button,.db-actions select{border:1px solid #bb8870;background:#30222d;color:var(--db-ivory);border-radius:3px;padding:.22rem;font-weight:650}
+.db-modes{display:grid;grid-template-columns:1fr 1fr;gap:.35rem}
+.db-modes button[aria-pressed=true],.db-palette button[aria-pressed=true]{box-shadow:inset 0 0 0 1px #ffe0a1;border-color:#ffe0a1;background:#69454c}
+.db-builder,.db-wager-form{display:flex;align-items:end;gap:.35rem;min-width:0}
+.db-builder{display:grid;grid-template-columns:minmax(0,1fr) minmax(3.15rem,auto)}
+.db-palette{align-self:end}
+.db-palette button{padding:2px;min-width:0;flex:1 1 0;max-width:3.1rem}
+.db-count{display:grid;gap:1px;font-size:.66rem;color:var(--db-mild)}
+.db-count select{width:100%;font-variant-numeric:tabular-nums}
+.db-wager-form label{position:relative;min-width:2.95rem;display:grid}
+.db-wager-form label .db-chip{position:absolute;pointer-events:none;left:3px;top:50%;transform:translateY(-50%)}
+.db-wager-form select{width:100%;padding-left:1.1rem}
+.db-wager-form .db-submit,.db-advance{color:#382331;background:#ebbf8d;border-color:#f4d1ab;flex:1;min-width:0}
+.db-wager-form .db-submit:disabled{opacity:.52}
+.db-wager-form .db-fold{padding:.25rem .42rem}
+.db-hint{font-size:.67rem;color:var(--db-mild);line-height:1.25}
+.db-hint span{white-space:nowrap}
+.db-chip{display:inline-block;vertical-align:middle;width:.93rem;height:.93rem;flex:none}
+.db-wallet,.db-wallet>span{display:inline-flex;align-items:center;gap:.15rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+.db-wallet{gap:.42rem;color:var(--db-ivory)}
+.db-roster{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.08rem .55rem;padding:.35rem .45rem}
+.db-roster li{border-bottom:1px solid #785158;display:flex;align-items:center;justify-content:space-between;gap:.2rem .35rem;padding:.25rem .19rem;font-size:.71rem;flex-wrap:wrap}
+.db-roster li[data-db-turn]{background:#71505e;outline:1px solid #e4aa83}
+.db-roster li>span:first-child{min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.db-roster li small{color:var(--db-mild);font-size:.69rem}
+.db-settlement{display:grid;gap:.15rem}
+.db-settlement small{color:#ebcfb6}
+.db-open{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,8rem),1fr));gap:.35rem;padding:.38rem}
+.db-open>div{border-left:1px solid #ab806e;padding-inline:.3rem;display:grid;gap:.2rem}
+.db-open strong{font-size:.72rem;color:var(--db-mild);overflow-wrap:anywhere}
+.db-final{background:#38252d;border:1px solid var(--db-border);color:#ffddb1;text-align:center;font-weight:700;padding:.25rem}
+.db-example{color:var(--db-ivory);width:min(100%,22rem);padding:.55rem;display:grid;gap:.5rem}
+.db-example .db-hand{justify-content:center}
+.db-example .db-hand .db-card-art{flex-basis:2.95rem;animation:db-deal .42s cubic-bezier(.16,.72,.25,1) both}
+.db-example .db-hand .db-card-art:nth-child(2){animation-delay:.10s}
+.db-example .db-hand .db-card-art:nth-child(3){animation-delay:.20s}
+.db-example .db-hand .db-card-art:nth-child(4){animation-delay:.29s}
+.db-example .db-hand .db-card-art:nth-child(5){animation-delay:.35s}
+.db-example p{display:flex;align-items:center;justify-content:center;gap:.35rem;text-align:center;font:700 1rem Georgia,serif;color:#ffdfae}
+@keyframes db-deal{from{transform:translate(8px,5px) rotate(-5deg);opacity:0}to{transform:translate(0) rotate(0);opacity:1}}
+.briefing[data-motion-off=true] .db-example .db-card-art{animation:none}
+@media(prefers-reduced-motion:reduce){.db-example .db-card-art{animation:none!important}}
+@media(min-width:660px){.db-roster{grid-template-columns:repeat(3,minmax(0,1fr))}.db-board{gap:.65rem}.db-hand .db-card-art{flex-basis:3rem}}

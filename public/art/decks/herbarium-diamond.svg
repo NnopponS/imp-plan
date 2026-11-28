@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="26 12 64 82"><title>Diamond engraving</title>
+<g stroke-linejoin="round" stroke-linecap="round"><path fill="#aa513f" stroke="#5c3238" stroke-width="1.3" d="m60 18 23 34-29 33-22-35Z"/>
+<path fill="#e6a16b" d="m59 21-2 15-19 13Zm-2 17 13 15-15 14-9-15Z"/>
+<path fill="#8c373a" d="m62 23 17 29-8 .1L58 37Zm7 34L56 80l1-12Z"/>
+<path fill="none" stroke="#704140" stroke-width="1.1" d="m33 50 13 2 11-16 3-17m-3 17 14 17 12-1m-12 1L56 68l-2 17m-8-33 10 16m-11-14 5 16"/>
+<path fill="none" stroke="#f6d7a4" stroke-width="1.5" d="m42 47 9-8m8 4 6 8m7 6-5 7"/>
+<path fill="#8b936a" stroke="#605e42" stroke-width=".75" d="M51 82q-16-1-19-13 12 0 19 13Zm7 1q9-9 21-8-5 9-21 8Z"/></g>
+</svg>

@@ -59,7 +59,7 @@ export function GameRulePreview({game,motionOff,illustration}:{game:Game;motionO
  </figure>
 }
 
-export function GameDetailsDialog({game,motionOff,source,context,close,restore,compact,action,settings,illustration}:{game:Game;settings?:Settings;illustration?:ReactNode;motionOff?:boolean;source?:string;context?:ReactNode;close:()=>void;restore:()=>void;compact?:boolean;action?:{verb:'Practice'|'Choose';run:()=>void}}){
+export function GameDetailsDialog({game,motionOff,source,context,close,restore,compact,action,settings,illustration,party}:{game:Game;settings?:Settings;party?:boolean;illustration?:ReactNode;motionOff?:boolean;source?:string;context?:ReactNode;close:()=>void;restore:()=>void;compact?:boolean;action?:{verb:'Practice'|'Choose';run:()=>void}}){
  const node=useRef<HTMLDialogElement>(null)
  const closeButton=useRef<HTMLButtonElement>(null)
  const returnTo=useRef(restore)
@@ -80,7 +80,7 @@ export function GameDetailsDialog({game,motionOff,source,context,close,restore,c
   </header>
   <TableLoadBoundary key={game} title={titles[game]}>
    <Suspense fallback={<p className="game-details-pending" role="status">Opening the table preview…</p>}>
-    <RealTablePreview game={game} motionOff={motionOff} settings={settings}/>
+    <RealTablePreview game={game} motionOff={motionOff} settings={settings} party={party}/>
    </Suspense>
   </TableLoadBoundary>
   {action&&<footer className="game-details-action"><button type="button" className="primary" aria-label={action.verb+' '+titles[game]} onClick={action.run}><CardMark kind={action.verb==='Practice'?'play':'choose'}/>{action.verb}</button></footer>}

@@ -22,7 +22,7 @@
 .fa-toggle svg{width:15px;height:15px}.fa-toggle[aria-pressed=true]{background:#dfcfac}
 .fa-rack{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:clamp(.35rem,.9vw,.7rem);align-items:stretch}
 .fa-slip{position:relative;margin:0;display:grid;align-content:start;gap:.25rem;min-width:0;text-align:start;appearance:none;color:var(--fa-ink);border:1px solid #9b8964;border-radius:1px 2px 2px 3px;padding:clamp(.28rem,.75vw,.55rem);background:#fbf7e8;box-shadow:1px 2px 0 #cabb9a;line-height:1;transition:transform 140ms ease,box-shadow 140ms ease}
-button.fa-slip:enabled{cursor:pointer}button.fa-slip:enabled:hover{transform:translateY(-2px);box-shadow:1px 4px 0 #ad9a72;background:#fff8de}
+button.fa-slip:enabled{cursor:pointer;-webkit-tap-highlight-color:transparent}button.fa-slip:enabled:hover{transform:translateY(-2px);box-shadow:1px 4px 0 #ad9a72;background:#fff8de}
 .fa-atlas button.fa-slip:disabled{opacity:1;cursor:default}
 .fa-slip[aria-pressed=true],.fa-slip[data-picked=true]{border:2px solid var(--fa-navy);padding:calc(clamp(.28rem,.75vw,.55rem) - 1px);background:#e9efde}
 .fa-slip[data-correct=true]{box-shadow:inset 0 0 0 1px var(--fa-moss),1px 2px 0 #a49670}
@@ -52,3 +52,48 @@ button.fa-slip:enabled{cursor:pointer}button.fa-slip:enabled:hover{transform:tra
 .fa-insignia{display:block;max-width:100%;height:100%;width:auto}.fa-token .fa-insignia{height:82%;width:auto}.fa-small-sigil{display:inline-flex;height:14px;color:var(--fa-navy)}.fa-small-sigil .fa-insignia{width:20px}.fa-bar .fa-toggle{min-height:40px}
 @media(prefers-reduced-motion:no-preference){.fa-atlas[data-fa-phase="study"] .fa-rack,.fa-atlas[data-fa-phase="answer"] .fa-rack{animation:fa-unfold .26s ease-out both}@keyframes fa-unfold{from{opacity:.7;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}}
 [data-motion=off] .fa-atlas .fa-rack,.motion-off .fa-atlas .fa-rack{animation:none}
+
+/* The compass plate and each brass mount are behind the specimens. */
+.fa-field{position:relative;isolation:isolate;padding:5px 4px;background:#dfcda9;border:1px solid #ab9062}
+.fa-map-field{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none}
+.fa-slip .fa-atlas-pin{position:absolute;top:-3px;left:calc(50% - 5px);width:10px;height:9px;pointer-events:none}
+.fa-specimen img{position:relative;z-index:1;filter:none}
+.fa-name,.fa-pattern{overflow-wrap:anywhere}
+.fa-atlas .fa-toggle{min-height:44px;min-width:44px;justify-content:center}
+.fa-atlas .fa-toggle:focus-visible{outline-offset:1px}
+@media(max-width:480px){
+ .fa-bound{padding:.27rem}
+ .fa-sheet{padding:.24rem}
+ .fa-field{padding-inline:3px}
+ .fa-head{min-height:34px;gap:6px;margin-bottom:4px}
+ .fa-titles h3{font-size:clamp(.99rem,4.6vw,1.25rem)}
+ .fa-mark{width:27px;height:27px}
+ .fa-bar{display:grid;grid-template-columns:minmax(0,1fr) auto;padding-bottom:4px;margin-bottom:5px}
+ .fa-bar p{font-size:.74rem;line-height:1.28}
+ .fa-display{flex-wrap:nowrap}
+ .fa-bar .fa-toggle{min-height:44px;padding:4px}
+ .fa-display-label{display:none}
+ .fa-rack{grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
+ .room[data-game=flags] .fa-atlas .fa-slip{
+  gap:2px;padding:4px 2px 3px;min-height:44px;min-width:0;border-radius:2px;
+  box-shadow:0 1px #ad9a73
+ }
+ .room[data-game=flags] .fa-atlas button.fa-slip{background:#fbf7e8;color:var(--fa-ink);touch-action:manipulation}
+ .room[data-game=flags] .fa-atlas button.fa-slip[data-picked=true]{background:#e9efde;border:2px solid var(--fa-navy);padding:3px 1px 2px}
+ .fa-specimen{aspect-ratio:1.58}
+ .fa-specimen img{width:90%;height:90%}
+ .fa-caption{gap:2px;min-height:12px}
+ .fa-name{font-size:.67rem;line-height:1.07}
+ .fa-small-sigil{height:10px}
+ .fa-small-sigil .fa-insignia{width:13px}
+ .fa-pin svg{width:13px;height:13px}
+ .fa-foot{margin-top:5px;padding-top:4px;gap:5px}
+ .fa-meter{font-size:.72rem}
+ .fa-atlas button.fa-tab{min-height:44px}
+}
+@media (max-width:340px){
+ .fa-atlas[data-fa-mode=recall][data-fa-phase=answer] .fa-rack{row-gap:3px}
+ .fa-atlas[data-fa-mode=recall][data-fa-phase=answer] .fa-specimen{aspect-ratio:1.84}
+ .room[data-game=flags] .fa-atlas[data-fa-mode=recall][data-fa-phase=answer] .fa-slip{padding-block:3px 2px}
+ .room[data-game=flags] .fa-atlas[data-fa-mode=recall][data-fa-phase=answer] .fa-slip[data-picked=true]{padding-block:2px 1px}
+}

@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-labelledby="title">
+<title id="title">Unknown: painted cube counters on the brass mosaic of a secret chamber</title>
+<defs>
+ <linearGradient id="room" x2="0" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#241713"/><stop offset="1" stop-color="#63442a"/></linearGradient>
+ <radialGradient id="flame"><stop stop-color="#f0b375" stop-opacity=".43"/><stop offset="1" stop-color="#f0b375" stop-opacity="0"/></radialGradient>
+ <pattern id="cuts" width="12" height="11" patternUnits="userSpaceOnUse"><path d="M1 1h2m5 2h2m-8 5h3m4 2h2" stroke="#deb897" stroke-opacity=".25" stroke-width=".9" stroke-linecap="round"/></pattern>
+ <pattern id="floor" width="56" height="56" patternUnits="userSpaceOnUse"><path d="M2 5 5 2h46l3 3v46l-3 3H5l-3-3Z" fill="currentColor" stroke="#e0ba7d" stroke-width="1.1"/><path d="M6 9h40M8 48h39V8M7 7v37m3-2 5 3m26-34 4 3" fill="none" stroke="#f7dba1" stroke-opacity=".43" stroke-width="1"/><path d="M2 2h51v52H2z" fill="url(#cuts)"/></pattern>
+ <path id="edge" d="M5 5h270v270H5z" fill="none" stroke="currentColor"/>
+ <symbol id="cube" viewBox="0 0 124 116">
+  <ellipse cx="59" cy="94" rx="59" ry="18" fill="#211913" opacity=".66"/>
+  <path d="M4 33 57 55v55L4 83z" fill="#6e5238" stroke="#35251a" stroke-width="2.2"/>
+  <path d="M57 55 119 33v47l-62 30Z" fill="#315062" stroke="#35251a" stroke-width="2.2"/>
+  <path d="M4 33 61 9l58 24-62 22Z" fill="currentColor" stroke="#f6cf99" stroke-width="2"/>
+  <path d="M12 33 62 14l47 19-52 17ZM9 37v41l43 22V57m12 0v42l48-23V39" fill="none" stroke="#ead0a1" stroke-opacity=".55" stroke-width="1"/>
+  <path d="M62 24c-8 1-15 6-15 10 0 5 6 8 13 7 11-2 17-5 15-9-1-4-5-6-13-8Z" fill="none" stroke="#fff0bc" stroke-width="1.8" stroke-dasharray="2 2"/>
+  <path d="M65 64v18m-5-15 10-4m24-3 9-4m-9 10 9-4m-9 10 9-4m-82-4 17 8m-17 0 17 8" stroke="#f2cc8d" stroke-width="1.5" stroke-linecap="round" opacity=".6"/>
+ </symbol>
+</defs>
+<rect width="960" height="540" fill="url(#room)"/>
+<g fill="none" stroke="#a0754a">
+ <path d="M10 516V19h940v496M17 512V25h926v487M38 486V105q0-57 55-57h87q54 0 54 57v381m481 0V105q0-57 55-57h80q55 0 55 57v381" stroke-width="1.2"/>
+ <path d="M52 481V108q0-47 43-47h82q43 0 43 47v373m507 0V108q0-47 45-47h73q45 0 45 47v373" opacity=".45"/>
+ <path d="M58 488h158m515 0h155M235 55h475m-435-12h394" stroke-dasharray="2 6" opacity=".6"/>
+</g>
+<ellipse cx="480" cy="280" rx="460" ry="278" fill="url(#flame)"/>
+<path d="M148 398h666l135 142H10Z" fill="#62452f" stroke="#bd8a53" stroke-width="3"/>
+<path d="M148 398h666l135 142H10Z" fill="url(#cuts)" opacity=".85"/>
+<path d="M39 505 173 420h613l135 85M14 525h931" fill="none" stroke="#d4a272" stroke-opacity=".51" stroke-width="1.5"/>
+<g transform="translate(355 51) scale(1.4 .95) skewX(-12)">
+ <path d="M-10-10 0-16h275l16 12v291l-14 12H0l-12-12Z" fill="#715238" stroke="#d3a168" stroke-width="2"/>
+ <path d="M-5-5h290v290H-5Z" fill="#2e231b" stroke="#c59863"/>
+ <use href="#edge" color="#efca91"/><use href="#edge" transform="translate(4 4) scale(.972)" color="#826243"/>
+ <g stroke="#d3aa73" stroke-width=".7">
+  <path d="M0 0h56v56H0zM112 56h56v56h-56zM224 112h56v56h-56zM56 224h56v56H56z" fill="#4d6474"/>
+  <path d="M56 0h56v56H56zM168 56h56v56h-56zM112 224h56v56h-56zM0 168h56v56H0z" fill="#b58d48"/>
+  <path d="M112 0h56v56h-56zM224 56h56v56h-56zM168 224h56v56h-56zM56 168h56v56H56z" fill="#a55b52"/>
+  <path d="M168 0h56v56h-56zM0 56h56v56H0zM224 168h56v56h-56zM112 168h56v56h-56z" fill="#60765c"/>
+  <path d="M224 0h56v56h-56zM56 112h56v56H56zM168 168h56v56h-56zM224 224h56v56h-56z" fill="#766078"/>
+  <path d="M56 56h56v56H56zM0 112h56v56H0zM0 224h56v56H0zM168 112h56v56h-56z" fill="#d6bd90"/>
+  <path d="M112 112h56v56h-56z" fill="#293037"/>
+ </g>
+ <path d="M0 0h280v280H0Z" fill="url(#cuts)"/>
+ <path d="M0 56h279M0 112h279M0 168h279M0 224h279M56 0v279M112 0v279M168 0v279M224 0v279" stroke="#2b2018" stroke-width="1.5"/>
+ <path d="m140 118 20 22-20 22-20-22Zm0 8 13 14-13 14-13-14zm-7 14h14m-7-7v14" fill="none" stroke="#f6d59c" stroke-width="1.3"/>
+ <path d="M30 194q38-21 74-72 17-24 30-48m50 163q-13-35-33-71" fill="none" stroke="#f2d5a1" stroke-width="1.6" stroke-dasharray="2 5" stroke-linecap="round"/>
+</g>
+<g transform="translate(366 120)">
+ <use href="#cube" width="153" height="145" color="#ac5547"/>
+ <animateTransform attributeName="transform" type="translate" begin="indefinite" data-cover-at="0.16s" dur="1.24s" values="366 120;366 120;388 96;404 120;404 120" keyTimes="0;.15;.56;.8;1" fill="remove"/>
+</g>
+<g transform="translate(515 224)"><use href="#cube" width="114" height="111" color="#bfa056"/></g>
+<path d="M337 342c25 9 23 17 10 28m323-213c22-5 27-14 38-35m-83 271c-30 13-48 16-67 5m-295-68c-35-7-52-13-58-23" fill="none" stroke="#cf9861" stroke-width="1.3" stroke-linecap="round" stroke-dasharray="2 4"/>
+<g fill="none" stroke="#b9905e" stroke-width="1.6"><path d="M94 226h95l-13 50-62 18-20-19zM113 276l57-15 10-24h-71m8 28 13-19m11 29 13-23M769 325l51-34 52 33-52 44Zm8 0 43-26 43 26-43 35Z"/><path d="M808 327h23m-11-12v24M70 365l60 12 7 17-25 13-47-10z"/><path d="M293 473h370m-327 14h283" opacity=".35"/></g>
+<g fill="#ac744a" stroke="#ebbc84"><path d="M179 126c-8-21 14-36 8-57 23 22 20 34 8 58zm578 19c-7-26 17-46 10-65 25 24 22 42 8 65z"/><path d="M170 128h36l-7 14h-21zm575 19h40l-8 17h-23z"/></g>
+</svg>

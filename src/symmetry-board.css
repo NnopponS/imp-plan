@@ -5,3 +5,7 @@
 @container(max-width:509px){.mb-tray{grid-template-columns:repeat(var(--mb-tray-cols,3),minmax(0,1fr))}}
 .mb-tray button{background-image:linear-gradient(100deg,#c7b79545 0,transparent 35%)}.mb-tray button::after{content:'';position:absolute;inset:2px;pointer-events:none;border-inline:1px solid #6e5d3626;clip-path:polygon(0 0,10% 0,10% 16%,0 16%,0 84%,10% 84%,10% 100%,0 100%,0 0,100% 0,100% 100%,90% 100%,90% 84%,100% 84%,100% 16%,90% 16%,90% 0)}
 .mb-lesson{display:grid;grid-template-columns:minmax(64px,125px) minmax(0,1fr);align-items:center;gap:.75rem;margin:0}.mb-lesson svg{width:100%;height:auto}.mb-lesson figcaption{font:inherit;line-height:1.4}.mb-lesson .mb-example-in{animation:mb-inlay .3s ease-out both}@keyframes mb-inlay{from{opacity:.25;transform:translateY(-2px)}to{opacity:1;transform:none}}@media(prefers-reduced-motion:reduce){.mb-lesson .mb-example-in{animation:none}}
+
+/* The SVG beneath the hit grid draws the squares, stones and mirror axis. */
+.room[data-playing] .match[data-rendered-table=symmetry] .mb-hit button[data-spot]{background:transparent}
+.room[data-playing] .match[data-rendered-table=symmetry] .mb-hit button[data-spot]:focus-visible{background-color:rgba(255,247,195,.12)}

@@ -55,7 +55,10 @@ function resultLabel(g:GameView):{mark:ResultMark,label:string}{
  if(g.gradation)return g.gradation.winner===null?{mark:'draw',label:'Six-round draw'}:{mark:'win',label:(g.gradation.winner===0?'Copper':'Jade')+' wins'}
  if((g.wallGo2?.result?.winners.length??0)>1)return {mark:'draw',label:'Shared fortress'}
  if((g.auctionBingo?.leaders.length??0)>1)return {mark:'draw',label:'Shared lead'}
+ if((g.doubtBet?.leaders.length??0)>1)return {mark:'draw',label:'Shared lead'}
  if((g.equationHighLow?.leaders.length??0)>1)return {mark:'draw',label:'Shared lead'}
+ if(g.equationTower&&g.seats.length===1)return {mark:'complete',label:'Workshop complete'}
+ if((g.equationTower?.leaders.length??0)>1)return {mark:'draw',label:'Shared lead'}
  if(g.hiddenWord&&g.hiddenWord.standings.filter(row=>row.rank===1).length>1)return {mark:'draw',label:'Shared lead'}
  if((g.tripleDice?.leaders.length??0)>1)return {mark:'draw',label:'Shared lead'}
  if(g.flags?.results&&g.seats.length===1)return {mark:'complete',label:'Dispatch complete'}

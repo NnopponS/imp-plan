@@ -69,6 +69,8 @@ test('episode-style two-human duel waits for Enter, seals picks, redeals a tie a
   await expect(table(guest).getByRole('heading',{name:'Choose two cards'})).toBeVisible()
   await expect(table(guest).getByRole('region',{name:'Shared cards'}).getByRole('img')).toHaveCount(3)
   expect(await labels(guest)).toEqual(Array(16).fill(null))
+  await expect(cards(guest).locator('img[src$="/herbarium-back.svg"]')).toHaveCount(16)
+  await expect(cards(guest).locator('.memory-face')).toHaveCount(0)
   await wholeGrid(guest)
   await cards(host).first().focus()
   await host.keyboard.press('ArrowDown')

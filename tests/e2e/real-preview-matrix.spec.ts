@@ -4,7 +4,7 @@ import {startMatch} from './start-match'
 
 test.use({launchOptions:{args:['--no-sandbox','--disable-dev-shm-usage','--disable-gpu','--renderer-process-limit=2']}})
 const tableObjects:Record<string,string>={
- coopPuzzle:'.relay-grid',fragments:'.gallery-scene svg',secret:'[data-pact=secret]',tower:'.tower-game',
+ equationTower:'[data-equation-block="0"]',doubtBet:'.db-card-art',unknown:'[data-unknown-mosaic]',coopPuzzle:'.relay-grid',fragments:'.gallery-scene svg',secret:'[data-pact=secret]',tower:'.tower-game',
  scale:'.scale-stage',grass1:'.grass-grid',montage:'.montage-board',equationHighLow:'.eh-rack',threeRow:'.tr-bench',
  blind:'.chamber-grid',morris:'.morris-surface',hex:'.hex-instrument',remove:'.remove-one',
  auction:'.sealed-dial',tripleDice:'.td-board',mancala:'[data-mancala-bowl]',wallGo:'.wall-go',

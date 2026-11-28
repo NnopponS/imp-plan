@@ -1,4 +1,13 @@
 # Execution ledger
+
+## Published baseline: game-table artwork
+
+[Imp Plan on GitHub Pages](https://nnoppons.github.io/imp-plan/) has **41 of 64 playable** fan tables: Season 1 **12/18**, Season 2 **9/17**, Season 3 **20/29**. The other 23 catalog entries remain archive-only. Preview and real play share the same table and assets for every playable title; the Preview uses a safe sample position rather than a real room. Seven tables received new hand-illustrated game objects in this release. The all-title browser matrix and ten real Pages checks passed for [the published source](https://github.com/NnopponS/imp-plan/commit/48873e0e1a50392160256d4267faab2be0632259). See [table previews](PREVIEW_PARITY.md). The entries below are historical milestones, not the current count. Neither exact broadcast rules nor cross-network connectivity are guaranteed.
+
+## Next release candidate: three new tables and actual game-object illustrations
+
+The source catalog has **44 of 64 playable** fan tables: Season 1 **12/18**, Season 2 **11/17**, Season 3 **21/29**. Added **Unknown** (hidden laws and rolling cubes), **Doubt and Bet** (sealed hands and fictional challenges) and **Tower of Equations** (engraved block proofs, untimed Workshop and timed party). Preview renders the same game objects as live play. Existing Remove One and both Memory Poker modes have purpose-drawn card faces and common concealed backs. Flags uses a compact atlas on mobile. The remaining **20** catalog entries are still archive-only. These are fan rules, not certification of the broadcast versions. The published baseline above is retained until the new revision is verified on Pages.
+
 Date: 2026-11-26. Repository: feature branch locally. No remote repo or Pages deployment confirmed.
 
 ## M0 · complete locally

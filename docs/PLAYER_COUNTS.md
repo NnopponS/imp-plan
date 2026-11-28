@@ -30,6 +30,9 @@
 | Auction Bingo | 2–16 | 1 human + 1–15 bots | Seven shared auctions with private choices and a geometric card. |
 | Equation High-Low | 2–8 | 1 human + 1–7 bots | One private number per seat, shared wagers and high/low payouts. |
 | Hidden Word | 3–16 | 1 human + 2–15 bots | Every seat sets a word twice and privately guesses others’ words. |
+| Unknown | 2–12 | 1 human + 1 bot by default | One shared rolling-cube race. |
+| Doubt and Bet | 2–10 | 1 human + 1 bot by default | Private hands, public claims and a two-seat response when challenged. |
+| Tower of Equations | 2–8 | 1 human | Three untimed Workshop puzzles in practice; public declarations and an exact-move proof in Party. |
 | Word Tower | 2–8 humans | 1 human | A shared word board under a short four-minute clock. |
 
 The default party starts on Blind Gomoku with two places. Select Tournament to seat 3–4 on alternating two-player boards, or choose another game before inviting a larger group. Switching game or variant does not kick anyone; if there are too many existing seats, the host must remove extras (including any offline reserved seats) before switching. Existing players can still reconnect to locked/full tables using their token.

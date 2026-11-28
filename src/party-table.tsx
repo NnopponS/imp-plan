@@ -112,14 +112,14 @@ export function PartyTable({game,settings,practice,variant,canChoose,online,moti
     <button type="button" aria-haspopup="dialog" onClick={preview}><PartyGlyph kind="eye"/> Details</button>
    </div>
   </div>
-  {sample&&<GameDetailsDialog compact game={game} settings={settings} motionOff={motionOff} source={row?.sources[0]} context={row&&<GameVenue entry={row}/>}
+  {sample&&<GameDetailsDialog compact game={game} settings={settings} party={!practice} motionOff={motionOff} source={row?.sources[0]} context={row&&<GameVenue entry={row}/>}
    illustration={variant==='hold'?<TimingStill/>:variant==='episode'?<MemoryDuelStill/>:undefined}
    close={()=>setSample(false)} restore={()=>tableTrigger.current?.focus({preventScroll:true})}/>}
-  {open&&canChoose&&online&&<PartyPicker selected={game} motionOff={motionOff} error={error} choose={choose} close={()=>setOpen(false)} restore={()=>trigger.current?.focus({preventScroll:true})}/>}
+  {open&&canChoose&&online&&<PartyPicker selected={game} settings={settings} party={!practice} motionOff={motionOff} error={error} choose={choose} close={()=>setOpen(false)} restore={()=>trigger.current?.focus({preventScroll:true})}/>}
  </section>
 }
 
-function PartyPicker({selected,motionOff,choose,close,restore,error}:{selected:Game;motionOff?:boolean;choose:(g:Game)=>void;close:()=>void;restore:()=>void;error:string}){
+function PartyPicker({selected,settings,party,motionOff,choose,close,restore,error}:{selected:Game;settings:Settings;party:boolean;motionOff?:boolean;choose:(g:Game)=>void;close:()=>void;restore:()=>void;error:string}){
  const modal=useRef<HTMLDialogElement>(null)
  const search=useRef<HTMLInputElement>(null)
  const title=useId()
@@ -151,7 +151,7 @@ function PartyPicker({selected,motionOff,choose,close,restore,error}:{selected:G
    {requested&&error&&selected!==requested&&<p className="error" role="alert">{error}</p>}
   </div></div>
   <ul className="party-cards">
-   {results.map(row=><li key={row.game}><PartyChoiceCard row={row} current={row.game===selected} motionOff={motionOff} select={()=>{
+   {results.map(row=><li key={row.game}><PartyChoiceCard row={row} current={row.game===selected} settings={row.game===selected?settings:undefined} party={party} motionOff={motionOff} select={()=>{
     if(row.game===selected){close();return}
     setRequested(row.game)
     choose(row.game)
@@ -160,7 +160,7 @@ function PartyPicker({selected,motionOff,choose,close,restore,error}:{selected:G
  </dialog>
 }
 
-function PartyChoiceCard({row,current,motionOff,select}:{row:typeof gallery[number];current:boolean;motionOff?:boolean;select:()=>void}){
+function PartyChoiceCard({row,current,settings,party,motionOff,select}:{row:typeof gallery[number];current:boolean;settings?:Settings;party:boolean;motionOff?:boolean;select:()=>void}){
  const [sheet,setSheet]=useState<'cover'|'details'|null>(null)
  const card=useRef<HTMLButtonElement>(null)
  const details=useRef<HTMLButtonElement>(null)
@@ -174,7 +174,7 @@ function PartyChoiceCard({row,current,motionOff,select}:{row:typeof gallery[numb
    </span>
   </button>
   <div className="party-card-links"><button type="button" className="game-details-trigger" ref={details} onClick={()=>setSheet('details')} aria-label={'Details for '+titles[row.game]} title="Details" aria-haspopup="dialog"><CardMark kind="inspect"/></button></div>
-  {sheet&&<GameDetailsDialog game={row.game} motionOff={motionOff} source={row.sources[0]} context={<GameVenue entry={row}/>}
+  {sheet&&<GameDetailsDialog game={row.game} settings={settings} party={party} motionOff={motionOff} source={row.sources[0]} context={<GameVenue entry={row}/>}
    compact={sheet==='cover'} action={{verb:'Choose',run:()=>{close();select()}}} close={close}
    restore={()=> (sheet==='cover'?card:details).current?.focus({preventScroll:true})}/>}
  </div>

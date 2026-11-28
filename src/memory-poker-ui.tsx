@@ -1,11 +1,13 @@
 import {useEffect,useRef,useState,type KeyboardEvent} from 'react'
 import {memoryPokerGrid,memoryPokerPeekAction,memoryPokerRounds,packMemoryPoker} from './memory-poker'
 import type {Snapshot} from './room'
+import {base} from './brand'
 import './memory-poker.css'
 
 const ranks=['2','3','4','5','6','7','8','9','10','Jack','Queen','King','Ace']
 const codes=['2','3','4','5','6','7','8','9','10','J','Q','K','A']
 const suits=['Clubs','Diamonds','Hearts','Spades']
+const suitPrints=['club','diamond','heart','spade'] as const
 const suitPips=['♣','◆','♥','♠']
 const rank=(card:number)=>card%13
 const suit=(card:number)=>Math.floor(card/13)
@@ -28,10 +30,7 @@ export function MemoryPlaque({label,title,seconds,phase}:{label:string;title:str
 
 export function MemoryBack({label}:{label:string}){
  return <span className="memory-back" aria-hidden="true">
-   <svg viewBox="0 0 36 36" className="memory-card-etch" focusable="false">
-    <path d="M18 2 34 18 18 34 2 18Z M18 6 30 18 18 30 6 18Z" fill="none" stroke="currentColor"/>
-    <path d="M18 0v6m0 24v6M0 18h6m24 0h6 M6 6l4 4m16 16 4 4m0-24-4 4M6 30l4-4" stroke="currentColor" fill="none"/>
-   </svg>
+   <img className="deck-print" src={base+'art/decks/herbarium-back.svg'} alt="" draggable="false"/>
    <span>{label}</span><i>✓</i>
  </span>
 }
@@ -64,7 +63,7 @@ export function Face({card}:{card:number}){
  const i=suit(card)
  return <span className={'memory-face '+(i===1||i===2?'memory-red':'memory-black')} aria-hidden="true">
   <span className="memory-corner">{codes[rank(card)]}<small>{suitPips[i]}</small></span>
-  <strong><span>{suitPips[i]}</span></strong>
+  <img className="deck-print" src={base+'art/decks/herbarium-'+suitPrints[i]+'.svg'} alt="" draggable="false"/>
   <span className="memory-corner memory-mirror">{codes[rank(card)]}<small>{suitPips[i]}</small></span>
  </span>
 }

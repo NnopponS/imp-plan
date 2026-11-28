@@ -1,6 +1,8 @@
+import {doubtBot,doubtColors,doubtDeck,doubtMaxSeats,doubtRounds,doubtView} from './doubt-bet'
 import {wallGo2ActionLimit,wallGo2Step,wallGo2StepLimit} from './wall-go2'
 import {bingoAllCoins,bingoBot,bingoRounds,bingoShapes,bingoView} from './auction-bingo'
 import {equationBot,equationDeck,equationOperatorOrders,equationRaiseLimit,equationRounds,equationView} from './equation-high-low'
+import {unknownBot,unknownMoves,unknownRounds,unknownMaxSeats,unknownView} from './unknown'
 import {hiddenBot,hiddenView} from './hidden-word'
 import {bigSmallBot} from './big-small'
 import {diceBands,diceBot,diceDeal,diceRounds,diceView,type Die} from './triple-dice'
@@ -19,7 +21,8 @@ import {isPuzzle} from './puzzles'
 import {z} from 'zod'
 import {appearancePreset,legacyAppearance,legacyAppearanceCount,wardrobeVersion} from './wardrobe-look'
 export {appearancePreset} from './wardrobe-look'
-import {start,move,titles,heavy13Slot,playBigSmall,playEquationHighLow,playHeavy13,playColorLink,playThreeRow,playTripleDice,playAuctionBingo,playHiddenWord,schedule,view,timeout,blindCoverAction,botAction,botLevels,isDuel,minSeats,secretBotIntentKey,simultaneous,redealMemoryDuel,syncTimeHold,openMontageRound,submitMontageBuzz,type State,type Game,type GameView} from './engine'
+import {equationTowerRules,equationTowerModes,equationTowerBot,equationTowerView} from './equation-tower'
+import {start,move,titles,playEquationTower,heavy13Slot,playDoubtBet,playBigSmall,playEquationHighLow,playHeavy13,playColorLink,playThreeRow,playTripleDice,playAuctionBingo,playHiddenWord,playUnknown,schedule,view,timeout,blindCoverAction,botAction,botLevels,isDuel,minSeats,secretBotIntentKey,simultaneous,redealMemoryDuel,syncTimeHold,openMontageRound,submitMontageBuzz,type State,type Game,type GameView} from './engine'
 const codeAlphabet='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
 export const roomCode=()=>Array.from(crypto.getRandomValues(new Uint8Array(6)),x=>codeAlphabet[x&31]).join('')
 export const validCode=(x:string)=>/^[A-HJ-NP-Z2-9]{6}$/.test(x)
@@ -32,7 +35,7 @@ export function nickname(value:string):string|null{
  const n=[...new Intl.Segmenter('en',{granularity:'grapheme'}).segment(s)].length
  return n>=1&&n<=24?s:null
 }
-const settings=z.strictObject({game:z.enum(['blind','morris','auction','point','remove','knight','hex','rectangles','mancala','cubes','bagh','secret','grass1','grass3','exile','divine','equations','codeLock','pyramid','fragments','spot','scale','fence','tower','piece','memoryPoker','wallGo','montage','heavy13','colorLink','symmetry','threeRow','flags','coopPuzzle','gradation','bigSmall','tripleDice','wallGo2','auctionBingo','equationHighLow','hiddenWord']),seconds:z.number().int().min(10).max(900),size:z.union([z.literal(5),z.literal(6),z.literal(8)]).optional(),closed:z.boolean().optional(),divineSide:z.union([z.literal(3),z.literal(5),z.literal(7)]).optional(),divineHard:z.boolean().optional(),fragmentStrict:z.boolean().optional(),fragmentCount:z.union([z.literal(8),z.literal(12),z.literal(16),z.literal(24)]).optional(),capacity:z.number().int().min(1).max(16),locked:z.boolean(),botLevel:z.enum(botLevels).optional(),memoryPokerPeek:z.boolean().optional(),memoryPokerMode:z.enum(['fan','episode']).optional(),auctionMode:z.enum(['sealed','hold']).optional(),symmetryAxis:z.enum(symmetryAxes).optional(),coopReflect:z.boolean().optional(),gradationMarked:z.boolean().optional(),flagsMode:z.enum(['recall','names']).optional()})
+const settings=z.strictObject({game:z.enum(['blind','morris','auction','point','remove','knight','hex','rectangles','mancala','cubes','bagh','secret','grass1','grass3','exile','divine','equations','codeLock','pyramid','fragments','spot','scale','fence','tower','piece','memoryPoker','wallGo','montage','heavy13','colorLink','symmetry','threeRow','flags','coopPuzzle','gradation','bigSmall','tripleDice','wallGo2','auctionBingo','equationHighLow','hiddenWord','unknown','doubtBet','equationTower']),seconds:z.number().int().min(10).max(900),size:z.union([z.literal(5),z.literal(6),z.literal(8)]).optional(),closed:z.boolean().optional(),divineSide:z.union([z.literal(3),z.literal(5),z.literal(7)]).optional(),divineHard:z.boolean().optional(),fragmentStrict:z.boolean().optional(),fragmentCount:z.union([z.literal(8),z.literal(12),z.literal(16),z.literal(24)]).optional(),capacity:z.number().int().min(1).max(16),locked:z.boolean(),botLevel:z.enum(botLevels).optional(),memoryPokerPeek:z.boolean().optional(),memoryPokerMode:z.enum(['fan','episode']).optional(),auctionMode:z.enum(['sealed','hold']).optional(),symmetryAxis:z.enum(symmetryAxes).optional(),coopReflect:z.boolean().optional(),gradationMarked:z.boolean().optional(),flagsMode:z.enum(['recall','names']).optional(),equationTowerMode:z.enum(equationTowerModes).optional()})
 const montageMatch=z.string().regex(/^[a-f0-9]{32}$/)
 const montageRound=z.number().int().min(1).max(montageRules.rounds)
 const heavyMatch=z.string().regex(/^[a-f0-9]{32}$/)
@@ -72,7 +75,14 @@ const equationAction=z.discriminatedUnion('kind',[
  z.strictObject({kind:z.literal('raise'),to:z.number().int().min(1).max(equationRaiseLimit)}),
  z.strictObject({kind:z.literal('seal'),low:equationArrangement.nullable(),high:equationArrangement.nullable()}),
 ])
+const doubtStake={points:z.number().int().min(0).max(4),slots:z.number().int().min(0).max(4)}
+const doubtAction=z.discriminatedUnion('kind',[
+ z.strictObject({kind:z.literal('bid'),color:z.enum(doubtColors),count:z.number().int().min(1).max(20),...doubtStake}),
+ z.strictObject({kind:z.literal('doubt'),...doubtStake}),z.strictObject({kind:z.literal('counter'),...doubtStake}),
+ z.strictObject({kind:z.literal('fold')}),z.strictObject({kind:z.literal('next')})
+])
 const schema=z.discriminatedUnion('kind',[
+ z.strictObject({kind:z.literal('doubt-bet'),match:heavyMatch,step:z.number().int().min(0).max(128),action:doubtAction}),
  z.strictObject({kind:z.literal('equation-high-low'),match:heavyMatch,step:z.number().int().min(0).max(260),action:equationAction}),
  z.strictObject({kind:z.literal('big-small'),match:heavyMatch,step:z.number().int().min(0).max(59),action:bigSmallAction}),
  z.strictObject({kind:z.literal('ready')}),
@@ -80,6 +90,12 @@ const schema=z.discriminatedUnion('kind',[
  z.strictObject({kind:z.literal('relay'),match:heavyMatch,turn:z.number().int().min(0).max(68),action:relayAction}),
  z.strictObject({kind:z.literal('gradation-lock'),match:heavyMatch,round:z.number().int().min(1).max(6),order:z.array(z.number().int().min(1).max(7)).length(7),target:z.number().int().min(0).max(6).nullable()}),
  z.strictObject({kind:z.literal('dice-lock'),match:heavyMatch,round:z.number().int().min(1).max(diceRounds),positions:z.tuple([diceSlot,diceSlot,diceSlot]).refine(items=>new Set(items).size===3),prediction:z.enum(diceBands)}),
+ z.strictObject({kind:z.literal('unknown-roll'),match:heavyMatch,step:z.number().int().min(0).max(unknownRounds*unknownMaxSeats*2),action:z.enum(unknownMoves)}),
+ z.strictObject({kind:z.literal('equation-tower'),match:heavyMatch,step:z.number().int().positive().max(10000),action:z.discriminatedUnion('kind',[
+  z.strictObject({kind:z.literal('call'),moves:z.number().int().min(1).max(equationTowerRules.budget)}),
+  z.strictObject({kind:z.literal('pass')}),z.strictObject({kind:z.literal('restart')}),z.strictObject({kind:z.literal('advance')}),
+  z.strictObject({kind:z.literal('shift'),from:z.number().int().min(0).max(3),to:z.number().int().min(0).max(3),count:z.number().int().min(1).max(8),flip:z.boolean()}),
+ ])}),
  z.strictObject({kind:z.literal('hidden-word'),match:heavyMatch,step:z.number().int().min(1).max(292),action:hiddenAction}),
  z.strictObject({kind:z.literal('flags-lock'),match:heavyMatch,choices:z.array(z.number().int().min(-1).max(19)).min(1).max(12)}),
  z.strictObject({kind:z.literal('three-row'),match:heavyMatch,turns:z.number().int().min(0).max(12),action:threeRowAction}),
@@ -123,7 +139,7 @@ const partyMaximum={
  blind:4,morris:4,point:4,equations:4,wallGo:4,wallGo2:3,bagh:2,
  auction:16,remove:16,knight:16,hex:16,rectangles:16,cubes:16,exile:16,
  grass1:12,grass3:16,mancala:8,secret:16,divine:16,codeLock:16,pyramid:16,
- fragments:8,spot:16,scale:6,fence:16,tower:8,piece:4,memoryPoker:16,montage:16,heavy13:7,colorLink:2,symmetry:16,threeRow:4,flags:16,coopPuzzle:16,gradation:16,bigSmall:2,tripleDice:8,auctionBingo:16,equationHighLow:8,hiddenWord:16,
+ fragments:8,spot:16,scale:6,fence:16,tower:8,piece:4,memoryPoker:16,montage:16,heavy13:7,colorLink:2,symmetry:16,threeRow:4,flags:16,coopPuzzle:16,gradation:16,bigSmall:2,tripleDice:8,auctionBingo:16,equationHighLow:8,hiddenWord:16,unknown:unknownMaxSeats,doubtBet:doubtMaxSeats,equationTower:8,
 } as const satisfies Record<Game,number>
 type SeatMode=Pick<Settings,'game'|'memoryPokerMode'|'auctionMode'>
 /** Occupied seats for this room (participants plus any supported bots); fixtures still use two participants. */
@@ -131,7 +147,7 @@ export function seatRules(settings:SeatMode,solo=false):{min:number,max:number,f
  const {game}=settings,episode=isEpisodePoker(settings),duel=isDuel(game)
  if(episode)return {min:2,max:2,fixtureSize:2}
  const min=solo?minSeats(game,true):Math.max(2,minSeats(game))
- const max=solo?(humanOnly(game)?1:duel||game==='gradation'?2:partyMaximum[game]):partyMaximum[game]
+ const max=solo?(humanOnly(game)?1:game==='equationTower'?1:duel||game==='gradation'?2:partyMaximum[game]):partyMaximum[game]
  return duel?{min,max,fixtureSize:2}:{min,max}
 }
 export const defaults:Settings={game:'blind',seconds:25,capacity:2,locked:false,botLevel:'normal'}
@@ -279,11 +295,33 @@ export class Host{
    if(!next)return 'That choice is invalid, already sealed, or too late.'
    this.setGame(next);return null
   }
+  if(c.kind==='doubt-bet'){
+   const current=this.game?.doubtBet
+   if(!current||c.match!==this.match||c.step!==current.step||rev>this.rev)return 'That Doubt and Bet turn has ended.'
+   if(c.action.kind==='next'&&s.id!==this.owner)return 'Only the host can deal again.'
+   const next=playDoubtBet(this.game!,s.id,c.action,this.clock())
+   if(!next)return 'That claim or wager is not available.'
+   this.setGame(next);return null
+  }
   if(c.kind==='equation-high-low'){
    const current=this.game?.equationHighLow
    if(!current||c.match!==this.match||c.step!==current.step||rev>this.rev)return 'That Equation High-Low phase has ended.'
    const next=playEquationHighLow(this.game!,s.id,c.action,this.clock())
    if(!next)return 'That wager or equation is not available.'
+   this.setGame(next);return null
+  }
+  if(c.kind==='unknown-roll'){
+   const race=this.game?.unknown
+   if(!race||c.match!==this.match||c.step!==race.step||rev>this.rev)return 'That cube turn has closed.'
+   const next=playUnknown(this.game!,s.id,c.action,this.clock())
+   if(!next)return 'That roll is unavailable or its clock has expired.'
+   this.setGame(next);return null
+  }
+  if(c.kind==='equation-tower'){
+   const current=this.game?.equationTower
+   if(!current||c.match!==this.match||c.step!==current.step||rev>this.rev)return 'That tower position has changed.'
+   const next=playEquationTower(this.game!,s.id,c.action,this.clock())
+   if(!next)return 'That claim or block move is no longer available.'
    this.setGame(next);return null
   }
   if(c.kind==='hidden-word'){
@@ -433,8 +471,8 @@ export class Host{
    // A carried limit belongs to the previous table; a deliberate new limit is honored.
    const capacity=reseat||(gameChanged||variantChanged)&&changes.capacity===this.settings.capacity?(fixtureSize?Math.max(min,roster.length):max):seatCapacity(changes,this.solo)
    if(capacity<roster.length)return 'Capacity cannot be below the current roster.'
-   const seconds=changes.game==='wallGo2'?90:changes.game==='coopPuzzle'?20:changes.game==='gradation'&&gameChanged?45:(changes.game==='tripleDice'||changes.game==='auctionBingo'||changes.game==='equationHighLow'||changes.game==='hiddenWord')&&gameChanged?45:changes.game==='flags'?flagsWindow/1000:changes.game==='symmetry'?symmetryTime/1000:changes.game==='colorLink'&&gameChanged?45:(changes.game==='wallGo'||changes.game==='heavy13')&&this.settings.game!==changes.game?25:changes.game==='fence'||changes.game==='tower'||changes.game==='piece'?240:changes.game==='scale'?300:changes.game==='spot'?90:changes.game==='fragments'?20:changes.game==='pyramid'?45:changes.game==='codeLock'?180:changes.game==='divine'?(this.settings.game!=='divine'?600:Math.max(60,changes.seconds)):changes.game==='knight'?Math.max(180,Math.min(480,changes.seconds)):changes.game==='hex'?20:changes.game==='rectangles'?45:changes.game==='cubes'?25:changes.game==='exile'?90:changes.game==='secret'&&this.settings.game!=='secret'?90:Math.min(90,changes.seconds)
-   this.settings={...changes,coopReflect:changes.game==='coopPuzzle'?!!changes.coopReflect:undefined,gradationMarked:changes.game==='gradation'?(changes.gradationMarked??false):undefined,flagsMode:changes.game==='flags'?changes.flagsMode??'recall':undefined,symmetryAxis:changes.game==='symmetry'?changes.symmetryAxis:undefined,auctionMode:changes.game==='auction'?changes.auctionMode:undefined,memoryPokerMode:changes.game==='memoryPoker'?changes.memoryPokerMode:undefined,botLevel:changes.botLevel??'normal',capacity,seconds,closed:changes.size===5||!changes.size?false:changes.closed}
+   const seconds=changes.game==='unknown'&&gameChanged?25:changes.game==='wallGo2'?90:changes.game==='coopPuzzle'?20:changes.game==='gradation'&&gameChanged?45:(changes.game==='tripleDice'||changes.game==='auctionBingo'||changes.game==='equationHighLow'||changes.game==='hiddenWord'||changes.game==='doubtBet')&&gameChanged?45:changes.game==='flags'?flagsWindow/1000:changes.game==='symmetry'?symmetryTime/1000:changes.game==='colorLink'&&gameChanged?45:(changes.game==='wallGo'||changes.game==='heavy13')&&this.settings.game!==changes.game?25:changes.game==='fence'||changes.game==='tower'||changes.game==='piece'?240:changes.game==='scale'?300:changes.game==='spot'?90:changes.game==='fragments'?20:changes.game==='pyramid'?45:changes.game==='codeLock'?180:changes.game==='divine'?(this.settings.game!=='divine'?600:Math.max(60,changes.seconds)):changes.game==='knight'?Math.max(180,Math.min(480,changes.seconds)):changes.game==='hex'?20:changes.game==='rectangles'?45:changes.game==='cubes'?25:changes.game==='exile'?90:changes.game==='secret'&&this.settings.game!=='secret'?90:Math.min(90,changes.seconds)
+   this.settings={...changes,equationTowerMode:changes.game==='equationTower'?(changes.equationTowerMode??'standard'):undefined,coopReflect:changes.game==='coopPuzzle'?!!changes.coopReflect:undefined,gradationMarked:changes.game==='gradation'?(changes.gradationMarked??false):undefined,flagsMode:changes.game==='flags'?changes.flagsMode??'recall':undefined,symmetryAxis:changes.game==='symmetry'?changes.symmetryAxis:undefined,auctionMode:changes.game==='auction'?changes.auctionMode:undefined,memoryPokerMode:changes.game==='memoryPoker'?changes.memoryPokerMode:undefined,botLevel:changes.botLevel??'normal',capacity,seconds,closed:changes.size===5||!changes.size?false:changes.closed}
    if(this.solo){
     if(changes.game==='divine')this.settings.divineSide??=3
     this.seats=roster
@@ -484,21 +522,22 @@ export class Host{
   this.secretBotRejected.clear()
   const [gameSeed,botSeed]=crypto.getRandomValues(new Uint32Array(2))
   this.botSeed=botSeed
-  const {game,seconds,size,closed,divineSide,divineHard,fragmentStrict,fragmentCount,memoryPokerPeek,symmetryAxis,flagsMode,coopReflect,gradationMarked}=this.settings
+  const {game,seconds,size,closed,equationTowerMode,divineSide,divineHard,fragmentStrict,fragmentCount,memoryPokerPeek,symmetryAxis,flagsMode,coopReflect,gradationMarked}=this.settings
   const seats=isDuel(game)?this.fixtures[this.fixture].sides:this.seats.map(s=>s.id)
-  this.setGame(start(game,seats,seconds*1000,this.clock(),{seed:gameSeed,equationDeals:game==='equationHighLow'?Array.from({length:equationRounds},()=>equationDeck(secureIndex)):undefined,hiddenIndex:game==='hiddenWord'?secureIndex:undefined,diceDeal:game==='tripleDice'?diceDeal(seats.length,()=>(secureIndex(6)+1) as Die):undefined,size,closed,divineSide,divineHard,fragmentStrict,fragmentCount,memoryPokerPeek,symmetryAxis,flagsMode,coopReflect,gradationMarked,memoryDuelDeal:isEpisodePoker(this.settings)?liveMemoryDeal():undefined,holdAuction:isHoldAuction(this.settings),solo:this.solo}))
+  this.setGame(start(game,seats,seconds*1000,this.clock(),{seed:gameSeed,equationTowerMode,doubtDeals:game==='doubtBet'?Array.from({length:doubtRounds},()=>doubtDeck(secureIndex)):undefined,equationDeals:game==='equationHighLow'?Array.from({length:equationRounds},()=>equationDeck(secureIndex)):undefined,hiddenIndex:game==='hiddenWord'?secureIndex:undefined,unknownIndex:game==='unknown'?secureIndex:undefined,diceDeal:game==='tripleDice'?diceDeal(seats.length,()=>(secureIndex(6)+1) as Die):undefined,size,closed,divineSide,divineHard,fragmentStrict,fragmentCount,memoryPokerPeek,symmetryAxis,flagsMode,coopReflect,gradationMarked,memoryDuelDeal:isEpisodePoker(this.settings)?liveMemoryDeal():undefined,holdAuction:isHoldAuction(this.settings),solo:this.solo}))
   this.publishedHold=this.game?.timeHold?this.game:null
   this.holdUpdates.clear()
  }
  private setGame(g:State){
   if(g.round!==this.game?.round)this.secretBotRejected.clear()
-  const hiddenChanged=g.hiddenWord&&g.hiddenWord.step!==this.game?.hiddenWord?.step
+  const hiddenChanged=g.hiddenWord&&g.hiddenWord.step!==this.game?.hiddenWord?.step||g.unknown&&g.unknown.step!==this.game?.unknown?.step
   const prior=this.game?.heavy13
   const heavyChanged=g.heavy13&&prior&&(g.heavy13.phase!==prior.phase||heavy13Slot(g.heavy13)!==heavy13Slot(prior))
+  const doubtChanged=g.doubtBet&&g.doubtBet.step!==this.game?.doubtBet?.step
   const equationChanged=g.equationHighLow&&g.equationHighLow.step!==this.game?.equationHighLow?.step
   const rowChanged=g.threeRow&&(!this.game?.threeRow||g.round!==this.game.round||threeRowView(g.threeRow).phase!==threeRowView(this.game.threeRow).phase)
   const bingoChanged=g.auctionBingo?.phase!==this.game?.auctionBingo?.phase
-  if(!this.game||bingoChanged||equationChanged||hiddenChanged||rowChanged||heavyChanged||isGrass(g.game)||isDuel(g.game)||g.round!==this.game.round)this.botDue=this.clock()+650
+  if(!this.game||bingoChanged||doubtChanged||equationChanged||hiddenChanged||rowChanged||heavyChanged||isGrass(g.game)||isDuel(g.game)||g.round!==this.game.round)this.botDue=this.clock()+650
   if(g.colorLink?.phase==='race'&&this.game?.colorLink?.phase!=='race')this.botDue=this.clock()+colorLinkRaceBotDelay(this.settings.botLevel)
   this.game=g
   if(g.done&&this.fixtures[this.fixture])this.fixtures[this.fixture].winner=g.winner
@@ -542,7 +581,21 @@ export class Host{
   if(this.game.gradation)return this.tickGradation(this.game,now)
   if(this.game.heavy13)return this.tickHeavy13(this.game,now)
   if(this.game.auctionBingo)return this.tickBingo(this.game,now)
+  if(this.game.doubtBet){
+   const past=this.game,doubt=this.game.doubtBet
+   let next=timeout(past,now)
+   const turn='actor' in doubt.stage?doubt.stage.actor:null
+   const bot=turn&&this.seats.find(s=>s.id===turn&&s.bot)
+   if(next===past&&bot&&now>=this.botDue){
+    const action=doubtBot(doubtView(doubt,bot.id),this.settings.botLevel??'normal',this.botSeed^Math.imul(this.seats.indexOf(bot)+1,0x85ebca6b))
+    if(action)next=playDoubtBet(past,bot.id,action,now)??past
+   }
+   if(next===past)return false
+   this.setGame(next);this.rev++;return true
+  }
   if(this.game.equationHighLow)return this.tickEquation(this.game,now)
+  if(this.game.unknown)return this.tickUnknown(this.game,now)
+  if(this.game.equationTower)return this.tickTower(this.game,now)
   if(this.game.hiddenWord)return this.tickHiddenWord(this.game,now)
   if(this.game.tripleDice)return this.tickTripleDice(this.game,now)
   if(this.game.threeRow)return this.tickThreeRow(this.game,now)
@@ -642,6 +695,34 @@ export class Host{
   if(next.equationHighLow!.step===past.equationHighLow!.step)return false
   this.rev++;return true
  }
+ private tickUnknown(past:State,now:number){
+  let next=timeout(past,now)
+  const race=past.unknown!,seat=race.seats[race.turn]
+  if(next===past&&now>=this.botDue&&this.seats.some(s=>s.id===seat&&s.bot)){
+   const action=unknownBot(unknownView(race,seat),this.botSeed,this.settings.botLevel??'normal')
+   next=playUnknown(past,seat,action,now)??past
+  }
+  if(next===past)return false
+  this.setGame(next);this.rev++;return true
+ }
+ private tickTower(past:State,now:number){
+  let next=timeout(past,now)
+  const current=past.equationTower!
+  if(next===past&&now>=this.botDue){
+   const delay=current.phase==='call'?10000:current.phase==='challenge'?2800:0
+   if(now>=current.opened+delay){
+    for(const seat of this.seats){
+     if(!seat.bot||!current.seats.includes(seat.id))continue
+     const action=equationTowerBot(equationTowerView(current,seat.id),seat.id,this.settings.botLevel??'normal')
+     if(!action)continue
+     const changed=playEquationTower(past,seat.id,action,now)
+     if(changed){next=changed;this.botDue=now+650;break}
+    }
+   }
+  }
+  if(next===past)return false
+  this.setGame(next);this.rev++;return true
+ }
  private tickHiddenWord(past:State,now:number){
   const timed=timeout(past,now)
   if(timed!==past){this.setGame(timed);this.rev++;return true}
@@ -725,9 +806,12 @@ export class Host{
 export function explain(game:Game,count:number) {
  if(game==='coopPuzzle')return 'Share one tiling frame. One player places or removes a piece; teammates can leave suggestions. Solo practice or 2–16 human seats.'
  if(game==='gradation')return 'Seven gates, two sides. Practice faces one bot. Parties of 2–16 alternate seats between Copper and Jade; each side changes allocator every round. In groups over ten, not every teammate seals in one match.'
+ if(game==='doubtBet')return 'One table for 2–10 seats, or one player and bots in practice. Make a hidden-card claim, outbid the count, or challenge. Fictional points and card slots only.'
  if(game==='equationHighLow')return 'One table for 2–8 seats. Two betting passes, then a private equation declaration. Solo practice starts with one bot. No real stakes.'
  if(game==='bigSmall')return 'Exactly two seats. Seal a card, predict its rank, then compare stacks. Solo practice seats one bot. Chips are fictional.'
  if(game==='auctionBingo')return 'Seven rounds for 2–16 seats. Choose a shape, seal a bid and build lines on your bingo card. Practice starts with one bot.'
+ if(game==='unknown')return 'A secret-law cube race for 2–12 seats. Solo practice adds one bot. Each round is one circuit of the table.'
+ if(game==='equationTower')return count===1?'Three untimed puzzles. Move numbered blocks between four stands.':'2–8 seats. Call your move budget, undercut a rival, then prove the exact count. Every round carries the same blocks forward.'
  if(game==='hiddenWord')return 'A two-round English word game for 3–16 seats. Solo practice starts with two bots. Only your own envelope and unrevealed answers are sent to your seat.'
  if(game==='tripleDice')return 'Eight rounds for 2–8 seats, with private forecasts and a shared reveal. Practice starts with one bot; five or more seats unlock more forecast bands.'
  if(game==='flags')return 'Study twelve named flag cards for forty seconds, then submit once within sixty seconds. Solo practice or 2–16 humans, no bots.'

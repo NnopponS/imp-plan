@@ -52,6 +52,8 @@ test('two players play four hands, keep locks and assistance private, then revie
     await expect(table(page).getByRole('heading',{name:'Choose five cards'})).toBeVisible()
     await expect(table(page).getByRole('button',{name:'Position 1: face down',exact:true})).toBeVisible()
     await expect(table(page).getByRole('button',{name:/ of /})).toHaveCount(0)
+    await expect(cards(page).locator('img[src$="/herbarium-back.svg"]')).toHaveCount(20)
+    await expect(cards(page).locator('.memory-face')).toHaveCount(0)
    }
    if(round===1){
     await table(host).getByRole('button',{name:'Peek at one card (−1 point)'}).click()

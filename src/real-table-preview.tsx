@@ -1,6 +1,6 @@
 import {useMemo} from 'react'
 import {ArenaTable} from './arena-table'
-import {blindCoverAction,isDuel,minSeats,move,openMontageRound,start,timeout,titles,view,type Game} from './engine'
+import {blindCoverAction,isDuel,minSeats,move,playUnknown,playDoubtBet,openMontageRound,start,timeout,titles,view,type Game} from './engine'
 import {defaults,isHoldAuction,type Settings,type Snapshot} from './room'
 import {memoryDuelDeal} from './memory-duel'
 import {montageRules} from './montage'
@@ -11,19 +11,20 @@ const sampleFixtures:Partial<Record<Game,readonly number[]>>={
  blind:[blindCoverAction(112,0),blindCoverAction(127,2),blindCoverAction(113,1),blindCoverAction(97,3)],
  morris:[0,3,6,12],point:[84,97,85,71],mancala:[0,4,0,5,3,5,6,7],
 }
-function previewSnapshot(game:Game,current?:Settings){
+function previewSnapshot(game:Game,current?:Settings,party=false){
  const exact=current?.game===game?current:undefined
  const settings:Settings={...defaults,divineSide:3,...exact,game}
  const hold=isHoldAuction(settings)
  const episode=game==='memoryPoker'&&settings.memoryPokerMode==='episode'
- const solo=!hold&&!episode
+ const towerParty=game==='equationTower'&&party
+ const solo=!hold&&!episode&&!towerParty
  const count=hold||episode?2:minSeats(game,solo)
  const hostNow=1_800_000_000_000
  const options={
   solo,seed:31337,holdAuction:hold,memoryDuelDeal:episode?memoryDuelDeal(bound=>Math.floor(bound/3)):undefined,
   size:settings.size,closed:settings.closed,divineSide:settings.divineSide,divineHard:settings.divineHard,
   fragmentStrict:settings.fragmentStrict,fragmentCount:settings.fragmentCount,memoryPokerPeek:settings.memoryPokerPeek,
-  symmetryAxis:settings.symmetryAxis,flagsMode:settings.flagsMode,coopReflect:settings.coopReflect,gradationMarked:settings.gradationMarked,
+  symmetryAxis:settings.symmetryAxis,flagsMode:settings.flagsMode,equationTowerMode:settings.equationTowerMode,coopReflect:settings.coopReflect,gradationMarked:settings.gradationMarked,
  }
  const seats:Snapshot['seats']=Array.from({length:count},(_,i)=>({
   id:sampleId(i),name:i===0?'Player':solo?'Bot '+i:'Guest '+i,ready:true,bot:solo&&i!==0,online:true,appearance:[0,4,12][i],
@@ -32,7 +33,7 @@ function previewSnapshot(game:Game,current?:Settings){
  const opening=start(game,ids,settings.seconds*1000,hostNow,options)
  const seeded=(sampleFixtures[game]??[]).reduce((state,action)=>move(state,state.seats[state.turn],action,hostNow)??state,opening)
  const displayed=game==='montage'?hostNow+montageRules.countdownMs:hostNow
- const example=game==='montage'?timeout(openMontageRound(seeded,1,hostNow),displayed):seeded
+ const example=game==='montage'?timeout(openMontageRound(seeded,1,hostNow),displayed):game==='unknown'?playUnknown(seeded,you,'south',hostNow)??seeded:game==='doubtBet'?playDoubtBet(seeded,seeded.seats[seeded.turn],{kind:'bid',color:'red',count:2,points:1,slots:0},hostNow)??seeded:seeded
  return {
   you,host:you,epoch:'preview',match:'preview-'+game,rev:0,hostNow:displayed,
   settings,seats,game:view(example,you,displayed),fixture:0,count:1,
@@ -40,10 +41,10 @@ function previewSnapshot(game:Game,current?:Settings){
  } satisfies Snapshot
 }
 
-export function RealTablePreview({game,motionOff=false,settings}:{game:Game;motionOff?:boolean;settings?:Settings}){
- const snap=useMemo(()=>previewSnapshot(game,settings),[game,settings])
- const variant=snap.game.timeHold?'hold':snap.game.memoryDuel?'episode':undefined
- const context=variant==='hold'?'Hold & release':variant==='episode'?'Episode-style duel':'Example position'
+export function RealTablePreview({game,motionOff=false,settings,party}:{game:Game;motionOff?:boolean;settings?:Settings;party?:boolean}){
+ const snap=useMemo(()=>previewSnapshot(game,settings,party),[game,settings,party])
+ const variant=snap.game.timeHold?'hold':snap.game.memoryDuel?'episode':snap.game.equationTower&&party?snap.game.equationTower.mode:undefined
+ const context=variant==='hold'?'Hold & release':variant==='episode'?'Episode-style duel':variant==='quick'?'Quick clock':variant==='standard'?'Standard clock':'Example position'
  const nameOf=(id:string)=>snap.seats.find(seat=>seat.id===id)?.name??'Unknown'
  return <figure className="real-table-preview" data-real-table-preview={game} data-sample-variant={variant} data-sample-motion={motionOff?'off':undefined}>
   <figcaption><strong>Game table</strong><span>{context} · read-only</span></figcaption>

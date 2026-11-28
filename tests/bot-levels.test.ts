@@ -1,12 +1,15 @@
+import {doubtBot} from '../src/doubt-bet'
+import {equationTowerBot} from '../src/equation-tower'
 import {bingoBot} from '../src/auction-bingo'
 import {equationBot} from '../src/equation-high-low'
 import {hiddenBot} from '../src/hidden-word'
+import {unknownBot} from '../src/unknown'
 import {gradationBot} from '../src/gradation'
 import {bigSmallBot} from '../src/big-small'
 import {diceBot} from '../src/triple-dice'
 import {botThreeRow} from '../src/three-row'
 import {expect,it} from 'vitest'
-import {botAction,minSeats,playHiddenWord,playGradation,move,playBigSmall,playEquationHighLow,playColorLink,playHeavy13,playThreeRow,playTripleDice,playAuctionBingo,start,titles,view,type BotLevel,type Game} from '../src/engine'
+import {botAction,minSeats,playHiddenWord,playUnknown,playDoubtBet,playEquationTower,playGradation,move,playBigSmall,playEquationHighLow,playColorLink,playHeavy13,playThreeRow,playTripleDice,playAuctionBingo,start,titles,view,type BotLevel,type Game} from '../src/engine'
 import {colorLinkBot} from '../src/color-link'
 import {Host,decode,defaults,humanOnly} from '../src/room'
 import {buyer,contactAction,guessAction} from "../src/secret"
@@ -71,12 +74,28 @@ it('changing difficulty preserves the complete practice roster but swapping game
 
 it('every game offering AI has legal deterministic opening choices at all three levels',()=>{
  const games=(Object.keys(titles) as Game[]).filter(game=>!humanOnly(game))
- expect(games).toHaveLength(22)
+ expect(games.length).toBeGreaterThanOrEqual(24)
+ expect(games).toEqual(expect.arrayContaining(['unknown','doubtBet','equationTower']))
  for(const game of games){
   const seats=['a','b','c'].slice(0,Math.max(2,minSeats(game)))
   const g=start(game,seats,25000,0,{seed:733})
   for(const level of levels){
    const v=view(g,'a')
+   if(v.doubtBet){
+    const seat=g.seats[g.turn],projection=view(g,seat).doubtBet!
+    const a=doubtBot(projection,level,19)
+    expect(a,game+' '+level).not.toBeNull()
+    expect(playDoubtBet(g,seat,a!,1)).not.toBeNull()
+    expect(doubtBot(projection,level,19)).toEqual(a)
+    continue
+   }
+   if(v.equationTower){
+    const a=equationTowerBot(v.equationTower,'a',level)
+    expect(a,game+' '+level).not.toBeNull()
+    expect(playEquationTower(g,'a',a!,1)).not.toBeNull()
+    expect(equationTowerBot(v.equationTower,'a',level)).toEqual(a)
+    continue
+   }
    if(v.gradation){
     const a=gradationBot(v.gradation,'a',19,level)
     expect(a,game+' '+level).not.toBeNull()
@@ -96,6 +115,13 @@ it('every game offering AI has legal deterministic opening choices at all three 
     expect(a,game+' '+level).not.toBeNull()
     expect(playEquationHighLow(g,'a',a!,1)).not.toBeNull()
     expect(equationBot(v.equationHighLow,'a',19,level)).toEqual(a)
+    continue
+   }
+   if(v.unknown){
+    const a=unknownBot(v.unknown,19,level)
+    expect(v.unknown.allowed,game+' '+level).toContain(a)
+    expect(playUnknown(g,'a',a,1),game+' '+level).not.toBeNull()
+    expect(unknownBot(v.unknown,19,level)).toEqual(a)
     continue
    }
    if(v.hiddenWord){
