@@ -131,3 +131,21 @@ test('gallery gives a mobile visitor a persistent way to pause looping covers',a
  await art.scrollIntoViewIfNeeded()
  await expect(art).toHaveAttribute('data-preview-state','playing')
 })
+
+test('Doubt and Bet moves its original claim card and wager chip',async({page})=>{
+ await page.setViewportSize({width:390,height:760})
+ await page.goto('./season/2/')
+ await meet(page,'doubtBet')
+ const copy=moving(page,'doubtBet')
+ await expect(copy).toHaveAttribute('data-cover-ready','true')
+ await expect(copy).toHaveAttribute('data-cover-original',/seasonal-doubtBet\.svg$/)
+ const cues=await motions(copy)
+ expect(cues.map(([tag,field,type,start])=>[tag,field,type,start])).toEqual([
+  ['animateTransform','transform','translate','0.14s'],
+  ['animateTransform','transform','translate','0.48s'],
+ ])
+ expect(cues[0][4]).not.toEqual(cues[1][4])
+ await page.getByRole('button',{name:'Pause previews',exact:true}).click()
+ await expect(copy).toHaveCount(0)
+ await expect(cover(page,'doubtBet').locator('img[data-arena-art]')).toBeAttached()
+})

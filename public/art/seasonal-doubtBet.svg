@@ -29,12 +29,18 @@
   <use href="#card" fill="#355765"/>
   <path d="M29 109c22 0 24-28 53-33 23-3 35 13 36 23-17-8-26-3-26 7 0 10 16 13 34 17m-99 9c12 0 17-9 31-9 12 0 18 9 30 9 16 0 19-9 34-9m-89 24c14 0 17-7 26-7s19 7 31 7 17-7 27-7" fill="none" stroke="#d6e2dd" stroke-width="3.1" stroke-linecap="round"/>
  </g>
+ <g>
+  <animateTransform data-cover-at="0.14s" attributeName="transform" type="translate" begin="indefinite" dur="1.48s" fill="remove" values="0 0;0 -18;19 -30;19 -30;0 0" keyTimes="0;.21;.40;.61;1"/>
  <g transform="translate(404 126) rotate(-3 78 113)">
   <use href="#card" fill="#933f45"/>
   <path d="M79 42c4 26 32 29 32 60a33 33 0 0 1-66 0c0-16 10-27 21-39-1 7-2 16-2 24 13-8 15-25 15-45Zm1 52c4 12 15 17 15 29 0 9-7 15-16 15s-16-7-16-15c0-10 9-21 17-29Z" fill="none" stroke="#f2c482" stroke-width="3.2" stroke-linejoin="round"/>
   <path d="M50 158q29 19 58 0m-55 14q27 15 52 0m-47 15q23 8 42 0" fill="none" stroke="#e7a772" stroke-width="1.1"/>
  </g>
- <g transform="translate(227 343) rotate(12)"><use href="#chip" x="-45" y="6"/><use href="#chip" x="-6"/><use href="#chip" x="32" y="15"/></g>
+ </g>
+ <g transform="translate(227 343) rotate(12)"><use href="#chip" x="-45" y="6"/><use href="#chip" x="-6"/><g>
+  <animateTransform data-cover-at="0.48s" attributeName="transform" type="translate" begin="indefinite" dur="1.10s" fill="remove" values="0 0;25 -6;48 1;0 0" keyTimes="0;.22;.58;1"/>
+  <use href="#chip" x="32" y="15"/>
+ </g></g>
  <g transform="translate(734 348) rotate(-13)" fill="#382b33" stroke="#d8a589">
   <path d="m-12-25 7-8h29l8 8v47l-8 8H-5l-7-8Z" transform="translate(-12 6)"/>
   <path d="m-12-25 7-8h29l8 8v47l-8 8H-5l-7-8Z"/>
