@@ -40,7 +40,7 @@
 </g>
 <g transform="translate(503 143) rotate(12 77 107)">
  <g>
-  <animateTransform data-cover-at="0.14s" attributeName="transform" type="translate" values="0 -22;0 4;0 -2;0 0" keyTimes="0;.55;.8;1" begin="indefinite" dur="0.68s" fill="freeze"/>
+  <animateTransform data-cover-at="0.14s" attributeName="transform" type="translate" values="0 -22;0 4;0 -2;0 0" keyTimes="0;.55;.8;1" begin="indefinite" dur="0.68s" fill="remove"/>
   <ellipse cx="85" cy="218" rx="89" ry="28" fill="#0f1d13" opacity=".45"/>
   <rect width="154" height="214" rx="11" fill="#342322" transform="translate(0 8)"/>
   <rect width="154" height="214" rx="11" fill="url(#wine)" stroke="#d3a571" stroke-width="2.5"/>
@@ -52,7 +52,7 @@
 <g fill="none" stroke="#dfc489" stroke-width="2.3"><path d="M479 199v31m-9-22 9-9 9 9m-9 91v34m-9-10 9 10 9-10m-21-64h24m-24 13h24"/></g>
 <g transform="translate(214 332)"><ellipse cy="13" rx="49" ry="22" fill="#121b13" opacity=".55"/><use href="#disc" y="6"/><use href="#disc"/><use href="#disc" y="-6"/><use href="#disc" y="-12"/></g>
 <g transform="translate(721 366)"><ellipse cy="13" rx="63" ry="20" fill="#121b13" opacity=".55"/><use href="#disc" x="-29" y="3"/><use href="#disc" x="-29" y="-3"/><use href="#disc" x="27" y="5"/><use href="#disc" x="27" y="-1"/><use href="#disc" x="27" y="-7"/><use href="#disc" x="27" y="-13"/>
- <g transform="translate(5 -23)"><g><animateTransform data-cover-at="0.39s" attributeName="transform" type="translate" values="0 -13;0 2;0 0" keyTimes="0;.68;1" begin="indefinite" dur="0.43s" fill="freeze"/><use href="#disc"/></g></g>
+ <g transform="translate(5 -23)"><g><animateTransform data-cover-at="0.39s" attributeName="transform" type="translate" values="0 -13;0 2;0 0" keyTimes="0;.68;1" begin="indefinite" dur="0.43s" fill="remove"/><use href="#disc"/></g></g>
 </g>
 <g stroke="#cfaa74" fill="none" opacity=".58"><path d="M360 431h92m56 0h92m-312-317h148m88 0h148"/><path d="m480 428 5 3-5 3-5-3zM480 109l6 5-6 5-6-5z" fill="#e2bd83"/></g>
 </svg>

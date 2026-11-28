@@ -25,7 +25,7 @@
  <path d="M11 157V30Q18 15 35 10q17 4 28 18l4 129Z" fill="#41615a" stroke="#8c9474"/>
  <path d="M15 34h42m-42 4 42-2M17 46h24m-25 7h38m-36 11h28" fill="none" stroke="#77907b"/>
  <path d="m21 98-3 52H52l1-50Z" fill="#263d39"/><path d="M35 21v29m-3-29v29" fill="none" stroke="#c6ac70" stroke-width="1.5"/>
- <g><animateTransform attributeName="transform" type="translate" begin="indefinite" data-cover-at="0.17s" dur="1.3s" values="0 0;0 -9;0 0" keyTimes="0;.4;1"/>
+ <g><animateTransform attributeName="transform" type="translate" begin="indefinite" data-cover-at="0.17s" dur="1.3s" values="0 0;0 -9;0 0" keyTimes="0;.4;1" fill="remove"/>
  <path d="m13 77 9-13h24l11 11 2 64-9 8-35-2Z" fill="url(#tile)" stroke-width="2"/>
  <path d="m13 77 10 4 33-5m-33 6 1 56m25 .5 6-6m-31-52 8-12m2 15-4-4" fill="none" stroke="#846447"/>
  <ellipse cx="34" cy="63" rx="6" ry="9" fill="none" stroke="#d1b677" stroke-width="3"/>
@@ -35,7 +35,7 @@
  <path d="M11 157V30Q18 15 35 10q17 4 28 18l4 129Z" fill="#41615a" stroke="#8c9474"/>
  <path d="M15 34h42m-42 4 42-2M17 46h24m-25 7h38m-36 11h28" fill="none" stroke="#77907b"/>
  <path d="m21 98-3 52H52l1-50Z" fill="#263d39"/><path d="M35 21v29m-3-29v29" fill="none" stroke="#c6ac70" stroke-width="1.5"/>
- <g><animateTransform attributeName="transform" type="translate" begin="indefinite" data-cover-at="0.26s" dur="1.3s" values="0 0;0 -9;0 0" keyTimes="0;.4;1"/>
+ <g><animateTransform attributeName="transform" type="translate" begin="indefinite" data-cover-at="0.26s" dur="1.3s" values="0 0;0 -9;0 0" keyTimes="0;.4;1" fill="remove"/>
  <path d="m13 77 9-13h24l11 11 2 64-9 8-35-2Z" fill="url(#tile)" stroke-width="2"/>
  <path d="m13 77 10 4 33-5m-33 6 1 56m25 .5 6-6m-31-52 8-12m2 15-4-4" fill="none" stroke="#846447"/>
  <ellipse cx="34" cy="63" rx="6" ry="9" fill="none" stroke="#d1b677" stroke-width="3"/>
@@ -45,7 +45,7 @@
  <path d="M11 157V30Q18 15 35 10q17 4 28 18l4 129Z" fill="#41615a" stroke="#8c9474"/>
  <path d="M15 34h42m-42 4 42-2M17 46h24m-25 7h38m-36 11h28" fill="none" stroke="#77907b"/>
  <path d="m21 98-3 52H52l1-50Z" fill="#263d39"/><path d="M35 21v29m-3-29v29" fill="none" stroke="#c6ac70" stroke-width="1.5"/>
- <g><animateTransform attributeName="transform" type="translate" begin="indefinite" data-cover-at="0.35s" dur="1.3s" values="0 0;0 -9;0 0" keyTimes="0;.4;1"/>
+ <g><animateTransform attributeName="transform" type="translate" begin="indefinite" data-cover-at="0.35s" dur="1.3s" values="0 0;0 -9;0 0" keyTimes="0;.4;1" fill="remove"/>
  <path d="m13 77 9-13h24l11 11 2 64-9 8-35-2Z" fill="url(#tile)" stroke-width="2"/>
  <path d="m13 77 10 4 33-5m-33 6 1 56m25 .5 6-6m-31-52 8-12m2 15-4-4" fill="none" stroke="#846447"/>
  <ellipse cx="34" cy="63" rx="6" ry="9" fill="none" stroke="#d1b677" stroke-width="3"/>
@@ -55,7 +55,7 @@
  <path d="M11 157V30Q18 15 35 10q17 4 28 18l4 129Z" fill="#41615a" stroke="#8c9474"/>
  <path d="M15 34h42m-42 4 42-2M17 46h24m-25 7h38m-36 11h28" fill="none" stroke="#77907b"/>
  <path d="m21 98-3 52H52l1-50Z" fill="#263d39"/><path d="M35 21v29m-3-29v29" fill="none" stroke="#c6ac70" stroke-width="1.5"/>
- <g><animateTransform attributeName="transform" type="translate" begin="indefinite" data-cover-at="0.44s" dur="1.3s" values="0 0;0 -9;0 0" keyTimes="0;.4;1"/>
+ <g><animateTransform attributeName="transform" type="translate" begin="indefinite" data-cover-at="0.44s" dur="1.3s" values="0 0;0 -9;0 0" keyTimes="0;.4;1" fill="remove"/>
  <path d="m13 77 9-13h24l11 11 2 64-9 8-35-2Z" fill="url(#tile)" stroke-width="2"/>
  <path d="m13 77 10 4 33-5m-33 6 1 56m25 .5 6-6m-31-52 8-12m2 15-4-4" fill="none" stroke="#846447"/>
  <ellipse cx="34" cy="63" rx="6" ry="9" fill="none" stroke="#d1b677" stroke-width="3"/>
@@ -65,7 +65,7 @@
  <path d="M11 157V30Q18 15 35 10q17 4 28 18l4 129Z" fill="#41615a" stroke="#8c9474"/>
  <path d="M15 34h42m-42 4 42-2M17 46h24m-25 7h38m-36 11h28" fill="none" stroke="#77907b"/>
  <path d="m21 98-3 52H52l1-50Z" fill="#263d39"/><path d="M35 21v29m-3-29v29" fill="none" stroke="#c6ac70" stroke-width="1.5"/>
- <g><animateTransform attributeName="transform" type="translate" begin="indefinite" data-cover-at="0.53s" dur="1.3s" values="0 0;0 -9;0 0" keyTimes="0;.4;1"/>
+ <g><animateTransform attributeName="transform" type="translate" begin="indefinite" data-cover-at="0.53s" dur="1.3s" values="0 0;0 -9;0 0" keyTimes="0;.4;1" fill="remove"/>
  <path d="m13 77 9-13h24l11 11 2 64-9 8-35-2Z" fill="url(#tile)" stroke-width="2"/>
  <path d="m13 77 10 4 33-5m-33 6 1 56m25 .5 6-6m-31-52 8-12m2 15-4-4" fill="none" stroke="#846447"/>
  <ellipse cx="34" cy="63" rx="6" ry="9" fill="none" stroke="#d1b677" stroke-width="3"/>
@@ -75,7 +75,7 @@
  <path d="M11 157V30Q18 15 35 10q17 4 28 18l4 129Z" fill="#41615a" stroke="#8c9474"/>
  <path d="M15 34h42m-42 4 42-2M17 46h24m-25 7h38m-36 11h28" fill="none" stroke="#77907b"/>
  <path d="m21 98-3 52H52l1-50Z" fill="#263d39"/><path d="M35 21v29m-3-29v29" fill="none" stroke="#c6ac70" stroke-width="1.5"/>
- <g><animateTransform attributeName="transform" type="translate" begin="indefinite" data-cover-at="0.62s" dur="1.3s" values="0 0;0 -9;0 0" keyTimes="0;.4;1"/>
+ <g><animateTransform attributeName="transform" type="translate" begin="indefinite" data-cover-at="0.62s" dur="1.3s" values="0 0;0 -9;0 0" keyTimes="0;.4;1" fill="remove"/>
  <path d="m13 77 9-13h24l11 11 2 64-9 8-35-2Z" fill="url(#tile)" stroke-width="2"/>
  <path d="m13 77 10 4 33-5m-33 6 1 56m25 .5 6-6m-31-52 8-12m2 15-4-4" fill="none" stroke="#846447"/>
  <ellipse cx="34" cy="63" rx="6" ry="9" fill="none" stroke="#d1b677" stroke-width="3"/>
@@ -85,7 +85,7 @@
  <path d="M11 157V30Q18 15 35 10q17 4 28 18l4 129Z" fill="#41615a" stroke="#8c9474"/>
  <path d="M15 34h42m-42 4 42-2M17 46h24m-25 7h38m-36 11h28" fill="none" stroke="#77907b"/>
  <path d="m21 98-3 52H52l1-50Z" fill="#263d39"/><path d="M35 21v29m-3-29v29" fill="none" stroke="#c6ac70" stroke-width="1.5"/>
- <g><animateTransform attributeName="transform" type="translate" begin="indefinite" data-cover-at="0.71s" dur="1.3s" values="0 0;0 -9;0 0" keyTimes="0;.4;1"/>
+ <g><animateTransform attributeName="transform" type="translate" begin="indefinite" data-cover-at="0.71s" dur="1.3s" values="0 0;0 -9;0 0" keyTimes="0;.4;1" fill="remove"/>
  <path d="m13 77 9-13h24l11 11 2 64-9 8-35-2Z" fill="url(#tile)" stroke-width="2"/>
  <path d="m13 77 10 4 33-5m-33 6 1 56m25 .5 6-6m-31-52 8-12m2 15-4-4" fill="none" stroke="#846447"/>
  <ellipse cx="34" cy="63" rx="6" ry="9" fill="none" stroke="#d1b677" stroke-width="3"/>
