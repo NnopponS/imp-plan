@@ -21,13 +21,6 @@
  font-size:.8rem;overflow-wrap:anywhere
 }
 .point-scoreboard li[data-current=true]{border-color:#d0a36c;box-shadow:inset 2px 0 #d0a36c;background:#3b2c21}
-.point-token{
- display:grid;place-items:center;width:15px;height:15px;border:1px solid #e0b87a;border-radius:50%;
- background:#775337;color:#f5d99f
-}
-.point-token::after{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
-[data-side="1"] .point-token{border-color:#cfae9b;background:#5d3933;color:#efc9b8}
-[data-side="1"] .point-token::after{border-radius:1px;transform:rotate(45deg);width:6px;height:6px}
 .point-scoreboard strong,.league-ledger li strong{
  white-space:nowrap;font-variant-numeric:tabular-nums;font-size:1rem;color:#ffe5b2
 }
@@ -98,7 +91,6 @@
 @media(max-width:370px){
  .point-scoreboard li{gap:4px;padding-inline:5px}
  .point-scoreboard strong{font-size:.86rem}
- .point-token{width:12px;height:12px}
  .match-record-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
  .match-record-actions .match-action{padding-inline:6px}
  .match-record-actions .match-action:is(.primary,:only-child){grid-column:1/-1}

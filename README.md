@@ -31,13 +31,13 @@ Game cards show an original insignia and their setting in the show, such as a Ma
 
 ## Playable catalog
 
-**Playable alpha: 44 fan adaptations out of 64 indexed entries.** The index includes main, prize, prison, exile, final, and unaired entries. An indexed entry is not necessarily playable. Rules marked as fan adaptations are not verified broadcast reproductions. Use the illustrated pre-match guide to learn the table one step at a time. Swipe right to advance or use keyboard arrows; the match clock starts only when you enter.
+**Playable alpha: 47 fan adaptations out of 64 indexed entries.** The index includes main, prize, prison, exile, final, and unaired entries. An indexed entry is not necessarily playable. Rules marked as fan adaptations are not verified broadcast reproductions. Use the illustrated pre-match guide to learn the table one step at a time. Swipe right to advance or use keyboard arrows; the match clock starts only when you enter.
 
 | Season | Playable / indexed | Playable entries |
 | --- | ---: | --- |
 | [1 · The First Plan](https://nnoppons.github.io/imp-plan/season/1/) | 12 / 18 | Cooperative Puzzle, Fragments of Memory, Secret Number, Word Tower, Scale Game, Laying Grass, Montage, Equation High-Low, Four-Player Three in a Row, Blind Gomoku, Nine Men's Morris, Hexagon |
-| [2 · Death Room](https://nnoppons.github.io/imp-plan/season/2/) | 11 / 17 | Remove One, Unknown, Time Auction, Triple Dice, Balance Mancala, Wall Go, Doubt and Bet, Equation Pyramid, Big Small, Bagh Chal, Knight's Tour |
-| [3 · Dead Again](https://nnoppons.github.io/imp-plan/season/3/) | 21 / 29 | Count the Cubes, Count the Rectangles, Lay the Grass, Memory Poker, Auction Bingo, Hidden Word, Heavy 13, Wall Go II, Tower of Equations, Gradation, Piece Puzzle, Spot the Difference, Secret Code, Loop Fence Puzzle, Symmetrical Puzzle, Flags Around the World, Exile Rectangle Counting, Trial of God / Divine Test, Point Gomoku, Color Link, Equation Traffic Light / Equation Lights |
+| [2 · Death Room](https://nnoppons.github.io/imp-plan/season/2/) | 12 / 17 | Remove One, Unknown, Time Auction, Treasure Island, Triple Dice, Balance Mancala, Wall Go, Doubt and Bet, Equation Pyramid, Big Small, Bagh Chal, Knight's Tour |
+| [3 · Dead Again](https://nnoppons.github.io/imp-plan/season/3/) | 23 / 29 | Count the Cubes, Count the Rectangles, Lay the Grass, Memory Poker, Auction Bingo, Hidden Word, Hit, Stay, Heavy 13, Piggy Bank, Wall Go II, Tower of Equations, Gradation, Piece Puzzle, Spot the Difference, Secret Code, Loop Fence Puzzle, Symmetrical Puzzle, Flags Around the World, Exile Rectangle Counting, Trial of God / Divine Test, Point Gomoku, Color Link, Equation Traffic Light / Equation Lights |
 
 For a first game, try **Blind Gomoku** for a hidden-board duel, **Count the Cubes** for a solo spatial puzzle, or **Heavy 13** for private choices and shared stacks. Time Auction and Memory Poker also have separately labeled episode-inspired modes with their own conditions. Seat counts and eligible bots depend on the game. Some duels use rotated fixtures for larger parties rather than putting everyone on one board.
 

@@ -33,6 +33,9 @@
 | Unknown | 2–12 | 1 human + 1 bot by default | One shared rolling-cube race. |
 | Doubt and Bet | 2–10 | 1 human + 1 bot by default | Private hands, public claims and a two-seat response when challenged. |
 | Tower of Equations | 2–8 | 1 human | Three untimed Workshop puzzles in practice; public declarations and an exact-move proof in Party. |
+| Treasure Island | 2–16 | 1 human, optional 1–3 bots | Independent private routes and clue histories in a shared auction. |
+| Hit, Stay | 2–8 | 1 human + 1 bot | Separate private hands and fictional chip stacks per seat. |
+| Piggy Bank | 3–8 | 1 human + 3 bots | One shared rack, private challenge votes and exact-count answers. |
 | Word Tower | 2–8 humans | 1 human | A shared word board under a short four-minute clock. |
 
 The default party starts on Blind Gomoku with two places. Select Tournament to seat 3–4 on alternating two-player boards, or choose another game before inviting a larger group. Switching game or variant does not kick anyone; if there are too many existing seats, the host must remove extras (including any offline reserved seats) before switching. Existing players can still reconnect to locked/full tables using their token.

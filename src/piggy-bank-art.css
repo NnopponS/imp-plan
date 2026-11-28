@@ -1,0 +1,33 @@
+.piggy-coin{display:inline-block;width:2.1rem;height:2.1rem;vertical-align:middle;flex:none}
+.piggy-coin circle:first-child{fill:#452e1c;stroke:#6e4c2e;stroke-width:1}
+.piggy-coin circle:nth-child(2){fill:#26262f;stroke:#edbd77;stroke-width:1.6}
+.piggy-coin circle:nth-child(3),.piggy-coin path{fill:none;stroke:#f8d9a3;stroke-width:1.2;stroke-linecap:round}
+.piggy-coin[data-coin=white] circle:nth-child(2){fill:#f5dfa9;stroke:#8e663c}
+.piggy-coin[data-coin=white] circle:nth-child(3),.piggy-coin[data-coin=white] path{stroke:#674629}
+.piggy-figure{width:100%;height:auto;max-width:9rem;display:block;margin-inline:auto;filter:drop-shadow(0 5px 3px #100a0590);overflow:visible}
+.piggy-figure[data-open] .piggy-ceramic{filter:brightness(1.13)}
+.piggy-shelf, .room[data-playing] .match .piggy-game button.piggy-shelf:not(.primary){background:linear-gradient(180deg,#272019 0%,#34251a 78%,#8d6142 79%,#503422 85%,#251b16 87%);color:#ffe7bb;
+ display:grid;grid-template-rows:auto 1fr auto;align-items:center;min-width:0;width:100%;padding:.43rem .25rem .5rem;gap:.07rem;
+ border:1px solid #8b6543;border-radius:.28rem;text-align:center;line-height:1.25;box-shadow:inset 0 2px 9px #1f140f}
+.room[data-playing] .match .piggy-game button.piggy-shelf:not(.primary):hover,.room[data-playing] .match .piggy-game button.piggy-shelf:not(.primary)[aria-pressed=true],.piggy-shelf[data-selected]{border-color:#ffcf8b;box-shadow:inset 0 0 14px #ad714c,0 0 0 1px #ffcf8b}
+.piggy-shelf-label,.piggy-shelf-detail{font-size:.73rem;overflow-wrap:anywhere;min-width:0}
+.piggy-shelf-label{color:#eacc92;font-weight:bold}
+.piggy-shelf-detail{color:#fff0cb}
+.piggy-empty{font:italic .85rem Georgia,serif;color:#d6b795}
+.piggy-lesson-stage{min-height:13rem;width:min(430px,100%);padding:.65rem;margin-inline:auto;color:#fbeac1;background:radial-gradient(ellipse at 50% 0%,#624538,#291d19 72%);border:1px solid #b18455;border-radius:.42rem;display:grid;align-content:center;gap:.25rem}
+.piggy-lesson-stage p{margin:0!important;font:700 .83rem/1.1 Georgia,serif;text-align:center}
+.piggy-lesson-shelves{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.33rem}
+.piggy-lesson-stage .piggy-shelf{min-height:4.8rem}
+.piggy-lesson-stage .piggy-figure{width:min(100%,96px)}
+.piggy-lesson-mark{height:2.25rem;display:flex;justify-content:center;align-items:center;gap:.18rem;font-size:.83rem}
+.piggy-lesson-mark .piggy-coin{width:1.5rem;height:1.5rem}
+@keyframes pb-insert{0%{transform:translate(-2rem,-.65rem);opacity:0}65%{transform:translate(0,-.25rem)}100%{transform:translate(0,0);opacity:1}}
+@keyframes pb-pass{from{transform:translateX(-72%);opacity:.25}to{transform:translateX(0);opacity:1}}
+@keyframes pb-open{0%{transform:rotate(-6deg) scale(.88)}55%{transform:rotate(5deg) scale(1.07)}100%{transform:rotate(0) scale(1)}}
+[data-piggy-lesson="1"] .piggy-lesson-mark svg{animation:pb-insert .8s ease-out backwards}
+[data-piggy-lesson="1"] .piggy-lesson-mark svg:nth-child(2){animation-delay:.12s}
+[data-piggy-lesson="1"] .piggy-lesson-mark svg:nth-child(3){animation-delay:.23s}
+[data-piggy-lesson="2"] .piggy-lesson-shelves>div:nth-child(3) svg{animation:pb-pass .75s ease-out both}
+[data-piggy-lesson="3"] .piggy-lesson-mark svg{animation:pb-open .65s ease-out both}
+:is([data-motion-off=true],[data-sample-motion=off]) .piggy-lesson-stage *,[data-sample-motion=off] .piggy-game *{animation:none!important}
+@media(prefers-reduced-motion:reduce){.piggy-lesson-stage *,.piggy-game *{animation:none!important}}

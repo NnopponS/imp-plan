@@ -1,6 +1,7 @@
 import {expect,it} from 'vitest'
 import {fragmentDeal,fragmentNeed} from '../src/fragments'
 import {start,view,timeout,move} from '../src/engine'
+import {Host} from '../src/room'
 
 it('constructs 12 objective, unique-choice questions each with one valid key',()=>{
  for(let seed=0;seed<30;seed++){
@@ -44,4 +45,31 @@ it('treats a strict timeout as a miss, and never exposes a future question',()=>
  expect(s.done).toBe(true)
  expect(view(s,'b').fragments!.passed).toBe(false)
  expect(view(s,'b').fragments!.scene).toBeNull()
+})
+
+it('omits expired study state from a guest snapshot even before the host tick advances the round',()=>{
+ let now=1000
+ const host=new Host('Curator',()=>now)
+ const config={...host.settings,game:'fragments' as const,fragmentStrict:true}
+ expect(host.command('host','configure',host.rev,{kind:'config',settings:config})).toBeNull()
+ expect(host.join('reader','Reader')).not.toBeNull()
+ expect(host.command('reader','ready',host.rev,{kind:'ready'})).toBeNull()
+ expect(host.command('host','start',host.rev,{kind:'start'})).toBeNull()
+ const wire=()=>JSON.parse(JSON.stringify({type:'snapshot',state:host.snapshot('reader')})).state.game
+ now=45999
+ expect(wire().fragments.scene.objects).toHaveLength(9)
+ expect(wire().fragments.question).toBeNull()
+ now=46000
+ const expired=wire()
+ expect(expired.fragments.scene).toBeNull()
+ expect(expired.fragments.question).toBeNull()
+ expect(expired).not.toHaveProperty('seed')
+ expect(host.game!.fragments!.study).toBe(true)
+ expect(host.tick()).toBe(true)
+ const recall=wire()
+ expect(recall.deadline-now).toBe(20_000)
+ expect(recall.fragments.scene).toBeNull()
+ expect(Object.keys(recall.fragments.question).sort()).toEqual(['options','prompt'])
+ expect(recall.fragments.question.options).toHaveLength(4)
+ expect(recall.fragments).not.toHaveProperty('deal')
 })

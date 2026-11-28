@@ -1,3 +1,5 @@
+import {HitCardArt,HitChip} from './hit-stay-art'
+import {islandTerrain} from './treasure-island'
 import {EquationBlockArt} from './equation-tower-figures'
 import {useEffect,useRef,useState,type CSSProperties,type ReactNode} from 'react'
 import {titles,type Game} from './engine'
@@ -506,7 +508,37 @@ function EquationTowerPreview(){
   <text x="100" y="94" fill="#e6c68c" textAnchor="middle" fontSize="8">7 + 2 × 2 = 11</text>
  </g>
 }
+function HitStayStill(){
+ return <>
+  <ellipse cx="100" cy="65" rx="63" ry="23" className="ap-gold-line"/>
+  <g transform="translate(62 47)"><g className="ap-pop" style={time(200)}><g transform="scale(.42)"><HitCardArt card={{rank:8,suit:'heart'}}/></g></g></g>
+  <g transform="translate(86 47)"><g className="ap-pop" style={time(350)}><g transform="scale(.42)"><HitCardArt card={{rank:7,suit:'spade'}}/></g></g></g>
+  <g transform="translate(110 47)"><g className="ap-pop" style={time(700)}><g transform="scale(.42)"><HitCardArt card={{rank:5,suit:'diamond'}}/></g></g></g>
+  <g transform="translate(133 67)"><HitChip/></g>
+ </>
+}
+function TreasureIslandPreview(){
+ return <g>
+  <rect x="42" y="35" width="60" height="60" rx="1.5" fill="#dac28a" stroke="#a68658"/>
+  {islandTerrain.map((tile,cell)=><rect key={cell} x={45+(cell%9)*6} y={38+Math.floor(cell/9)*6} width="6" height="6" fill={tile==='water'?'#597c6d':tile==='reef'?'#8d7556':'#d5bd86'} stroke="#9f8055" strokeWidth=".25"/>)}
+  <path d="M72 65h12v-6" stroke="#783924" strokeWidth="1.2" strokeDasharray="2 1" fill="none"/>
+  <circle cx="72" cy="65" r="1.8" fill="#8e482f" stroke="#f6e7be" strokeWidth=".6"/>
+  <Tile x={120} y={65} label="↱"/><Tile x={146} y={65} label="↑"/>
+ </g>
+}
+function PiggyBankPreview(){
+ return <g>
+  <path d="M37 83h126m-51-20h47" className="ap-secondary-line"/>
+  <path d="M50 63q0-12 16-13l12 1 5-7 8 5v8l5 4h5v7h-7l-4 10h-8l-2-4H65l-3 4h-7v-6l-5-4m12-14h9m19 7h.1" className="ap-rose-fill ap-pop" style={time(180)}/>
+  <path d="M108 70h36m-5-5 6 5-6 5" className="ap-gold-line ap-draw" style={time(800)}/>
+  <circle cx="63" cy="43" r="3.5" className="ap-gold-line ap-pop" style={time(400)}/>
+  <circle cx="75" cy="43" r="3.5" className="ap-rose-fill ap-pop" style={time(610)}/>
+ </g>
+}
 const previewScenes={
+ hitStay:{ms:1700,draw:HitStayStill},
+ treasureIsland:{ms:2100,draw:TreasureIslandPreview},
+ piggyBank:{ms:1800,draw:PiggyBankPreview},
  equationTower:{ms:1900,draw:EquationTowerPreview},
  doubtBet:{ms:2070,draw:DoubtBetPreview},
  equationHighLow:{ms:2110,draw:EquationHighLowPreview},

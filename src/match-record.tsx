@@ -3,6 +3,7 @@ import {isDuel,type GameView} from './engine'
 import {isPuzzle} from './puzzles'
 import type {Snapshot} from './room'
 import './match-record.css'
+import {PointBowl} from './point-table-art'
 import {KnightResultImageActions,KnightResultPrint} from './knight-result'
 import {knightPrintData} from './knight-result-art'
 
@@ -52,12 +53,19 @@ function TableSeal({kind}:{kind:ResultMark}){
 }
 
 function resultLabel(g:GameView):{mark:ResultMark,label:string}{
+ if(g.treasureIsland?.result){
+  const {reason,standings}=g.treasureIsland.result
+  if(g.seats.length===1)return reason==='treasure'?{mark:'complete',label:'Treasure found'}:{mark:'closed',label:'Practice complete'}
+  if(standings.filter(row=>row.rank===1).length>1)return {mark:'draw',label:'Shared first place'}
+ }
  if(g.gradation)return g.gradation.winner===null?{mark:'draw',label:'Six-round draw'}:{mark:'win',label:(g.gradation.winner===0?'Copper':'Jade')+' wins'}
  if((g.wallGo2?.result?.winners.length??0)>1)return {mark:'draw',label:'Shared fortress'}
  if((g.auctionBingo?.leaders.length??0)>1)return {mark:'draw',label:'Shared lead'}
+ if((g.hitStay?.leaders.length??0)>1)return {mark:'draw',label:'Shared lead'}
  if((g.doubtBet?.leaders.length??0)>1)return {mark:'draw',label:'Shared lead'}
  if((g.equationHighLow?.leaders.length??0)>1)return {mark:'draw',label:'Shared lead'}
  if(g.equationTower&&g.seats.length===1)return {mark:'complete',label:'Workshop complete'}
+ if((g.piggyBank?.leaders.length??0)>1)return {mark:'draw',label:'Shared lead'}
  if((g.equationTower?.leaders.length??0)>1)return {mark:'draw',label:'Shared lead'}
  if(g.hiddenWord&&g.hiddenWord.standings.filter(row=>row.rank===1).length>1)return {mark:'draw',label:'Shared lead'}
  if((g.tripleDice?.leaders.length??0)>1)return {mark:'draw',label:'Shared lead'}
@@ -78,7 +86,7 @@ function resultLabel(g:GameView):{mark:ResultMark,label:string}{
 
 export function PointScores({game,name,active}:{game:GameView,name:SeatName,active:boolean}){
  return <ul className="point-scoreboard" role="list" aria-label="Point Gomoku scores">{game.seats.map((seat,i)=><li key={seat} data-side={i} data-current={active&&!game.done&&seat===game.turn||undefined}>
-  <span className="point-token" aria-hidden="true"/><span>{name(seat)}</span><strong>{scoreFormat.format(game.scores[i])} <small>pts</small></strong>
+  <PointBowl side={i}/><span>{name(seat)}</span><strong>{scoreFormat.format(game.scores[i])} <small>pts</small></strong>
  </li>)}</ul>
 }
 

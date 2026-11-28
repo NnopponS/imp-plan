@@ -59,3 +59,32 @@ test('Equation Pyramid completes all eight rounds with keyboard and touch',async
   expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(360)
  }finally{await ctx.close()}
 })
+
+test('Equation Pyramid shares carved stones with Preview and marks the exact supports on touch',async({browser,baseURL},info)=>{
+ const context=await browser.newContext({viewport:{width:320,height:640},hasTouch:true,reducedMotion:'reduce'})
+ try{
+  const page=await context.newPage()
+  await page.goto(baseURL!+'season/2/')
+  const card=page.locator('#practice-gallery-pyramid').locator('xpath=ancestor::article')
+  await card.locator('.game-cover-hit').click()
+  const preview=page.locator('[data-real-table-preview="pyramid"]')
+  const carving=(scope:typeof preview)=>scope.locator('.pyramid-row button .pyramid-stone')
+  await expect(carving(preview)).toHaveCount(15)
+  const engraved=await carving(preview).locator('.stone-incision').evaluateAll(els=>els.map(el=>el.getAttribute('d')))
+  expect(new Set(engraved).size).toBeGreaterThan(3)
+  await preview.screenshot({path:info.outputPath('pyramid-preview-320.png')})
+  await page.getByRole('dialog').getByRole('button',{name:/^Practice Equation Pyramid/}).click()
+  await startMatch(page)
+  const instrument=page.getByRole('region',{name:'Equation pyramid instrument'})
+  await expect(carving(instrument)).toHaveCount(15)
+  expect(await carving(instrument).locator('.stone-incision').evaluateAll(els=>els.map(el=>el.getAttribute('d')))).toEqual(engraved)
+  const tiles=instrument.getByRole('group',{name:'Pyramid tiles'}).getByRole('button')
+  await tiles.first().tap()
+  await expect(tiles.first()).toHaveAttribute('aria-pressed','true')
+  await expect(instrument.locator('button[data-support=true]')).toHaveCount(2)
+  for(const i of [1,2])await expect(tiles.nth(i)).toHaveAttribute('data-support','true')
+  await expect(tiles.nth(3)).toBeDisabled()
+  await instrument.screenshot({path:info.outputPath('pyramid-play-320.png')})
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(320)
+ }finally{await context.close()}
+})

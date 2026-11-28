@@ -33,4 +33,7 @@ The owner's 64-entry fan handoff is the initial catalog. Separate rule checklist
 | S3-09 | Partial / fan playable | [Rule sheet](rules/S3-09.md): original offline English lexicon, shared rated clues, private answers and two setter rotations. |
 | S3-15 | Partial / fan playable | [Rule sheet](rules/S3-15.md): top-bundle transfer and flip, exact value and floors, with bounded practice and a declared-count party proof. |
 | S2-11 | Partial / fan playable | [Rule sheet](rules/S2-11.md): sealed hands, increasing claims and a two-sided points/slots challenge. Four deals, limits and scoring are fan choices. |
-| Remaining 20 | Planned | No playable claim. Dice Poker is an unaired slot and cannot be independently certified as a played broadcast format. |
+| S2-07 | Partial / fan playable | [Rule sheet](rules/S2-07.md): sealed arrow lots, private path drafts and compass clues on a 9×9 chart; board generation, five rounds, and scoring are fan choices. |
+| S3-10 | Partial / fan playable | [Rule sheet](rules/S3-10.md): eight fixed-21 hands with private cards and only fictional chips. The broadcast’s signed deck, limit and betting stages are not implemented. |
+| S3-13 | Partial / fan playable | [Rule sheet](rules/S3-13.md): coin adds, passes, alternating claims and hidden suspicion votes. Timers, scaling and finish guard are fan adaptations. |
+| Remaining 17 | Planned | No playable claim. Dice Poker is an unaired slot and cannot be independently certified as a played broadcast format. |

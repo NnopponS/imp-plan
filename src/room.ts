@@ -1,3 +1,5 @@
+import {hitActions,hitBot,hitDeck,hitRules,hitStepLimit,hitView} from './hit-stay'
+import {islandBot,islandView,islandMaxSeats,islandRouteLimit,islandStepLimit,islandChips} from './treasure-island'
 import {doubtBot,doubtColors,doubtDeck,doubtMaxSeats,doubtRounds,doubtView} from './doubt-bet'
 import {wallGo2ActionLimit,wallGo2Step,wallGo2StepLimit} from './wall-go2'
 import {bingoAllCoins,bingoBot,bingoRounds,bingoShapes,bingoView} from './auction-bingo'
@@ -8,7 +10,7 @@ import {bigSmallBot} from './big-small'
 import {diceBands,diceBot,diceDeal,diceRounds,diceView,type Die} from './triple-dice'
 import {flagsWindow} from './flags'
 import {gradationBot,gradationView} from './gradation'
-import {playRelay,playGradation,playFlags} from './engine'
+import {playHitStay,playRelay,playGradation,playFlags} from './engine'
 import {botThreeRow,threeRowView} from './three-row'
 import {symmetryAxes,symmetryTime} from './symmetry'
 import {colorLinkBot,colorLinkRaceBotDelay,linkCells,linkPairLimit} from './color-link'
@@ -21,8 +23,9 @@ import {isPuzzle} from './puzzles'
 import {z} from 'zod'
 import {appearancePreset,legacyAppearance,legacyAppearanceCount,wardrobeVersion} from './wardrobe-look'
 export {appearancePreset} from './wardrobe-look'
+import {piggyBot,piggyRules,piggyCountMax} from './piggy-bank'
 import {equationTowerRules,equationTowerModes,equationTowerBot,equationTowerView} from './equation-tower'
-import {start,move,titles,playEquationTower,heavy13Slot,playDoubtBet,playBigSmall,playEquationHighLow,playHeavy13,playColorLink,playThreeRow,playTripleDice,playAuctionBingo,playHiddenWord,playUnknown,schedule,view,timeout,blindCoverAction,botAction,botLevels,isDuel,minSeats,secretBotIntentKey,simultaneous,redealMemoryDuel,syncTimeHold,openMontageRound,submitMontageBuzz,type State,type Game,type GameView} from './engine'
+import {start,move,titles,playTreasureIsland,playPiggy,playEquationTower,heavy13Slot,playDoubtBet,playBigSmall,playEquationHighLow,playHeavy13,playColorLink,playThreeRow,playTripleDice,playAuctionBingo,playHiddenWord,playUnknown,schedule,view,timeout,blindCoverAction,botAction,botLevels,isDuel,minSeats,secretBotIntentKey,simultaneous,redealMemoryDuel,syncTimeHold,openMontageRound,submitMontageBuzz,type State,type Game,type GameView} from './engine'
 const codeAlphabet='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
 export const roomCode=()=>Array.from(crypto.getRandomValues(new Uint8Array(6)),x=>codeAlphabet[x&31]).join('')
 export const validCode=(x:string)=>/^[A-HJ-NP-Z2-9]{6}$/.test(x)
@@ -35,7 +38,7 @@ export function nickname(value:string):string|null{
  const n=[...new Intl.Segmenter('en',{granularity:'grapheme'}).segment(s)].length
  return n>=1&&n<=24?s:null
 }
-const settings=z.strictObject({game:z.enum(['blind','morris','auction','point','remove','knight','hex','rectangles','mancala','cubes','bagh','secret','grass1','grass3','exile','divine','equations','codeLock','pyramid','fragments','spot','scale','fence','tower','piece','memoryPoker','wallGo','montage','heavy13','colorLink','symmetry','threeRow','flags','coopPuzzle','gradation','bigSmall','tripleDice','wallGo2','auctionBingo','equationHighLow','hiddenWord','unknown','doubtBet','equationTower']),seconds:z.number().int().min(10).max(900),size:z.union([z.literal(5),z.literal(6),z.literal(8)]).optional(),closed:z.boolean().optional(),divineSide:z.union([z.literal(3),z.literal(5),z.literal(7)]).optional(),divineHard:z.boolean().optional(),fragmentStrict:z.boolean().optional(),fragmentCount:z.union([z.literal(8),z.literal(12),z.literal(16),z.literal(24)]).optional(),capacity:z.number().int().min(1).max(16),locked:z.boolean(),botLevel:z.enum(botLevels).optional(),memoryPokerPeek:z.boolean().optional(),memoryPokerMode:z.enum(['fan','episode']).optional(),auctionMode:z.enum(['sealed','hold']).optional(),symmetryAxis:z.enum(symmetryAxes).optional(),coopReflect:z.boolean().optional(),gradationMarked:z.boolean().optional(),flagsMode:z.enum(['recall','names']).optional(),equationTowerMode:z.enum(equationTowerModes).optional()})
+const settings=z.strictObject({game:z.enum(['blind','morris','auction','point','remove','knight','hex','rectangles','mancala','cubes','bagh','secret','grass1','grass3','exile','divine','equations','codeLock','pyramid','fragments','spot','scale','fence','tower','piece','memoryPoker','wallGo','montage','heavy13','colorLink','symmetry','threeRow','flags','coopPuzzle','gradation','bigSmall','tripleDice','wallGo2','auctionBingo','equationHighLow','hiddenWord','unknown','doubtBet','equationTower','hitStay','treasureIsland','piggyBank']),seconds:z.number().int().min(10).max(900),size:z.union([z.literal(5),z.literal(6),z.literal(8)]).optional(),closed:z.boolean().optional(),divineSide:z.union([z.literal(3),z.literal(5),z.literal(7)]).optional(),divineHard:z.boolean().optional(),fragmentStrict:z.boolean().optional(),fragmentCount:z.union([z.literal(8),z.literal(12),z.literal(16),z.literal(24)]).optional(),capacity:z.number().int().min(1).max(16),locked:z.boolean(),botLevel:z.enum(botLevels).optional(),memoryPokerPeek:z.boolean().optional(),memoryPokerMode:z.enum(['fan','episode']).optional(),auctionMode:z.enum(['sealed','hold']).optional(),symmetryAxis:z.enum(symmetryAxes).optional(),coopReflect:z.boolean().optional(),gradationMarked:z.boolean().optional(),flagsMode:z.enum(['recall','names']).optional(),equationTowerMode:z.enum(equationTowerModes).optional()})
 const montageMatch=z.string().regex(/^[a-f0-9]{32}$/)
 const montageRound=z.number().int().min(1).max(montageRules.rounds)
 const heavyMatch=z.string().regex(/^[a-f0-9]{32}$/)
@@ -81,11 +84,26 @@ const doubtAction=z.discriminatedUnion('kind',[
  z.strictObject({kind:z.literal('doubt'),...doubtStake}),z.strictObject({kind:z.literal('counter'),...doubtStake}),
  z.strictObject({kind:z.literal('fold')}),z.strictObject({kind:z.literal('next')})
 ])
+const piggyCoins={black:z.number().int().min(0).max(piggyCountMax),white:z.number().int().min(0).max(piggyCountMax)}
+const piggyAction=z.discriminatedUnion('kind',[
+ z.strictObject({kind:z.literal('pass-bank'),black:z.number().int().min(0).max(piggyRules.maxCoins),white:z.number().int().min(0).max(piggyRules.maxCoins),to:z.number().int().min(0).max(piggyRules.max-1)}),
+ z.strictObject({kind:z.literal('claim'),count:piggyCoins.black}),
+ z.strictObject({kind:z.literal('doubt')}),z.strictObject({kind:z.literal('accept')}),z.strictObject({kind:z.literal('reset')}),z.strictObject({kind:z.literal('skip')}),
+ z.strictObject({kind:z.literal('challenge'),counts:z.array(z.strictObject(piggyCoins)).min(piggyRules.min+1).max(piggyRules.max+1)}),
+])
 const schema=z.discriminatedUnion('kind',[
+ z.strictObject({kind:z.literal('treasure-island'),match:heavyMatch,step:z.number().int().min(0).max(islandStepLimit),action:z.discriminatedUnion('kind',[
+  z.strictObject({kind:z.literal('bid'),amount:z.number().int().min(0).max(islandChips)}),
+  z.strictObject({kind:z.literal('sail'),route:z.array(z.strictObject({
+   arrow:z.number().int().min(0).max(islandMaxSeats*2),turn:z.union([z.literal(0),z.literal(1),z.literal(2),z.literal(3)])
+  })).max(islandRouteLimit).refine(route=>new Set(route.map(p=>p.arrow)).size===route.length)})
+ ])}),
+ z.strictObject({kind:z.literal('piggy-bank'),match:heavyMatch,step:z.number().int().positive().max(200),action:piggyAction}),
  z.strictObject({kind:z.literal('doubt-bet'),match:heavyMatch,step:z.number().int().min(0).max(128),action:doubtAction}),
  z.strictObject({kind:z.literal('equation-high-low'),match:heavyMatch,step:z.number().int().min(0).max(260),action:equationAction}),
  z.strictObject({kind:z.literal('big-small'),match:heavyMatch,step:z.number().int().min(0).max(59),action:bigSmallAction}),
  z.strictObject({kind:z.literal('ready')}),
+ z.strictObject({kind:z.literal('hit-stay'),match:heavyMatch,step:z.number().int().min(0).max(hitStepLimit),action:z.enum(hitActions)}),
  z.strictObject({kind:z.literal('wall-go2'),match:heavyMatch,step:z.number().int().min(0).max(wallGo2StepLimit),action:z.number().int().min(0).max(wallGo2ActionLimit-1)}),
  z.strictObject({kind:z.literal('relay'),match:heavyMatch,turn:z.number().int().min(0).max(68),action:relayAction}),
  z.strictObject({kind:z.literal('gradation-lock'),match:heavyMatch,round:z.number().int().min(1).max(6),order:z.array(z.number().int().min(1).max(7)).length(7),target:z.number().int().min(0).max(6).nullable()}),
@@ -139,7 +157,7 @@ const partyMaximum={
  blind:4,morris:4,point:4,equations:4,wallGo:4,wallGo2:3,bagh:2,
  auction:16,remove:16,knight:16,hex:16,rectangles:16,cubes:16,exile:16,
  grass1:12,grass3:16,mancala:8,secret:16,divine:16,codeLock:16,pyramid:16,
- fragments:8,spot:16,scale:6,fence:16,tower:8,piece:4,memoryPoker:16,montage:16,heavy13:7,colorLink:2,symmetry:16,threeRow:4,flags:16,coopPuzzle:16,gradation:16,bigSmall:2,tripleDice:8,auctionBingo:16,equationHighLow:8,hiddenWord:16,unknown:unknownMaxSeats,doubtBet:doubtMaxSeats,equationTower:8,
+ fragments:8,spot:16,scale:6,fence:16,tower:8,piece:4,memoryPoker:16,montage:16,heavy13:7,colorLink:2,symmetry:16,threeRow:4,flags:16,coopPuzzle:16,gradation:16,bigSmall:2,tripleDice:8,auctionBingo:16,equationHighLow:8,hiddenWord:16,unknown:unknownMaxSeats,doubtBet:doubtMaxSeats,equationTower:8,hitStay:hitRules.maxSeats,treasureIsland:islandMaxSeats,piggyBank:piggyRules.max,
 } as const satisfies Record<Game,number>
 type SeatMode=Pick<Settings,'game'|'memoryPokerMode'|'auctionMode'>
 /** Occupied seats for this room (participants plus any supported bots); fixtures still use two participants. */
@@ -147,7 +165,7 @@ export function seatRules(settings:SeatMode,solo=false):{min:number,max:number,f
  const {game}=settings,episode=isEpisodePoker(settings),duel=isDuel(game)
  if(episode)return {min:2,max:2,fixtureSize:2}
  const min=solo?minSeats(game,true):Math.max(2,minSeats(game))
- const max=solo?(humanOnly(game)?1:game==='equationTower'?1:duel||game==='gradation'?2:partyMaximum[game]):partyMaximum[game]
+ const max=solo?(humanOnly(game)?1:game==='piggyBank'?piggyRules.practiceSeats:game==='equationTower'?1:game==='treasureIsland'?4:duel||game==='gradation'||game==='hitStay'?2:partyMaximum[game]):partyMaximum[game]
  return duel?{min,max,fixtureSize:2}:{min,max}
 }
 export const defaults:Settings={game:'blind',seconds:25,capacity:2,locked:false,botLevel:'normal'}
@@ -317,6 +335,28 @@ export class Host{
    if(!next)return 'That roll is unavailable or its clock has expired.'
    this.setGame(next);return null
   }
+  if(c.kind==='hit-stay'){
+   const current=this.game?.hitStay
+   if(!current||c.match!==this.match||c.step!==current.step||rev>this.rev)return 'That Hit, Stay turn has ended.'
+   if(c.action==='deal'&&s.id!==this.owner)return 'Only the host can deal the next hand early.'
+   const next=playHitStay(this.game!,s.id,c.action,this.clock())
+   if(!next)return 'That action is unavailable or its clock has expired.'
+   this.setGame(next);return null
+  }
+  if(c.kind==='treasure-island'){
+   const island=this.game?.treasureIsland
+   if(!island||c.match!==this.match||c.step!==island.step||rev>this.rev)return 'That island phase has ended.'
+   const next=playTreasureIsland(this.game!,s.id,c.action,this.clock())
+   if(!next)return 'That bid or route is not available.'
+   this.setGame(next);return null
+  }
+  if(c.kind==='piggy-bank'){
+   const current=this.game?.piggyBank
+   if(!current||c.match!==this.match||c.step!==current.step||rev>this.rev)return 'That Piggy Bank phase has ended.'
+   const next=playPiggy(this.game!,s.id,c.action,this.clock())
+   if(!next)return 'That coin action is not available.'
+   this.setGame(next);return null
+  }
   if(c.kind==='equation-tower'){
    const current=this.game?.equationTower
    if(!current||c.match!==this.match||c.step!==current.step||rev>this.rev)return 'That tower position has changed.'
@@ -471,7 +511,7 @@ export class Host{
    // A carried limit belongs to the previous table; a deliberate new limit is honored.
    const capacity=reseat||(gameChanged||variantChanged)&&changes.capacity===this.settings.capacity?(fixtureSize?Math.max(min,roster.length):max):seatCapacity(changes,this.solo)
    if(capacity<roster.length)return 'Capacity cannot be below the current roster.'
-   const seconds=changes.game==='unknown'&&gameChanged?25:changes.game==='wallGo2'?90:changes.game==='coopPuzzle'?20:changes.game==='gradation'&&gameChanged?45:(changes.game==='tripleDice'||changes.game==='auctionBingo'||changes.game==='equationHighLow'||changes.game==='hiddenWord'||changes.game==='doubtBet')&&gameChanged?45:changes.game==='flags'?flagsWindow/1000:changes.game==='symmetry'?symmetryTime/1000:changes.game==='colorLink'&&gameChanged?45:(changes.game==='wallGo'||changes.game==='heavy13')&&this.settings.game!==changes.game?25:changes.game==='fence'||changes.game==='tower'||changes.game==='piece'?240:changes.game==='scale'?300:changes.game==='spot'?90:changes.game==='fragments'?20:changes.game==='pyramid'?45:changes.game==='codeLock'?180:changes.game==='divine'?(this.settings.game!=='divine'?600:Math.max(60,changes.seconds)):changes.game==='knight'?Math.max(180,Math.min(480,changes.seconds)):changes.game==='hex'?20:changes.game==='rectangles'?45:changes.game==='cubes'?25:changes.game==='exile'?90:changes.game==='secret'&&this.settings.game!=='secret'?90:Math.min(90,changes.seconds)
+   const seconds=changes.game==='treasureIsland'&&gameChanged?45:changes.game==='unknown'&&gameChanged?25:changes.game==='wallGo2'?90:changes.game==='coopPuzzle'?20:changes.game==='gradation'&&gameChanged?45:(changes.game==='tripleDice'||changes.game==='auctionBingo'||changes.game==='equationHighLow'||changes.game==='hiddenWord'||changes.game==='doubtBet')&&gameChanged?45:changes.game==='flags'?flagsWindow/1000:changes.game==='symmetry'?symmetryTime/1000:changes.game==='colorLink'&&gameChanged?45:(changes.game==='wallGo'||changes.game==='heavy13')&&this.settings.game!==changes.game?25:changes.game==='fence'||changes.game==='tower'||changes.game==='piece'?240:changes.game==='scale'?300:changes.game==='spot'?90:changes.game==='fragments'?20:changes.game==='pyramid'?45:changes.game==='codeLock'?180:changes.game==='divine'?(this.settings.game!=='divine'?600:Math.max(60,changes.seconds)):changes.game==='knight'?Math.max(180,Math.min(480,changes.seconds)):changes.game==='hex'?20:changes.game==='rectangles'?45:changes.game==='cubes'?25:changes.game==='exile'?90:changes.game==='secret'&&this.settings.game!=='secret'?90:Math.min(90,changes.seconds)
    this.settings={...changes,equationTowerMode:changes.game==='equationTower'?(changes.equationTowerMode??'standard'):undefined,coopReflect:changes.game==='coopPuzzle'?!!changes.coopReflect:undefined,gradationMarked:changes.game==='gradation'?(changes.gradationMarked??false):undefined,flagsMode:changes.game==='flags'?changes.flagsMode??'recall':undefined,symmetryAxis:changes.game==='symmetry'?changes.symmetryAxis:undefined,auctionMode:changes.game==='auction'?changes.auctionMode:undefined,memoryPokerMode:changes.game==='memoryPoker'?changes.memoryPokerMode:undefined,botLevel:changes.botLevel??'normal',capacity,seconds,closed:changes.size===5||!changes.size?false:changes.closed}
    if(this.solo){
     if(changes.game==='divine')this.settings.divineSide??=3
@@ -524,7 +564,7 @@ export class Host{
   this.botSeed=botSeed
   const {game,seconds,size,closed,equationTowerMode,divineSide,divineHard,fragmentStrict,fragmentCount,memoryPokerPeek,symmetryAxis,flagsMode,coopReflect,gradationMarked}=this.settings
   const seats=isDuel(game)?this.fixtures[this.fixture].sides:this.seats.map(s=>s.id)
-  this.setGame(start(game,seats,seconds*1000,this.clock(),{seed:gameSeed,equationTowerMode,doubtDeals:game==='doubtBet'?Array.from({length:doubtRounds},()=>doubtDeck(secureIndex)):undefined,equationDeals:game==='equationHighLow'?Array.from({length:equationRounds},()=>equationDeck(secureIndex)):undefined,hiddenIndex:game==='hiddenWord'?secureIndex:undefined,unknownIndex:game==='unknown'?secureIndex:undefined,diceDeal:game==='tripleDice'?diceDeal(seats.length,()=>(secureIndex(6)+1) as Die):undefined,size,closed,divineSide,divineHard,fragmentStrict,fragmentCount,memoryPokerPeek,symmetryAxis,flagsMode,coopReflect,gradationMarked,memoryDuelDeal:isEpisodePoker(this.settings)?liveMemoryDeal():undefined,holdAuction:isHoldAuction(this.settings),solo:this.solo}))
+  this.setGame(start(game,seats,seconds*1000,this.clock(),{seed:gameSeed,hitShoes:game==='hitStay'?Array.from({length:hitRules.rounds},()=>hitDeck(seats.length,secureIndex)):undefined,islandIndex:game==='treasureIsland'?secureIndex:undefined,equationTowerMode,doubtDeals:game==='doubtBet'?Array.from({length:doubtRounds},()=>doubtDeck(secureIndex)):undefined,equationDeals:game==='equationHighLow'?Array.from({length:equationRounds},()=>equationDeck(secureIndex)):undefined,hiddenIndex:game==='hiddenWord'?secureIndex:undefined,unknownIndex:game==='unknown'?secureIndex:undefined,diceDeal:game==='tripleDice'?diceDeal(seats.length,()=>(secureIndex(6)+1) as Die):undefined,size,closed,divineSide,divineHard,fragmentStrict,fragmentCount,memoryPokerPeek,symmetryAxis,flagsMode,coopReflect,gradationMarked,memoryDuelDeal:isEpisodePoker(this.settings)?liveMemoryDeal():undefined,holdAuction:isHoldAuction(this.settings),solo:this.solo}))
   this.publishedHold=this.game?.timeHold?this.game:null
   this.holdUpdates.clear()
  }
@@ -533,11 +573,13 @@ export class Host{
   const hiddenChanged=g.hiddenWord&&g.hiddenWord.step!==this.game?.hiddenWord?.step||g.unknown&&g.unknown.step!==this.game?.unknown?.step
   const prior=this.game?.heavy13
   const heavyChanged=g.heavy13&&prior&&(g.heavy13.phase!==prior.phase||heavy13Slot(g.heavy13)!==heavy13Slot(prior))
+  const hitChanged=g.hitStay&&g.hitStay.step!==this.game?.hitStay?.step
+  const islandChanged=g.treasureIsland?.step!==this.game?.treasureIsland?.step
   const doubtChanged=g.doubtBet&&g.doubtBet.step!==this.game?.doubtBet?.step
   const equationChanged=g.equationHighLow&&g.equationHighLow.step!==this.game?.equationHighLow?.step
   const rowChanged=g.threeRow&&(!this.game?.threeRow||g.round!==this.game.round||threeRowView(g.threeRow).phase!==threeRowView(this.game.threeRow).phase)
   const bingoChanged=g.auctionBingo?.phase!==this.game?.auctionBingo?.phase
-  if(!this.game||bingoChanged||doubtChanged||equationChanged||hiddenChanged||rowChanged||heavyChanged||isGrass(g.game)||isDuel(g.game)||g.round!==this.game.round)this.botDue=this.clock()+650
+  if(!this.game||islandChanged||bingoChanged||hitChanged||doubtChanged||equationChanged||hiddenChanged||rowChanged||heavyChanged||isGrass(g.game)||isDuel(g.game)||g.round!==this.game.round)this.botDue=this.clock()+650
   if(g.colorLink?.phase==='race'&&this.game?.colorLink?.phase!=='race')this.botDue=this.clock()+colorLinkRaceBotDelay(this.settings.botLevel)
   this.game=g
   if(g.done&&this.fixtures[this.fixture])this.fixtures[this.fixture].winner=g.winner
@@ -581,6 +623,33 @@ export class Host{
   if(this.game.gradation)return this.tickGradation(this.game,now)
   if(this.game.heavy13)return this.tickHeavy13(this.game,now)
   if(this.game.auctionBingo)return this.tickBingo(this.game,now)
+  if(this.game.hitStay){
+   const past=this.game,table=this.game.hitStay
+   let next=timeout(past,now)
+   if(next===past&&table.phase.kind==='turn'&&now>=this.botDue){
+    const seat=table.seats[table.phase.actor]
+    if(this.seats.some(s=>s.id===seat&&s.bot)){
+     const action=hitBot(hitView(table,seat),seat,this.settings.botLevel??'normal')
+     if(action)next=playHitStay(past,seat,action,now)??past
+    }
+   }
+   if(next===past)return false
+   this.setGame(next);this.rev++;return true
+  }
+  if(this.game.piggyBank){
+   const past=this.game,current=past.piggyBank!
+   let next=timeout(past,now)
+   if(next===past&&now>=current.opened+(current.stage.kind==='doubt'?1900:1050)){
+    for(const bot of this.seats){
+     if(!bot.bot)continue
+     const action=piggyBot(current,bot.id,this.settings.botLevel??'normal')
+     if(action)next=playPiggy(next,bot.id,action,now)??next
+     if(next.piggyBank!.step!==current.step)break
+    }
+   }
+   if(next===past)return false
+   this.setGame(next);this.rev++;return true
+  }
   if(this.game.doubtBet){
    const past=this.game,doubt=this.game.doubtBet
    let next=timeout(past,now)
@@ -589,6 +658,20 @@ export class Host{
    if(next===past&&bot&&now>=this.botDue){
     const action=doubtBot(doubtView(doubt,bot.id),this.settings.botLevel??'normal',this.botSeed^Math.imul(this.seats.indexOf(bot)+1,0x85ebca6b))
     if(action)next=playDoubtBet(past,bot.id,action,now)??past
+   }
+   if(next===past)return false
+   this.setGame(next);this.rev++;return true
+  }
+  if(this.game.treasureIsland){
+   const past=this.game,island=this.game.treasureIsland
+   let next=timeout(past,now)
+   if(next===past&&now>=this.botDue){
+    for(const [i,seat] of this.seats.entries()){
+     if(!seat.bot)continue
+     const action=islandBot(islandView(next.treasureIsland!,seat.id),seat.id,this.botSeed^Math.imul(i+1,0x85ebca6b),this.settings.botLevel)
+     if(action)next=playTreasureIsland(next,seat.id,action,now)??next
+     if(next.treasureIsland!.step!==island.step)break
+    }
    }
    if(next===past)return false
    this.setGame(next);this.rev++;return true
@@ -806,6 +889,9 @@ export class Host{
 export function explain(game:Game,count:number) {
  if(game==='coopPuzzle')return 'Share one tiling frame. One player places or removes a piece; teammates can leave suggestions. Solo practice or 2–16 human seats.'
  if(game==='gradation')return 'Seven gates, two sides. Practice faces one bot. Parties of 2–16 alternate seats between Copper and Jade; each side changes allocator every round. In groups over ten, not every teammate seals in one match.'
+ if(game==='hitStay')return 'One table for 2–8 party seats. In solo practice, face one bot. Get as close to 21 as you can, using only fictional chips. No purchases or stakes.'
+ if(game==='treasureIsland')return 'Practice alone or seat 2–16 in a party. Bid for arrows, then dig for private compass clues across a 9 × 9 island.'
+ if(game==='piggyBank')return '3–8 at one table. Solo adds three bots. Remember the public deposits and challenge a wrong count. First to five points or the leader after 24 exchanges wins.'
  if(game==='doubtBet')return 'One table for 2–10 seats, or one player and bots in practice. Make a hidden-card claim, outbid the count, or challenge. Fictional points and card slots only.'
  if(game==='equationHighLow')return 'One table for 2–8 seats. Two betting passes, then a private equation declaration. Solo practice starts with one bot. No real stakes.'
  if(game==='bigSmall')return 'Exactly two seats. Seal a card, predict its rank, then compare stacks. Solo practice seats one bot. Chips are fictional.'

@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540">
+<defs>
+ <radialGradient id="wood"><stop stop-color="#926545"/><stop offset=".63" stop-color="#533827"/><stop offset="1" stop-color="#2b2018"/></radialGradient>
+ <linearGradient id="frame" x2="1" y2="1"><stop stop-color="#efd9a5"/><stop offset="1" stop-color="#a9814e"/></linearGradient>
+ <pattern id="grain" width="110" height="23" patternUnits="userSpaceOnUse"><path d="M0 4q24 4 44 0t66 0M0 16q28 4 66 0t44 0" fill="none" stroke="#d4a476" opacity=".14"/></pattern>
+ <filter id="shadow" x="-.4" y="-.4" width="1.8" height="1.9"><feDropShadow dx="3" dy="11" stdDeviation="15" flood-color="#160f0b" flood-opacity=".72"/></filter>
+ <g id="sea"><rect width="38" height="38" fill="#597c6d" stroke="#655642" stroke-width=".75"/><path d="M5 11q3-3 7 0t7 0m1 8q3-3 7 0t7 0M5 28q3-3 7 0t7 0" fill="none" stroke="#a3ae81" stroke-width="1"/></g>
+ <g id="land"><rect width="38" height="38" fill="#dfc690" stroke="#977b53" stroke-width=".78"/><path d="M6 12h4m20 17h2m-13-7h1" stroke="#ab8558" opacity=".65"/></g>
+ <g id="reef"><rect width="38" height="38" fill="#9a8358" stroke="#70583e"/><path d="m3 29 10-15 4 5 6-13 11 23Z" fill="#b6a47a" stroke="#5a462f"/><path d="m11 9 16 19m0-19L11 28" stroke="#5a462f" stroke-width="1.6"/></g>
+ <g id="coin"><ellipse rx="33" ry="26" cy="5" fill="#71502c"/><ellipse rx="33" ry="26" fill="#ba8a4f" stroke="#f0cc85" stroke-width="2"/><ellipse rx="27" ry="20" fill="#dfb97b" stroke="#936638"/><path d="m0-12 9 12-9 12-9-12z" fill="none" stroke="#936638" stroke-width="2"/></g>
+ <g id="bar"><rect width="76" height="76" x="-38" y="-38" rx="9" fill="#a87a48" stroke="#e6c98c" stroke-width="2"/><rect width="65" height="65" x="-32.5" y="-32.5" rx="5" fill="#dfc491" stroke="#775733"/></g>
+</defs>
+<rect width="960" height="540" fill="url(#wood)"/>
+<rect width="960" height="540" fill="url(#grain)"/>
+<path d="M0 92h960M0 230h960M0 379h960M0 505h960" stroke="#251a12" opacity=".56" stroke-width="2"/>
+<g filter="url(#shadow)" transform="translate(474 270) rotate(-10) translate(-210 -213)">
+ <rect x="0" y="0" width="420" height="425" rx="8" fill="url(#frame)" stroke="#856037" stroke-width="4"/>
+ <rect x="13" y="13" width="394" height="399" rx="3" fill="#e6ce9b" stroke="#9e7949" stroke-width="2"/>
+ <text x="210" y="34" text-anchor="middle" font-family="Georgia,serif" font-size="12" fill="#584027" letter-spacing="5">THE BRASS TIDE CHART</text>
+ <g transform="translate(39 41)">
+ <use href="#sea" x="0" y="0"/>
+<use href="#sea" x="38" y="0"/>
+<use href="#sea" x="76" y="0"/>
+<use href="#land" x="114" y="0"/>
+<use href="#land" x="152" y="0"/>
+<use href="#sea" x="190" y="0"/>
+<use href="#sea" x="228" y="0"/>
+<use href="#sea" x="266" y="0"/>
+<use href="#sea" x="304" y="0"/>
+<use href="#sea" x="0" y="38"/>
+<use href="#sea" x="38" y="38"/>
+<use href="#land" x="76" y="38"/>
+<use href="#land" x="114" y="38"/>
+<use href="#land" x="152" y="38"/>
+<use href="#land" x="190" y="38"/>
+<use href="#land" x="228" y="38"/>
+<use href="#sea" x="266" y="38"/>
+<use href="#sea" x="304" y="38"/>
+<use href="#sea" x="0" y="76"/>
+<use href="#land" x="38" y="76"/>
+<use href="#land" x="76" y="76"/>
+<use href="#reef" x="114" y="76"/>
+<use href="#land" x="152" y="76"/>
+<use href="#land" x="190" y="76"/>
+<use href="#land" x="228" y="76"/>
+<use href="#land" x="266" y="76"/>
+<use href="#sea" x="304" y="76"/>
+<use href="#sea" x="0" y="114"/>
+<use href="#land" x="38" y="114"/>
+<use href="#land" x="76" y="114"/>
+<use href="#land" x="114" y="114"/>
+<use href="#land" x="152" y="114"/>
+<use href="#land" x="190" y="114"/>
+<use href="#land" x="228" y="114"/>
+<use href="#sea" x="266" y="114"/>
+<use href="#sea" x="304" y="114"/>
+<use href="#land" x="0" y="152"/>
+<use href="#land" x="38" y="152"/>
+<use href="#land" x="76" y="152"/>
+<use href="#land" x="114" y="152"/>
+<use href="#land" x="152" y="152"/>
+<use href="#land" x="190" y="152"/>
+<use href="#land" x="228" y="152"/>
+<use href="#land" x="266" y="152"/>
+<use href="#land" x="304" y="152"/>
+<use href="#sea" x="0" y="190"/>
+<use href="#land" x="38" y="190"/>
+<use href="#land" x="76" y="190"/>
+<use href="#land" x="114" y="190"/>
+<use href="#land" x="152" y="190"/>
+<use href="#land" x="190" y="190"/>
+<use href="#land" x="228" y="190"/>
+<use href="#land" x="266" y="190"/>
+<use href="#sea" x="304" y="190"/>
+<use href="#sea" x="0" y="228"/>
+<use href="#sea" x="38" y="228"/>
+<use href="#land" x="76" y="228"/>
+<use href="#land" x="114" y="228"/>
+<use href="#land" x="152" y="228"/>
+<use href="#land" x="190" y="228"/>
+<use href="#reef" x="228" y="228"/>
+<use href="#land" x="266" y="228"/>
+<use href="#sea" x="304" y="228"/>
+<use href="#sea" x="0" y="266"/>
+<use href="#sea" x="38" y="266"/>
+<use href="#sea" x="76" y="266"/>
+<use href="#land" x="114" y="266"/>
+<use href="#land" x="152" y="266"/>
+<use href="#land" x="190" y="266"/>
+<use href="#land" x="228" y="266"/>
+<use href="#land" x="266" y="266"/>
+<use href="#sea" x="304" y="266"/>
+<use href="#sea" x="0" y="304"/>
+<use href="#sea" x="38" y="304"/>
+<use href="#sea" x="76" y="304"/>
+<use href="#sea" x="114" y="304"/>
+<use href="#land" x="152" y="304"/>
+<use href="#land" x="190" y="304"/>
+<use href="#land" x="228" y="304"/>
+<use href="#sea" x="266" y="304"/>
+<use href="#sea" x="304" y="304"/>
+ <path d="M171 171h76v-38" stroke="#f6e6bb" stroke-width="9" fill="none" stroke-linejoin="round" opacity=".92"/>
+ <path d="M171 171h76v-38" stroke="#9c4934" stroke-width="4" fill="none" stroke-dasharray="6 4" stroke-linecap="round" stroke-linejoin="round"><animate data-cover-at="0.18s" attributeName="stroke-dashoffset" begin="indefinite" dur="1.18s" keyTimes="0;1" values="10;0" fill="remove"/></path>
+ <circle cx="171" cy="171" r="12" fill="#f7e9bd" stroke="#5d452c" stroke-width="2"/><path d="M167 178v-16l13 2-2 7-11 1" fill="#9c4934" stroke="#59422c"/>
+ <g transform="translate(247 133)" stroke="#634222" stroke-width="1.7"><animateTransform data-cover-at="0.62s" attributeName="transform" additive="sum" type="translate" begin="indefinite" dur="0.8s" keyTimes="0;.4;1" values="0 0;0 -9;0 0" fill="remove"/><path d="M-13 9v-12l5-4H7l6 4V9Z" fill="#c69052"/><path d="M-13-1h26M-9-4v13M8-4V9" fill="none"/><path d="M-2-3h4v6h-4z" fill="#ead7a2"/></g>
+ </g>
+ <text x="210" y="402" text-anchor="middle" font-family="Georgia,serif" font-size="12" fill="#60462b" letter-spacing="4">E5 · LANDING POINT</text>
+</g>
+<g filter="url(#shadow)">
+ <g transform="translate(725 277) rotate(12)"><use href="#bar"/><path d="M-20 18v-29h38m-10-8 10 8-10 8" fill="none" stroke="#5f3f25" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="-20" cy="18" r="3.5" fill="#8a5932"/></g>
+ <g transform="translate(763 360) rotate(-15)"><use href="#bar"/><path d="M-22 0h44m-10-8 10 8-10 8" fill="none" stroke="#5f3f25" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="-22" r="3.5" fill="#8a5932"/></g>
+ <g transform="translate(189 343) rotate(-16)"><use href="#coin" x="15" y="34"/><use href="#coin" x="-12" y="15"/><use href="#coin"/></g>
+</g>
+<path d="M18 60V18h42m840 0h42v42m0 420v42h-42m-840 0H18v-42" fill="none" stroke="#c69b62" stroke-width="2" opacity=".55"/>
+</svg>

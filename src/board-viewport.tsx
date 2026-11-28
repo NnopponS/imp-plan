@@ -2,7 +2,7 @@ import {useId,useLayoutEffect,useRef,useState,type CSSProperties,type ReactNode}
 import './board-viewport.css'
 
 const scales=[1,1.25,1.5,2] as const
-export function BoardViewport({label,children}:{label:string;children:ReactNode}){
+export function BoardViewport({label,children,hint}:{label:string;children:ReactNode;hint?:ReactNode}){
  const [step,setStep]=useState(0)
  const viewer=useRef<HTMLDivElement>(null)
  const zoomIn=useRef<HTMLButtonElement>(null)
@@ -25,6 +25,7 @@ export function BoardViewport({label,children}:{label:string;children:ReactNode}
  },[step])
  return <div className="board-viewer" data-enlarged={step>0||undefined}>
   <div className="board-camera" role="group" aria-label="Board zoom">
+   {hint}
    <button type="button" onClick={()=>next(step-1)} disabled={!step} aria-label="Zoom out" aria-controls={frame}>
     <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="5.5"/><path d="m14.5 14.5 5 5M7.5 10h5"/></svg>
    </button>

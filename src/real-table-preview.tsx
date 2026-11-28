@@ -1,6 +1,6 @@
 import {useMemo} from 'react'
 import {ArenaTable} from './arena-table'
-import {blindCoverAction,isDuel,minSeats,move,playUnknown,playDoubtBet,openMontageRound,start,timeout,titles,view,type Game} from './engine'
+import {blindCoverAction,isDuel,minSeats,move,playPiggy,playUnknown,playDoubtBet,playTreasureIsland,openMontageRound,start,timeout,titles,view,type Game} from './engine'
 import {defaults,isHoldAuction,type Settings,type Snapshot} from './room'
 import {memoryDuelDeal} from './memory-duel'
 import {montageRules} from './montage'
@@ -16,12 +16,12 @@ function previewSnapshot(game:Game,current?:Settings,party=false){
  const settings:Settings={...defaults,divineSide:3,...exact,game}
  const hold=isHoldAuction(settings)
  const episode=game==='memoryPoker'&&settings.memoryPokerMode==='episode'
- const towerParty=game==='equationTower'&&party
- const solo=!hold&&!episode&&!towerParty
+ const partyExample=(game==='equationTower'||game==='treasureIsland')&&party
+ const solo=!hold&&!episode&&!partyExample&&!(game==='hitStay'&&party)&&!(game==='piggyBank'&&party)
  const count=hold||episode?2:minSeats(game,solo)
  const hostNow=1_800_000_000_000
  const options={
-  solo,seed:31337,holdAuction:hold,memoryDuelDeal:episode?memoryDuelDeal(bound=>Math.floor(bound/3)):undefined,
+  solo,seed:game==='hitStay'?642:31337,holdAuction:hold,memoryDuelDeal:episode?memoryDuelDeal(bound=>Math.floor(bound/3)):undefined,
   size:settings.size,closed:settings.closed,divineSide:settings.divineSide,divineHard:settings.divineHard,
   fragmentStrict:settings.fragmentStrict,fragmentCount:settings.fragmentCount,memoryPokerPeek:settings.memoryPokerPeek,
   symmetryAxis:settings.symmetryAxis,flagsMode:settings.flagsMode,equationTowerMode:settings.equationTowerMode,coopReflect:settings.coopReflect,gradationMarked:settings.gradationMarked,
@@ -33,7 +33,8 @@ function previewSnapshot(game:Game,current?:Settings,party=false){
  const opening=start(game,ids,settings.seconds*1000,hostNow,options)
  const seeded=(sampleFixtures[game]??[]).reduce((state,action)=>move(state,state.seats[state.turn],action,hostNow)??state,opening)
  const displayed=game==='montage'?hostNow+montageRules.countdownMs:hostNow
- const example=game==='montage'?timeout(openMontageRound(seeded,1,hostNow),displayed):game==='unknown'?playUnknown(seeded,you,'south',hostNow)??seeded:game==='doubtBet'?playDoubtBet(seeded,seeded.seats[seeded.turn],{kind:'bid',color:'red',count:2,points:1,slots:0},hostNow)??seeded:seeded
+ const islandExample=game==='treasureIsland'?ids.reduce((state,id,i)=>playTreasureIsland(state,id,{kind:'bid',amount:i?0:4},hostNow)??state,seeded):seeded
+ const example=game==='treasureIsland'?islandExample:game==='piggyBank'?playPiggy(seeded,seeded.seats[seeded.turn],{kind:'pass-bank',black:2,white:1,to:(seeded.turn+1)%ids.length},hostNow)??seeded:game==='montage'?timeout(openMontageRound(seeded,1,hostNow),displayed):game==='unknown'?playUnknown(seeded,you,'south',hostNow)??seeded:game==='doubtBet'?playDoubtBet(seeded,seeded.seats[seeded.turn],{kind:'bid',color:'red',count:2,points:1,slots:0},hostNow)??seeded:seeded
  return {
   you,host:you,epoch:'preview',match:'preview-'+game,rev:0,hostNow:displayed,
   settings,seats,game:view(example,you,displayed),fixture:0,count:1,

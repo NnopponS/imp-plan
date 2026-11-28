@@ -1,3 +1,6 @@
+import {hitBot} from '../src/hit-stay'
+import {islandBot} from '../src/treasure-island'
+import {piggyBot} from '../src/piggy-bank'
 import {doubtBot} from '../src/doubt-bet'
 import {equationTowerBot} from '../src/equation-tower'
 import {bingoBot} from '../src/auction-bingo'
@@ -9,7 +12,7 @@ import {bigSmallBot} from '../src/big-small'
 import {diceBot} from '../src/triple-dice'
 import {botThreeRow} from '../src/three-row'
 import {expect,it} from 'vitest'
-import {botAction,minSeats,playHiddenWord,playUnknown,playDoubtBet,playEquationTower,playGradation,move,playBigSmall,playEquationHighLow,playColorLink,playHeavy13,playThreeRow,playTripleDice,playAuctionBingo,start,titles,view,type BotLevel,type Game} from '../src/engine'
+import {botAction,minSeats,playHitStay,playTreasureIsland,playPiggy,playHiddenWord,playUnknown,playDoubtBet,playEquationTower,playGradation,move,playBigSmall,playEquationHighLow,playColorLink,playHeavy13,playThreeRow,playTripleDice,playAuctionBingo,start,titles,view,type BotLevel,type Game} from '../src/engine'
 import {colorLinkBot} from '../src/color-link'
 import {Host,decode,defaults,humanOnly} from '../src/room'
 import {buyer,contactAction,guessAction} from "../src/secret"
@@ -75,12 +78,27 @@ it('changing difficulty preserves the complete practice roster but swapping game
 it('every game offering AI has legal deterministic opening choices at all three levels',()=>{
  const games=(Object.keys(titles) as Game[]).filter(game=>!humanOnly(game))
  expect(games.length).toBeGreaterThanOrEqual(24)
- expect(games).toEqual(expect.arrayContaining(['unknown','doubtBet','equationTower']))
+ expect(games).toEqual(expect.arrayContaining(['unknown','doubtBet','equationTower','hitStay','piggyBank']))
  for(const game of games){
   const seats=['a','b','c'].slice(0,Math.max(2,minSeats(game)))
   const g=start(game,seats,25000,0,{seed:733})
   for(const level of levels){
    const v=view(g,'a')
+   if(v.hitStay){
+    const seat=v.hitStay.turn!,projection=view(g,seat).hitStay!
+    const a=hitBot(projection,seat,level)
+    expect(a,game+' '+level).not.toBeNull()
+    expect(playHitStay(g,seat,a!,1)).not.toBeNull()
+    expect(hitBot(projection,seat,level)).toEqual(a)
+    continue
+   }
+   if(g.piggyBank){
+    const seat=g.seats[g.turn],a=piggyBot(g.piggyBank,seat,level)
+    expect(a,game+' '+level).not.toBeNull()
+    expect(playPiggy(g,seat,a!,1)).not.toBeNull()
+    expect(piggyBot(g.piggyBank,seat,level)).toEqual(a)
+    continue
+   }
    if(v.doubtBet){
     const seat=g.seats[g.turn],projection=view(g,seat).doubtBet!
     const a=doubtBot(projection,level,19)
@@ -157,6 +175,13 @@ it('every game offering AI has legal deterministic opening choices at all three 
     expect(a,game+' '+level).toBeDefined()
     expect(playColorLink(g,'a',a!,1),game+' '+level).not.toBeNull()
     expect(colorLinkBot(v.colorLink,'a',19,level),game+' '+level).toEqual(a)
+    continue
+   }
+   if(v.treasureIsland){
+    const a=islandBot(v.treasureIsland,'a',19,level)
+    expect(a,game+' '+level).not.toBeNull()
+    expect(playTreasureIsland(g,'a',a!,1)).not.toBeNull()
+    expect(islandBot(v.treasureIsland,'a',19,level)).toEqual(a)
     continue
    }
    const a=botAction(v,'a',g.publicMoves,19,level)

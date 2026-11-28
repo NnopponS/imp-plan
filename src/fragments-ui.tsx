@@ -1,55 +1,109 @@
-import {useEffect,useState} from 'react'
+import {useEffect,useId,useState} from 'react'
 import {fragmentColors,fragmentNeed,type Gallery,type GalleryObject} from './fragments'
+import {artifactArt,artifactTones} from './fragments-art'
 import type {Snapshot} from './room'
 import './fragments.css'
 
-const pigments=['#3e746b','#a36321','#765276','#a23d40']
-const forms:Record<GalleryObject['item'],string>={
- Vase:'M-11-20 H11 L8-13 C8-6 22-5 20 10 Q18 23 0 23 Q-18 23-20 10 C-22-5-8-6-8-13 Z',
- Key:'M-16-12 A10 10 0 1 0-4 1 L15 19 L21 12 L15 6 L10 10 L-1-2 A10 10 0 0 0-16-12 Z',
- Gem:'M-24-9-14-19 H14 L24-9 0 22 Z',
- Cup:'M-19-12 H19 V-7 H25 Q30 6 15 10 Q10 22 0 22 Q-19 22-19 3 Z',
- Crown:'M-24-17-13-5 0-21 13-5 24-17 18 16 H-18 Z',
- Bell:'M-22 13 Q-16 8-16-2 Q-16-17-5-18 Q-5-26 0-26 Q5-26 5-18 Q16-17 16-2 Q16 8 22 13 Z M-6 16 Q0 27 6 16 Z',
- Leaf:'M-19 15 Q-25-16 23-21 Q27 14 0 19 L-12 19-19 24-24 21 Z',
- Compass:'M0-24 A24 24 0 1 0 0 24 A24 24 0 1 0 0-24 Z M6-12-14 14 9 7 Z',
- Lantern:'M-12-23 H12 V-15 L19-8 V19 H-19 V-8 L-12-15 Z M-10-6 V11 H10 V-6 Z'
+const shelfNames=['Top','Middle','Bottom'] as const
+const columns=[72,180,288]
+const clockPoint=(angle:number,r:number)=>[310+Math.sin(angle)*r,26-Math.cos(angle)*r]
+
+function ExhibitClock({scene}:{scene:Gallery}){
+ const [hx,hy]=clockPoint((scene.hour+scene.minute/60)*Math.PI/6,10)
+ const [mx,my]=clockPoint(scene.minute*Math.PI/30,13)
+ return <g>
+  <circle cx="310" cy="26" r="19" fill="#e0bc7d" stroke="#251711" strokeWidth="2"/>
+  <circle cx="310" cy="26" r="15.6" fill="#f2d9a8" stroke="#805231"/>
+  {Array.from({length:12},(_,i)=>{
+   const [x1,y1]=clockPoint(i*Math.PI/6,i%3===0?11.5:13),[x2,y2]=clockPoint(i*Math.PI/6,14)
+   return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#533624" strokeWidth={i%3===0?1.15:.7}/>
+  })}
+  <path d={`M310 26 ${hx} ${hy}`} stroke="#372516" strokeWidth="2.8" strokeLinecap="round"/>
+  <path d={`M310 26 ${mx} ${my}`} stroke="#86452e" strokeWidth="1.6" strokeLinecap="round"/>
+  <circle cx="310" cy="26" r="2" fill="#382619"/>
+  <rect x="283" y="42" width="54" height="15" rx="4" fill="#ecd4a3" stroke="#624027"/>
+  <text className="cabinet-time" x="310" y="54" textAnchor="middle">{scene.time}</text>
+ </g>
 }
-const hand=(angle:number,length:number)=>[304+Math.sin(angle)*length,37-Math.cos(angle)*length]
-function GalleryScene({scene}:{scene:Gallery}){
- const [hx,hy]=hand((scene.hour+scene.minute/60)*Math.PI/6,9),[mx,my]=hand(scene.minute*Math.PI/30,13)
+
+function Artifact({item,tone,id,x}:{item:GalleryObject['item'],tone:number,id:string,x:number}){
+ const color=`url(#${id}-tone-${tone})`
+ return <g transform={`translate(${x} 0)`}>
+  <ellipse cx="1" cy="54" rx="34" ry="4" fill="#1b100e" opacity=".72"/>
+  <ellipse cx="-3" cy="53" rx="23" ry="1.7" fill="#9e7350" opacity=".65"/>
+  <g className="cabinet-artifact" transform="translate(0 28)" fill={color} stroke="#241611" strokeWidth="1.25" strokeLinejoin="round">
+   {artifactArt[item]}
+  </g>
+  <g className="cabinet-plaque">
+   <rect x="-44" y="57" width="88" height="27" rx="4" fill="#ecd4a5" stroke="#6b422a"/>
+   <path d="M-39 59h78" stroke="#fff0c7" opacity=".8"/>
+   <circle cx="-39" cy="68" r="1.4" fill="#85603f"/><circle cx="39" cy="68" r="1.4" fill="#85603f"/>
+   <text y="69" textAnchor="middle">{item}</text>
+   <text y="81" textAnchor="middle">{fragmentColors[tone]}</text>
+  </g>
+ </g>
+}
+
+function GalleryScene({scene,preview}:{scene:Gallery,preview:boolean}){
+ const id=useId()
  return <figure className="gallery-scene" aria-label="Study exhibit">
-  <svg viewBox="0 0 340 328" role="img" aria-label="Museum shelf exhibit">
-   <rect width="340" height="328" rx="12" fill="#eee2cd"/>
-   <rect x="9" y="9" width="322" height="309" rx="7" fill="#f9f2e3" stroke="#ac916d"/>
-   <text x="23" y="34" fontSize="10" letterSpacing="1.5" fill="#553e32">COLLECTION / FIELD NOTES</text>
-   <text x="23" y="55" fontSize="17" fontWeight="700" letterSpacing="2.2" fill="#63312e">{scene.word}</text>
-   <circle cx="304" cy="37" r="18" stroke="#886e49" fill="#f4ead6"/>
-   {[0,1,2,3].map(i=>{const [x1,y1]=hand(i*Math.PI/2,14),[x2,y2]=hand(i*Math.PI/2,16);return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#886e49"/>})}
-   <line x1="304" y1="37" x2={hx} y2={hy} stroke="#56362c" strokeWidth="2.7" strokeLinecap="round"/>
-   <line x1="304" y1="37" x2={mx} y2={my} stroke="#56362c" strokeWidth="1.3" strokeLinecap="round"/>
-   <text x="304" y="67" fontSize="9" textAnchor="middle" fill="#56362c">{scene.time}</text>
-   {scene.objects.map(({item,tone},i)=>{
-    const x=68+i%3*102,y=102+Math.floor(i/3)*80
-    return <g key={item} transform={`translate(${x} ${y})`}><ellipse cx="0" cy="23" rx="27" ry="4" fill="#d7c5a8"/><path d={forms[item]} fill={pigments[tone]} fillRule="evenodd" stroke="#45342b" strokeWidth="1.2" strokeLinejoin="round"/>
-    <text y="38" fontSize="12" textAnchor="middle" fontWeight="700" fill="#50372f">{item}</text><text y="50" fontSize="9" textAnchor="middle" fill="#50372f">{fragmentColors[tone]}</text><path d="M-43 55 H43" stroke="#aa926f"/></g>
-   })}
+  <svg viewBox="0 0 360 324" role="img" aria-label="Museum shelf exhibit">
+   <defs>
+    <linearGradient id={id+'-wood'} x2="1" y2="1"><stop stopColor="#9b6c43"/><stop offset=".41" stopColor="#65432e"/><stop offset="1" stopColor="#493129"/></linearGradient>
+    <linearGradient id={id+'-bay'} x2="0" y2="1"><stop stopColor="#302321"/><stop offset=".72" stopColor="#594134"/><stop offset="1" stopColor="#75543a"/></linearGradient>
+    <linearGradient id={id+'-rail'} x2="0" y2="1"><stop stopColor="#bd9056"/><stop offset=".36" stopColor="#976a41"/><stop offset="1" stopColor="#583722"/></linearGradient>
+    <pattern id={id+'-grain'} width="50" height="11" patternUnits="userSpaceOnUse"><path d="M0 1q8-2 17 0t20 1l13-1M4 5q13-2 27 0t16 0M1 9q18-2 24 0t25 0" fill="none" stroke="#f6cca0" opacity=".12" strokeWidth=".57"/></pattern>
+    {artifactTones.map(([shine,body,shadow],i)=><linearGradient key={i} id={id+'-tone-'+i} x2=".72" y2="1">
+     <stop stopColor={shine}/><stop offset=".48" stopColor={body}/><stop offset="1" stopColor={shadow}/>
+    </linearGradient>)}
+   </defs>
+   <rect x="1" y="1" width="358" height="322" rx="18" fill={`url(#${id}-wood)`} stroke="#251a16" strokeWidth="2"/>
+   <rect x="8" y="8" width="344" height="308" rx="12" fill={`url(#${id}-grain)`} stroke="#d2a879" strokeOpacity=".7"/>
+   <path d="M16 47V24q0-8 8-8h18m276 0h18q8 0 8 8v23M16 282v24l4 4h20m304-28v24l-4 4h-20" fill="none" stroke="#d9ad73" strokeOpacity=".62"/>
+   <path d="m180 19 5 5-5 5-5-5Zm-8 5h-35m51 0h35" fill="none" stroke="#d5ae7d" strokeOpacity=".76"/>
+   <text className="cabinet-eyebrow" x="32" y="25">EXHIBIT LABEL</text>
+   <text className="cabinet-word" x="31" y="47">{scene.word}</text>
+
+   {shelfNames.map((name,i)=><g key={name} className="cabinet-shelf" transform={`translate(0 ${58+i*85})`}>
+    <rect x="22" y="0" width="316" height="85" rx={i===0?7:0} fill={`url(#${id}-bay)`} stroke="#260f0e"/>
+    <path d="M25 8h310v44H25Z" fill={`url(#${id}-grain)`}/>
+    <path d="M127 0h6l3 52-8 6-4-6Zm101 0h6l2 52-5 6-8-6Z" fill={`url(#${id}-rail)`} stroke="#40271d"/>
+    <path d="M27 48h306l7 9H20Z" fill="#7e5739" stroke="#39261d"/>
+    <path d="M34 52h74m40 0h64m40 0h74" stroke="#b4835a" opacity=".6"/>
+    <path d="M20 57h320v27H20Z" fill={`url(#${id}-wood)`} stroke="#322019"/>
+    <path d="M20 78h320v6H20Z" fill={`url(#${id}-rail)`}/>
+    <path d="M20 84h320" stroke="#39231a" strokeWidth="1.7"/>
+    {scene.objects.slice(i*3,i*3+3).map((item,j)=><Artifact key={item.item} {...item} id={id} x={columns[j]}/>)}
+   </g>)}
+
+   <path d="M18 67v235m324-235v235" stroke="#c49a65" strokeOpacity=".8" strokeWidth="2"/>
+   <path d="M40 316h280" stroke="#261812" opacity=".6"/>
+   <ExhibitClock scene={scene}/>
   </svg>
-  <details><summary>Text version of exhibit</summary><p>Label: {scene.word}. Clock: {scene.time}.</p><ol>{[0,1,2].map(r=><li key={r}>{['Top','Middle','Bottom'][r]} shelf, left to right: {scene.objects.slice(r*3,r*3+3).map(o=>fragmentColors[o.tone]+' '+o.item.toLowerCase()).join(', ')}.</li>)}</ol></details>
+  {!preview&&<details><summary>Text version of exhibit</summary><p>Label: {scene.word}. Clock: {scene.time}.</p><ol>{shelfNames.map((name,r)=><li key={name}>{name} shelf, left to right: {scene.objects.slice(r*3,r*3+3).map(o=>fragmentColors[o.tone]+' '+o.item.toLowerCase()).join(', ')}.</li>)}</ol></details>}
  </figure>
 }
-export function FragmentsBoard({snap,active,name,submit}:{snap:Snapshot,active:boolean,name:(id:string)=>string,submit:(i:number)=>void}){
+export function FragmentsBoard({snap,active,preview=false,receivedAt,name,submit}:{snap:Snapshot,active:boolean,preview?:boolean,receivedAt?:number,name:(id:string)=>string,submit:(i:number)=>void}){
  const g=snap.game!, f=g.fragments!
- const [now,setNow]=useState(Date.now),[offset,setOffset]=useState(()=>snap.hostNow-Date.now())
- useEffect(()=>{const id=setInterval(()=>setNow(Date.now()),240);return()=>clearInterval(id)},[])
- useEffect(()=>setOffset(snap.hostNow-Date.now()),[snap.hostNow])
- const time=Math.max(0,Math.min(f.scene?45:20,Math.ceil(((g.deadline??now)-now-offset)/1000)))
+ const [mountedAt]=useState(()=>performance.now())
+ const [,redraw]=useState(0)
+ const deadline=(g.deadline??snap.hostNow)-snap.hostNow+(receivedAt??mountedAt)
+ const remaining=deadline-performance.now()
+ useEffect(()=>{
+  if(preview||g.done)return
+  const refresh=()=>redraw(n=>n+1)
+  const id=setInterval(refresh,240)
+  const conceal=f.scene?setTimeout(refresh,Math.max(0,Math.ceil(deadline-performance.now()))):undefined
+  return()=>{clearInterval(id);clearTimeout(conceal)}
+ },[preview,g.done,deadline,f.scene])
+ const time=Math.max(0,Math.min(f.scene?45:20,Math.ceil(remaining/1000)))
+ const scene=preview||time>0?f.scene:null
  const myTurn=active&&g.turn===snap.you&&time>0
  const need=fragmentNeed(f.strict,f.total)
  return <div className="fragments-game">
-  <div className="auction-top"><strong>{f.scene?'Study the exhibit':g.done?'Final team score':`Question ${g.round} / ${f.total}`}</strong>{!g.done&&<span className="pill" aria-label="Time remaining">{time} s</span>}</div>
-  {f.scene&&<><p>Remember shelf positions, colors, the label and the clock.</p><GalleryScene scene={f.scene}/></>}
-  {!f.scene&&<p className="fragments-score">Team: <strong>{f.correct} / {f.total}</strong> · {need} needed</p>}
+  {!preview&&<div className="auction-top"><strong>{scene?'Study the exhibit':g.done?'Final team score':f.question?`Question ${g.round} / ${f.total}`:'Exhibit closed'}</strong>{!g.done&&<span className="pill" aria-label="Time remaining">{time} s</span>}</div>}
+  {scene&&<>{!preview&&<p>Remember shelf positions, colors, the label and the clock.</p>}<GalleryScene scene={scene} preview={preview}/></>}
+  {!scene&&<p className="fragments-score">Team: <strong>{f.correct} / {f.total}</strong> · {need} needed</p>}
   {f.last!==null&&!g.done&&<p role="status">{f.last?'Last answer: correct.':'Last question: no point.'}</p>}
   {f.question&&<section aria-label="Recall question"><p className="eyebrow">{g.turn===snap.you?'YOUR TURN':name(g.turn)+'’S TURN'}</p><h3>{f.question.prompt}</h3><div className="fragments-answers">{f.question.options.map((o,i)=><button type="button" key={i} disabled={!myTurn} onClick={()=>submit(i)}>{o}</button>)}</div></section>}
   {g.done&&<p role="status">{f.passed?'The team remembered enough to clear the exhibit.':'The team did not reach the target.'}</p>}

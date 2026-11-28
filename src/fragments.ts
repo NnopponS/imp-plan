@@ -37,8 +37,8 @@ export function fragmentDeal(seed:number,count:FragmentCount=12){
  return {scene:{objects,time,hour,minute,word},questions:shuffle(varied)}
 }
 export const fragmentStart=(seed:number,strict:boolean,count:FragmentCount):Fragments=>({deal:fragmentDeal(seed,count),study:true,strict,correct:0,last:null,passed:null})
-export function fragmentView(f:Fragments,round:number,done:boolean){
+export function fragmentView(f:Fragments,round:number,done:boolean,expired:boolean){
  const question=f.study||done?null:f.deal.questions[round-1]
- return {scene:f.study?f.deal.scene:null,question:question?{prompt:question.prompt,options:question.options}:null,
+ return {scene:f.study&&!expired?f.deal.scene:null,question:question?{prompt:question.prompt,options:question.options}:null,
   strict:f.strict,correct:f.correct,last:f.last,passed:f.passed,total:f.deal.questions.length}
 }

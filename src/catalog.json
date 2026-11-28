@@ -323,13 +323,15 @@
     "season": 2,
     "title": "Treasure Island",
     "category": "Main D4",
-    "counts": "2–16",
+    "counts": "1 solo · 2–16 party",
     "genre": "Navigation/auction",
     "original": "partial",
     "sources": [
-      "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EC%8A%A4%EB%A3%B8/4%EC%9D%BC%EC%B0%A8"
+      "https://www.netflix.com/title/81653386",
+      "https://www.thereviewgeek.com/thedevilsplan-s2e7review/",
+      "https://www.dexerto.com/tv-movies/the-devils-plan-season-2-winners-eliminations-match-results-3190302/"
     ],
-    "game": null
+    "game": "treasureIsland"
   },
   {
     "id": "S2-08",
@@ -598,7 +600,7 @@
     "sources": [
       "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EB%93%9C%20%EC%96%B4%EA%B2%8C%EC%9D%B8/6%EC%9D%BC%EC%B0%A8"
     ],
-    "game": null
+    "game": "hitStay"
   },
   {
     "id": "S3-11",
@@ -633,13 +635,13 @@
     "title": "Piggy Bank",
     "category": "Prison D3",
     "counts": "3–8",
-    "genre": "Hidden arithmetic/bluff",
+    "genre": "Coin memory / bluff",
     "original": "partial",
     "sources": [
       "https://www.namu.moe/w/%EB%8D%B0%EB%B8%94%EC%8A%A4%20%ED%94%8C%EB%9E%9C%3A%20%EB%8D%B0%EB%93%9C%20%EC%96%B4%EA%B2%8C%EC%9D%B8/3%EC%9D%BC%EC%B0%A8",
-      "https://quoridorgame.com/en/season/3/"
+      "https://www.subtitlecat.com/subs/1797/The.Devil%27s.Plan.S03E08.en.html"
     ],
-    "game": null
+    "game": "piggyBank"
   },
   {
     "id": "S3-14",

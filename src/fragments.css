@@ -1,13 +1,23 @@
 .fragments-game{display:grid;gap:.8rem;min-width:0}
 .fragments-game p,.fragments-game h3{margin:0}
-.gallery-scene{margin:0 auto;width:min(100%,26rem);padding:.35rem;border:1px solid #ccb595;border-radius:.7rem;background:#f8efdf}
+.gallery-scene{margin:0 auto;width:min(100%,27rem);border-radius:.82rem;background:#261916}
 .gallery-scene svg{display:block;width:100%;height:auto}
-.gallery-scene details{margin:.3rem .45rem;font-size:.9rem}
+.cabinet-eyebrow{font:700 10px system-ui,sans-serif;letter-spacing:1.6px;fill:#ffe6b5}
+.cabinet-word{font:700 22px Georgia,serif;letter-spacing:2.5px;fill:#ffe8bd}
+.cabinet-time{font:700 14px system-ui,sans-serif;fill:#3a2518;font-variant-numeric:tabular-nums}
+.cabinet-plaque text{font:700 15px Georgia,serif;fill:#2a1b13}
+.cabinet-plaque text+text{font:650 13px system-ui,sans-serif;fill:#4e3022}
+.cabinet-incise{fill:none;stroke:#38221b;stroke-width:.9;stroke-linecap:round}
+.cabinet-gleam{fill:none;stroke:#fff3c5;stroke-width:.85;stroke-linecap:round;opacity:.76}
+.cabinet-facet{fill:#fff3cd;stroke:none;opacity:.27}
+.cabinet-shade{fill:#29151b;stroke:none;opacity:.28}
+.gallery-scene details{margin:0 .65rem .3rem;color:#fff1d5;font-size:.9rem}
+.gallery-scene summary{box-sizing:border-box;min-height:2.75rem;padding:.65rem 0;cursor:pointer}
+.gallery-scene summary:focus-visible{outline:2px solid #ffe2a7;outline-offset:2px}
 .gallery-scene ol{padding-inline-start:1.3rem}
 .fragments-score{border-radius:.4rem;padding:.45rem .65rem;background:#ede0c9}
 .fragments-answers{margin-top:.6rem;display:grid;gap:.45rem;grid-template-columns:repeat(2,minmax(0,1fr))}
 .fragments-answers button{min-height:2.75rem;min-width:0;overflow-wrap:anywhere}
 
-/* The exhibit stays on parchment; the question and prompts sit on dark vellum. */
 .room .match .fragments-game>p:not(.fragments-score),
 .room .match .fragments-game section :is(h3,p){color:#f2dfbb}

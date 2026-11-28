@@ -20,21 +20,36 @@
  box-shadow:inset 0 0 0 2px #291e18;
 }
 .pyramid-board{
- display:grid;gap:.24rem;justify-items:center;padding:.35rem .18rem .47rem;
+ position:relative;isolation:isolate;display:grid;gap:.05rem;justify-items:center;padding:.38rem .18rem .52rem;
  border:1px solid #866747;border-radius:3px;background:#2d211b;
  box-shadow:inset 0 0 0 2px #1e1714;
 }
-.pyramid-row{display:flex;justify-content:center;gap:.27rem;width:100%}
+.pyramid-masonry{
+ position:absolute;z-index:-1;inset:.3rem 0 .38rem;margin-inline:auto;width:min(96%,20rem);height:calc(100% - .68rem);pointer-events:none;
+}
+.pyramid-row{display:flex;justify-content:center;gap:.08rem;width:100%;position:relative}
 .room .match .pyramid-row button:not(.primary){
- position:relative;width:min(17%,3.65rem);min-width:0;aspect-ratio:1;min-height:44px;padding:.25rem;
- background:linear-gradient(153deg,#f4e0ba,#d5b680);border:1px solid #b99b6e;border-radius:3px;color:#412a20;
- box-shadow:inset 0 0 0 1px #f5ddaa,0 1px 1px #160e09;font:700 clamp(.9rem,3vw,1.15rem)/1 Georgia,serif;
+ position:relative;isolation:isolate;width:min(18%,3.8rem);min-width:0;aspect-ratio:1.15;min-height:44px;padding:.2rem;
+ background:transparent;border:0;border-radius:4px;color:#30201e;
+ box-shadow:none;font:800 clamp(1rem,3.25vw,1.3rem)/1 Georgia,serif;
 }
-.room .match .pyramid-row button:not(.primary):not(:disabled):hover{background:#ffebbd;color:#3c2a21}
-.room .match .pyramid-row button[aria-pressed=true]:not(.primary){
- background:#994956;color:#fff2dd;border-color:#edc290;box-shadow:inset 0 0 0 2px #573031;
-}
-.pyramid-row small{position:absolute;inset:.09rem .14rem auto auto;font:.67rem/1 ui-monospace,monospace}
+.pyramid-stone{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:-1;overflow:visible}
+.stone-wall{fill:#835a47;stroke:#2b2024;stroke-width:1.5}
+.stone-front{fill:#ccaa81;stroke:#9b775b;stroke-width:1.2}
+.pyramid-row:nth-of-type(even) .stone-front{fill:#d5b38a}
+.stone-bevel,.stone-incision,.stone-support-mark{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.stone-bevel{stroke:#f8dcb0;stroke-opacity:.86;stroke-width:1.35}
+.stone-incision{stroke:#6f5144;stroke-opacity:.72;stroke-width:1.25}
+.stone-support-mark{stroke:#74542f;stroke-width:1.6;opacity:0}
+.room .match .pyramid-row button:not(.primary):not(:disabled):hover,
+.room .match .pyramid-row button[data-support=true]:not(.primary){background:transparent;color:#39281c}
+.pyramid-row button:not(:disabled):hover .stone-front,
+.pyramid-row button[data-support=true] .stone-front{fill:#f6d99d;stroke:#f9dda6}
+.pyramid-row button[data-support=true] .stone-support-mark{opacity:1}
+.room .match .pyramid-row button[aria-pressed=true]:not(.primary){background:transparent;color:#fff7e5;box-shadow:none}
+.pyramid-row button[aria-pressed=true] .stone-front{fill:#784453;stroke:#f2ca86;stroke-width:2.5}
+.pyramid-row button[aria-pressed=true] .stone-incision{stroke:#ebc382}
+.pyramid-row small{position:absolute;inset:.15rem .2rem auto auto;color:#fff3ce;font:700 .68rem/1 ui-monospace,monospace}
 .pyramid-controls{display:grid;justify-items:stretch;gap:.38rem;min-width:0}
 .pyramid-dial{
  display:grid;gap:.18rem;border:1px solid #8d6a46;border-radius:3px;padding:.24rem .35rem .34rem;background:#2b211b;min-width:0;
@@ -73,6 +88,6 @@
  .pyramid-row button{max-height:47px}
 }
 @media(forced-colors:active){
- .room .match .pyramid-instrument button[aria-checked=true]{outline:2px solid Highlight;outline-offset:-3px}
+ .room .match .pyramid-instrument button[aria-pressed=true],.room .match .pyramid-instrument button[aria-checked=true]{outline:2px solid Highlight;outline-offset:-3px}
  .room .match .pyramid-instrument button:focus-visible{outline:2px solid Highlight;outline-offset:2px}
 }

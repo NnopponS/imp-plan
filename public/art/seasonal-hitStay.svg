@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" fill="none">
+<defs>
+ <radialGradient id="paper" cx=".5" cy=".22" r=".75"><stop stop-color="#715645"/><stop offset="1" stop-color="#211c1a"/></radialGradient>
+ <radialGradient id="felt" cx=".46" cy=".27" r=".77"><stop stop-color="#548375"/><stop offset=".64" stop-color="#244f44"/><stop offset="1" stop-color="#142d28"/></radialGradient>
+ <linearGradient id="gold" x2="0" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#e4c382"/><stop offset="1" stop-color="#aa794d"/></linearGradient>
+ <linearGradient id="card" x2="0" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#fff2d0"/><stop offset="1" stop-color="#d9b885"/></linearGradient>
+ <pattern id="weave" width="7" height="7" patternUnits="userSpaceOnUse"><path d="M0 0l7 7M0 7l7-7" stroke="#e8c789" opacity=".12" stroke-width=".6"/></pattern>
+ <filter id="shadow" x="-40%" y="-40%" width="180%" height="195%"><feDropShadow dx="4" dy="15" stdDeviation="11" flood-color="#0d100d" flood-opacity=".8"/></filter>
+ <g id="frame">
+ <rect width="168" height="232" rx="15" fill="url(#card)" stroke="#f4d6a1" stroke-width="2"/>
+ <rect x="9" y="9" width="150" height="215" rx="9" stroke="#a88155" stroke-width="1.6"/>
+ <path d="M17 46v-26h26m108 26v-26h-26M17 186v26h26m108-26v26h-26M50 116l34-51 34 51-34 51zM43 116l41-60 41 60-41 60z" stroke="#b08b5b"/>
+ </g>
+ <g id="coin">
+ <ellipse rx="28" ry="15" cy="5" fill="#754523" stroke="#dda96c" stroke-width="2"/>
+ <ellipse rx="28" ry="15" fill="#b27c46" stroke="#f3cd8d" stroke-width="2"/>
+ <ellipse rx="20" ry="10" fill="#e1b679" stroke="#6e452a" stroke-width="1.25"/>
+ <path d="m0-7 7 7-7 7-7-7z" fill="#6b4633" stroke="#f4d3a1"/>
+ </g>
+</defs>
+<path fill="url(#paper)" d="M0 0h960v540H0z"/>
+<path fill="url(#weave)" d="M0 0h960v540H0z" opacity=".38"/>
+<g stroke="#b18a5a" opacity=".48"><rect x="19" y="20" width="922" height="500" rx="24"/><rect x="28" y="29" width="904" height="482" rx="19"/><path d="M38 105V43h62m820 62V43h-62M38 435v62h62m820-62v62h-62M38 54l11-11m871 11-11-11M38 486l11 11m871-11-11 11"/></g>
+<ellipse cx="480" cy="301" rx="410" ry="193" fill="#150f10" opacity=".7" filter="url(#shadow)"/>
+<ellipse cx="480" cy="272" rx="409" ry="201" fill="#301d18" stroke="#1a100c" stroke-width="11"/>
+<ellipse cx="480" cy="271" rx="399" ry="188" fill="url(#felt)" stroke="url(#gold)" stroke-width="7"/>
+<ellipse cx="480" cy="271" rx="394" ry="185" fill="url(#weave)"/>
+<g stroke="#d5b285">
+ <ellipse cx="480" cy="269" rx="377" ry="171" opacity=".5"/>
+ <ellipse cx="480" cy="269" rx="367" ry="161" stroke-dasharray="2 7" opacity=".77"/>
+ <ellipse cx="480" cy="269" rx="345" ry="146" opacity=".27"/>
+ <path d="M125 270h709M480 101v351m-264-71 536-226m0 226L216 155m264-37 296 152-296 147-296-147z" opacity=".22"/>
+</g>
+<g filter="url(#shadow)">
+ <g transform="translate(233 174) rotate(-19 84 116)">
+  <use href="#frame"/>
+  <path d="M84 147c-14-11-35-27-35-47 0-19 26-23 35-8 9-15 35-11 35 8 0 20-21 36-35 47Z" fill="#873d3b" stroke="#b6735a" stroke-width="2"/>
+  <g fill="#873d3b" font-family="Georgia,serif" font-size="38" font-weight="700"><text x="23" y="56">8</text><text transform="translate(145 175) rotate(180)">8</text></g>
+ </g>
+ <g transform="translate(382 137) rotate(-1 84 116)">
+  <use href="#frame"/>
+  <path d="M84 79c-9 12-31 25-31 40 0 15 17 19 27 7 0 10-5 16-11 21h30c-6-5-11-11-11-21 10 12 27 8 27-7 0-15-22-28-31-40Z" fill="#284943" stroke="#6c8062" stroke-width="2"/>
+  <g fill="#284943" font-family="Georgia,serif" font-size="38" font-weight="700"><text x="23" y="56">7</text><text transform="translate(145 175) rotate(180)">7</text></g>
+ </g>
+ <g transform="translate(531 160) rotate(18 84 116)"><g>
+  <animateTransform attributeName="transform" type="translate" values="-38 -42;3 4;0 0" keyTimes="0;.73;1" begin="indefinite" data-cover-at="0.35s" dur="0.85s" fill="remove"/>
+  <use href="#frame"/>
+  <path d="M84 79c8 15 24 32 35 38-11 6-27 23-35 38-8-15-24-32-35-38 11-6 27-23 35-38Z" fill="#873d3b" stroke="#b6735a" stroke-width="2"/>
+  <g fill="#873d3b" font-family="Georgia,serif" font-size="38" font-weight="700"><text x="23" y="56">5</text><text transform="translate(145 175) rotate(180)">5</text></g>
+ </g></g>
+</g>
+<g transform="translate(735 365)"><use href="#coin" x="8" y="15"/><use href="#coin" x="8" y="10"/><use href="#coin" x="8" y="5"/><use href="#coin" x="8"/><use href="#coin" x="53" y="-16"/><use href="#coin" x="53" y="-22"/></g>
+<g transform="translate(479 421)"><path d="M-63 0h126l-10 12H-53z" fill="#68452f" stroke="#dfbc84"/><text x="0" y="8" text-anchor="middle" fill="#f2d291" font-family="Georgia" font-size="11" letter-spacing="2.3">LIMIT 21</text></g>
+</svg>

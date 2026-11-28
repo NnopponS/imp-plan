@@ -31,7 +31,7 @@ A tap on a party card chooses it directly; a hold previews before choosing. Gall
 | S1-14 | Nine Men's Morris | Keep legal sockets, trackable pieces and full initial board. |
 | S1-15 | Hexagon | Keep the drawn study tiles; verify landscape recall separately. |
 
-Archive only: S1-01 The Virus Game; S1-03 Rules Race; S1-07 Zoo; S1-16 Dice Poker; S1-17 Prison puzzle; S1-18 Piece / Secret Chamber Unlock.
+Archive only at the time of this sweep: S1-01 The Virus Game; S1-03 Rules Race; S1-07 Zoo; S1-16 Dice Poker; S1-17 Prison puzzle; S1-18 Piece / Secret Chamber Unlock.
 
 ### Season 2
 
@@ -47,7 +47,7 @@ Archive only: S1-01 The Virus Game; S1-03 Rules Race; S1-07 Zoo; S1-16 Dice Poke
 | S2-14 | Bagh Chal | Keep the carved goats/tigers and large legal sockets. |
 | S2-16 | Knight's Tour | Keep the carved piece, marked L-path and undo. Alternate sizes not covered by this sweep. |
 
-Archive only: S2-01 Crooked Cops / Corrupt Police; S2-03 Unknown; S2-05 Halloween Monster; S2-06 Sniper Hold'em; S2-07 Treasure Island; S2-11 Doubt and Bet; S2-15 Question and Truth; S2-17 Hidden Well / Secret Key Challenge.
+Archive only at the time of this sweep: S2-01 Crooked Cops / Corrupt Police; S2-03 Unknown; S2-05 Halloween Monster; S2-06 Sniper Hold'em; S2-07 Treasure Island; S2-11 Doubt and Bet; S2-15 Question and Truth; S2-17 Hidden Well / Secret Key Challenge.
 
 ### Season 3
 
@@ -70,8 +70,13 @@ Archive only: S2-01 Crooked Cops / Corrupt Police; S2-03 Unknown; S2-05 Hallowee
 | S3-22 | Flags Around the World | Fit all 12 flags during timed study on the shortest phones in a later pass. |
 | S3-23 | Exile Rectangle Counting | Retain sign labels as well as color for the number grid. |
 | S3-24 | Trial of God / Divine Test | Keep engraved symbols, fixed anchors and explicit symbol key access. |
-| S3-26 | Point Gomoku | Retain coordinate entry and zoom instead of shrinking 15×15 taps further. |
+| S3-26 | Point Gomoku | Retain coordinate entry and zoom instead of shrinking 13×13 taps further. |
 | S3-28 | Color Link | Keep route letters, keyed controls and private draft traces. |
 | S3-29 | Equation Traffic Light / Equation Lights | Increase ink contrast and put the inline lock and operator row on the first screen. |
 
-Archive only: S3-01 Either Or; S3-06 Mystery Stock Market; S3-07 Gem Black Market; S3-10 Hit, Stay; S3-12 Russian Roulette (virtual Hazard Deduction); S3-13 Piggy Bank; S3-15 Tower of Equations; S3-25 Secret Vault; S3-27 Card Janggi.
+Archive only at the time of this sweep: S3-01 Either Or; S3-06 Mystery Stock Market; S3-07 Gem Black Market; S3-10 Hit, Stay; S3-12 Russian Roulette (virtual Hazard Deduction); S3-15 Tower of Equations; S3-25 Secret Vault; S3-27 Card Janggi.
+
+
+## Follow-up table checks after the sweep
+
+The collection has since added Treasure Island, Hit, Stay, and Piggy Bank. Each was exercised through a 320px or 390px table, not added to the historical counts above. Point Gomoku's read-only sample shows the full field, while the live table uses the same engraved board and retains its explicit zoom and coordinate controls. Fragments shows the illustrated cabinet through the study phase only; Equation Pyramid uses the same carved tiles in Preview and play.

@@ -1,0 +1,90 @@
+.island-table {
+ --island-ink:#35271c;
+ --island-muted:#604b37;
+ --island-rule:#b99465;
+ --island-pale:#f5e6c8;
+ color:var(--island-ink);
+ max-width:920px;
+ margin-inline:auto;
+}
+.island-header {
+ background:linear-gradient(104deg,#533721,#664831 55%,#503624);
+ color:#f9edd2;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:12px;
+ padding:12px clamp(12px,3vw,22px);
+ border:1px solid #806144;
+ border-radius:5px 5px 0 0;
+}
+.island-kicker { margin:0; font:700 .66rem/1.3 system-ui,sans-serif; letter-spacing:.17em; }
+.island-header .island-kicker { color:#efd3a2; }
+.island-header h2 { margin:3px 0 0; color:inherit; font:600 clamp(1.35rem,3vw,2rem)/1.05 Georgia,serif; }
+.island-clock { padding:6px 10px; border:1px solid #a88b63; color:#f8e3ba; border-radius:4px; font:700 1.05rem/1.3 system-ui,sans-serif; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.island-clock small { color:inherit; font-weight:500; }
+.island-layout {
+ display:grid;
+ grid-template-columns:minmax(0,1.04fr) minmax(0,1fr);
+ align-items:start;
+ gap:clamp(12px,2vw,22px);
+ padding:clamp(10px,2vw,22px);
+ background:radial-gradient(ellipse at 30% 10%,#f9ecd0,#e8d2aa);
+ border:1px solid var(--island-rule);
+ border-top:0;
+ border-radius:0 0 5px 5px;
+}
+.island-chart { margin:0; background:#d9c197; border:1px solid #b29163; border-radius:5px; padding:6px; }
+.island-map { display:block; width:100%; height:auto; }
+.island-chart-title { fill:#503822; font:700 8.3px Georgia,serif; letter-spacing:2.6px; }
+.island-coordinate { fill:#593e26; font:700 8.2px system-ui,sans-serif; letter-spacing:.51px; }
+.island-chart figcaption { display:flex; flex-wrap:wrap; justify-content:center; gap:5px 12px; margin:5px 0 1px; font:600 .7rem/1.4 system-ui,sans-serif; }
+.island-chart figcaption span { display:inline-flex; align-items:center; gap:4px; white-space:nowrap; }
+.island-chart i { display:inline-block; width:10px; height:10px; border:1px solid #5b492e; border-radius:2px; }
+.island-chart [data-key=land] { background:#dac28a; }
+.island-chart [data-key=water] { background:repeating-linear-gradient(0deg,#496a5d 0 3px,#7c8d70 3px 4px); }
+.island-chart [data-key=reef] { background:linear-gradient(45deg,#94784f 44%,#4b3b2b 46% 54%,#94784f 56%); }
+.island-console { display:grid; gap:10px; min-width:0; color:var(--island-ink); }
+.island-private,.island-lot { min-width:0; padding:12px; background:#fbefda; border:1px solid var(--island-rule); border-radius:4px; }
+.island-lot { display:flex; align-items:center; gap:10px; }
+.island-lot .island-arrow { width:57px; }
+.island-table h3 { color:var(--island-ink); font:700 1.08rem/1.2 Georgia,serif; margin:0; }
+.island-lot h3 { margin:3px 0 1px; }
+.island-lot small,.island-private p,.island-sidehead span,.island-priority,.island-receipt,.island-seals { color:var(--island-muted); font:500 .8rem/1.4 system-ui,sans-serif; }
+.island-priority,.island-receipt,.island-seals { margin:0; }
+.island-receipt { border-left:2px solid #977045; padding-left:8px; }
+.island-sidehead { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+.island-sidehead strong { color:#684527; font-size:.8rem; white-space:nowrap; }
+.island-private p { margin:6px 0; }
+.island-cabinet { display:flex; flex-wrap:wrap; gap:5px; align-items:flex-start; margin:8px 0; }
+.island-cabinet .island-arrow { width:35px; }
+.island-cabinet>span,.island-table .island-cabinet button { display:grid; justify-items:center; row-gap:1px; min-width:51px; padding:3px 5px; font:600 .66rem/1.2 system-ui,sans-serif; border:1px solid transparent; }
+.island-table button:not(.primary) { color:#3f2e20; background:linear-gradient(#fbf1df,#e9d1ac); border:1px solid #af875b; }
+.island-table .island-cabinet button[aria-pressed=true] { color:#572d18; background:#e7c38a; border:2px solid #865125; padding:2px 4px; }
+.island-table button,.island-table input { min-height:44px; }
+.island-table button:disabled { opacity:.52; }
+.island-table :focus-visible { outline:3px solid #855425; outline-offset:3px; }
+.island-header h2:focus-visible { outline-color:#f4d59b; }
+.island-bid { display:grid; grid-template-columns:auto 1fr; align-items:center; gap:8px 12px; }
+.island-bid label { font:650 .8rem system-ui,sans-serif; }
+.island-stepper,.island-cta,.island-bearings { display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+.island-stepper { flex-wrap:nowrap; }
+.island-stepper button { min-width:44px; padding-inline:8px; }
+.island-stepper input { padding:4px; width:58px; min-width:0; font:700 1rem system-ui,sans-serif; text-align:center; background:#fff7e6; color:#472e18; border:1px solid #af875b; border-radius:4px; }
+.island-cta { grid-column:1/-1; margin-top:4px; }
+.island-cta button,.island-bearings button { padding:6px 10px; font:650 .77rem/1.2 system-ui,sans-serif; }
+.island-bearings button { flex:1 1 51px; }
+.island-table .island-endpoint { font-weight:750; }
+.island-notebook .island-kicker,.island-results .island-kicker { color:#925825; margin:0 0 4px; }
+.island-notebook ol,.island-results ol { list-style:none; padding:0; margin:5px 0 0; }
+.island-notebook li,.island-results li { display:flex; flex-wrap:wrap; justify-content:space-between; gap:3px 12px; border-top:1px solid #d8b98c; padding:6px 0; font:500 .76rem/1.4 system-ui,sans-serif; overflow-wrap:anywhere; }
+.island-lesson { display:grid; grid-template-columns:minmax(0,1fr) minmax(90px,.56fr); gap:10px; align-items:center; width:min(100%,470px); margin:auto; padding:7px; color:#4c3220; }
+.island-lesson .island-arrow { width:min(64px,100%); margin-inline:auto; }
+.island-lesson aside { color:#fae8bd; text-align:center; display:grid; justify-items:center; gap:5px; }
+.island-lesson aside strong { font:700 clamp(.8rem,2vw,1.2rem) Georgia,serif; }
+.island-lesson aside small { font:650 .65rem/1.35 system-ui,sans-serif; text-transform:uppercase; letter-spacing:.1em; }
+.island-lesson .island-map { width:min(100%,270px); margin-inline:auto; }
+@media(max-width:690px) {
+ .island-layout { grid-template-columns:minmax(0,1fr); }
+ .island-chart { width:min(100%,390px); justify-self:center; }
+}

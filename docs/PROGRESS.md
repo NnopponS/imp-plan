@@ -1,14 +1,15 @@
 # Execution ledger
 
-## Published baseline: game-table artwork
+[Imp Plan on GitHub Pages](https://nnoppons.github.io/imp-plan/) is the public alpha. The source catalog in this revision has **47 of 64 playable** fan tables: Season 1 **12/18**, Season 2 **12/17**, and Season 3 **23/29**. The other **17** entries remain archive-only. [The previously verified source](https://github.com/NnopponS/imp-plan/commit/8b2fcbe62699f83d3729eead64c9a416edc4b1fe) had 44 playable titles. The entries below M0 are historical, not the current count. Neither broadcast accuracy nor connectivity across separate networks is guaranteed.
 
-[Imp Plan on GitHub Pages](https://nnoppons.github.io/imp-plan/) has **41 of 64 playable** fan tables: Season 1 **12/18**, Season 2 **9/17**, Season 3 **20/29**. The other 23 catalog entries remain archive-only. Preview and real play share the same table and assets for every playable title; the Preview uses a safe sample position rather than a real room. Seven tables received new hand-illustrated game objects in this release. The all-title browser matrix and ten real Pages checks passed for [the published source](https://github.com/NnopponS/imp-plan/commit/48873e0e1a50392160256d4267faab2be0632259). See [table previews](PREVIEW_PARITY.md). The entries below are historical milestones, not the current count. Neither exact broadcast rules nor cross-network connectivity are guaranteed.
+## Treasure, a fixed-21 table and a prison memory game
 
-## Next release candidate: three new tables and actual game-object illustrations
+- **Treasure Island:** sealed arrow auctions and a 9×9 chart; draft private routes and interpret private dig clues. Practice alone or join a party of 2–16 seats.
+- **Hit, Stay:** an independently written fixed-21 fan version with private cards, automatic stays at the deadline and fictional scoring chips. Practice against a bot or seat 2–8.
+- **Piggy Bank:** publicly move coins between illustrated banks, remember the totals, and decide whether to challenge a declared count. The exact total remains hidden until the game’s reveal. Parties seat 3–8; practice adds three bots.
+- **Live artwork:** Point Gomoku has a carved field and score ruler; Fragments of Memory uses an engraved cabinet and hides the exhibit at the authoritative study deadline; Equation Pyramid shows an inscribed stack and marks legal support stones. The same pieces appear in each table’s read-only Preview and in play.
 
-The source catalog has **44 of 64 playable** fan tables: Season 1 **12/18**, Season 2 **11/17**, Season 3 **21/29**. Added **Unknown** (hidden laws and rolling cubes), **Doubt and Bet** (sealed hands and fictional challenges) and **Tower of Equations** (engraved block proofs, untimed Workshop and timed party). Preview renders the same game objects as live play. Existing Remove One and both Memory Poker modes have purpose-drawn card faces and common concealed backs. Flags uses a compact atlas on mobile. The remaining **20** catalog entries are still archive-only. These are fan rules, not certification of the broadcast versions. The published baseline above is retained until the new revision is verified on Pages.
-
-Date: 2026-11-26. Repository: feature branch locally. No remote repo or Pages deployment confirmed.
+[Rule evidence and scope](RULE_VERIFICATION.md) · [Documented player counts](PLAYER_COUNTS.md) · [Art and preview](PREVIEW_PARITY.md)
 
 ## M0 · complete locally
 - Imported all 64 entries from the supplied rulebook, including 18 S1, 17 S2 and 29 S3.
