@@ -60,3 +60,27 @@ test('reduced-motion readers get a static cue only when a lazy route diagram is 
   await expect(cue).toHaveCSS('animation-name','none')
  }finally{release()}
 })
+
+test('a cold Equation High-Low guide never cues the next page over its loading message',async({page})=>{
+ await page.emulateMedia({reducedMotion:'no-preference'})
+ let release!:()=>void
+ const pending=new Promise<void>(resolve=>{release=resolve})
+ await page.route('**/equation-high-low-ui.tsx*',async route=>{await pending;await route.continue()})
+ try{
+  await page.goto('./season/1/')
+  await page.locator('#practice-gallery-equationHighLow').click()
+  await page.getByRole('button',{name:'Start match',exact:true}).click()
+  const guide=page.getByRole('region',{name:'How to play'})
+  const cue=guide.locator('.brief-cue')
+  await guide.press('ArrowRight')
+  await expect(guide.getByText('Opening the arithmetic salon…')).toBeVisible()
+  // Keep the actual module request unresolved past the cue's discovery window.
+  await page.waitForTimeout(900)
+  await expect(cue).not.toHaveAttribute('data-ready','true',{timeout:150})
+  release()
+  await expect(guide.locator('[data-equation-high-low-example="1"]')).toBeVisible()
+  await expect(cue).toHaveAttribute('data-ready','true')
+  expect(await guide.locator('.brief-scene-object').evaluate(el=>el.getAnimations({subtree:true})
+   .filter(a=>a.playState==='running'&&Number(a.effect?.getComputedTiming().endTime)<=2000).length)).toBe(0)
+ }finally{release()}
+})

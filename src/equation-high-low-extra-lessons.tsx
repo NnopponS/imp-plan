@@ -13,6 +13,6 @@ export const extraLessons={
    {title:'Seal your lane',caption:'Low chases 1; High chases 20. Swing uses two arrangements and only pays if both win.'},
    {title:'Read the split',caption:'Low and High split six chips, three each. The largest stack at the end of the match wins.'},
   ],
-  render:step=><TableLoadBoundary title="Equation High-Low"><Suspense fallback={<span>Opening the arithmetic salon…</span>}><Lesson step={step}/></Suspense></TableLoadBoundary>,
+  render:step=><TableLoadBoundary title="Equation High-Low"><Suspense fallback={<span data-lesson-pending role="status">Opening the arithmetic salon…</span>}><Lesson step={step}/></Suspense></TableLoadBoundary>,
  },
 } satisfies LessonMap
