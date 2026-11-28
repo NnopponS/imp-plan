@@ -7,6 +7,20 @@ const study=(p:Page)=>p.locator('[data-fa-study] img')
 const option=(p:Page,i:number)=>p.locator('[data-fa-option="'+i+'"]')
 const seal=(p:Page)=>p.getByRole('button',{name:'Seal answer',exact:true})
 
+// Large jumps on an advancing Playwright clock can race an in-flight real-time
+// tick and send the mock monotonic clock backward. The real match clock cannot
+// do this. Wait for the real UI and transport startup, then pause before
+// advancing the long study window.
+async function endStudy(...pages:Page[]){
+ await Promise.all(pages.map(async p=>p.clock.pauseAt(await p.evaluate(()=>Date.now()+500))))
+ // Interleave host and guest heartbeats rather than jumping past their deadlines.
+ for(let i=0;i<9;i++)await Promise.all(pages.map(p=>p.clock.runFor(4500)))
+ for(const p of pages){
+  await expect(board(p)).toHaveAttribute('data-fa-phase','answer')
+  await expect(board(p).getByRole('timer')).toHaveAccessibleName(/^(?:[1-5]\d|60) seconds remaining$/)
+ }
+}
+
 test('320px practice studies named flags, then keyboard seals a correct recall and can focus the board',async({browser,baseURL})=>{
  const ctx=await browser.newContext({viewport:{width:320,height:760},isMobile:true,hasTouch:true,reducedMotion:'reduce'})
  try{
@@ -30,8 +44,7 @@ test('320px practice studies named flags, then keyboard seals a correct recall a
   await expect(page.locator('[data-fa-study]')).toHaveCount(12)
   await symbols.tap()
   await expect(study(page)).toHaveCount(12)
-  await page.clock.fastForward(40500)
-  await expect(board(page)).toHaveAttribute('data-fa-phase','answer')
+  await endStudy(page)
   await expect(page.locator('[data-fa-option]')).toHaveCount(20)
   await expect(study(page)).toHaveCount(0)
   const choices=await page.locator('[data-fa-option] img').evaluateAll(imgs=>imgs.map(i=>i.getAttribute('src')))
@@ -43,6 +56,7 @@ test('320px practice studies named flags, then keyboard seals a correct recall a
   await page.getByRole('button',{name:'Exit focus',exact:true}).tap()
   await expect(option(page,i)).toHaveAttribute('aria-pressed','true')
   await seal(page).press('Enter')
+  await expect(page.getByRole('alert')).toHaveCount(0)
   await expect(board(page)).toHaveAttribute('data-fa-phase','done')
   await expect(board(page)).toContainText('1 point')
   await expect(page.locator('[data-correct="true"]')).toHaveCount(12)
@@ -70,9 +84,8 @@ test('room peers receive the same named archive and private lock receipts before
   for(const page of [host,guest])await expect(study(page)).toHaveCount(12)
   const images=(p:Page)=>study(p).evaluateAll(imgs=>imgs.map(i=>i.getAttribute('src')))
   expect(await images(host)).toEqual(await images(guest))
-  await Promise.all([host.clock.fastForward(40500),guest.clock.fastForward(40500)])
+  await endStudy(host,guest)
   for(const page of [host,guest]){
-   await expect(board(page)).toHaveAttribute('data-fa-phase','answer')
    await expect(page.locator('[data-fa-name]')).toHaveCount(12)
    await expect(page.locator('[data-correct="true"]')).toHaveCount(0)
   }
