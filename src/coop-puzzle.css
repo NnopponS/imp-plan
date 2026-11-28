@@ -5,10 +5,24 @@
 .relay-bench{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(155px,.8fr);gap:14px;align-items:start}
 .relay-frame{padding:clamp(5px,1.5vw,13px);background:repeating-linear-gradient(3deg,#69503b 0 2px,#765b42 3px 6px,#71533a 7px 12px);border:4px ridge #b28f59;box-shadow:0 3px 5px #3b251c30;border-radius:3px;min-width:0}
 .relay-grid{display:grid;border:2px solid #453d2a;overflow:visible;background:#766249}
-.relay-work button.relay-square{position:relative;display:grid;place-items:center;aspect-ratio:1;min-width:0;min-height:0;margin:0;padding:0;border:1px solid #9b8669;border-radius:0;color:#302a23;background:repeating-linear-gradient(132deg,#dfcbaa 0 5px,#e7d4b7 5px 7px,#e3cfb0 7px 11px)}
-.relay-square i{width:4px;height:4px;border:1px solid #ab9170;transform:rotate(45deg)}
-.relay-work button[data-tile]{color:#fff3d0;border-color:#273b33;background:repeating-linear-gradient(142deg,transparent 0 5px,#f8e3ad33 6px,transparent 7px 11px),var(--inlay);box-shadow:inset 1px 1px #f9eac782,inset -2px -2px #1117}
-.relay-square b{font:700 clamp(.74rem,2vw,1rem)/1 Georgia,serif;text-shadow:0 1px 2px #000}.relay-work button[data-ghost="fit"]{background:#b3d2af}.relay-work button[data-ghost="collision"]{background:#ebad91}.relay-square em{position:absolute;right:2px;bottom:1px;color:#481e32;font-size:1.1rem;line-height:1}
+.relay-work button.relay-square{position:relative;display:grid;place-items:center;aspect-ratio:1;min-width:0;min-height:0;margin:0;padding:0;border:1px solid #9b8669;border-radius:0;color:#302a23;background:#d8c19c}
+.relay-square-print{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.relay-cut{fill:var(--inlay);stroke:#202e27;stroke-width:1.15;stroke-linejoin:round}
+.relay-bevel{fill:none;stroke:#ffe9b7;stroke-width:.65;stroke-opacity:.76}
+.relay-grain{fill:none;stroke:#f6dead;stroke-width:.55;opacity:.6;stroke-linecap:round}
+.relay-flourish{fill:none;stroke:#fff1c3;stroke-width:1.25;stroke-linejoin:round;stroke-linecap:round}
+.relay-recess{fill:#ecdbb8;stroke:#886f4f;stroke-width:.7}
+.relay-recess+.relay-grain{stroke:#937650;opacity:.37}
+.relay-dowel{fill:#a48361;stroke:#835f3e;stroke-width:.55}
+.relay-work button[data-tile]{color:#fff5d6;border-color:#273b33;background:#8c6c4c;box-shadow:inset 0 0 0 1px #34271d}
+.relay-square b,.relay-draft-mark{position:relative;z-index:1;font:700 clamp(.74rem,2vw,1rem)/1 Georgia,serif}
+.relay-square b{min-width:1.15em;padding:2px 3px;color:#fff5d6;background:#201d19c7;border-radius:2px;text-shadow:0 1px 2px #000}
+.relay-work button[data-ghost="fit"]{background:#748d5b}
+.relay-work button[data-ghost="fit"] .relay-square-print{opacity:.55}
+.relay-draft-mark{color:#181b12;padding:2px 3px;background:#f8eacb;border-radius:2px}
+.relay-work button[data-ghost="collision"]{background:#af6453;border-color:#762a26}
+.relay-work button[data-ghost="collision"] .relay-draft-mark{color:#762a26}
+.relay-square em{position:absolute;right:2px;bottom:1px;color:#481e32;font-size:1.1rem;line-height:1}
 .relay-work button[data-mark]{outline:2px dashed #4e2b48;outline-offset:-3px}.relay-work button:focus-visible{outline:3px solid #174b8b;outline-offset:-3px;z-index:2}
 .relay-rack{padding:.6rem;border:1px solid #aa8e68;background:#f0e2c9;border-radius:4px}.relay-rack h3{margin:0 0 .5rem;text-transform:uppercase}
 .relay-tray{display:grid;grid-template-columns:repeat(auto-fill,minmax(49px,1fr));gap:5px}.relay-work button.relay-stamp{display:flex;align-items:center;justify-content:center;position:relative;min-height:54px;padding:4px 3px 4px 12px;border:1px solid #a58c66;background:#faefd7;border-radius:2px}

@@ -4,11 +4,14 @@ import {startMatch} from './start-match'
 import {chooseGame} from '../lobby-controls'
 
 const board=(p:Page)=>p.getByRole('region',{name:'Mosaic relay'})
-test('a 320px solo seat completes a generated frame from just the visible shapes',async({page,baseURL})=>{
+test('a 320px solo seat completes a generated frame from just the visible shapes',async({page,baseURL},info)=>{
  await page.setViewportSize({width:320,height:780});await page.emulateMedia({reducedMotion:'reduce'});await page.clock.install()
  await page.goto(baseURL!+'season/1/');await page.getByRole('button',{name:'Practice Cooperative Puzzle',exact:true}).click()
  await startMatch(page)
  await expect(board(page)).toHaveAttribute('data-relay-status','playing')
+ const table=board(page)
+ await expect(table.locator('[data-cell] [data-inlay-print="socket"]')).toHaveCount(36)
+ await expect(table.locator('[data-piece="0"] [data-inlay-print="face"] path').first()).toHaveAttribute('d',/M/)
  const shapes=await board(page).locator('[data-piece]').evaluateAll(els=>els.map(e=>JSON.parse(e.getAttribute('data-shape')!)))
  const solution=solveRelay(6,6,shapes)!
  expect(solution).toHaveLength(shapes.length)
@@ -16,12 +19,16 @@ test('a 320px solo seat completes a generated frame from just the visible shapes
   await board(page).locator('[data-piece="'+f.piece+'"]').press('Enter')
   for(let i=0;i<f.orientation;i++)await board(page).getByRole('button',{name:'Rotate 90°'}).press('Enter')
   await board(page).locator('[data-cell="'+f.anchor+'"]').press('Enter')
+  await expect(table.locator('[data-ghost="fit"] [data-inlay-print="face"]').first()).toBeVisible()
   await board(page).getByRole('button',{name:'Place tile',exact:true}).press('Enter')
+  await expect(table.locator('[data-tile="'+f.piece+'"] [data-inlay-print="face"]').first()).toBeVisible()
   await expect(board(page).locator('[data-piece="'+f.piece+'"]')).toHaveAttribute('data-fitted','yes')
  }
  await expect(board(page)).toHaveAttribute('data-relay-status','tiled')
  await expect(board(page)).toContainText('Team score: 36 of 36')
+ await expect(table.locator('button[data-tile] > b').first()).toHaveCSS('color','rgb(255, 245, 214)')
  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(320)
+ await table.screenshot({path:info.outputPath('filled-marquetry.png'),animations:'disabled'})
 })
 test('a 390px mosaic bench puts the placement tools immediately at the board',async({page,baseURL})=>{
  await page.setViewportSize({width:390,height:844});await page.emulateMedia({reducedMotion:'reduce'})

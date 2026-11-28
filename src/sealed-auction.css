@@ -15,3 +15,17 @@
 .sealed-auction .sealed-presets small{color:inherit}
 .room .match .sealed-auction p,.room .match .sealed-auction .scores small{color:#edddbd;margin-bottom:0}
 .sealed-auction .scores>div{color:#f8ead0;background:#3b2d25;border-color:#967650}
+.sealed-bank .sealed-dial{filter:drop-shadow(0 2px 1px #1b130d);margin-block:5px 9px}
+.sealed-auction .sealed-presets>button{
+ border-radius:2px 5px 2px 5px;
+ background-color:#2b211c;
+ box-shadow:inset 0 0 0 2px #36291e,inset 0 0 0 3px #725538;
+ font-variant-numeric:tabular-nums;
+}
+.sealed-auction .sealed-presets>button[aria-pressed=true]{box-shadow:inset 0 0 0 2px #e8c495,inset 0 0 0 3px #ad7850}
+.room .match .sealed-auction .auction-top{
+ color:#fff0d0;background:#392820;border:1px solid #906844;
+ border-radius:3px 7px 3px 7px;
+ box-shadow:inset 0 0 0 2px #2e2019,inset 0 0 0 3px #6f5136;
+}
+.room .match .sealed-auction .auction-top .mono{color:#f7d89b}

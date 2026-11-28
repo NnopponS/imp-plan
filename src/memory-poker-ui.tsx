@@ -43,7 +43,7 @@ export function useMemoryGridFrame(grid:{current:HTMLDivElement|null},phase:stri
   if(!matchMedia('(max-width: 700px)').matches)return
   const id=requestAnimationFrame(()=>{
    const el=grid.current,focus=document.activeElement
-   if(!el||(focus&&focus!==document.body&&!el.contains(focus)&&!focus.matches('h1[tabindex="-1"]')))return
+   if(!el||el.closest('[inert]')||(focus&&focus!==document.body&&!el.contains(focus)&&!focus.matches('h1[tabindex="-1"]')))return
    const {top,bottom,height}=el.getBoundingClientRect()
    const table=el.closest<HTMLElement>('.memory-table')
    const controls=phase==='select'?table?.querySelector('.memory-actions'):null

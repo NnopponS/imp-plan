@@ -1,15 +1,24 @@
 import {expect,test} from '@playwright/test'
 import {startMatch} from './start-match'
 
-test('Time Auction’s private bank meter and quick bids are visible and do not lock a draft',async({page})=>{
+test('Time Auction’s private bank meter and quick bids are visible and do not lock a draft',async({page},info)=>{
  await page.setViewportSize({width:320,height:650})
  await page.emulateMedia({reducedMotion:'reduce'})
  await page.goto('./season/2/')
  await page.getByRole('button',{name:'Practice Time Auction',exact:true}).click()
  await startMatch(page)
+ const palette=await page.locator('.sealed-auction .auction-top').evaluate(el=>{
+  const color=(s:string)=>s.match(/\d+/g)!.slice(0,3).map(v=>+v/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4).reduce((n,v,i)=>n+v*[.2126,.7152,.0722][i],0)
+  const css=getComputedStyle(el)
+  return [color(css.color),color(css.backgroundColor)].sort((a,b)=>b-a)
+ })
+ expect((palette[0]+.05)/(palette[1]+.05)).toBeGreaterThanOrEqual(4.5)
  const instrument=page.getByRole('meter',{name:'Your time bank'})
  await expect(instrument).toBeInViewport({ratio:1})
  await expect(instrument).toHaveAttribute('aria-valuenow','60')
+ const sand=instrument.locator('[data-auction-sand]')
+ await expect(sand).toBeVisible()
+ const full=Number(await sand.getAttribute('width'))
  await page.getByRole('button',{name:'Set bid to 5 seconds',exact:true}).click()
  await expect(page.getByRole('spinbutton',{name:'Bid (seconds)'})).toHaveValue('5')
  await expect(instrument).toHaveAttribute('aria-valuenow','60')
@@ -17,5 +26,8 @@ test('Time Auction’s private bank meter and quick bids are visible and do not 
  await page.getByRole('button',{name:'Lock bid',exact:true}).click()
  await expect(page.getByText('Sealed round 2 / 8',{exact:true})).toBeVisible()
  await expect(instrument).toHaveAttribute('aria-valuenow','55')
+ expect(Number(await sand.getAttribute('width'))/full).toBeCloseTo(55/60)
+ await expect(instrument.locator('[data-engraved-hourglass]')).toBeVisible()
+ await page.screenshot({path:info.outputPath('auction-inked-phone.png')})
  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(320)
 })

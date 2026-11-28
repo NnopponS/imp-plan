@@ -1,0 +1,9 @@
+# Game table previews
+
+A game’s painted cover identifies it; it is not a gameplay screenshot. Its **Game table** preview now renders the real table component and artwork rather than a symbolic illustration. The picture uses a self-contained sample position. It may set up a few legal pieces to show the board in use; it never reads a player’s room, answers, moves, or private cards. The preview cannot send a command or start a network session. Closing it returns focus to the trigger.
+
+The library uses the standard practice table. The current-table preview in the lobby uses the selected rule mode and board options with synthetic seats, including Time Auction’s **Hold & release** and Memory Poker’s **Episode-style duel**. Party changes are still explicit. **Illustrated rules** is a separate animation for learning a move, and the illustrated Start match walkthrough is unchanged.
+
+New original vector artwork is part of the playable objects, not just the cover: cut grass tiles and field contours in both Grass games, marquetry pieces and sockets in Cooperative Puzzle, wax seals and sockets in Secret Code, brass keys and feedback lamps in Equation Lights, the sand dial in sealed Time Auction, and sluices and cast weights in Gradation. Other games retain their existing table artwork in both views.
+
+The browser matrix opens the gallery preview and a real practice table for every playable title, and compares each title’s distinctive game surface and computed ink. It also checks that the preview cannot become an active table. Individual game tests cover actual moves, private choices, two-player scenarios and keyboard/touch access. This is visual parity, not matching a broadcast set, a live online opponent, or every later position. Archive-only items still do not have playable tables.

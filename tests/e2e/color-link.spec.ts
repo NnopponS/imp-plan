@@ -151,6 +151,6 @@ test('Color Link loops its own painted traces, shows its final venue, and keeps 
  await expect(copy).toHaveAttribute('data-cover-ready','true')
  await card.getByRole('button',{name:'Details for Color Link'}).click()
  const details=page.getByRole('dialog',{name:'Color Link'})
- await expect(details.locator('[data-game-preview="colorLink"]')).toBeVisible()
+ await expect(details.locator('[data-real-table-preview="colorLink"] [data-rendered-table="colorLink"]')).toBeVisible()
  await expect(details.getByText('Season 3 · Final game 2')).toBeVisible()
 })

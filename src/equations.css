@@ -1,6 +1,6 @@
 .equations{
  --equation-ink:#f6e9ce;--equation-muted:#d6c7a9;--equation-edge:#749186;
- display:grid;gap:.58rem;min-width:0;color:var(--equation-ink);
+ display:grid;gap:.58rem;min-width:0;width:min(100%,31rem);margin-inline:auto;color:var(--equation-ink);
 }
 .equations p{margin:0;color:var(--equation-muted)}
 .equations [role=status]{color:var(--equation-ink);padding:.25rem .55rem;border-inline-start:2px solid var(--equation-edge)}
@@ -14,10 +14,20 @@
 .equation-history{display:grid;gap:.38rem;width:min(100%,31rem)}
 .equation-row,.equation-legend{list-style:none;margin:0;padding:0}
 .equation-row{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:clamp(.13rem,.8vw,.35rem)}
-.equation-row li,.equation-legend li{border-radius:.35rem;text-align:center;border:1px solid #a78f77}
+.equation-row li,.equation-legend li{
+ border-radius:4px 2px 5px 2px;text-align:center;border:1px solid #a78f77;
+ box-shadow:inset 0 0 0 2px #ffffff24,inset 0 -3px #3e2c211d;
+}
 .equation-row li{display:grid;place-content:center;min-height:2.55rem;line-height:1.05;font:700 clamp(.98rem,4vw,1.2rem)/1.05 ui-monospace,monospace}
-.equation-row li span[aria-hidden]{font-size:.72em}
-.equation-legend li{padding:.2rem .45rem;font-size:.86rem}
+.equation-row li .equation-lamp{width:15px;height:15px;margin:2px auto 0}
+.equation-legend li{display:flex;align-items:center;gap:.3rem;padding:.2rem .45rem;font-size:.86rem}
+.equation-legend .equation-lamp{width:17px;height:17px}
+.equation-lamp{display:block;flex:none;pointer-events:none}
+.equation-lamp-rim{fill:#0e221a40;stroke:currentColor;stroke-width:.9}
+.equation-lamp-glint{fill:none;stroke:currentColor;stroke-width:.65;stroke-linecap:round;opacity:.6}
+.equation-lamp-cut{fill:none;stroke:currentColor;stroke-width:1.45;stroke-linejoin:round;stroke-linecap:round}
+[data-mark=present] .equation-lamp-rim{fill:#f9e6a9}
+[data-mark=absent] .equation-lamp-rim{fill:#d0c6b8}
 .equations [data-mark=exact]{color:#fff;background:#355e4d;border-color:#2d4d40}
 .equations [data-mark=present]{color:#3b260e;background:repeating-linear-gradient(135deg,#f1cf83 0 5px,#f7dd9f 5px 10px);border-color:#9c6d27}
 .equations [data-mark=absent]{color:#413731;background:#e9e2d6;border-style:dashed}
@@ -43,10 +53,21 @@
  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.35rem;
  width:min(100%,18rem);
 }
-.match .equation-operators button{
- min-height:44px;min-width:0;padding:0;border-color:#a68c63;
- font:700 1.2rem/1 ui-monospace,monospace;color:#432f20;background:#f3e5c7;
+.room .match .equation-operators button:not(.primary){
+ min-height:44px;min-width:0;padding:0;display:grid;place-items:center;
+ color:#4c321f;background:#342a22;border-radius:5px 2px 5px 2px;border-color:#90754f;
+ box-shadow:inset 0 1px 4px #19140f;
 }
+.room .match .equation-operators button:not(.primary):hover:not(:disabled){background:#5d4734;border-color:#deb87c}
+.equation-key-face{display:block;width:min(100%,3rem);height:37px;pointer-events:none}
+.equation-key-chassis{fill:#b28855;stroke:#3b281b;stroke-width:1.1}
+.equation-key-bevel{fill:#f1dbaf;stroke:#ffedc0;stroke-width:.7}
+.equation-key-grain{fill:none;stroke:#89663e;stroke-width:.7;stroke-linecap:round;opacity:.51}
+.equation-key-cut-shadow,.equation-key-glyph{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:2.2}
+.equation-key-glyph{stroke:currentColor}
+.equation-key-cut-shadow{stroke:#fff2cc}
+.equation-operators button:focus-visible{outline:2px solid #ffd484;outline-offset:2px}
+
 @media(max-width:360px){
  .equation-form .equation-seal{padding-inline:.5rem}
  .equation-form input{letter-spacing:.09em}

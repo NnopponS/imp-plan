@@ -28,7 +28,7 @@ export function MemoryDuelBoard({snap,active,name,submit}:{snap:Snapshot;active:
  const grid=useRef<HTMLDivElement>(null)
  useEffect(()=>{
   const table=surface.current
-  if(table)table.scrollIntoView({block:table.offsetHeight<=window.innerHeight?'nearest':'start',inline:'nearest',behavior:'instant'})
+  if(table&&!table.closest('[inert]'))table.scrollIntoView({block:table.offsetHeight<=window.innerHeight?'nearest':'start',inline:'nearest',behavior:'instant'})
  },[])
  useMemoryGridFrame(grid,duel.phase,duel.dealNumber)
  useEffect(()=>{const timer=setInterval(()=>setNow(Date.now()),150);return ()=>clearInterval(timer)},[])

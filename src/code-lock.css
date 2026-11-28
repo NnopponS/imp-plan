@@ -25,19 +25,40 @@
 .code-clue-title{position:sticky;top:-.65rem;justify-content:space-between;background:#f6ebd8;padding-block:.25rem;border-bottom:1px solid #dcc4a1}
 .code-clue-title button{min-height:44px}
 .code-slots,.code-palette{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.32rem}
-.room .match .code-lock :is(.code-slots,.code-palette) button:not(.primary){height:46px;min-height:44px;min-width:0;display:flex;align-items:center;justify-content:center;gap:.38rem;padding:.2rem;border-radius:4px;border-width:1px;color:var(--seal-ink);background:var(--seal-paper);border-color:var(--seal-rule);box-shadow:inset 0 0 0 2px var(--seal-paper),inset 0 0 0 3px var(--seal-rule)}
+.room .match .code-lock :is(.code-slots,.code-palette) button:not(.primary){
+ position:relative;isolation:isolate;display:flex;align-items:center;justify-content:center;gap:.2rem;
+ height:46px;min-height:44px;min-width:0;padding:.12rem;overflow:visible;
+ border:1px solid var(--seal-rule);border-radius:4px 6px 4px 7px;
+ color:var(--seal-ink);background-color:var(--seal-paper);
+ background-image:repeating-linear-gradient(155deg,#4f2c1510 0 .5px,transparent 1px 5px);
+ box-shadow:inset 0 0 0 2px var(--seal-paper),inset 0 0 0 3px var(--seal-rule),0 2px 0 #1d130c;
+}
 .code-palette button{touch-action:pan-y pinch-zoom;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
-.code-lock [data-tone="-1"]{--seal-paper:#f0e2ca;--seal-ink:#65462d;--seal-rule:#a0805b}
-.room .match .code-lock .code-slots button[data-tone="-1"]:not(.primary){border-style:dashed;box-shadow:none}
-.code-lock [data-tone="0"]{--seal-paper:#d8e9de;--seal-ink:#213f35;--seal-rule:#617a6e}
-.code-lock [data-tone="1"]{--seal-paper:#f3daa1;--seal-ink:#4c310f;--seal-rule:#9c783f}
-.code-lock [data-tone="2"]{--seal-paper:#eadbe8;--seal-ink:#4e2c46;--seal-rule:#926985}
-.room .match .code-lock :is(.code-slots,.code-palette) button:not(.primary):hover:not(:disabled){color:var(--seal-ink);background:var(--seal-paper);border-color:var(--seal-ink)}
+.code-lock [data-tone="-1"]{--seal-paper:#30241a;--seal-ink:#ecd5a4;--seal-rule:#8e7047}
+.room .match .code-lock .code-slots button[data-tone="-1"]:not(.primary){
+ background-image:none;border:1px solid #80603c;box-shadow:inset 0 1px 4px #140e08;
+ font:700 1.15rem/1 Georgia,serif;
+}
+.code-lock [data-tone="0"]{--seal-paper:#daeadf;--seal-ink:#183e32;--seal-rule:#617a6e;--seal-wax:#346555}
+.code-lock [data-tone="1"]{--seal-paper:#f4dda9;--seal-ink:#4c310f;--seal-rule:#9c783f;--seal-wax:#915e26}
+.code-lock [data-tone="2"]{--seal-paper:#eadbe8;--seal-ink:#4e2c46;--seal-rule:#926985;--seal-wax:#773e65}
+.room .match .code-lock :is(.code-slots,.code-palette) button:not(.primary):hover:not(:disabled){
+ color:var(--seal-ink);background-color:var(--seal-paper);border-color:var(--seal-ink);
+}
 .room .match .code-lock .code-palette button[aria-pressed="true"]:not(.primary){outline:2px solid #ffcf6a;outline-offset:1px;box-shadow:inset 0 0 0 2px var(--seal-ink)}
 .code-lock button:focus-visible{outline:2px solid #ffcf6a;outline-offset:2px}
 .code-lock .code-clue-dialog button:focus-visible{outline-color:#80512a}
-.code-symbol{display:block;width:1.1rem;height:1.1rem;fill:currentColor}
-.code-seal-inlay{fill:none;stroke:var(--seal-paper);stroke-linecap:round}
+.code-stamp-face{width:clamp(1.65rem,8vw,2.25rem);height:2.2rem;flex:none;pointer-events:none;overflow:visible}
+.code-wax-drop{fill:var(--seal-wax);stroke:var(--seal-ink);stroke-width:1.1;filter:drop-shadow(0 1px .4px #1f150d92)}
+.code-wax-rim,.code-seal-device,.code-wax-scrapes{fill:none;stroke:var(--seal-paper);stroke-linecap:round;stroke-linejoin:round}
+.code-wax-rim{stroke-width:1.25;opacity:.58}
+.code-seal-device{stroke-width:1.3}
+.code-wax-scrapes{stroke-width:.65;opacity:.69}
+.code-stamp-rank{min-width:.6em;text-align:center;font:700 clamp(1rem,5vw,1.35rem)/1 Georgia,serif;pointer-events:none}
+.code-slot-engrave{position:absolute;inset:2px;width:calc(100% - 4px);height:calc(100% - 4px);z-index:-1;pointer-events:none}
+.code-slot-bed{fill:#24180f;stroke:#a07a4e;stroke-width:.9}
+.code-slot-keyline{fill:none;stroke:#ad885d;stroke-width:.6;opacity:.64}
+.code-slot-hatching{fill:none;stroke:#af885d;stroke-width:.6;opacity:.58}
 .code-lock .code-actions{margin:0;gap:.4rem}
 .code-actions button{min-height:44px}
 @media(min-width:900px){

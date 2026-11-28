@@ -1,12 +1,9 @@
-import {SealedAuction} from './sealed-auction'
-import {MontageBoard,MontageLesson,montagePracticeRules,montageSource} from './montage-ui'
-import {WallGoBoard} from './wall-go-ui'
-import {MemoryDuelBoard,MemoryDuelLesson} from './memory-duel-ui'
+import {MontageLesson,montagePracticeRules,montageSource} from './montage-ui'
+import {MemoryDuelLesson} from './memory-duel-ui'
 import {total} from './mancala'
-import {isPuzzle} from './puzzles'
 import React,{Suspense,lazy,useEffect,useLayoutEffect,useRef,useState} from 'react'
 import {createRoot} from 'react-dom/client'
-import {mills,points,titles,tutorials,isDuel,type Game,type GameView} from './engine'
+import {titles,tutorials,isDuel,type Game} from './engine'
 import {defaults,explain,episodePokerRoster,episodePokerRules,holdAuctionRules,isHoldAuction,humanOnly,seatRules,seatCapacity,seatStartError,nickname,validCode,type Command,type Snapshot} from './room'
 import {hostRoom,joinRoom,practice,type SessionState,type ConnectOptions,type Session} from './session'
 import catalog from './catalog.json'
@@ -22,7 +19,7 @@ import './style.css'
 import './design.css'
 import './arena-refresh.css'
 import {TableBriefing} from './table-briefing'
-import {BlindMatchStage,ChamberGlyph} from './blind-match'
+import {ChamberGlyph} from './blind-match'
 import {getPlayerLook,PlayerPortrait,PlayerWardrobe} from './player-wardrobe'
 import {GameFeedbackControls,useGameFeedback} from './game-feedback'
 import './cinematic.css'
@@ -35,113 +32,26 @@ import {ChapterBookmarks,ChallengeFolio,EntryNameplate,EntryInviteTag,FolioMark,
 import {PartyActionBar,PartyGlyph,PartyMechanicPreview,PartyRoster,PartyTable} from './party-table'
 import {TableInstruments} from './table-instruments'
 import {FolioTransition,stageFolio} from './stage-folio'
-import {BoardViewport} from './board-viewport'
-import {LeagueStandings,MatchRecord,PointScores,ReturnToLobby,RoundHeading} from './match-record'
+import {LeagueStandings,MatchRecord,ReturnToLobby} from './match-record'
 import {MatchInstruments,useBoardFocus} from './match-play'
-import {PointStone,TableMakersMark,tableMaterial} from './engraved-tables'
 import {useOfflinePractice} from './offline-practice'
-import {loadTable,TableLoadBoundary} from './lazy-table'
-const loadWallGo2=()=>loadTable(()=>import('./wall-go2-ui'))
-const WallGo2Board=lazy(()=>loadWallGo2().then(m=>({default:m.WallGo2Board})))
-const loadThreeRow=()=>loadTable(()=>import('./three-row-ui'))
-const ThreeRowBoard=lazy(()=>loadThreeRow().then(m=>({default:m.ThreeRowBoard})))
+import {TableLoadBoundary} from './lazy-table'
+import {ArenaTable,warmTable,loadTimeHold,loadHeavy13,loadThreeRow,loadRelay,loadGradation,loadBigSmall,loadTripleDice,loadFlags,loadSymmetry,loadColorLink} from './arena-table'
 const ThreeRowLesson=lazy(()=>loadThreeRow().then(m=>({default:m.ThreeRowLesson})))
-const loadRelay=()=>loadTable(()=>import('./coop-puzzle-ui'))
-const RelayBoard=lazy(()=>loadRelay().then(m=>({default:m.RelayBoard})))
 const RelayLesson=lazy(()=>loadRelay().then(m=>({default:m.RelayLesson})))
-const loadGradation=()=>loadTable(()=>import('./gradation-ui'))
-const GradationBoard=lazy(()=>loadGradation().then(m=>({default:m.GradationBoard})))
 const GradationLesson=lazy(()=>loadGradation().then(m=>({default:m.GradationLesson})))
-const loadBigSmall=()=>loadTable(()=>import('./big-small-ui'))
-const BigSmallBoard=lazy(()=>loadBigSmall().then(m=>({default:m.BigSmallBoard})))
 const BigSmallLesson=lazy(()=>loadBigSmall().then(m=>({default:m.BigSmallLesson})))
-const loadAuctionBingo=()=>loadTable(()=>import('./auction-bingo-ui'))
-const AuctionBingoBoard=lazy(()=>loadAuctionBingo().then(m=>({default:m.AuctionBingoBoard})))
-const loadEquationHighLow=()=>loadTable(()=>import('./equation-high-low-ui'))
-const EquationHighLowBoard=lazy(()=>loadEquationHighLow().then(m=>({default:m.EquationHighLowBoard})))
-const loadTripleDice=()=>loadTable(()=>import('./triple-dice-ui'))
-const TripleDiceBoard=lazy(()=>loadTripleDice().then(m=>({default:m.TripleDiceBoard})))
 const TripleDiceLesson=lazy(()=>loadTripleDice().then(m=>({default:m.TripleDiceLesson})))
-const loadHiddenWord=()=>loadTable(()=>import('./hidden-word-ui'))
-const HiddenWordBoard=lazy(()=>loadHiddenWord().then(m=>({default:m.HiddenWordBoard})))
-const loadFlags=()=>loadTable(()=>import('./flags-ui'))
-const FlagsBoard=lazy(()=>loadFlags().then(m=>({default:m.FlagsBoard})))
 const FlagsLesson=lazy(()=>loadFlags().then(m=>({default:m.FlagsLesson})))
-const loadSymmetry=()=>loadTable(()=>import('./symmetry-ui'))
-const SymmetryPuzzleBoard=lazy(()=>loadSymmetry().then(m=>({default:m.SymmetryPuzzleBoard})))
 const SymmetryPuzzleLesson=lazy(()=>loadSymmetry().then(m=>({default:m.SymmetryPuzzleLesson})))
-const loadColorLink=()=>loadTable(()=>import('./color-link-ui'))
-const ColorLinkBoard=lazy(()=>loadColorLink().then(m=>({default:m.ColorLinkBoard})))
 const ColorLinkLesson=lazy(()=>loadColorLink().then(m=>({default:m.ColorLinkLesson})))
-const loadHeavy13=()=>loadTable(()=>import('./heavy-13-ui'))
-const Heavy13Board=lazy(()=>loadHeavy13().then(m=>({default:m.Heavy13Board})))
 const Heavy13Lesson=lazy(()=>loadHeavy13().then(m=>({default:m.Heavy13Lesson})))
-const loadTimeHold=()=>loadTable(()=>import('./time-hold-ui'))
-const TimeHoldBoard=lazy(()=>loadTimeHold().then(module=>({default:module.TimeHoldBoard})))
-// Rules remain synchronous. Load board graphics only after a game is selected.
-const loadMemoryPokerBoard=()=>loadTable(()=>import('./memory-poker-ui'))
-const MemoryPokerBoard=lazy(()=>loadMemoryPokerBoard().then(m=>({default:m.MemoryPokerBoard})))
-const loadPieceBoard=()=>loadTable(()=>import('./piece-ui'))
-const PieceBoard=lazy(()=>loadPieceBoard().then(m=>({default:m.PieceBoard})))
-const loadTowerBoard=()=>loadTable(()=>import('./tower-ui'))
-const TowerBoard=lazy(()=>loadTowerBoard().then(m=>({default:m.TowerBoard})))
-const loadFenceBoard=()=>loadTable(()=>import('./fence-ui'))
-const FenceBoard=lazy(()=>loadFenceBoard().then(m=>({default:m.FenceBoard})))
-const loadScaleBoard=()=>loadTable(()=>import('./scale-ui'))
-const ScaleBoard=lazy(()=>loadScaleBoard().then(m=>({default:m.ScaleBoard})))
-const loadSpotBoard=()=>loadTable(()=>import('./spot-ui'))
-const SpotBoard=lazy(()=>loadSpotBoard().then(m=>({default:m.SpotBoard})))
-const loadFragmentsBoard=()=>loadTable(()=>import('./fragments-ui'))
-const FragmentsBoard=lazy(()=>loadFragmentsBoard().then(m=>({default:m.FragmentsBoard})))
-const loadPyramidBoard=()=>loadTable(()=>import('./pyramid-ui'))
-const PyramidBoard=lazy(()=>loadPyramidBoard().then(m=>({default:m.PyramidBoard})))
-const loadCodeLockBoard=()=>loadTable(()=>import('./code-lock-ui'))
-const CodeLockBoard=lazy(()=>loadCodeLockBoard().then(m=>({default:m.CodeLockBoard})))
-const loadEquationBoard=()=>loadTable(()=>import('./equations-ui'))
-const EquationBoard=lazy(()=>loadEquationBoard().then(m=>({default:m.EquationBoard})))
-const loadDivineBoard=()=>loadTable(()=>import('./divine-ui'))
-const DivineBoard=lazy(()=>loadDivineBoard().then(m=>({default:m.DivineBoard})))
-const loadGrassBoard=()=>loadTable(()=>import('./grass-ui'))
-const GrassBoard=lazy(()=>loadGrassBoard().then(m=>({default:m.GrassBoard})))
-const loadBaghBoard=()=>loadTable(()=>import('./season-expansion-ui'))
-const BaghBoard=lazy(()=>loadBaghBoard().then(m=>({default:m.BaghBoard})))
-const SecretBoard=lazy(()=>loadBaghBoard().then(m=>({default:m.SecretBoard})))
-const loadMancalaBoard=()=>loadTable(()=>import('./mancala-ui'))
-const MancalaBoard=lazy(()=>loadMancalaBoard().then(m=>({default:m.MancalaBoard})))
-const loadMorrisBoard=()=>loadTable(()=>import('./morris-ui'))
-const MorrisBoard=lazy(()=>loadMorrisBoard().then(m=>({default:m.MorrisBoard})))
-const loadPuzzleBoard=()=>loadTable(()=>import('./puzzle-ui'))
-const PuzzleBoard=lazy(()=>loadPuzzleBoard().then(m=>({default:m.PuzzleBoard})))
-const loadSeasonTwo=()=>loadTable(()=>import('./season-two-ui'))
-const SeasonTwo=lazy(()=>loadSeasonTwo().then(m=>({default:m.SeasonTwo})))
-const boardWarmers:Partial<Record<Game,()=>Promise<unknown>>>={
- wallGo2:loadWallGo2,
- equationHighLow:loadEquationHighLow,coopPuzzle:loadRelay,gradation:loadGradation,bigSmall:loadBigSmall,tripleDice:loadTripleDice,auctionBingo:loadAuctionBingo,hiddenWord:loadHiddenWord,flags:loadFlags,threeRow:loadThreeRow,colorLink:loadColorLink,symmetry:loadSymmetry,
- memoryPoker:loadMemoryPokerBoard,
- piece:loadPieceBoard,
- tower:loadTowerBoard,
- fence:loadFenceBoard,
- scale:loadScaleBoard,
- spot:loadSpotBoard,
- fragments:loadFragmentsBoard,
- pyramid:loadPyramidBoard,
- codeLock:loadCodeLockBoard,
- equations:loadEquationBoard,
- divine:loadDivineBoard,
- grass1:loadGrassBoard,grass3:loadGrassBoard,
- bagh:loadBaghBoard,secret:loadBaghBoard,
- mancala:loadMancalaBoard,
- morris:loadMorrisBoard,
- hex:loadPuzzleBoard,rectangles:loadPuzzleBoard,cubes:loadPuzzleBoard,exile:loadPuzzleBoard,
- remove:loadSeasonTwo,knight:loadSeasonTwo,
-}
 const games=Object.keys(titles) as Game[]
 const catalogGame=new Map(catalog.filter(row=>row.game).map(row=>[row.game,row]))
 const route=()=>{const [page,query]=location.hash.slice(1).split('?');return {page,room:new URLSearchParams(query).get('room')??''}}
 const cleanCode=(x:string)=>x.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6)
 const invite=(code:string)=>location.origin+base+'#/join?room='+code
 const joinStatus={signaling:'Contacting signaling…',peer:'Opening a direct connection…',snapshot:'Waiting for the host’s room state…'} as const
-const mark=(i:number)=>i===0?'●':'◆'
 function App(){
  const startRoute=route()
  const [code,setCode]=useState(cleanCode(startRoute.room))
@@ -256,7 +166,7 @@ function App(){
   return gameSearchKey([titles[g],row?.title,row?.genre,row?.id,venue?.label,venue?.caption].join(' ')).includes(galleryNeedle)
  })
  const choice=snap?.settings.game
- useEffect(()=>{if(choice)void boardWarmers[choice]?.().catch(()=>{})},[choice])
+ useEffect(()=>{if(choice)void warmTable(choice)?.catch(()=>{})},[choice])
  const holdAuction=!!snap&&isHoldAuction(snap.settings)
  useEffect(()=>{if(holdAuction)void loadTimeHold().catch(()=>{})},[holdAuction])
  const botBlocked=!!snap&&(holdAuction||humanOnly(snap.settings.game))
@@ -354,51 +264,26 @@ function App(){
    {state.phase==='offline'&&<div className="actions"><button onClick={()=>connect(kind)}>Retry</button><button onClick={()=>connect('solo')}>Solo practice</button></div>}
    {liveMatch&&snap?.game&&<MatchInstruments snap={{...snap,game:snap.game}} title={titles[snap.game.game]} active={state.phase==='online'} control={boardFocus}/>}
    {snap&&<div className="room-grid"><div>
-    {!snap.game?<><section className="panel lobby party-workspace"><PartyTable practice={kind==='solo'} game={snap.settings.game} variant={holdAuction?'hold':episodePoker?'episode':undefined} canChoose={host} online={state.phase==='online'} motionOff={feedback.prefs.motion==='off'} error={state.error} choose={game=>command({kind:'config',settings:{...snap.settings,game}})} preview={()=>setBriefing('preview')}/>
+    {!snap.game?<><section className="panel lobby party-workspace"><PartyTable practice={kind==='solo'} game={snap.settings.game} settings={snap.settings} variant={holdAuction?'hold':episodePoker?'episode':undefined} canChoose={host} online={state.phase==='online'} motionOff={feedback.prefs.motion==='off'} error={state.error} choose={game=>command({kind:'config',settings:{...snap.settings,game}})} preview={()=>setBriefing('preview')}/>
       <PartyActionBar note={partyLobby?partyNote:undefined}>
        {host?<><button className="primary" disabled={!canStart} onClick={()=>setBriefing('start')}>Start match</button><button disabled={state.phase!=='online'||snap.seats.length>=limit||botBlocked} onClick={()=>command({kind:'bot'})}><PartyGlyph kind="bot"/> Add bot</button></>:<button className="primary" disabled={state.phase!=='online'} onClick={()=>command({kind:'ready'})}>{youReady?'Unready':'Ready up'}</button>}
       </PartyActionBar>
      </section>
-     {practiceLobby&&lobbySettings}</>:snap.game.game==='blind'?<BlindMatchStage key={snap.match} game={snap.game} you={snap.you} name={nameOf} active={state.phase==='online'}
-     practice={kind==='solo'} leg={snap.fixture+1} legs={snap.count} submit={action=>command({kind:'move',action})}
-     onReturn={host?()=>{if(finished||window.confirm('End this match and return to the lobby?'))command({kind:'lobby'})}:undefined}
-     onExport={finished?()=>exportMatch(snap):undefined} next={finished&&host?{label:snap.seriesDone?'Rematch':'Next leg',run:()=>command({kind:'next'})}:undefined}
-     extra={finished?<LeagueStandings snap={snap} name={nameOf}/>:undefined} resultFolio={finished?<FolioTransition key={scene.key} scene={scene} motionOff={motionOff}/>:undefined}/>:<section className="panel match" data-table-material={liveMatch?tableMaterial[snap.game.game]:undefined}>
-     {!finished&&<TableMakersMark game={snap.game.game}/>}
-     <p className="eyebrow">{snap.game.timeHold?'EPISODE-INSPIRED · FAN RECREATION':snap.game.memoryDuel?'EPISODE-STYLE DUEL · FAN RECREATION':'FAN MODE'}{!(snap.game.grass||isPuzzle(snap.game.game)||snap.game.divine||snap.game.codeLock||snap.game.pyramid||snap.game.fragments||snap.game.spot||snap.game.scale||snap.game.fence||snap.game.tower||snap.game.piece||snap.game.memoryPoker||snap.game.memoryDuel||snap.game.timeHold||snap.game.montage||snap.game.heavy13||snap.game.colorLink||snap.game.symmetry||snap.game.threeRow||snap.game.flags||snap.game.coopPuzzle||snap.game.gradation||snap.game.bigSmall||snap.game.tripleDice||snap.game.wallGo2||snap.game.auctionBingo||snap.game.equationHighLow||snap.game.hiddenWord)&&(snap.game.wallGo?' · Leg ':' · Round ')+(snap.fixture+1)+' of '+snap.count}</p>
-     {!snap.game.timeHold&&snap.game.game!=='morris'&&<RoundHeading game={snap.game} you={snap.you} active={state.phase==='online'}>{snap.game.equationHighLow?(finished?snap.game.winner?nameOf(snap.game.winner)+' wins':'Shared lead':'Play the two targets'):snap.game.coopPuzzle?(finished?snap.game.coopPuzzle.reason==='tiled'?'Mosaic complete':'Relay closed':'Fit the mosaic'):snap.game.gradation?(finished?'Cabinet result':snap.game.gradation.phase==='arrange'?'Arrange the seven gates':'Read the weight register'):snap.game.bigSmall?(finished?snap.game.winner?nameOf(snap.game.winner)+' wins':'Match drawn':'Compare your cards'):snap.game.auctionBingo?(finished?snap.game.winner?nameOf(snap.game.winner)+' wins':'Shared lead':snap.game.auctionBingo.phase==='select'?'Choose a lot':snap.game.auctionBingo.phase==='bid'?'Seal your bid':'Read the price ledger'):snap.game.tripleDice?(finished?snap.game.winner?nameOf(snap.game.winner)+' wins':'Shared lead':snap.game.tripleDice.phase==='review'?'Round scores':'Seal three dice'):snap.game.hiddenWord?(finished?snap.game.winner?nameOf(snap.game.winner)+' wins':'Shared lead':'The lexical observatory'):snap.game.flags?(finished?'Dispatch results':snap.game.flags.phase==='study'?'Study the flag archive':'Seal your dispatch'):snap.game.threeRow?(finished?'The cabinet is unsealed':snap.game.threeRow.phase==='vote'?'Seal your suspicion':'Print three in a row'):snap.game.symmetry?(finished?snap.game.seats.length===1?'Practice complete':snap.game.winner?nameOf(snap.game.winner)+' wins':'Shared result':'Assemble the reflection'):snap.game.colorLink?(finished?snap.game.winner?nameOf(snap.game.winner)+' wins':'Match drawn':'Route the pairs'):snap.game.heavy13?(finished?snap.game.winner?nameOf(snap.game.winner)+' wins':'Shared result':'Balance the three stands'):snap.game.montage?(finished?snap.game.montage.outcome==='cleared'?'Gallery cleared':'Gallery closed':'Recognize the repeat'):snap.game.wallGo2?(finished?snap.game.winner?nameOf(snap.game.winner)+' wins':'Shared fortress':snap.game.wallGo2.drafting?'Draft your crew':'Partition the fortress'):snap.game.wallGo?(finished?snap.game.winner?nameOf(snap.game.winner)+' wins':'Draw':'Fence the board'):snap.game.memoryDuel?(finished?snap.game.winner?nameOf(snap.game.winner)+' wins':'No winner':'Head-to-head'):snap.game.memoryPoker?(finished?snap.game.seats.length===1?'Practice complete':snap.game.winner?nameOf(snap.game.winner)+' wins':'Shared result':'Memory Poker table'):snap.game.piece?(finished?snap.game.piece.score.adjustedMs===null?'Puzzle closed':'Silhouette complete':'Fill the silhouette'):snap.game.tower?(finished?snap.game.tower.score.passed?'Tower cleared':'Tower closed':'Build the word tower'):snap.game.fence?(finished?snap.game.seats.length===1?'Practice complete':snap.game.winner?nameOf(snap.game.winner)+' wins':'Shared result':'Build one closed loop'):snap.game.scale?(finished?snap.game.scale.score===5?'Weights solved':'Scale challenge complete':'Balance the minerals'):snap.game.fragments?(finished?snap.game.fragments.passed?'Exhibit cleared':'Exhibit not cleared':'Recall together'):finished?((isPuzzle(snap.game.game)||snap.game.codeLock||snap.game.pyramid||snap.game.spot)&&snap.game.seats.length===1?'Practice complete':snap.game.winner?nameOf(snap.game.winner)+' wins':'Shared result'):snap.game.game==='auction'?'Submit in secret':snap.game.game==='remove'?'Lowest unique card wins':snap.game.game==='knight'?'Trace your tour':isPuzzle(snap.game.game)||snap.game.game==='secret'||snap.game.grass||snap.game.divine||snap.game.codeLock||snap.game.pyramid||snap.game.spot?titles[snap.game.game]:!snap.game.seats.includes(snap.you)?'Watching this leg':snap.game.turn===snap.you?'Your turn':nameOf(snap.game.turn)+'’s turn'}</RoundHeading>}
-     {snap.game.game==='point'?<PointScores game={snap.game} name={nameOf} active={state.phase==='online'}/>:isDuel(snap.game.game)&&snap.game.game!=='morris'&&snap.game.game!=='bagh'&&!snap.game.equations&&!snap.game.wallGo&&!snap.game.colorLink&&!snap.game.bigSmall&&<p className="versus">{snap.game.seats.map((s,i)=><span key={s}>{mark(i)} {nameOf(s)}</span>)}</p>}
-      <TableLoadBoundary key={snap.match+':'+snap.game.game} title={titles[snap.game.game]}><Suspense fallback={<p role="status">Opening the table…</p>}>
-      {snap.game.timeHold?<TableLoadBoundary key={snap.match} title="Time Auction"><Suspense fallback={<p role="status">Loading hold controls…</p>}><TimeHoldBoard key={snap.match} matchKey={snap.match} view={snap.game.timeHold}
-       active={state.phase==='online'} clockSample={state.receivedAt===undefined?null:{hostNow:snap.hostNow,receivedAt:state.receivedAt}}
-       seatNames={Object.fromEntries(snap.seats.map(s=>[s.id,s.name]))} rejectedPress={state.holdRejection}
-       reducedMotion={feedback.prefs.motion==='off'} submit={a=>session.current?.send({kind:'time-hold',round:a.round,action:a.kind},snap.match)??false}/></Suspense></TableLoadBoundary>:
-      snap.game.equationHighLow?<EquationHighLowBoard view={snap.game.equationHighLow} you={snap.you} name={nameOf} active={state.phase==='online'} hostNow={snap.hostNow}
-       submit={action=>command({kind:'equation-high-low',match:snap.match,step:snap.game!.equationHighLow!.step,action})}/>:
-      snap.game.bigSmall?<BigSmallBoard key={snap.match} view={snap.game.bigSmall} you={snap.you} name={nameOf} active={state.phase==='online'}
-       submit={action=>command({kind:'big-small',match:snap.match,step:snap.game!.bigSmall!.step,action})}/>:
-      snap.game.coopPuzzle?<RelayBoard key={snap.match} state={snap.game.coopPuzzle} you={snap.you} name={nameOf} active={state.phase==='online'} hostNow={snap.hostNow} submit={action=>command({kind:'relay',match:snap.match,turn:snap.game!.coopPuzzle!.turns,action})}/>:
-      snap.game.wallGo2?<WallGo2Board key={snap.match} view={snap.game.wallGo2} you={snap.you} name={nameOf} active={state.phase==='online'} hostNow={snap.hostNow} deadline={snap.game.deadline}
-       submit={action=>command({kind:'wall-go2',match:snap.match,step:snap.game!.wallGo2!.step,action})}/>:
-      snap.game.auctionBingo?<AuctionBingoBoard key={snap.match+':'+snap.game.round} view={snap.game.auctionBingo} you={snap.you} name={nameOf} hostNow={snap.hostNow} active={state.phase==='online'}
-       send={action=>command({kind:'bingo-lock',match:snap.match,round:snap.game!.round,action})}/>:snap.game.gradation?<GradationBoard key={snap.match+':'+snap.game.round} view={snap.game.gradation} you={snap.you} name={nameOf} active={state.phase==='online'} hostNow={snap.hostNow} send={(order,target)=>command({kind:'gradation-lock',match:snap.match,round:snap.game!.round,order,target})}/>:snap.game.tripleDice?<TripleDiceBoard key={snap.match} view={snap.game.tripleDice} you={snap.you} name={nameOf} hostNow={snap.hostNow} active={state.phase==='online'}
-       send={(positions,prediction)=>command({kind:'dice-lock',match:snap.match,round:snap.game!.tripleDice!.round,positions,prediction})}/>:snap.game.hiddenWord?<HiddenWordBoard key={snap.match} view={snap.game.hiddenWord} you={snap.you} name={nameOf} active={state.phase==='online'} hostNow={snap.hostNow} receivedAt={state.receivedAt}
-       send={action=>command({kind:'hidden-word',match:snap.match,step:snap.game!.hiddenWord!.step,action})}/>:snap.game.flags?<FlagsBoard key={snap.match} view={snap.game.flags} you={snap.you} names={Object.fromEntries(snap.game.seats.map(id=>[id,nameOf(id)]))} hostNow={snap.hostNow} active={state.phase==='online'&&snap.game.seats.includes(snap.you)} send={choices=>command({kind:'flags-lock',match:snap.match,choices})}/>:snap.game.threeRow?<ThreeRowBoard key={snap.match} view={snap.game.threeRow} you={snap.you} names={Object.fromEntries(snap.game.seats.map(id=>[id,nameOf(id)]))} hostNow={snap.hostNow} active={state.phase==='online'} submit={action=>command({kind:'three-row',match:snap.match,turns:snap.game!.threeRow!.turns,action})}/>:
-      snap.game.symmetry?<SymmetryPuzzleBoard key={snap.match} board={snap.game.symmetry.board} hostNow={snap.hostNow}
-       active={state.phase==='online'&&!snap.game.done&&snap.game.seats.includes(snap.you)}
-       submit={action=>session.current?.send({kind:'move',round:1,action},snap.match)}/>:snap.game.colorLink?<ColorLinkBoard key={snap.match} snap={snap} name={nameOf} active={state.phase==='online'} receivedAt={state.receivedAt}
-       submit={action=>command({kind:'color-link',match:snap.match,step:snap.game!.colorLink!.step,action})}/>:snap.game.heavy13?<TableLoadBoundary key={snap.match} title="Heavy 13"><Suspense fallback={<p role="status">Preparing the Heavy 13 table…</p>}><Heavy13Board key={snap.match} snap={snap} name={nameOf} active={state.phase==='online'} submit={action=>{
-       const game=snap.game?.heavy13
-       if(game?.phase==='select')command({kind:'heavy-lock',match:snap.match,round:game.round,action})
-       if(game?.phase==='resolve'&&game.slot!==null)command({kind:'heavy-act',match:snap.match,round:game.round,slot:game.slot,action})
-      }}/></Suspense></TableLoadBoundary>:snap.game.montage?<MontageBoard key={snap.match} snap={snap} name={nameOf} active={state.phase==='online'} open={round=>command({kind:'montage-open',match:snap.match,round})} buzz={position=>command({kind:'montage-buzz',match:snap.match,...position})}/>:snap.game.wallGo?<WallGoBoard key={snap.match} snap={snap} name={nameOf} active={state.phase==='online'} submit={action=>command({kind:'move',action})}/>:
-       snap.game.memoryDuel?<MemoryDuelBoard key={snap.match+':'+snap.game.memoryDuel.dealNumber} snap={snap} name={nameOf} active={state.phase==='online'} submit={(a,deal)=>command({kind:'memory-lock',action:a,deal})}/>:snap.game.memoryPoker?<MemoryPokerBoard key={snap.match+':'+snap.game.round} snap={snap} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.piece?<PieceBoard key={snap.match} snap={snap} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a})}/>:snap.game.tower?<TowerBoard key={snap.match+':'+snap.game.round} snap={snap} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a})}/>:snap.game.fence?<FenceBoard key={snap.match} snap={snap} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.scale?<ScaleBoard key={snap.match} snap={snap} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.spot?<SpotBoard key={snap.match} snap={snap} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.fragments?<FragmentsBoard key={snap.match} snap={snap} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.pyramid?<PyramidBoard key={snap.match+':'+snap.game.round} snap={snap} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.codeLock?<CodeLockBoard key={snap.match} snap={snap} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.equations?<EquationBoard key={snap.match} snap={snap} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a})}/>:snap.game.divine?<DivineBoard key={snap.match} snap={snap} active={state.phase==='online'} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.grass?<GrassBoard key={snap.match+':'+snap.game.round+':'+snap.game.turn} g={snap.game} you={snap.you} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a})}/>:snap.game.game==='bagh'?<BaghBoard key={snap.match} g={snap.game} you={snap.you} active={state.phase==='online'} submit={a=>command({kind:'move',action:a})}/>:snap.game.game==='secret'?<SecretBoard key={snap.match+':'+snap.game.round} snap={snap} active={state.phase==='online'} name={nameOf} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.game==='auction'?<SealedAuction key={snap.match} snap={snap} active={state.phase==='online'} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:isPuzzle(snap.game.game)?<PuzzleBoard key={snap.match+':'+snap.game.round+':'+snap.game.puzzle?.stage} snap={snap} active={state.phase==='online'} name={nameOf} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.game==='mancala'?<MancalaBoard key={snap.match+':'+snap.game.mancala?.placements+':'+snap.game.mancala?.sows} g={snap.game} you={snap.you} active={state.phase==='online'} name={nameOf} submit={a=>command({kind:'move',action:a})}/>:!isDuel(snap.game.game)?<SeasonTwo key={snap.match} snap={snap} active={state.phase==='online'} name={nameOf} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.game==='morris'?<MorrisBoard key={snap.match} v={snap.game} you={snap.you} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a})}/>:<Board key={snap.match} v={snap.game} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a})}/>}
-     </Suspense></TableLoadBoundary>
+     {practiceLobby&&lobbySettings}</>:<ArenaTable snap={{...snap,game:snap.game}} active={state.phase==='online'} nameOf={nameOf} command={command}
+     send={(action,expectedMatch)=>session.current?.send(action,expectedMatch)} practice={kind==='solo'} motionOff={motionOff}
+     receivedAt={state.receivedAt} holdRejection={state.holdRejection}
+     blindActions={snap.game.game==='blind'?{
+      onReturn:host?()=>{if(finished||window.confirm('End this match and return to the lobby?'))command({kind:'lobby'})}:undefined,
+      onExport:finished?()=>exportMatch(snap):undefined,
+      next:finished&&host?{label:snap.seriesDone?'Rematch':'Next leg',run:()=>command({kind:'next'})}:undefined,
+      extra:finished?<LeagueStandings snap={snap} name={nameOf}/>:undefined,
+      resultFolio:finished?<FolioTransition key={scene.key} scene={scene} motionOff={motionOff}/>:undefined,
+     }:undefined}>
      <details className="match-rules"><summary>How to play</summary><p>{snap.game.timeHold?holdAuctionRules:snap.game.memoryDuel?episodePokerRules:snap.game.montage?.mode==='practice'?montagePracticeRules:tutorials[snap.game.game]}</p>{snap.game.montage&&<p><a href={montageSource} target="_blank" rel="noreferrer">Season 1 Episode 9 transcript</a> · The deck, countdown and host-receipt timing are fan rules.</p>}</details>
      {finished?<MatchRecord snap={snap} name={nameOf} active={state.phase==='online'} onExport={()=>exportMatch(snap)}
       onReturn={host?()=>command({kind:'lobby'}):undefined} onNext={host?()=>command({kind:'next'}):undefined} folio={<FolioTransition key={scene.key} scene={scene} motionOff={motionOff}/>}/>
       :host&&<ReturnToLobby active={state.phase==='online'} onReturn={()=>{if(window.confirm('End this match and return to the lobby?'))command({kind:'lobby'})}}/>}
-    </section>}
+    </ArenaTable>}
    </div>{(!liveMatch||kind!=='solo'&&!snap.game?.fragments?.strict)&&<aside className={liveMatch?'match-secondary':undefined}>{liveMatch?null:partyLobby?<PartyRoster snap={snap} capacity={limit} canRemove={host} online={state.phase==='online'} remove={seat=>command({kind:'kick',seat})}/>:<section className="panel roster"><h2>Seats <small>{snap.seats.length}/{limit}</small></h2>{snap.seats.map((s,i)=><div key={s.id} className="seat"><span className="avatar" data-seat-look={s.appearance}>{s.appearance===undefined?s.bot?'◈':i+1:<PlayerPortrait look={s.appearance} decorative/>}</span><div><strong>{s.name}</strong><small>{s.id===snap.host?'Host':s.bot?'Bot':!s.online?'Offline':s.ready?'Ready':'Not ready'} · Seat {i+1}</small></div>{host&&s.id!==snap.host&&!snap.game&&<button aria-label={'Remove '+s.name+' from seat '+(i+1)} onClick={()=>command({kind:'kick',seat:s.id})}>×</button>}</div>)}</section>}
    {kind!=='solo'&&(!snap.game?.fragments?.strict||snap.game.done)&&(liveMatch?<details className="panel chat match-chat"><summary><PartyGlyph kind="chat"/>Table talk</summary>{tableChat}</details>:<section className="panel chat"><h2>{partyLobby&&<PartyGlyph kind="chat"/>}Table talk</h2>{tableChat}</section>)}</aside>}{partyLobby&&lobbySettings}</div>}
   </section>}
@@ -406,39 +291,6 @@ function App(){
   </main>
   <footer className={'wrap footer'+(isLanding?' landing-footer':'')}><strong>{isLanding&&<BrandSeal/>}{brand}</strong><span>Fan-made and not affiliated with Netflix. No real stakes.</span></footer>
  </>
-}
-function Board({v,name,active,submit}:{v:GameView,name:(s:string)=>string,active:boolean,submit:(a:number|{from:number,to:number})=>void}){
- const [from,setFrom]=useState<number|null>(null)
- const [focus,setFocus]=useState(0)
- const [row,setRow]=useState(0)
- const [column,setColumn]=useState(0)
- const refs=useRef<Array<HTMLButtonElement|null>>([])
- const linear=v.game!=='morris'
- const size=v.game==='point'?13:15
- function cell(i:number){
-  const value=v.board[i]
-  const canFrom=v.legal.some(a=>typeof a==='object'&&a.from===i)
-  const canPlace=v.legal.includes(i)
-  const canTo=v.legal.some(a=>typeof a==='object'&&a.from===from&&a.to===i)
-  const can=active&&(canPlace||canFrom||canTo)
-  const label=(linear?'Row '+(Math.floor(i/size)+1)+', column '+(i%size+1):'Point '+(i+1))+', '+(!value?'open':value==='?'?'veiled':name(value))
-  const [x,y]=points[i]??[0,0]
-  return <button type="button" key={i} style={linear?{}:{left:(7+x*(86/6))+'%',top:(7+y*(86/6))+'%'}} ref={el=>{refs.current[i]=el}} tabIndex={i===focus?0:-1} aria-label={label} aria-disabled={!can} aria-pressed={from===i}
-   className={'cell '+(value==='?'?'veil':value?'color'+v.seats.indexOf(value):'')+(can?' legal':'')}
-   onFocus={()=>setFocus(i)} onKeyDown={e=>{
-    const nav:Record<string,number>={ArrowRight:1,ArrowLeft:-1,ArrowUp:linear?-size:-1,ArrowDown:linear?size:1}
-    if(!(e.key in nav))return
-    e.preventDefault();const next=Math.max(0,Math.min(v.board.length-1,i+nav[e.key]));refs.current[next]?.focus()
-   }}
-   onClick={()=>{if(!can)return;if(canPlace){submit(i);setFrom(null)}else if(canTo&&from!==null){submit({from,to:i});setFrom(null)}else if(canFrom)setFrom(from===i?null:i)}}>
-   <span className={value?'placed-piece':undefined} key={value} aria-hidden="true">{value==='?'?'●':value?v.game==='point'?<PointStone side={v.seats.indexOf(value)}/>:mark(v.seats.indexOf(value)):''}</span>
-  </button>
- }
- return <><p className="board-hint">{v.capture?'Mill formed. Choose an opposing stone to remove.':'Use the arrow keys to inspect points and Enter to play.'}</p>{linear?<BoardViewport label={titles[v.game]+' board'}><div className={'board '+(linear?'gomoku':'morris-board')} style={linear?{gridTemplateColumns:'repeat('+size+',1fr)',gridTemplateRows:'repeat('+size+',1fr)'}:{}} aria-label={titles[v.game]+' board'}>
- {linear?null:<svg viewBox="0 0 100 100" aria-hidden="true">{mills.map((m,i)=><line key={i} x1={7+points[m[0]][0]*86/6} y1={7+points[m[0]][1]*86/6} x2={7+points[m[2]][0]*86/6} y2={7+points[m[2]][1]*86/6}/>)}</svg>}
- {v.board.map((_,i)=>cell(i))}</div></BoardViewport>:<div className={'board '+(linear?'gomoku':'morris-board')} style={linear?{gridTemplateColumns:'repeat('+size+',1fr)',gridTemplateRows:'repeat('+size+',1fr)'}:{}} aria-label={titles[v.game]+' board'}>
- {linear?null:<svg viewBox="0 0 100 100" aria-hidden="true">{mills.map((m,i)=><line key={i} x1={7+points[m[0]][0]*86/6} y1={7+points[m[0]][1]*86/6} x2={7+points[m[2]][0]*86/6} y2={7+points[m[2]][1]*86/6}/>)}</svg>}
- {v.board.map((_,i)=>cell(i))}</div>}{linear&&!v.done&&<details><summary>Place by coordinates</summary><div className="actions"><label>Row<select value={row} onChange={e=>setRow(Number(e.target.value))}>{Array.from({length:size},(_,i)=><option key={i} value={i}>{i+1}</option>)}</select></label><label>Column<select value={column} onChange={e=>setColumn(Number(e.target.value))}>{Array.from({length:size},(_,i)=><option key={i} value={i}>{i+1}</option>)}</select></label><button disabled={!active||!v.legal.includes(row*size+column)} onClick={()=>submit(row*size+column)}>Place stone</button></div></details>}</>
 }
 function exportMatch(snap:Snapshot){
  const g=snap.game

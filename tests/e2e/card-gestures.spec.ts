@@ -30,7 +30,7 @@ test.describe('card controls in a phone viewport',()=>{
   const sheet=page.getByRole('dialog',{name:'Time Auction',exact:true})
   await expect(sheet).toBeVisible({timeout:2500})
   await hold.end()
-  await expect(sheet.locator('[data-game-preview="auction"]')).toBeVisible()
+  await expect(sheet.locator('[data-real-table-preview="auction"] [data-rendered-table="auction"]')).toBeVisible()
   await expect(sheet.getByText('Rules',{exact:true})).not.toBeVisible()
   await sheet.screenshot({path:info.outputPath('cover-sheet.png')})
   await sheet.getByLabel('Rules',{exact:true}).tap()

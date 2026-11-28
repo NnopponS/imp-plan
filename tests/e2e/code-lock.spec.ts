@@ -82,6 +82,10 @@ test('Secret Code keeps its twelve cards and four slots above the 640px fold',as
   await expect(palette).toBeInViewport({ratio:1,timeout:2500})
   const inks=await palette.getByRole('button').evaluateAll(cards=>cards.map(card=>getComputedStyle(card).backgroundColor))
   expect(new Set(inks).size).toBe(3)
+  const seals=await palette.locator('.code-stamp-face .code-seal-device').evaluateAll(paths=>paths.map(path=>path.getAttribute('d')))
+  expect(seals).toHaveLength(12)
+  expect(new Set(seals).size).toBe(3)
+  await expect(slots.locator('.code-slot-engrave')).toHaveCount(4)
   await page.screenshot({path:testInfo.outputPath('code-lock-320.png')})
 
   const card=palette.getByRole('button',{name:'Teal 1',exact:true})
@@ -113,7 +117,10 @@ test('Secret Code keeps its twelve cards and four slots above the 640px fold',as
   await expect(clueButton).toBeFocused()
   await expect(card).toHaveAttribute('aria-pressed','true')
   await slots.getByRole('button',{name:'Slot 1: empty'}).tap()
-  await expect(slots.getByRole('button',{name:'Slot 1: Teal 1'})).toBeVisible()
+  const placed=slots.getByRole('button',{name:'Slot 1: Teal 1'})
+  await expect(placed).toBeVisible()
+  await expect(placed.locator('.code-seal-device')).toHaveAttribute('d',seals[0]!)
+  await page.screenshot({path:testInfo.outputPath('code-lock-placed-320.png')})
   await expect(tray.getByRole('button',{name:'Lock answer'})).toBeDisabled()
   expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(320)
  }finally{await ctx.close()}

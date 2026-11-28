@@ -21,8 +21,8 @@ export function MontageLesson({step}:{step:number}){
  </div>
 }
 
-type BoardProps={snap:Snapshot;name:(id:string)=>string;active:boolean;open:(round:number)=>void;buzz:(command:MontageCommand)=>void}
-export function MontageBoard({snap,name,active,open,buzz}:BoardProps){
+type BoardProps={preview?:boolean;snap:Snapshot;name:(id:string)=>string;active:boolean;open:(round:number)=>void;buzz:(command:MontageCommand)=>void}
+export function MontageBoard({snap,name,active,open,buzz,preview}:BoardProps){
  const m=snap.game!.montage!
  const button=useRef<HTMLButtonElement>(null)
  const opened=useRef(false)
@@ -30,22 +30,23 @@ export function MontageBoard({snap,name,active,open,buzz}:BoardProps){
  const anchor=useRef({host:snap.hostNow,local:0})
  // Preload every illustration in asset order. No upcoming sequence is available here.
  useEffect(()=>{
+  if(preview)return
   const deck=montagePortraits.map((_,id)=>{
    const asset=new Image()
    asset.src=image(id)
    return asset
   })
   return ()=>{deck.length=0}
- },[])
+ },[preview])
  useLayoutEffect(()=>{
   anchor.current={host:snap.hostNow,local:performance.now()}
   setNow(snap.hostNow)
  },[snap])
  useEffect(()=>{
-  if(m.nextAt===null||!active)return
+  if(preview||m.nextAt===null||!active)return
   const timer=setInterval(()=>setNow(anchor.current.host+performance.now()-anchor.current.local),70)
   return ()=>clearInterval(timer)
- },[m.nextAt,active])
+ },[m.nextAt,active,preview])
  useLayoutEffect(()=>{
   if(m.phase==='countdown'&&opened.current){
    button.current?.focus({preventScroll:true})

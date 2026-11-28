@@ -5,12 +5,42 @@ import './coop-puzzle.css'
 const inks=['#267263','#a84636','#386c89','#80538a','#99642c','#576e36']
 const tone=(i:number)=>({'--inlay':inks[i%inks.length]} as CSSProperties)
 const formatClock=(ms:number)=>{const s=Math.max(0,Math.ceil(ms/1000));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
-const sigils=['M4 12 10 4l6 8-6-3z','M5 5l10 10m-10 0L15 5','M4 11q6-12 12 0-6 8-12 0z','M4 13h12M6 10h8M8 7h4']
+const grains=[
+ 'M2 22q3-8 8-14t13-6M1 17q5-5 8-11m3 17q4-9 12-12',
+ 'M3 3q6 4 10 14 2 4 9 6M3 9q5 3 7 9m7-8q3 6 7 7',
+ 'M2 20q5-7 9-8 7-2 13-8M2 15q6-7 12-7m-4 15q5-6 13-7',
+ 'M3 4q4 5 6 12 2 5 7 8M7 2q4 8 14 10m-4 4 5 5',
+ 'M4 21q6-1 8-8 2-7 7-11M3 15q4-1 5-9m8 14q4-4 7-6',
+ 'M2 10q6 0 11-4 4-3 10-2M3 20q4-4 8-5 8-1 12-6m-12 13 8-3'
+]
+const flourishes=[
+ 'M13 5 19 12l-6 8-6-7Zm-2 8h5',
+ 'M7 13q0-6 6-8 6 3 6 8-1 6-6 8-5-2-6-8Zm6-4v9',
+ 'M5 15q8-15 16 0-8 7-16 0Zm8-5 3 5-3 4-3-4Z',
+ 'M6 19 13 6l7 12M8 15h10m-6 4 3-5',
+ 'M5 12q8-9 16 0-8 9-16 0Zm5 0h6',
+ 'M7 12q1-5 7-6 5 2 6 7-1 4-6 6-5-2-7-7Zm3.5.5 6 1'
+]
+function MarquetryFace({piece,grain,seal}:{piece:number;grain:number;seal:boolean}){
+ return <g data-inlay-print="face">
+  <path className="relay-cut" d="M1.4 4 5 1.4l16 .7L24.4 5l-.5 16-3.6 3.7L3.8 24 1.1 20Z"/>
+  <path className="relay-bevel" d="M2.8 19.2 3.6 5 6 3.5l14.5.5M5.4 22l14.1.4 2.5-2.8.4-13.5"/>
+  <path className="relay-grain" d={grains[(piece+grain)%grains.length]}/>
+  {seal&&<path className="relay-flourish" d={flourishes[piece%flourishes.length]}/>}
+ </g>
+}
 function Inlay({shape,num,rotation=0}:{shape:Cell[];num:number;rotation?:number}){
  const p=orient(shape,rotation),w=1+Math.max(...p.map(c=>c[0])),h=1+Math.max(...p.map(c=>c[1]))
- return <svg className="relay-mini" viewBox={'-1 -1 '+(w*20+2)+' '+(h*20+2)} aria-hidden="true" style={tone(num)}>
- {p.map(([x,y],i)=><g key={i} transform={'translate('+x*20+' '+y*20+')'}><path d="M.6.6h18.8v18.8H.6z" fill="var(--inlay)" stroke="#253934"/><path d="M2 17.5V2h15.5m-13 12L14 4m-3 13 6-6" fill="none" stroke="#fff1c3" strokeWidth=".65" opacity=".55"/>{!i&&<path d={sigils[num%4]} stroke="#f5e6b4" fill="none" strokeWidth="1.2"/>}</g>)}
+ return <svg className="relay-mini" viewBox={'0 0 '+w*26+' '+h*26} aria-hidden="true" focusable="false" style={tone(num)}>
+  {p.map(([x,y],i)=><g key={x+','+y} transform={'translate('+x*26+' '+y*26+')'}><MarquetryFace piece={num} grain={i} seal={!i}/></g>)}
  </svg>
+}
+function InlaySocket({square}:{square:number}){
+ return <g data-inlay-print="socket">
+  <path className="relay-recess" d="M2 5 5 2.5l16-.5 3 3.5L23.5 21l-3.5 3L5 23.5l-3-4Z"/>
+  <path className="relay-grain" d={grains[square%grains.length]}/>
+  <path className="relay-dowel" d="m13 10 2.5 3-2.5 2.5-2.5-2.5Z"/>
+ </g>
 }
 const toolEngravings={
  rotate:'M19 10a7 7 0 1 1-4-5M19 3v7h-7',
@@ -52,7 +82,11 @@ export function RelayBoard({state:g,you,name,active,hostNow,submit}:Props){
    data-cell={i} data-tile={id>=0?id:undefined} data-ghost={ghost?(ok?'fit':'collision'):undefined} data-mark={m.length||undefined} style={tone(id<0?piece:id)}
    onFocus={()=>setFocus(i)} onKeyDown={e=>{if(e.key.startsWith('Arrow')){e.preventDefault();keyAim(i,e.key)}}}
    onClick={()=>{if(canAct){if(g.fits[piece]&&id>=0)choose(id);else{if(g.fits[piece])choose(Math.max(0,g.fits.indexOf(null)));setAnchor(i)}}}}>
-   {id>=0?<b>{id+1}</b>:ghost?<span aria-hidden="true">{ok?'◇':'×'}</span>:<i aria-hidden="true"/>}{m.length>0&&<em aria-hidden="true">•</em>}</button>
+   <svg className="relay-square-print" viewBox="0 0 26 26" aria-hidden="true" focusable="false">
+    {id>=0||ghost&&ok?<MarquetryFace piece={id>=0?id:piece} grain={i} seal={false}/>:<InlaySocket square={i}/>}
+   </svg>
+   {id>=0?<b aria-hidden="true">{id+1}</b>:ghost?<span className="relay-draft-mark" aria-hidden="true">{ok?'◇':'×'}</span>:null}
+   {m.length>0&&<em aria-hidden="true">•</em>}</button>
  })}</div></div>
  {!g.reason&&<div className="relay-console">
  <div className="relay-tools" role="group" aria-label="Mosaic tools">

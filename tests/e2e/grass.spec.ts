@@ -12,6 +12,11 @@ for(const [season,title,width,height] of [[1,'Laying Grass',390,844],[3,'Lay the
    const place=page.getByRole('button',{name:'Place tile',exact:true})
    const main=season===3?page.getByRole('button',{name:'Ready to draft',exact:true}):place
    await expect(grid).toBeVisible()
+   const numberOfPlots=await grid.getByRole('button').count()
+   await expect(grid.locator('[data-field-print="plot"]')).toHaveCount(numberOfPlots)
+   const playerCells=grid.getByRole('button',{name:/Player/})
+   const originalParcels=await playerCells.count()
+   await expect(playerCells.locator('[data-field-print="parcel"]')).toHaveCount(originalParcels)
    const open=await grid.boundingBox(), action=await main.boundingBox()
    await page.screenshot({path:info.outputPath('opening.png')})
    console.log(title, 'opening board', open, 'phase action', action)
@@ -24,6 +29,8 @@ for(const [season,title,width,height] of [[1,'Laying Grass',390,844],[3,'Lay the
     await main.tap()
    }
    await expect(page.getByText(/Player drafts next/)).toBeVisible()
+   const tray=page.getByRole('group',{name:'Available tiles'})
+   await expect(tray.getByRole('button',{pressed:true}).locator('[data-field-print="piece"] path').first()).toHaveAttribute('d',/M/)
    await expect(place).toBeInViewport({ratio:1})
    const label=(await grid.getByRole('button',{name:/Player/}).getAttribute('aria-label'))!
    const [row,col]=label.match(/\d+/g)!.map(Number)
@@ -37,9 +44,11 @@ for(const [season,title,width,height] of [[1,'Laying Grass',390,844],[3,'Lay the
     if(await place.isEnabled())break
    }
    await expect(place).toBeEnabled()
+   await expect(grid.locator('[data-preview="valid"] [data-field-print="trial"]').first()).toBeVisible()
    await page.screenshot({path:info.outputPath('placement.png')})
    await place.tap()
-   await expect.poll(()=>grid.getByRole('button',{name:/Player/}).count()).toBeGreaterThan(1)
+   await expect.poll(()=>playerCells.locator('[data-field-print="parcel"]').count()).toBeGreaterThan(originalParcels)
+   await page.screenshot({path:info.outputPath('planted.png')})
    expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(width)
   }finally{await context.close()}
  })

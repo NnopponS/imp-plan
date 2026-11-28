@@ -88,7 +88,7 @@ export function BlindMatchStage({game:g,you,name,active,practice,leg,legs,submit
   if(legal.has(i))submit(cover===null?i:blindCoverAction(i,cover))
  }
  const resultDetail=g.winner&&marks.size?'Five in a row':g.winner?'Table complete':'No winning line'
- return <section className="panel match engraved-match" aria-label="Engraved Blind Gomoku table" data-result={g.done||undefined} data-table-material={g.done?undefined:tableMaterial.blind}>
+ return <section className="panel match engraved-match" data-rendered-table="blind" aria-label="Engraved Blind Gomoku table" data-result={g.done||undefined} data-table-material={g.done?undefined:tableMaterial.blind}>
   <header className="duel-plaque">
    <div className="duel-inscription">
     <Seal revealed={g.done}/>

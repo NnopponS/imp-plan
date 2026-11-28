@@ -9,7 +9,7 @@ import {seasons} from './brand'
 import catalog from './catalog.json'
 import {titles,type Game} from './engine'
 import {makeMancala,pitType,plant,sow} from './mancala'
-import {seatRules,type Snapshot} from './room'
+import {seatRules,type Settings,type Snapshot} from './room'
 import './party-table.css'
 
 const gallery=catalog.flatMap(row=>row.game&&Object.hasOwn(titles,row.game)?[{...row,game:row.game as Game}]:[])
@@ -83,11 +83,14 @@ export function PartyMechanicPreview({game,variant,motionOff}:{game:Game;variant
  const illustration=variant==='hold'?<TimingStill/>:variant==='episode'?<MemoryDuelStill/>:game==='mancala'?<MancalaStill/>:undefined
  return <GameRulePreview game={game} motionOff={motionOff} illustration={illustration}/>
 }
-type PartyTableProps={game:Game;practice?:boolean;variant?:Variant;canChoose:boolean;online:boolean;motionOff?:boolean;error:string;choose:(game:Game)=>void;preview:()=>void}
-export function PartyTable({game,practice,variant,canChoose,online,motionOff,error,choose,preview}:PartyTableProps){
+type PartyTableProps={game:Game;settings:Settings;practice?:boolean;variant?:Variant;canChoose:boolean;online:boolean;motionOff?:boolean;error:string;choose:(game:Game)=>void;preview:()=>void}
+export function PartyTable({game,settings,practice,variant,canChoose,online,motionOff,error,choose,preview}:PartyTableProps){
  const row=forGame.get(game)
  const trigger=useRef<HTMLButtonElement>(null)
  const [open,setOpen]=useState(false)
+ const tableTrigger=useRef<HTMLButtonElement>(null)
+ const [sample,setSample]=useState(false)
+ useEffect(()=>{setSample(false)},[game])
  useEffect(()=>{if(!online||!canChoose)setOpen(false)},[online,canChoose])
  const {min,max,fixtureSize}=seatRules({game,memoryPokerMode:variant==='episode'?'episode':undefined,auctionMode:variant==='hold'?'hold':undefined},practice)
  const seats=min===max?String(min):min+'–'+max
@@ -96,6 +99,7 @@ export function PartyTable({game,practice,variant,canChoose,online,motionOff,err
   <div className="party-cover">
    <GameArt mode={game} motionOff={motionOff}/>
    <span className="party-chapter">{row?'SEASON '+row.season:'FAN TABLE'}</span>
+   <button className="party-cover-preview" type="button" aria-haspopup="dialog" aria-label="Preview the table" title="Preview the table" ref={tableTrigger} onClick={()=>setSample(true)}><CardMark kind="inspect"/><span>Preview</span></button>
   </div>
   <div className="party-ident">
    <div aria-live="polite" aria-atomic="true">
@@ -108,6 +112,9 @@ export function PartyTable({game,practice,variant,canChoose,online,motionOff,err
     <button type="button" aria-haspopup="dialog" onClick={preview}><PartyGlyph kind="eye"/> Details</button>
    </div>
   </div>
+  {sample&&<GameDetailsDialog compact game={game} settings={settings} motionOff={motionOff} source={row?.sources[0]} context={row&&<GameVenue entry={row}/>}
+   illustration={variant==='hold'?<TimingStill/>:variant==='episode'?<MemoryDuelStill/>:undefined}
+   close={()=>setSample(false)} restore={()=>tableTrigger.current?.focus({preventScroll:true})}/>}
   {open&&canChoose&&online&&<PartyPicker selected={game} motionOff={motionOff} error={error} choose={choose} close={()=>setOpen(false)} restore={()=>trigger.current?.focus({preventScroll:true})}/>}
  </section>
 }

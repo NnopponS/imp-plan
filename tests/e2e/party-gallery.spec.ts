@@ -101,7 +101,7 @@ test('a 320px touch host filters the image-first shelf by season and switches ga
   const details=dialog.getByRole('button',{name:'Details for Time Auction',exact:true})
   await details.tap()
   const gameDetails=host.getByRole('dialog',{name:'Time Auction',exact:true})
-  await expect(gameDetails.locator('[data-game-preview="auction"]')).toBeVisible()
+  await expect(gameDetails.locator('[data-real-table-preview="auction"] [data-rendered-table="auction"]')).toBeVisible()
   await expect(host.locator('[data-party-game]')).toHaveAttribute('data-party-game','blind')
   await gameDetails.getByRole('button',{name:'Close details',exact:true}).tap()
   await expect(gameDetails).toHaveCount(0)

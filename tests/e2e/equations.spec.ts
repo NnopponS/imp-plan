@@ -2,7 +2,7 @@ import {startMatch} from './start-match'
 import {chooseGame} from '../lobby-controls'
 import {test,expect} from '@playwright/test'
 
-test('Equation Lights keeps equations private and gives the guest a final response on mobile',async({browser,baseURL})=>{
+test('Equation Lights keeps equations private and gives the guest a final response on mobile',async({browser,baseURL},info)=>{
  const hctx=await browser.newContext(),vctx=await browser.newContext({viewport:{width:360,height:780},hasTouch:true})
  try{
   const h=await hctx.newPage(),v=await vctx.newPage()
@@ -26,7 +26,10 @@ test('Equation Lights keeps equations private and gives the guest a final respon
   await v.getByRole('button',{name:'Lock equation'}).click()
   await h.getByLabel('Your guess').fill('20+30=50')
   await h.getByRole('button',{name:'Submit guess'}).click()
-  await expect(h.getByRole('list',{name:'Guess 1'}).getByRole('listitem').filter({hasText:'Exact'})).toHaveCount(8)
+  const feedback=h.getByRole('list',{name:'Guess 1'}).getByRole('listitem').filter({hasText:'Exact'})
+  await expect(feedback).toHaveCount(8)
+  await expect(feedback.locator('svg.equation-lamp')).toHaveCount(8)
+  await h.locator('.equations').screenshot({path:info.outputPath('equation-lights-feedback.png')})
   await expect(v.getByText('Final reply: match all eight symbols to tie.')).toBeVisible()
   await expect(v.getByRole('list',{name:'Guess 1'})).toHaveCount(0)
   await v.getByLabel('Your guess').fill('1213=25')
@@ -85,7 +88,13 @@ test('Equation Lights gives its short mobile table readable ink and an inline lo
  const [field,lock]=await Promise.all([input.boundingBox(),table.getByRole('button',{name:'Lock equation'}).boundingBox()])
  expect(Math.abs((field!.y+field!.height)-(lock!.y+lock!.height))).toBeLessThan(2)
  expect(lock!.y+lock!.height).toBeLessThan(420)
- await expect(table.getByRole('group',{name:'Equation operators'})).toBeInViewport({ratio:1})
+ const keys=table.getByRole('group',{name:'Equation operators'})
+ await expect(keys).toBeInViewport({ratio:1})
+ const lamps=await table.getByRole('list',{name:'Feedback legend'}).locator('.equation-lamp-rim').evaluateAll(paths=>paths.map(path=>path.getAttribute('d')))
+ expect(new Set(lamps).size).toBe(3)
+ const operators=await keys.locator('.equation-key-face .equation-key-glyph').evaluateAll(paths=>paths.map(path=>path.getAttribute('d')))
+ expect(operators).toHaveLength(5)
+ expect(new Set(operators).size).toBe(5)
  await page.screenshot({path:info.outputPath('equation-lights-320.png')})
  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(320)
 })

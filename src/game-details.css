@@ -51,3 +51,17 @@
  .game-details-head button{padding-inline:8px}
  .game-rule-illustration>svg{max-height:8.5rem}
 }
+
+.game-details-pending {padding:12px 16px;margin:0;color:#e8c898}
+.real-table-preview {margin:0;padding:7px clamp(5px,2vw,14px) 4px;border-block-end:1px solid #8b6a47}
+.real-table-preview figcaption {display:flex;justify-content:space-between;gap:2px 8px;flex-wrap:wrap;align-items:baseline;padding:1px 3px 6px}
+.real-table-preview figcaption strong {color:#ffe0a4;font:600 .95rem Georgia,serif}
+.real-table-preview figcaption span {color:#e4c59e;font-size:.7rem}
+.real-table-window {max-height:min(58dvh,38rem);overflow:auto;overscroll-behavior:contain;scrollbar-color:#a58155 #30241e;border:1px solid #876747;background:#261f1b}
+.game-details-modal .real-table-preview .room {padding:0;min-height:0;margin:0;display:block;max-width:none}
+.real-table-preview[data-sample-motion=off] *{animation:none!important;transition:none!important}
+.game-details-modal .example-rules {margin:0 clamp(10px,3vw,19px) 12px}
+.game-details-modal .example-rules>summary {display:flex;align-items:center;justify-content:center;gap:7px;min-height:44px;color:#f6d49a;cursor:pointer;list-style:none;font-size:.86rem;border-top:1px solid #745940}
+.game-details-modal .example-rules>summary::-webkit-details-marker {display:none}
+.game-details-modal .example-rules .game-rule-preview {border:0;padding-inline:0}
+@media (max-height:460px) {.real-table-window {max-height:49dvh}}
