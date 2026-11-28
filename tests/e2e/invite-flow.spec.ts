@@ -36,8 +36,6 @@ async function copiedInvite(browser:Browser,url:string){
  const context=await browser.newContext({permissions:['clipboard-read','clipboard-write'],reducedMotion:'reduce'})
  try{
   const host=await context.newPage()
-  // Host time is accelerated only after both peers are online.
-  await host.clock.install()
   const code=await openParty(host,url)
   await host.getByRole('button',{name:'Copy invite'}).click()
   await expect(host.getByText('Invite copied.',{exact:true})).toBeVisible()
@@ -48,6 +46,9 @@ async function copiedInvite(browser:Browser,url:string){
 }
 
 test('actual copied invite opens a clean guest, finishes a Memory duel, and restores the guest on reload',async({browser,baseURL})=>{
+ // Exercise the real study boundary. An overlapping Playwright fake-clock
+ // timer can rewind performance.now() after fastForward has emitted select.
+ test.setTimeout(75_000)
  const {context,host,invite,code}=await copiedInvite(browser,baseURL!)
  const phone=await browser.newContext({viewport:{width:390,height:844},hasTouch:true,reducedMotion:'reduce'})
  try{
@@ -69,11 +70,11 @@ test('actual copied invite opens a clean guest, finishes a Memory duel, and rest
   await guest.getByRole('button',{name:'Ready up'}).click()
   await startMatch(host)
 
+  for(const p of [host,guest])await expect(table(p).getByRole('heading',{name:'Memorize the grid'})).toBeVisible()
   await expect(cards(guest)).toHaveCount(16)
   const board=await cards(host).evaluateAll(els=>els.map(el=>Number(el.getAttribute('data-card'))))
   expect(new Set(board).size).toBe(16)
-  await host.clock.fastForward(20_100);await host.clock.runFor(240)
-  for(const p of [host,guest])await expect(table(p).getByRole('heading',{name:'Choose two cards'})).toBeVisible()
+  await Promise.all([host,guest].map(p=>expect(table(p).getByRole('heading',{name:'Choose two cards'})).toBeVisible({timeout:24_000})))
   const sharedCards=table(host).getByRole('region',{name:'Shared cards'}).getByRole('img')
   await expect(sharedCards).toHaveCount(3)
   const shared=await sharedCards.evaluateAll(els=>els.map(el=>Number(el.getAttribute('data-card'))))
