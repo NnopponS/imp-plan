@@ -23,7 +23,15 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npx playwright install --with-deps chromium
-      - run: npm run test:e2e
+      - run: npm run test:e2e -- --trace=retain-on-failure
+      - name: Save failed browser test traces
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pages-browser-failure-${{ github.run_attempt }}
+          path: test-results/**/trace.zip
+          if-no-files-found: ignore
+          retention-days: 3
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
