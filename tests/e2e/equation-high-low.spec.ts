@@ -8,14 +8,27 @@ const table=(page:Page)=>page.getByRole('region',{name:'Equation High-Low table'
 async function wager(page:Page,action:string){
  await table(page).getByRole('button',{name:action,exact:true}).click()
 }
-async function sealEquation(page:Page,lane:'Low'|'High'){
+async function sealEquation(page:Page,lane:'Low'|'High',touch=false){
  const board=table(page)
  await expect(board).toHaveAttribute('data-eh-phase','seal')
  await board.getByRole('button',{name:new RegExp(lane+' Closest to')}).click()
  const picks=board.locator('[data-eh-pick]')
  const labels=await picks.evaluateAll(nodes=>nodes.map(node=>node.getAttribute('aria-label')))
  const divisor=labels.findIndex(label=>!label?.includes(': 0 '))
- for(const i of labels.map((_,i)=>i).filter(i=>i!==divisor).concat(divisor))await picks.nth(i).click()
+ for(const [slot,i] of labels.map((_,i)=>i).filter(i=>i!==divisor).concat(divisor).entries()){
+  const pick=picks.nth(i)
+  if(touch&&slot===0){
+   await pick.scrollIntoViewIfNeeded()
+   const {x,y,width,height}=(await pick.boundingBox())!
+   const session=await page.context().newCDPSession(page)
+   await session.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:x+width/2,y:y+height/2}]})
+   await expect(pick).toHaveAttribute('aria-pressed','true',{timeout:1800})
+   await session.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]})
+   await session.detach()
+   await expect(pick).toHaveAttribute('aria-pressed','true')
+   await expect(pick.locator('[data-eh-slot]')).toHaveText('1')
+  }else await pick.click()
+ }
  await board.getByRole('button',{name:'Seal '+lane+' equation',exact:true}).click()
 }
 
@@ -99,7 +112,7 @@ test('two real browsers wager, privately declare, and play four rounds to a matc
    await expect(table(ada).getByText('Your equation is sealed')).toBeVisible()
    await expect(table(bo).getByText('Your equation is sealed')).toHaveCount(0)
    await expect(table(bo).getByRole('list',{name:'Showdown equations'})).toHaveCount(0)
-   await sealEquation(bo,'High')
+   await sealEquation(bo,'High',i===0)
    for(const page of [ada,bo]){
     await expect(table(page)).toHaveAttribute('data-eh-phase',i===3?'finished':'review')
     await expect(table(page).getByRole('list',{name:'Showdown equations'}).getByRole('listitem')).toHaveCount(2)

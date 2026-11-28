@@ -1,6 +1,8 @@
 import {PlayerPortrait} from './player-wardrobe'
 import {useEffect,useId,useLayoutEffect,useRef,useState,type ReactNode,type CSSProperties} from 'react'
-import {GameDetails,GameRulePreview} from './game-details'
+import {CardMark,GameDetailsDialog,GameRulePreview} from './game-details'
+import {useCardPress} from './card-press'
+import {GameVenue} from './game-identity'
 import {gameSearchKey} from './game-search'
 import {GameArt} from './art'
 import {seasons} from './brand'
@@ -142,16 +144,33 @@ function PartyPicker({selected,motionOff,choose,close,restore,error}:{selected:G
    {requested&&error&&selected!==requested&&<p className="error" role="alert">{error}</p>}
   </div></div>
   <ul className="party-cards">
-   {results.map(row=><li key={row.game}><div className="party-card" data-current={row.game===selected||undefined}><button type="button" className="party-card-pick" data-game-choice={row.game} aria-pressed={row.game===selected} onClick={()=>{
+   {results.map(row=><li key={row.game}><PartyChoiceCard row={row} current={row.game===selected} motionOff={motionOff} select={()=>{
     if(row.game===selected){close();return}
     setRequested(row.game)
     choose(row.game)
-   }}>
-    <GameArt mode={row.game} motionOff={motionOff}/>
-    <span className="party-card-caption"><strong>{titles[row.game]}</strong><small>Season {row.season} · {row.genre}</small>{row.game===selected&&<small className="party-card-current"><PartyGlyph kind="check"/> At the table</small>}</span>
-   </button><div className="party-card-links"><GameDetails game={row.game} motionOff={motionOff} source={row.sources[0]}/></div></div></li>)}
+   }}/></li>)}
   </ul>
  </dialog>
+}
+
+function PartyChoiceCard({row,current,motionOff,select}:{row:typeof gallery[number];current:boolean;motionOff?:boolean;select:()=>void}){
+ const [sheet,setSheet]=useState<'cover'|'details'|null>(null)
+ const card=useRef<HTMLButtonElement>(null)
+ const details=useRef<HTMLButtonElement>(null)
+ const press=useCardPress(select,()=>setSheet('cover'))
+ const close=()=>setSheet(null)
+ return <div className="party-card" data-current={current||undefined}>
+  <button {...press} type="button" className="party-card-pick" data-game-choice={row.game} ref={card} aria-pressed={current}>
+   <GameArt mode={row.game} motionOff={motionOff}/>
+   <span className="party-card-caption">
+    <strong>{titles[row.game]}</strong><span className="party-card-stamp" aria-label={current?'At the table':'Season '+row.season}>{current?<PartyGlyph kind="check"/>:['','Ⅰ','Ⅱ','Ⅲ'][row.season]}</span>
+   </span>
+  </button>
+  <div className="party-card-links"><button type="button" className="game-details-trigger" ref={details} onClick={()=>setSheet('details')} aria-label={'Details for '+titles[row.game]} title="Details" aria-haspopup="dialog"><CardMark kind="inspect"/></button></div>
+  {sheet&&<GameDetailsDialog game={row.game} motionOff={motionOff} source={row.sources[0]} context={<GameVenue entry={row}/>}
+   compact={sheet==='cover'} action={{verb:'Choose',run:()=>{close();select()}}} close={close}
+   restore={()=> (sheet==='cover'?card:details).current?.focus({preventScroll:true})}/>}
+ </div>
 }
 
 export function PartyRoster({snap,capacity,canRemove,online,remove}:{snap:Snapshot;capacity:number;canRemove:boolean;online:boolean;remove:(id:string)=>void}){

@@ -1,0 +1,69 @@
+.mancala-live {
+ --mancala-paper:#f4ddae;--mancala-sub:#e4c598;--mancala-border:#80664a;
+ padding:clamp(6px,2vw,16px);background:#31251e;color:var(--mancala-paper);
+ border:1px solid var(--mancala-border);border-radius:3px;
+}
+.mancala-live-hud {
+ display:flex;align-items:center;flex-wrap:wrap;gap:1px 12px;justify-content:space-between;
+ padding:1px 1px 6px;border-block-end:1px solid var(--mancala-border);
+}
+.mancala-live-hud strong {font-family:Georgia,serif;font-size:1rem}
+.mancala-live-hud small,.mancala-score-data small {font-size:.75rem;color:var(--mancala-sub)}
+.mancala-live-grid {
+ margin:7px 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;
+ background:repeating-linear-gradient(8deg,#473024 0 1px,#513729 1px 8px,#4c3427 8px 14px);
+ padding:5px;border:1px solid var(--mancala-border);border-radius:5px;
+ box-shadow:inset 0 0 0 2px #2b1e17;
+}
+.mancala-live [data-type='0'] {--pit-ink:#ed9685;--pit-well:#5a302b}
+.mancala-live [data-type='1'] {--pit-ink:#a5cbd5;--pit-well:#35464b}
+.mancala-live [data-type='2'] {--pit-ink:#c4d1a1;--pit-well:#3d4731}
+.mancala-live [data-type='3'] {--pit-ink:#f5c67e;--pit-well:#62461f}
+.mancala-live [data-type='4'] {--pit-ink:#ddbad7;--pit-well:#503544}
+.room[data-game=mancala] .match .mancala-live .mancala-live-grid button.mancala-pit {
+ position:relative;display:grid;place-items:center;min-height:50px;min-width:0;padding:10px 1px 2px;
+ font-size:.71rem;line-height:1;color:var(--mancala-paper);font-variant-numeric:tabular-nums;
+ border-radius:4px;border:1px solid #805e46;background:#39271f;box-shadow:inset 0 0 0 1px #22150d;
+}
+.room[data-game=mancala] .match .mancala-live .mancala-live-grid button.mancala-pit:is(:hover,:focus-visible):not(:disabled) {background:#533526;border-color:var(--pit-ink)}
+.room[data-game=mancala] .match .mancala-live .mancala-live-grid button.mancala-pit:disabled {opacity:1}
+.room[data-game=mancala] .match .mancala-live .mancala-live-grid button.mancala-pit:disabled [data-mancala-bowl] {opacity:.78}
+.room[data-game=mancala] .match .mancala-live .mancala-live-grid button.mancala-pit[aria-pressed='true'] {outline:2px solid #ffe5a1;outline-offset:-2px;background:#623b2c}
+.room[data-game=mancala] .match .mancala-live .mancala-live-grid button.mancala-pit[data-mancala-landing] {box-shadow:inset 0 0 0 2px #e7c084;border-style:dashed}
+.room[data-game=mancala] .match .mancala-live .mancala-live-grid button.mancala-pit:focus-visible {outline:2px dashed #fff1c8;outline-offset:-2px}
+.mancala-pit-id,.mancala-pit-count {position:absolute;top:3px;line-height:1}
+.mancala-pit-id {left:4px;display:flex;align-items:center;gap:3px}
+.mancala-pit-count {right:4px;color:#eed3a4}
+.mancala-pit-mark {display:inline-block;vertical-align:middle;width:10px;height:10px;color:var(--pit-ink)}
+.mancala-pit-mark path {fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.mancala-pit [data-mancala-bowl] {display:block;width:min(100%,75px);height:auto;pointer-events:none}
+.mancala-rim {fill:#95654a;stroke:#24170e;stroke-width:1.5}
+.mancala-well {fill:var(--pit-well);stroke:#2c1b13;stroke-width:1.6}
+.mancala-carving {fill:none;stroke:#c49769;stroke-width:.9;stroke-opacity:.62}
+.mancala-empty {fill:none;stroke:var(--pit-ink);stroke-width:.8;stroke-opacity:.64}
+.mancala-pit [data-mancala-stone] text {
+ font:800 6.3px system-ui,sans-serif;text-anchor:middle;dominant-baseline:middle;
+}
+.mancala-live-actions {display:flex;gap:4px 8px;align-items:center;flex-wrap:wrap}
+.mancala-live-actions>button {min-height:44px}
+.mancala-live-actions>p {margin:0;color:var(--mancala-paper);font-size:.78rem;line-height:1.25}
+.mancala-score-tray {
+ display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,7.2rem),1fr));gap:3px 10px;
+ list-style:none;margin:6px 0 0;padding:3px 0 0;border-block-start:1px solid var(--mancala-border);
+}
+.mancala-score-data {display:grid;gap:1px;padding:2px;color:var(--mancala-paper);overflow-wrap:anywhere}
+.mancala-score-data strong,.mancala-score-data small {display:block}
+.mancala-score-data strong {font-size:.8rem;line-height:1.16}
+.mancala-score-colors {display:flex;gap:7px;font-size:.73rem;font-weight:700}
+.mancala-score-colors>span {display:inline-flex;align-items:center;gap:2px}
+@media (min-width:365px) {
+ .mancala-live-grid[data-large] {grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media (min-width:620px) {
+ .mancala-live-grid {grid-template-columns:repeat(5,minmax(0,1fr))}
+ .mancala-live-grid[data-large] {grid-template-columns:repeat(6,minmax(0,1fr))}
+}
+@media (forced-colors:active) {
+ .room[data-game=mancala] .match .mancala-live .mancala-live-grid button.mancala-pit[aria-pressed='true'] {outline-color:Highlight}
+ .mancala-pit-mark,.mancala-empty {color:ButtonText;stroke:ButtonText}
+}

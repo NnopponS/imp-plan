@@ -52,3 +52,40 @@ test('Equation Lights practice adds a bot that locks and takes a legal turn',asy
  await page.getByRole('button',{name:'Submit guess'}).click()
  await expect(page.getByText('Bot 1 · 1/8 guesses',{exact:true})).toBeVisible()
 })
+
+test('Equation Lights gives its short mobile table readable ink and an inline lock',async({page},info)=>{
+ await page.setViewportSize({width:320,height:640})
+ await page.emulateMedia({reducedMotion:'reduce'})
+ await page.goto('./season/3/')
+ await page.getByRole('button',{name:'Practice Equation Lights',exact:true}).click()
+ await startMatch(page)
+ const input=page.getByLabel('Secret equation')
+ await expect(input).toBeEnabled()
+ await page.evaluate(()=>window.scrollTo(0,0))
+ const table=page.locator('.equations')
+ const ink=await table.evaluate(board=>{
+  const colors=(s:string)=>Array.from(s.matchAll(/\d+\.?\d*/g),part=>Number(part[0]))
+  function lightness(rgb:number[]){
+   return rgb.slice(0,3).map(v=>v/255).map(v=>v<=0.04045?v/12.92:((v+0.055)/1.055)**2.4)
+    .reduce((sum,value,i)=>sum+value*[0.2126,0.7152,0.0722][i],0)
+  }
+  return ['[role=status]','.equation-form label','#equation-hint'].map(selector=>{
+   const text=board.querySelector(selector)!
+   let surface:Element|null=text,bg:number[]=[]
+   while(surface){
+    bg=colors(getComputedStyle(surface).backgroundColor)
+    if(bg.length===3||bg[3]===1)break
+    surface=surface.parentElement
+   }
+   const l=[lightness(colors(getComputedStyle(text).color)),lightness(bg)].sort((a,b)=>b-a)
+   return (l[0]+.05)/(l[1]+.05)
+  })
+ })
+ expect(Math.min(...ink)).toBeGreaterThanOrEqual(4.5)
+ const [field,lock]=await Promise.all([input.boundingBox(),table.getByRole('button',{name:'Lock equation'}).boundingBox()])
+ expect(Math.abs((field!.y+field!.height)-(lock!.y+lock!.height))).toBeLessThan(2)
+ expect(lock!.y+lock!.height).toBeLessThan(420)
+ await expect(table.getByRole('group',{name:'Equation operators'})).toBeInViewport({ratio:1})
+ await page.screenshot({path:info.outputPath('equation-lights-320.png')})
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(320)
+})

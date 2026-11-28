@@ -13,6 +13,19 @@ test('Fragments of Memory recalls the hidden gallery through all 24 questions',a
   await chooseSetting(page,'Questions','24')
   await startMatch(page)
   const scene=page.getByRole('figure',{name:'Study exhibit'})
+  const instruction=page.getByText('Remember shelf positions', {exact:false})
+  await expect(instruction).toBeInViewport()
+  const contrast=await instruction.evaluate(el=>{
+   const style=getComputedStyle(el)
+   const lum=(rgb:string)=>{
+    const channels=rgb.match(/[\d.]+/g)!.slice(0,3).map(x=>Number(x)/255).map(x=>x<=.04045?x/12.92:((x+.055)/1.055)**2.4)
+    return .2126*channels[0]+.7152*channels[1]+.0722*channels[2]
+   }
+   const plate=style.backgroundColor==='rgba(0, 0, 0, 0)'?getComputedStyle(el.closest('.match')!).backgroundColor:style.backgroundColor
+   const light=lum(style.color),dark=lum(plate)
+   return (Math.max(light,dark)+.05)/(Math.min(light,dark)+.05)
+  })
+  expect(contrast).toBeGreaterThanOrEqual(4.5)
   await scene.getByText('Text version of exhibit').click()
   const truth=(await scene.locator('details p').textContent())!.match(/^Label: (\w+)\. Clock: ([\d:]+)\.$/)!
   const data=(await scene.locator('details li').allTextContents()).flatMap(t=>t.split(': ')[1].slice(0,-1).split(', ')).map(t=>{

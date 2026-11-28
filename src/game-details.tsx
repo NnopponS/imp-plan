@@ -54,16 +54,7 @@ export function GameRulePreview({game,motionOff,illustration}:{game:Game;motionO
  </figure>
 }
 
-export function GameDetails({game,motionOff,source,context}:{game:Game;motionOff?:boolean;source?:string;context?:ReactNode}){
- const [open,setOpen]=useState(false)
- const trigger=useRef<HTMLButtonElement>(null)
- return <>
-  <button className="game-details-trigger" type="button" aria-label={'Details for '+titles[game]} aria-haspopup="dialog" ref={trigger} onClick={()=>setOpen(true)}>Details</button>
-  {open&&<GameDetailsDialog game={game} motionOff={motionOff} source={source} context={context} close={()=>setOpen(false)} restore={()=>trigger.current?.focus({preventScroll:true})}/>}
- </>
-}
-
-function GameDetailsDialog({game,motionOff,source,context,close,restore}:{game:Game;motionOff?:boolean;source?:string;context?:ReactNode;close:()=>void;restore:()=>void}){
+export function GameDetailsDialog({game,motionOff,source,context,close,restore,compact,action}:{game:Game;motionOff?:boolean;source?:string;context?:ReactNode;close:()=>void;restore:()=>void;compact?:boolean;action?:{verb:'Practice'|'Choose';run:()=>void}}){
  const node=useRef<HTMLDialogElement>(null)
  const closeButton=useRef<HTMLButtonElement>(null)
  const returnTo=useRef(restore)
@@ -74,18 +65,27 @@ function GameDetailsDialog({game,motionOff,source,context,close,restore}:{game:G
   closeButton.current?.focus({preventScroll:true})
   return ()=>{dialog?.close();returnTo.current()}
  },[])
- return <dialog className="game-details-modal" ref={node} aria-labelledby={title} onCancel={e=>{e.stopPropagation();e.preventDefault();close()}}>
+ return <dialog className="game-details-modal" data-cover-sheet={compact||undefined} ref={node} aria-labelledby={title} onCancel={e=>{e.stopPropagation();e.preventDefault();close()}}>
   <header className="game-details-head">
    <GameToken game={game}/>
-   <div><p className="eyebrow">Game details</p><h2 id={title}>{titles[game]}</h2></div>
-   <button type="button" ref={closeButton} onClick={close} aria-label="Close details">Close</button>
+   <div>{!compact&&<p className="eyebrow">Game details</p>}<h2 id={title}>{titles[game]}</h2></div>
+   <button type="button" ref={closeButton} onClick={close} aria-label="Close details">{compact?<CardMark kind="close"/>:"Close"}</button>
   </header>
   <GameRulePreview game={game} motionOff={motionOff}/>
-  <section className="game-details-rules">
-   {context&&<div className="game-details-context">{context}</div>}
-   <h3>Rules</h3>
-   <p>{tutorials[game]}</p>
-   {source&&<a className="game-context-source" href={source} target="_blank" rel="noreferrer">Show context reference</a>}
-  </section>
+  {action&&<footer className="game-details-action"><button type="button" className="primary" aria-label={action.verb+' '+titles[game]} onClick={action.run}><CardMark kind={action.verb==='Practice'?'play':'choose'}/>{action.verb}</button></footer>}
+  {compact?<details className="game-details-rules"><summary aria-label="Rules"><CardMark kind="rules"/> How to play</summary><RuleCopy game={game} context={context} source={source}/></details>:
+   <section className="game-details-rules"><RuleCopy game={game} context={context} source={source}/></section>}
  </dialog>
+}
+
+function RuleCopy({game,context,source}:{game:Game;context?:ReactNode;source?:string}){
+ return <>{context&&<div className="game-details-context">{context}</div>}
+  <h3>Rules</h3><p>{tutorials[game]}</p>
+  {source&&<a className="game-context-source" href={source} target="_blank" rel="noreferrer">Show context reference</a>}</>
+}
+
+export function CardMark({kind}:{kind:'play'|'inspect'|'close'|'choose'|'rules'}){
+ const paths={play:'M8 5 19 12 8 19Z M4 4v16',inspect:'M3 12s4-6 9-6 9 6 9 6-4 6-9 6-9-6-9-6Z M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z',
+  close:'m6 6 12 12M18 6 6 18',choose:'m5 12 4.5 4.5L19 7',rules:'M12 6v14m0-14C9 3 5 4 3 5v13c3-1 6-1 9 2 3-3 6-3 9-2V5c-2-1-6-2-9 1Z'}
+ return <svg className="card-mark" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d={paths[kind]}/></svg>
 }

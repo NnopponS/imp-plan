@@ -1,24 +1,46 @@
 import {startMatch} from './start-match'
 import {test,expect} from '@playwright/test'
-for(const [season,title] of [[1,'Laying Grass'],[3,'Lay the Grass']] as const){
- test(title+' opens its own draft and places a tile on mobile',async({page})=>{
-  await page.setViewportSize({width:390,height:844})
-  await page.goto('./season/'+season+'/')
-  await page.getByRole('button',{name:'Practice '+title}).click()
-  await startMatch(page)
-  if(season===3)await page.getByRole('button',{name:'Ready to draft'}).click()
-  await expect(page.getByText(/Player drafts next/)).toBeVisible()
-  const grid=page.getByRole('group',{name:'Territory board'})
-  const label=(await grid.getByRole('button',{name:/Player/}).getAttribute('aria-label'))!
-  const [row,col]=label.match(/\d+/g)!.map(Number)
-  const place=page.getByRole('button',{name:'Place tile'})
-  for(const [r,c] of [[row+1,col],[row+1,col-1],[row,col+1],[row-1,col],[row-1,col-1]]){
-   await grid.getByRole('button',{name:new RegExp('^Row '+r+', column '+c+'(?:,|$)')}).click()
-   if(await place.isEnabled())break
-  }
-  await expect(place).toBeEnabled()
-  await place.click()
-  await expect.poll(()=>grid.getByRole('button',{name:/Player/}).count()).toBeGreaterThan(1)
-  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(390)
+for(const [season,title,width,height] of [[1,'Laying Grass',390,844],[3,'Lay the Grass',320,640]] as const){
+ test(title+' shows the live board and its main action together, then places a tile on mobile',async({browser,baseURL},info)=>{
+  const context=await browser.newContext({baseURL,viewport:{width,height},hasTouch:true,isMobile:true,reducedMotion:'reduce'})
+  try{
+   const page=await context.newPage()
+   await page.goto('./season/'+season+'/')
+   await page.getByRole('button',{name:'Practice '+title,exact:true}).tap()
+   await startMatch(page)
+   const grid=page.getByRole('group',{name:'Territory board'})
+   const place=page.getByRole('button',{name:'Place tile',exact:true})
+   const main=season===3?page.getByRole('button',{name:'Ready to draft',exact:true}):place
+   await expect(grid).toBeVisible()
+   const open=await grid.boundingBox(), action=await main.boundingBox()
+   await page.screenshot({path:info.outputPath('opening.png')})
+   console.log(title, 'opening board', open, 'phase action', action)
+   await expect(grid).toBeInViewport({ratio:.85})
+   await expect(main).toBeInViewport({ratio:1})
+   if(season===3){
+    await expect(page.getByRole('group',{name:'Optional trade'})).toBeHidden()
+    await expect(page.getByRole('button',{name:'Offer swap',exact:true})).toBeHidden()
+    await expect(page.getByRole('group',{name:'Available tiles'})).toBeHidden()
+    await main.tap()
+   }
+   await expect(page.getByText(/Player drafts next/)).toBeVisible()
+   await expect(place).toBeInViewport({ratio:1})
+   const label=(await grid.getByRole('button',{name:/Player/}).getAttribute('aria-label'))!
+   const [row,col]=label.match(/\d+/g)!.map(Number)
+   const square=(r:number,c:number)=>grid.getByRole('button',{name:new RegExp('^Row '+r+', column '+c+'(?:,|$)')})
+   const seed=square(row,col)
+   await seed.focus()
+   await page.keyboard.press('ArrowDown')
+   await expect(square(row+1,col)).toBeFocused()
+   for(const [r,c] of [[row+1,col],[row+1,col-1],[row,col+1],[row-1,col],[row-1,col-1]]){
+    await square(r,c).tap()
+    if(await place.isEnabled())break
+   }
+   await expect(place).toBeEnabled()
+   await page.screenshot({path:info.outputPath('placement.png')})
+   await place.tap()
+   await expect.poll(()=>grid.getByRole('button',{name:/Player/}).count()).toBeGreaterThan(1)
+   expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(width)
+  }finally{await context.close()}
  })
 }

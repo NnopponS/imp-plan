@@ -1,0 +1,17 @@
+.sealed-auction{color:#f8e5ca;display:grid;gap:8px}
+.sealed-auction .auction-top{justify-content:space-between;gap:4px}
+.sealed-instrument{padding:clamp(6px,2vw,14px);border:1px solid #97744e;background:#35271f}
+.sealed-bank{width:min(100%,33rem);margin:0 auto}
+.sealed-bank-label{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 7px;font-size:.75rem}
+.sealed-bank-label strong{font:700 1.18rem/1 Georgia,serif;color:#ffe6ab;font-variant-numeric:tabular-nums}
+.sealed-bank svg{display:block;width:100%;height:auto;margin:3px 0 6px}
+.sealed-bid{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:end;gap:5px}
+.sealed-bid label{min-width:0;font-size:.76rem}
+.sealed-bid input{margin-top:3px;padding:5px 7px;color:#2c2018;background:#fff3db;min-height:44px}
+.sealed-bid button{min-width:44px;min-height:44px;padding:5px 9px}
+.sealed-presets{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
+.sealed-auction .sealed-presets>button{color:#f6ddac;background:#2b211c;border-color:#987452}
+.sealed-auction .sealed-presets>button:is(:hover:not(:disabled),[aria-pressed=true]){color:#2e1d14;background:#e2bb81;border-color:#f4d8a1}
+.sealed-auction .sealed-presets small{color:inherit}
+.room .match .sealed-auction p,.room .match .sealed-auction .scores small{color:#edddbd;margin-bottom:0}
+.sealed-auction .scores>div{color:#f8ead0;background:#3b2d25;border-color:#967650}

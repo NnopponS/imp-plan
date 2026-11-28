@@ -7,3 +7,7 @@
 .fragments-score{border-radius:.4rem;padding:.45rem .65rem;background:#ede0c9}
 .fragments-answers{margin-top:.6rem;display:grid;gap:.45rem;grid-template-columns:repeat(2,minmax(0,1fr))}
 .fragments-answers button{min-height:2.75rem;min-width:0;overflow-wrap:anywhere}
+
+/* The exhibit stays on parchment; the question and prompts sit on dark vellum. */
+.room .match .fragments-game>p:not(.fragments-score),
+.room .match .fragments-game section :is(h3,p){color:#f2dfbb}

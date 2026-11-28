@@ -103,3 +103,25 @@
 .eh-board .eh-result,.eh-board .eh-lane-results strong { color:#ffd8b0; }
 .eh-board .eh-lane-results p,.eh-board .eh-reveal p { color:#f6e6cf; }
 .eh-board .eh-reveal p b { color:#ffd8b0; }
+
+.eh-board .eh-rack button[data-eh-pick]{position:relative;min-height:57px}
+.eh-rack [data-eh-slot]{
+ position:absolute;right:5px;top:5px;display:grid;place-items:center;width:19px;height:19px;
+ border-radius:50%;border:1px solid #f1b986;background:#522e3b;color:#fff0ca;font-weight:800;
+}
+
+.eh-wager-rail { display:contents; }
+@media (orientation:landscape) and (min-width:680px) and (max-height:480px) {
+ .eh-board:is([data-eh-phase=opening],[data-eh-phase=closing]) .eh-header { min-height:0; padding:6px 12px; }
+ .eh-board:is([data-eh-phase=opening],[data-eh-phase=closing]) .eh-header h3 { font-size:1.4rem; margin:0; }
+ .eh-board:is([data-eh-phase=opening],[data-eh-phase=closing]) .eh-header img { max-height:37px; width:auto; }
+ .eh-board:is([data-eh-phase=opening],[data-eh-phase=closing]) .eh-header .eh-index,
+ .eh-wager>.eh-index { display:none; }
+ .eh-wager { grid-template-columns:minmax(0,43%) minmax(0,1fr); gap:6px; padding:8px; align-content:start; }
+ .eh-wager>h4 { grid-column:1/-1; margin:0; }
+ .eh-wager>.eh-rack { align-self:start; gap:4px; }
+ .eh-wager-rail { display:grid; gap:5px; }
+ .eh-wager .eh-note { font-size:.74rem; }
+ .eh-wager .eh-actions { gap:4px; }
+ .eh-wager .eh-actions button { min-width:44px; min-height:44px; padding-inline:6px; }
+}

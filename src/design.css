@@ -32,11 +32,5 @@ html{scroll-padding-top:18px}
 .cube-layer {display:grid;max-width:14rem;gap:.35rem;margin:.75rem auto}
 .cube-layer span {aspect-ratio:1;display:grid;place-items:center;border:1px solid #c5aa91;border-radius:.23rem}
 .cube-layer .occupied {background:#643035;color:white}
-.mancala-grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,5.25rem),1fr));gap:.45rem;margin:1rem 0}
-.pit {display:flex;flex-direction:column;gap:.35rem;align-items:flex-start;min-width:0;text-align:left;border-top:4px solid var(--pit,#7e6144)}
-.pit:disabled {opacity:.8}
-.pit-0 {--pit:#902f37}.pit-1 {--pit:#36586a}.pit-2 {--pit:#51704d}.pit-3 {--pit:#ad773b}.pit-4 {--pit:#4f433b}
-.pit[aria-pressed=true],.pit.landing {outline:2px solid #6a3831;outline-offset:1px}
-.pit b {display:inline-grid;place-items:center;min-width:1rem;min-height:1rem;background:#52382b;color:white;border-radius:50%;font-size:.64rem;margin:1px}
 .secret-notebook {padding:.5rem 1rem;background:#f3e8d4;border:1px solid #d4c09f;border-radius:1rem;margin-block:1rem}
 .secret-notebook details p {overflow-wrap:anywhere}

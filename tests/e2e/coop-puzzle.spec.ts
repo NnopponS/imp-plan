@@ -23,6 +23,20 @@ test('a 320px solo seat completes a generated frame from just the visible shapes
  await expect(board(page)).toContainText('Team score: 36 of 36')
  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(320)
 })
+test('a 390px mosaic bench puts the placement tools immediately at the board',async({page,baseURL})=>{
+ await page.setViewportSize({width:390,height:844});await page.emulateMedia({reducedMotion:'reduce'})
+ await page.goto(baseURL!+'season/1/')
+ await page.getByRole('button',{name:'Practice Cooperative Puzzle',exact:true}).click()
+ await startMatch(page)
+ const table=board(page),grid=table.getByRole('group',{name:'6 by 6 mosaic frame'})
+ const rotate=table.getByRole('button',{name:'Rotate 90°',exact:true})
+ await expect(grid).toBeInViewport({ratio:.95})
+ await expect(rotate).toBeInViewport({ratio:1})
+ const [g,r]=await Promise.all([grid.boundingBox(),rotate.boundingBox()])
+ expect(r!.height).toBeGreaterThanOrEqual(44)
+ expect(r!.y-(g!.y+g!.height)).toBeLessThan(32)
+})
+
 test('two peers share a suggestion, commit, undo and expire together',async({browser,baseURL})=>{
  test.setTimeout(90_000)
  const a=await browser.newContext({reducedMotion:'reduce'}),b=await browser.newContext({viewport:{width:390,height:800},reducedMotion:'reduce'})

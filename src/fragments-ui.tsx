@@ -48,7 +48,7 @@ export function FragmentsBoard({snap,active,name,submit}:{snap:Snapshot,active:b
  const need=fragmentNeed(f.strict,f.total)
  return <div className="fragments-game">
   <div className="auction-top"><strong>{f.scene?'Study the exhibit':g.done?'Final team score':`Question ${g.round} / ${f.total}`}</strong>{!g.done&&<span className="pill" aria-label="Time remaining">{time} s</span>}</div>
-  {f.scene&&<><p>Remember shelf positions, colors, the label and the clock. The exhibit will disappear when time is up.</p><GalleryScene scene={f.scene}/></>}
+  {f.scene&&<><p>Remember shelf positions, colors, the label and the clock.</p><GalleryScene scene={f.scene}/></>}
   {!f.scene&&<p className="fragments-score">Team: <strong>{f.correct} / {f.total}</strong> · {need} needed</p>}
   {f.last!==null&&!g.done&&<p role="status">{f.last?'Last answer: correct.':'Last question: no point.'}</p>}
   {f.question&&<section aria-label="Recall question"><p className="eyebrow">{g.turn===snap.you?'YOUR TURN':name(g.turn)+'’S TURN'}</p><h3>{f.question.prompt}</h3><div className="fragments-answers">{f.question.options.map((o,i)=><button type="button" key={i} disabled={!myTurn} onClick={()=>submit(i)}>{o}</button>)}</div></section>}

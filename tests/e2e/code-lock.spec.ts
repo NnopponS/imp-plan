@@ -16,7 +16,7 @@ function fits(clue:string,line:number[]){
  throw Error('Unhandled visible clue: '+clue)
 }
 test('Secret Code room hides attempts, charges time, and accepts the unique mobile solution',async({browser,baseURL})=>{
- const large=await browser.newContext(),small=await browser.newContext({viewport:{width:360,height:780},hasTouch:true})
+ const large=await browser.newContext({reducedMotion:'reduce'}),small=await browser.newContext({viewport:{width:360,height:780},hasTouch:true,reducedMotion:'reduce'})
  try{
   const host=await large.newPage(),guest=await small.newPage()
   await host.goto(baseURL!+'season/3/')
@@ -29,11 +29,15 @@ test('Secret Code room hides attempts, charges time, and accepts the unique mobi
   await guest.getByRole('button',{name:'Join party'}).click()
   await guest.getByRole('button',{name:'Ready up'}).click()
   await startMatch(host)
-  const clueRows=guest.getByRole('region',{name:'Clue sheet'}).getByRole('listitem')
+  await expect(host.getByRole('region',{name:'Clue sheet'})).toBeVisible()
+  await guest.getByRole('button',{name:/^Clue sheet, \d+ clues$/}).tap()
+  const sheet=guest.getByRole('dialog',{name:'Clue sheet'})
+  const clueRows=sheet.getByRole('listitem')
   // The guest's board bundle loads after the authoritative match snapshot.
   await expect(clueRows.first()).toBeVisible()
   const clues=await clueRows.allTextContents()
   expect(clues.length).toBeGreaterThanOrEqual(6)
+  await sheet.getByRole('button',{name:'Close clues'}).tap()
   const found:number[][]=[]
   for(let a=0;a<12;a++)for(let b=0;b<12;b++)for(let c=0;c<12;c++)for(let d=0;d<12;d++){
    const row=[a,b,c,d]
@@ -60,4 +64,57 @@ test('Secret Code room hides attempts, charges time, and accepts the unique mobi
   await expect(guest.getByText('You cracked the code.')).toBeVisible()
   expect(await guest.evaluate(()=>document.documentElement.scrollWidth)).toBe(360)
  }finally{await large.close();await small.close()}
+})
+
+test('Secret Code keeps its twelve cards and four slots above the 640px fold',async({browser,baseURL},testInfo)=>{
+ const ctx=await browser.newContext({viewport:{width:320,height:640},isMobile:true,hasTouch:true,reducedMotion:'reduce'})
+ try{
+  const page=await ctx.newPage()
+  await page.goto(baseURL!+'season/3/')
+  await page.getByRole('button',{name:'Practice Secret Code',exact:true}).tap()
+  await startMatch(page)
+  const tray=page.getByRole('region',{name:'Your answer tray'})
+  const palette=tray.getByRole('group',{name:'Available cards'})
+  await expect(palette.getByRole('button')).toHaveCount(12)
+  const slots=tray.getByRole('group',{name:'Code slots'})
+  await expect(slots.getByRole('button')).toHaveCount(4)
+  await expect(slots).toBeInViewport({ratio:1})
+  await expect(palette).toBeInViewport({ratio:1,timeout:2500})
+  const inks=await palette.getByRole('button').evaluateAll(cards=>cards.map(card=>getComputedStyle(card).backgroundColor))
+  expect(new Set(inks).size).toBe(3)
+  await page.screenshot({path:testInfo.outputPath('code-lock-320.png')})
+
+  const card=palette.getByRole('button',{name:'Teal 1',exact:true})
+  const box=(await card.boundingBox())!
+  const touch=await ctx.newCDPSession(page)
+  await touch.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:box.x+box.width/2,y:box.y+box.height/2}]})
+  await expect(card).toHaveAttribute('aria-pressed','true',{timeout:1600})
+  await touch.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]})
+  await expect(card).toHaveAttribute('aria-pressed','true')
+  await touch.detach()
+
+  const clueButton=page.getByRole('button',{name:/^Clue sheet, \d+ clues$/})
+  await clueButton.tap()
+  const drawer=page.getByRole('dialog',{name:'Clue sheet'})
+  await expect(drawer).toBeVisible()
+  const clues=drawer.getByRole('listitem')
+  const count=await clues.count()
+  expect(count).toBeGreaterThanOrEqual(6)
+  expect(count).toBeLessThanOrEqual(12)
+  await expect(drawer.getByRole('button',{name:'Close clues'})).toBeFocused()
+  await page.screenshot({path:testInfo.outputPath('code-lock-clues-320.png')})
+  await drawer.getByRole('button',{name:'Close clues'}).tap()
+  await expect(drawer).not.toBeVisible()
+  await expect(clueButton).toBeFocused()
+  await clueButton.press('Enter')
+  await expect(drawer).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(drawer).not.toBeVisible()
+  await expect(clueButton).toBeFocused()
+  await expect(card).toHaveAttribute('aria-pressed','true')
+  await slots.getByRole('button',{name:'Slot 1: empty'}).tap()
+  await expect(slots.getByRole('button',{name:'Slot 1: Teal 1'})).toBeVisible()
+  await expect(tray.getByRole('button',{name:'Lock answer'})).toBeDisabled()
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(320)
+ }finally{await ctx.close()}
 })

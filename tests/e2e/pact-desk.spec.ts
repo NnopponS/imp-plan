@@ -83,6 +83,8 @@ test('Lay the Grass uses distinct pact tokens and swaps real draft seats by agre
  const {pages:[host,guest],close}=await setup(browser,baseURL!,'grass3',['Ari','Bee'])
  try{
   const trade=host.getByRole('group',{name:'Optional trade'})
+  await expect(trade).toBeHidden()
+  await host.getByText('Swap draft spot',{exact:true}).click()
   await expect(trade.locator('select')).toHaveCount(0)
   const partner=choice(host,'Trade with','Bee')
   await expect(partner.locator('svg')).toBeVisible()
@@ -94,6 +96,7 @@ test('Lay the Grass uses distinct pact tokens and swaps real draft seats by agre
   await expect(host.getByRole('button',{name:'Accept swap',exact:true})).toHaveCount(0)
   await guest.getByRole('button',{name:'Accept swap',exact:true}).tap()
   for(const page of [host,guest]){
+   await page.getByText('Standings and order',{exact:true}).click()
    await expect(page.getByText('Draft order: Bee → Ari', {exact:true})).toBeVisible()
    await expect(page.getByRole('button',{name:'Offer swap',exact:true})).toHaveCount(0)
   }

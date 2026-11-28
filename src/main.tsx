@@ -1,3 +1,4 @@
+import {SealedAuction} from './sealed-auction'
 import {MontageBoard,MontageLesson,montagePracticeRules,montageSource} from './montage-ui'
 import {WallGoBoard} from './wall-go-ui'
 import {MemoryDuelBoard,MemoryDuelLesson} from './memory-duel-ui'
@@ -5,14 +6,13 @@ import {total} from './mancala'
 import {isPuzzle} from './puzzles'
 import React,{Suspense,lazy,useEffect,useLayoutEffect,useRef,useState} from 'react'
 import {createRoot} from 'react-dom/client'
-import {mills,points,reward,titles,tutorials,isDuel,type Game,type GameView} from './engine'
+import {mills,points,titles,tutorials,isDuel,type Game,type GameView} from './engine'
 import {defaults,explain,episodePokerRoster,episodePokerRules,holdAuctionRules,isHoldAuction,humanOnly,seatRules,seatCapacity,seatStartError,nickname,validCode,type Command,type Snapshot} from './room'
 import {hostRoom,joinRoom,practice,type SessionState,type ConnectOptions,type Session} from './session'
 import catalog from './catalog.json'
-import {GameArt} from './art'
-import {GameDetails} from './game-details'
+import {GalleryCard} from './gallery-card'
 import {gameSearchKey} from './game-search'
-import {GameCardIdentity,GameVenue} from './game-identity'
+import {GameVenue} from './game-identity'
 import {getGameVenue} from './game-venues'
 import {BrandSeal} from './brand-seal'
 import {CodexEntry} from './codex-entry'
@@ -141,7 +141,6 @@ const route=()=>{const [page,query]=location.hash.slice(1).split('?');return {pa
 const cleanCode=(x:string)=>x.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6)
 const invite=(code:string)=>location.origin+base+'#/join?room='+code
 const joinStatus={signaling:'Contacting signaling…',peer:'Opening a direct connection…',snapshot:'Waiting for the host’s room state…'} as const
-const exact=(v:number)=>new Intl.NumberFormat('en',{maximumFractionDigits:2}).format(v)
 const mark=(i:number)=>i===0?'●':'◆'
 function App(){
  const startRoute=route()
@@ -340,18 +339,7 @@ function App(){
    <a href="#catalog" onClick={openCatalog}><FolioMark kind="folio"/>Challenge index</a>
   </div>
   {shown.length===0&&<p role="status" className="gallery-empty">No playable games match this search.</p>}
-  <div className="cards">{shown.map(g=>{
-   const entry=catalogGame.get(g)
-   const reference=entry?.sources[0]
-   return <article className="card" key={g}>
-    <GameArt mode={g} motionOff={feedback.prefs.motion==='off'}/>
-    <div className="game-card-body">
-     <GameCardIdentity game={g} entry={entry}/>
-     <div className="game-card-actions"><button type="button" id={'practice-gallery-'+g} onClick={e=>connect('solo',g,e.currentTarget.id)}>Practice <span className="sr">{titles[g]}</span></button>
-      <GameDetails game={g} context={entry&&<GameVenue entry={entry}/>} source={reference} motionOff={feedback.prefs.motion==='off'}/></div>
-    </div>
-   </article>
-  })}</div>
+  <div className="cards">{shown.map(g=><GalleryCard key={g} game={g} entry={catalogGame.get(g)} motionOff={motionOff} practice={launcher=>connect('solo',g,launcher)}/>)}</div>
   </section>
   {seasonLibrary&&<div className="front-desk season-room">{roomEntry}</div>}
   <ChallengeFolio entries={catalog} selected={selected?.id} filters={folioFilters} onPractice={(game,launcher)=>connect('solo',game,launcher)}/></>
@@ -404,7 +392,7 @@ function App(){
        if(game?.phase==='select')command({kind:'heavy-lock',match:snap.match,round:game.round,action})
        if(game?.phase==='resolve'&&game.slot!==null)command({kind:'heavy-act',match:snap.match,round:game.round,slot:game.slot,action})
       }}/></Suspense></TableLoadBoundary>:snap.game.montage?<MontageBoard key={snap.match} snap={snap} name={nameOf} active={state.phase==='online'} open={round=>command({kind:'montage-open',match:snap.match,round})} buzz={position=>command({kind:'montage-buzz',match:snap.match,...position})}/>:snap.game.wallGo?<WallGoBoard key={snap.match} snap={snap} name={nameOf} active={state.phase==='online'} submit={action=>command({kind:'move',action})}/>:
-       snap.game.memoryDuel?<MemoryDuelBoard key={snap.match+':'+snap.game.memoryDuel.dealNumber} snap={snap} name={nameOf} active={state.phase==='online'} submit={(a,deal)=>command({kind:'memory-lock',action:a,deal})}/>:snap.game.memoryPoker?<MemoryPokerBoard key={snap.match+':'+snap.game.round} snap={snap} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.piece?<PieceBoard key={snap.match} snap={snap} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a})}/>:snap.game.tower?<TowerBoard key={snap.match+':'+snap.game.round} snap={snap} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a})}/>:snap.game.fence?<FenceBoard key={snap.match} snap={snap} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.scale?<ScaleBoard key={snap.match} snap={snap} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.spot?<SpotBoard key={snap.match} snap={snap} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.fragments?<FragmentsBoard key={snap.match} snap={snap} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.pyramid?<PyramidBoard key={snap.match+':'+snap.game.round} snap={snap} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.codeLock?<CodeLockBoard key={snap.match} snap={snap} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.equations?<EquationBoard key={snap.match} snap={snap} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a})}/>:snap.game.divine?<DivineBoard key={snap.match} snap={snap} active={state.phase==='online'} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.grass?<GrassBoard key={snap.match+':'+snap.game.round+':'+snap.game.turn} g={snap.game} you={snap.you} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a})}/>:snap.game.game==='bagh'?<BaghBoard key={snap.match} g={snap.game} you={snap.you} active={state.phase==='online'} submit={a=>command({kind:'move',action:a})}/>:snap.game.game==='secret'?<SecretBoard key={snap.match+':'+snap.game.round} snap={snap} active={state.phase==='online'} name={nameOf} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.game==='auction'?<Auction key={snap.match} snap={snap} active={state.phase==='online'} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:isPuzzle(snap.game.game)?<PuzzleBoard key={snap.match+':'+snap.game.round+':'+snap.game.puzzle?.stage} snap={snap} active={state.phase==='online'} name={nameOf} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.game==='mancala'?<MancalaBoard key={snap.match+':'+snap.game.mancala?.placements+':'+snap.game.mancala?.sows} g={snap.game} you={snap.you} active={state.phase==='online'} name={nameOf} submit={a=>command({kind:'move',action:a})}/>:!isDuel(snap.game.game)?<SeasonTwo key={snap.match} snap={snap} active={state.phase==='online'} name={nameOf} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.game==='morris'?<MorrisBoard key={snap.match} v={snap.game} you={snap.you} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a})}/>:<Board key={snap.match} v={snap.game} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a})}/>}
+       snap.game.memoryDuel?<MemoryDuelBoard key={snap.match+':'+snap.game.memoryDuel.dealNumber} snap={snap} name={nameOf} active={state.phase==='online'} submit={(a,deal)=>command({kind:'memory-lock',action:a,deal})}/>:snap.game.memoryPoker?<MemoryPokerBoard key={snap.match+':'+snap.game.round} snap={snap} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.piece?<PieceBoard key={snap.match} snap={snap} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a})}/>:snap.game.tower?<TowerBoard key={snap.match+':'+snap.game.round} snap={snap} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a})}/>:snap.game.fence?<FenceBoard key={snap.match} snap={snap} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.scale?<ScaleBoard key={snap.match} snap={snap} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.spot?<SpotBoard key={snap.match} snap={snap} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.fragments?<FragmentsBoard key={snap.match} snap={snap} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.pyramid?<PyramidBoard key={snap.match+':'+snap.game.round} snap={snap} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.codeLock?<CodeLockBoard key={snap.match} snap={snap} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.equations?<EquationBoard key={snap.match} snap={snap} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a})}/>:snap.game.divine?<DivineBoard key={snap.match} snap={snap} active={state.phase==='online'} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.grass?<GrassBoard key={snap.match+':'+snap.game.round+':'+snap.game.turn} g={snap.game} you={snap.you} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a})}/>:snap.game.game==='bagh'?<BaghBoard key={snap.match} g={snap.game} you={snap.you} active={state.phase==='online'} submit={a=>command({kind:'move',action:a})}/>:snap.game.game==='secret'?<SecretBoard key={snap.match+':'+snap.game.round} snap={snap} active={state.phase==='online'} name={nameOf} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.game==='auction'?<SealedAuction key={snap.match} snap={snap} active={state.phase==='online'} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:isPuzzle(snap.game.game)?<PuzzleBoard key={snap.match+':'+snap.game.round+':'+snap.game.puzzle?.stage} snap={snap} active={state.phase==='online'} name={nameOf} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.game==='mancala'?<MancalaBoard key={snap.match+':'+snap.game.mancala?.placements+':'+snap.game.mancala?.sows} g={snap.game} you={snap.you} active={state.phase==='online'} name={nameOf} submit={a=>command({kind:'move',action:a})}/>:!isDuel(snap.game.game)?<SeasonTwo key={snap.match} snap={snap} active={state.phase==='online'} name={nameOf} submit={a=>command({kind:'move',action:a,round:snap.game?.round})}/>:snap.game.game==='morris'?<MorrisBoard key={snap.match} v={snap.game} you={snap.you} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a})}/>:<Board key={snap.match} v={snap.game} name={nameOf} active={state.phase==='online'} submit={a=>command({kind:'move',action:a})}/>}
      </Suspense></TableLoadBoundary>
      <details className="match-rules"><summary>How to play</summary><p>{snap.game.timeHold?holdAuctionRules:snap.game.memoryDuel?episodePokerRules:snap.game.montage?.mode==='practice'?montagePracticeRules:tutorials[snap.game.game]}</p>{snap.game.montage&&<p><a href={montageSource} target="_blank" rel="noreferrer">Season 1 Episode 9 transcript</a> · The deck, countdown and host-receipt timing are fan rules.</p>}</details>
      {finished?<MatchRecord snap={snap} name={nameOf} active={state.phase==='online'} onExport={()=>exportMatch(snap)}
@@ -451,23 +439,6 @@ function Board({v,name,active,submit}:{v:GameView,name:(s:string)=>string,active
  {v.board.map((_,i)=>cell(i))}</div></BoardViewport>:<div className={'board '+(linear?'gomoku':'morris-board')} style={linear?{gridTemplateColumns:'repeat('+size+',1fr)',gridTemplateRows:'repeat('+size+',1fr)'}:{}} aria-label={titles[v.game]+' board'}>
  {linear?null:<svg viewBox="0 0 100 100" aria-hidden="true">{mills.map((m,i)=><line key={i} x1={7+points[m[0]][0]*86/6} y1={7+points[m[0]][1]*86/6} x2={7+points[m[2]][0]*86/6} y2={7+points[m[2]][1]*86/6}/>)}</svg>}
  {v.board.map((_,i)=>cell(i))}</div>}{linear&&!v.done&&<details><summary>Place by coordinates</summary><div className="actions"><label>Row<select value={row} onChange={e=>setRow(Number(e.target.value))}>{Array.from({length:size},(_,i)=><option key={i} value={i}>{i+1}</option>)}</select></label><label>Column<select value={column} onChange={e=>setColumn(Number(e.target.value))}>{Array.from({length:size},(_,i)=><option key={i} value={i}>{i+1}</option>)}</select></label><button disabled={!active||!v.legal.includes(row*size+column)} onClick={()=>submit(row*size+column)}>Place stone</button></div></details>}</>
-}
-function Auction({snap,active,submit}:{snap:Snapshot,active:boolean,submit:(v:number)=>void}){
- const g=snap.game!
- const [bid,setBid]=useState('1')
- const [now,setNow]=useState(Date.now())
- const offset=useRef(0)
- useEffect(()=>{offset.current=snap.hostNow-Date.now()},[snap])
- useEffect(()=>{const i=setInterval(()=>setNow(Date.now()),120);return()=>clearInterval(i)},[])
- const own=g.seats.indexOf(snap.you),max=Math.min(15000,g.credits[own]??0)
- const ms=Math.round(Number(bid)*1000)
- const locked=g.mine!==null
- return <div className="auction">
-  <div className="auction-top"><strong>Sealed round {g.round} / 8</strong><span className="pill">{reward(g.round)} points</span><span className="mono">{g.done?'Closed':Math.max(0,Math.ceil(((g.deadline??now)-now-offset.current)/1000))+' s'}</span></div>
-  {!g.done&&<><p>Your bank: <strong>{exact((g.credits[own]??0)/1000)} s</strong> · {g.submitted}/{g.seats.length} locked</p>
-  {locked?<p role="status">Your bid is locked: {exact(g.mine!/1000)} s</p>:<form className="actions" onSubmit={e=>{e.preventDefault();if(Number.isInteger(ms)&&ms>=0&&ms<=max)submit(ms)}}><label>Bid (seconds)<input type="number" step="0.001" min="0" max={max/1000} value={bid} onChange={e=>setBid(e.target.value)} required/></label><button className="primary" disabled={!active||!bid||ms<0||ms>max}>Lock bid</button><button type="button" disabled={!active} onClick={()=>submit(0)}>Pass</button></form>}</>}
-  <div className="scores">{g.seats.map((s,i)=><div key={s}><span>{snap.seats.find(x=>x.id===s)?.name}</span><strong>{exact(g.scores[i])} pts</strong>{g.last&&<small>Last bid {exact(g.last[i]/1000)} s</small>}</div>)}</div>
- </div>
 }
 function exportMatch(snap:Snapshot){
  const g=snap.game

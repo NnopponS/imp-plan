@@ -1,5 +1,6 @@
 import {Fragment,useEffect,useState} from 'react'
 import {base} from './brand'
+import {useCardPress} from './card-press'
 import {arrangeEquation,equationOperatorOrders,equationRank,equationRounds,equationSuit,formatEquation,formatEquationValue,type Arrangement,type EquationAction,type EquationView} from './equation-high-low'
 import './equation-high-low.css'
 
@@ -30,6 +31,14 @@ function useClock(deadline:number|null,hostNow:number){
  return seconds
 }
 
+function WorkbenchCard({card,index,slot,enabled,pick}:{card:number;index:number;slot:number;enabled:boolean;pick:()=>void}){
+ const press=useCardPress(pick)
+ return <button {...press} type="button" disabled={!enabled} data-eh-pick={index} aria-pressed={slot>=0}
+  aria-label={(index===0?'Private':'Open')+' card '+(index+1)+': '+equationRank(card)+' '+equationSuit(card)}>
+  <EquationCard card={card} kind={index===0?'Private':undefined}/>
+  {slot>=0&&<span className="eh-slot" data-eh-slot aria-label={'Slot '+(slot+1)}>{slot+1}</span>}
+ </button>
+}
 function EquationWorkbench({hand,enabled,submit}:{hand:number[];enabled:boolean;submit:Props['submit']}){
  const [direction,setDirection]=useState<Direction>('low')
  const [lane,setLane]=useState<'low'|'high'>('low')
@@ -59,11 +68,11 @@ function EquationWorkbench({hand,enabled,submit}:{hand:number[];enabled:boolean;
    <button type="button" disabled={!enabled} aria-pressed={edit==='high'} onClick={()=>setLane('high')}>Build High {valid(high)?'✓':''}</button>
   </div>}
   <div className="eh-rack" role="group" aria-label="Arrange your four number cards">
-   {hand.map((card,i)=><button type="button" key={i} disabled={!enabled} data-eh-pick={i} aria-pressed={draft.order.includes(i)}
-     aria-label={(i===0?'Private':'Open')+' card '+(i+1)+': '+equationRank(card)+' '+equationSuit(card)}
-     onClick={()=>change({order:draft.order.includes(i)?draft.order.filter(n=>n!==i):[...draft.order,i]})}>
-    <EquationCard card={card} kind={i===0?'Private':undefined}/><span className="eh-slot">{draft.order.includes(i)?'Slot '+(draft.order.indexOf(i)+1):'Add card'}</span>
-   </button>)}
+   {hand.map((card,i)=><WorkbenchCard key={i} card={card} index={i} slot={draft.order.indexOf(i)} enabled={enabled}
+    pick={()=>setPlans(value=>{
+     const plan=value[edit]
+     return {...value,[edit]:{...plan,order:plan.order.includes(i)?plan.order.filter(n=>n!==i):[...plan.order,i]}}
+    })}/>)}
   </div>
   <div className="eh-actions"><label>Operator order
    <select disabled={!enabled} value={draft.ops} onChange={e=>change({ops:Number(e.target.value)})}>
@@ -77,7 +86,7 @@ function EquationWorkbench({hand,enabled,submit}:{hand:number[];enabled:boolean;
     {i<3&&<i>{equationOperatorOrders[draft.ops][i]}</i>}
    </Fragment>)}<i>=</i><b>{preview?formatEquationValue(preview):'?'}</b>
   </div>
-  <p className="eh-note" role="status">{identical?'Swing needs two different arrangements.':draft.order.length===4&&!preview?'Division by zero. Try a different card or move ÷.':'Tap all four cards in expression order. Division happens first.'}</p>
+  <p className="eh-note" role="status">{identical?'Swing needs two different arrangements.':draft.order.length===4&&!preview?'Division by zero. Try a different card or move ÷.':'Tap or hold to arrange. Division first.'}</p>
   <button type="button" className="eh-primary" disabled={!canSeal} onClick={()=>submit({kind:'seal',low,high})}>Seal {targetNames[direction]} equation{direction==='swing'?'s':''}</button>
  </div>
 }
@@ -125,19 +134,19 @@ export function EquationHighLowBoard({view:v,you,active,name,hostNow,submit}:Pro
   </header>
   <div className="eh-body">
    <div>
-    {bet&&<div className="eh-work">
+    {bet&&<div className="eh-work eh-wager">
      <span className="eh-index">{v.phase==='opening'?'01 · Two open numbers':'02 · Final open number'}</span>
      <h4>{v.turn===you?'Your wager':name(v.turn!)+' to act'}</h4>
      {mine?.live&&<div className="eh-rack" aria-label="Your number cards">
       {mine.hand.map((card,i)=><EquationCard key={i} card={card} kind={i===0?'Private':undefined}/>)}
       {mine.hand.length===3&&<EquationCard card={null}/>}
      </div>}
-     {mine?.live&&<><p className="eh-note">{v.price===0?'No wager yet. Check or open the betting.':v.toCall>0?v.toCall+' to call.':'Your wager already matches.'} Current wager cap: {v.cap}.</p>
+     {mine?.live&&<div className="eh-wager-rail"><p className="eh-note">{v.price===0?'No wager yet. Check or open the betting.':v.toCall>0?v.toCall+' to call.':'Your wager already matches.'} Current wager cap: {v.cap}.</p>
       <div className="eh-actions" aria-label="Wager actions" role="group">
        <button type="button" className="eh-primary" disabled={!betting} onClick={()=>submit({kind:'call'})}>{v.toCall?'Call '+v.toCall:'Check'}</button>
        {raise.map(n=><button type="button" key={n} disabled={!betting} onClick={()=>submit({kind:'raise',to:n})}>Raise to {n}</button>)}
        <button type="button" disabled={!betting} onClick={()=>submit({kind:'fold'})}>Fold</button>
-      </div></>}
+      </div></div>}
      {!mine?.live&&<p className="eh-note">You are watching this deal.</p>}
     </div>}
     {v.phase==='seal'&&(mine?.live&&!mine.locked?<EquationWorkbench key={v.round} hand={mine.hand} enabled={active} submit={submit}/>:<div className="eh-work"><h4>{mine?.locked?'Your equation is sealed':'Watching the showdown'}</h4><p className="eh-note" role="status">Equations and targets open together at the reveal.</p></div>)}
