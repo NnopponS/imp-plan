@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540">
+ <title>Hidden Word — the lexical observatory</title>
+ <defs>
+  <radialGradient id="desk" cx=".52" cy=".45" r=".68"><stop stop-color="#296160"/><stop offset=".64" stop-color="#173b40"/><stop offset="1" stop-color="#101d26"/></radialGradient>
+  <linearGradient id="paper" x2=".85" y2="1"><stop stop-color="#f2deb0"/><stop offset=".72" stop-color="#c9a878"/><stop offset="1" stop-color="#a57950"/></linearGradient>
+  <linearGradient id="ink" x2=".7" y2="1"><stop stop-color="#446c68"/><stop offset="1" stop-color="#193940"/></linearGradient>
+  <linearGradient id="metal" x2=".75" y2="1"><stop stop-color="#fee5a8"/><stop offset=".42" stop-color="#b48351"/><stop offset=".66" stop-color="#f0cd8d"/><stop offset="1" stop-color="#79523c"/></linearGradient>
+  <radialGradient id="lens" cx=".37" cy=".32" r=".8"><stop stop-color="#bcf4d9" stop-opacity=".42"/><stop offset=".57" stop-color="#4f9e8d" stop-opacity=".35"/><stop offset="1" stop-color="#0b3a40" stop-opacity=".88"/></radialGradient>
+  <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse"><path d="M0 30V0h30" fill="none" stroke="#dfcb98" stroke-opacity=".12"/><circle cx="2" cy="2" r="1" fill="#dfcb98" opacity=".2"/></pattern>
+  <pattern id="fiber" width="11" height="9" patternUnits="userSpaceOnUse"><path d="M0 3h4m2 4h5" stroke="#422c26" stroke-opacity=".14" stroke-width=".55"/></pattern>
+  <filter id="shadow" x="-.28" y="-.32" width="1.6" height="1.85"><feDropShadow dx="0" dy="17" stdDeviation="15" flood-color="#071013" flood-opacity=".72"/></filter>
+ </defs>
+ <path d="M0 0h960v540H0z" fill="url(#desk)"/>
+ <path d="M0 0h960v540H0z" fill="url(#grid)"/>
+ <g fill="none" stroke="#cfa476">
+  <path d="M24 57 55 26h850l31 31v426l-31 31H55l-31-31Z" stroke-width="2"/>
+  <path d="M34 63 60 36h840l26 27v414l-26 27H60l-26-27Z" opacity=".42"/>
+  <path d="M112 78h199m337 0h201M112 463h199m337 0h201" opacity=".35"/>
+  <path d="M786 386q-63 39-106 10m128-45q53-22 64-79M174 184q39-57 110-84m-96 69q33-2 74-26M114 341q45 32 89 20" stroke-dasharray="2 6"/>
+  <g opacity=".47"><circle cx="486" cy="264" r="216"/><circle cx="486" cy="264" r="202" stroke-dasharray="2 5"/><path d="M486 43v34m0 374v34M265 264h34m374 0h34"/></g>
+ </g>
+ <g fill="#e2c69a" font-family="monospace" font-size="14" letter-spacing="3">
+  <text x="70" y="64">LEXICAL OBSERVATORY</text><text x="889" y="64" text-anchor="end">S3 / 09</text>
+  <text x="69" y="486">FIELD NOTES</text><text x="889" y="486" text-anchor="end">ASSOCIATION STUDY</text>
+ </g>
+ <g filter="url(#shadow)" transform="rotate(12 665 275)">
+  <rect x="576" y="124" width="176" height="274" rx="8" fill="url(#paper)" stroke="#fbe4b1" stroke-width="2"/>
+  <path d="M590 150v-12h148v244H590v-12" fill="none" stroke="#5d4e3a"/>
+  <text x="664" y="172" text-anchor="middle" font-family="monospace" fill="#365452" letter-spacing="1.5" font-size="12">CLUE REGISTER</text>
+  <g fill="#32514a" font-family="Georgia,serif" font-size="19" text-anchor="middle">
+   <text x="664" y="216">produce</text><text x="664" y="256">orchard harvest</text><text x="664" y="295">teardrop shape</text>
+  </g>
+  <path d="M614 223h100m-100 40h100m-100 39h100m-77 39h54" fill="none" stroke="#8a6849"/>
+  <circle cx="665" cy="344" r="14" fill="#5c3933" stroke="#aa7851" stroke-width="2"/>
+ </g>
+ <g filter="url(#shadow)" transform="rotate(-13 319 297)">
+  <rect x="194" y="220" width="236" height="156" rx="8" fill="url(#ink)" stroke="#d8a870" stroke-width="2"/>
+  <path d="M201 234h220v132H201Z" fill="none" stroke="#b99169" opacity=".58"/>
+  <path d="m197 233 114 76 116-76m-229 126 91-63m137 64-85-65" fill="none" stroke="#edd4a2" opacity=".65"/>
+  <g transform="translate(311 311)">
+   <path d="m-19 1 4-14L0-20l14 6 6 14-5 14-14 5-15-6Z" fill="#87493e" stroke="#d3a16d" stroke-width="2"/>
+   <path d="M-8 4q8-12 16 0-8 7-16 0Z" fill="none" stroke="#f3d5a0"/><circle cy="2" r="2.3" fill="#f3d5a0"/>
+  </g>
+ </g>
+ <g transform="translate(432 243)">
+  <g filter="url(#shadow)">
+   <animateTransform attributeName="transform" type="translate" values="0 0;0 -7;0 0" keyTimes="0;.48;1" begin="indefinite" dur="1.65s" data-cover-at="0.12s" fill="remove"/>
+   <g transform="rotate(25)">
+    <path d="M-8 63H8l10 102-7 10H-11l-7-10Z" fill="url(#metal)" stroke="#593e2c" stroke-width="2"/>
+    <path d="M-10 111H10l4 52-4 7h-20l-4-7Z" fill="#452f2d" stroke="#e2b478"/>
+   </g>
+   <circle r="91" fill="#583e34" stroke="#341f20" stroke-width="4"/>
+   <circle r="88" fill="url(#metal)" stroke="#f1ce94" stroke-width="2"/>
+   <circle r="77" fill="#264b4e" stroke="#644734" stroke-width="4"/>
+   <circle r="72" fill="url(#lens)" stroke="#facd92" stroke-width="2"/>
+   <path d="M-64 0H64M0-64V64M-49-44l7 5m91 83-7-5M-49 44l7-5m91-83-7 5" fill="none" stroke="#e7d5a1" opacity=".73"/>
+   <circle r="49" fill="none" stroke="#e9d5a0" stroke-width="1" stroke-dasharray="1 5"/>
+   <path d="M-50-26q15-34 45-39m-36 40q9-20 24-26" fill="none" stroke="#e7ffe9" stroke-linecap="round" stroke-width="4" opacity=".68">
+    <animate attributeName="opacity" values=".68;1;.68" keyTimes="0;.42;1" begin="indefinite" dur="1.1s" data-cover-at="0.28s" fill="remove"/>
+   </path>
+   <text x="2" y="17" text-anchor="middle" font-family="Georgia,serif" font-size="58" fill="#f0e5be">?</text>
+  </g>
+ </g>
+ <g fill="none" stroke="#f0d3a1" opacity=".62"><path d="m130 223 14-12 14 12-14 12Zm68 194 11-8 11 8-11 8zm605-280 14-12 14 12-14 12z"/><path d="M144 202v41m-19-20h39m653-105v38m-20-19h40m-629 269v21m-15-10h31"/></g>
+</svg>

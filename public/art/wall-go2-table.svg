@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="560" viewBox="0 0 560 560" fill="none">
+<defs>
+ <linearGradient id="wood" x2="1" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#51363e"/><stop offset=".47" stop-color="#322b40"/><stop offset="1" stop-color="#302026"/></linearGradient>
+ <pattern id="scrape" width="11" height="11" patternUnits="userSpaceOnUse"><path d="M2 11 11 2M0 4l4-4" stroke="#e2a076" stroke-opacity=".09"/></pattern>
+ <g id="bolt"><circle r="5.5" fill="#2e2127" stroke="#b98967"/><path d="m-3-3 6 6m-6 0 6-6" stroke="#8d644b"/></g>
+</defs>
+<rect width="560" height="560" fill="url(#wood)"/><rect width="560" height="560" fill="url(#scrape)"/>
+<rect x="8" y="8" width="544" height="544" rx="14" stroke="#b98967"/><rect x="13" y="13" width="534" height="534" rx="12" stroke="#653d42"/>
+<path d="M35 528h145l14 8h172l14-8h145M35 33h145l14-8h172l14 8h145M25 49v128l-8 14v177l8 14v129m509-462v128l8 14v177l-8 14v129" stroke="#c39870" stroke-opacity=".47"/>
+<path d="m278 528 8 8-8 8-8-8zm0-512 8 8-8 8-8-8zM22 271l8 8-8 8-8-8zm517 0 8 8-8 8-8-8z" fill="#d1a37b" fill-opacity=".55"/>
+<use href="#bolt" x="21" y="21"/><use href="#bolt" x="539" y="21"/><use href="#bolt" x="21" y="539"/><use href="#bolt" x="539" y="539"/>
+</svg>

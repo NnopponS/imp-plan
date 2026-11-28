@@ -1,9 +1,12 @@
+import {bingoBot} from '../src/auction-bingo'
+import {equationBot} from '../src/equation-high-low'
+import {hiddenBot} from '../src/hidden-word'
 import {gradationBot} from '../src/gradation'
 import {bigSmallBot} from '../src/big-small'
 import {diceBot} from '../src/triple-dice'
 import {botThreeRow} from '../src/three-row'
 import {expect,it} from 'vitest'
-import {botAction,playGradation,move,playBigSmall,playColorLink,playHeavy13,playThreeRow,playTripleDice,start,titles,view,type BotLevel,type Game} from '../src/engine'
+import {botAction,minSeats,playHiddenWord,playGradation,move,playBigSmall,playEquationHighLow,playColorLink,playHeavy13,playThreeRow,playTripleDice,playAuctionBingo,start,titles,view,type BotLevel,type Game} from '../src/engine'
 import {colorLinkBot} from '../src/color-link'
 import {Host,decode,defaults,humanOnly} from '../src/room'
 import {buyer,contactAction,guessAction} from "../src/secret"
@@ -68,9 +71,9 @@ it('changing difficulty preserves the complete practice roster but swapping game
 
 it('every game offering AI has legal deterministic opening choices at all three levels',()=>{
  const games=(Object.keys(titles) as Game[]).filter(game=>!humanOnly(game))
- expect(games).toHaveLength(18)
+ expect(games).toHaveLength(22)
  for(const game of games){
-  const seats=(game==='remove'||game==='secret'||game==='threeRow')?['a','b','c']:['a','b']
+  const seats=['a','b','c'].slice(0,Math.max(2,minSeats(game)))
   const g=start(game,seats,25000,0,{seed:733})
   for(const level of levels){
    const v=view(g,'a')
@@ -79,6 +82,27 @@ it('every game offering AI has legal deterministic opening choices at all three 
     expect(a,game+' '+level).not.toBeNull()
     expect(playGradation(g,'a',a!.order,a!.target,1)).not.toBeNull()
     expect(gradationBot(v.gradation,'a',19,level)).toEqual(a)
+    continue
+   }
+   if(v.auctionBingo){
+    const a=bingoBot(v.auctionBingo,19,level,'a')
+    expect(a,game+' '+level).not.toBeNull()
+    expect(playAuctionBingo(g,'a',a!,1)).not.toBeNull()
+    expect(bingoBot(v.auctionBingo,19,level,'a')).toEqual(a)
+    continue
+   }
+   if(v.equationHighLow){
+    const a=equationBot(v.equationHighLow,'a',19,level)
+    expect(a,game+' '+level).not.toBeNull()
+    expect(playEquationHighLow(g,'a',a!,1)).not.toBeNull()
+    expect(equationBot(v.equationHighLow,'a',19,level)).toEqual(a)
+    continue
+   }
+   if(v.hiddenWord){
+    const a=hiddenBot(v.hiddenWord,19,level)
+    expect(a,game+' '+level).toBeDefined()
+    expect(playHiddenWord(g,'a',a!,1),game+' '+level).not.toBeNull()
+    expect(hiddenBot(v.hiddenWord,19,level)).toEqual(a)
     continue
    }
    if(v.tripleDice){

@@ -1,0 +1,24 @@
+.hw-lesson {width:100%; max-width:36rem; max-height:13.4rem; height:auto; display:block; margin:auto}
+.hw-lesson text {fill:#253733; font:700 20px Georgia,serif}
+.hw-lesson .hw-film-index {fill:#edce9a; font:700 12px ui-monospace,monospace; letter-spacing:1px}
+.hw-film-card {fill:#e3c795; stroke:#a98456}
+.hw-film-highlight {fill:#f7e9bd; stroke:#c59357; stroke-width:2}
+.hw-film-check {stroke:#415d45; stroke-width:3; fill:none; stroke-linecap:round; stroke-linejoin:round}
+.hw-film-cross {stroke:#a74937; stroke-width:3; stroke-linecap:round; fill:none}
+.hw-film-wax {fill:#894b3b; stroke:#ecc488; stroke-width:1.5}
+.hw-lesson .hw-film-light {fill:#f5daad}
+.hw-lesson .hw-film-points {font:750 23px Georgia,serif}
+.hw-film-discovery {fill:#e9d69d; animation:hw-film-fade .45s .22s both}
+.hw-film-rise {animation:hw-film-rise .5s cubic-bezier(.2,.55,.3,1) both}
+.hw-film-rise.hw-film-late {animation-delay:.17s}
+.hw-film-fade {animation:hw-film-fade .42s .28s both}
+.hw-film-outsider {fill:#d2b985; opacity:.17; animation:hw-film-outsider .45s .23s both}
+.hw-film-eliminated {fill:#d29f79; opacity:.49; animation:hw-film-outsider .32s .5s both}
+.hw-film-eliminated path {stroke-dasharray:18; animation:hw-film-strike .31s .52s both}
+.hw-film-keep {fill:#fff0b0}
+@keyframes hw-film-outsider {from{opacity:1} to{opacity:.17}}
+@keyframes hw-film-strike {from{stroke-dashoffset:18} to{stroke-dashoffset:0}}
+@keyframes hw-film-rise {from{opacity:.15; transform:translateY(12px)} to{opacity:1; transform:translateY(0)}}
+@keyframes hw-film-fade {from{opacity:.12} to{opacity:1}}
+[data-motion-off=true] .hw-lesson * {animation:none!important}
+@media(prefers-reduced-motion:reduce){.hw-lesson *{animation:none!important}}

@@ -121,3 +121,9 @@ Adds a flag memory table for solo practice and 2–16 humans, without bots. Reca
 37 of 64 catalog entries playable in this candidate (11 / 9 / 17). Adds Cooperative Puzzle (S1-02), Triple Dice (S2-08), Big Small (S2-13), and Gradation (S3-16). Each has original table artwork and game-specific worked examples. The pre-match guide shows one caption per step; swipes and arrow keys progress without advancing the actual game. Full rules stay available on demand. Use the game-linked rule sheets for player limits and the distinction between fan and broadcast rules.
 
 Browser privacy tests use loopback unless stated. Native PeerJS/STUN loopback was checked separately for a shared Cooperative Puzzle placement and undo. This is not proof of public cross-network play.
+
+### Four new illustrated fan tables
+
+The catalog has 41 playable entries out of 64 (12 / 9 / 20). Equation High-Low, Auction Bingo, Hidden Word and Wall Go II add private arithmetic wagers, sealed geometric auctions, rotating word deduction and a second territory board. Each has a worked illustrated guide and a playable practice table. The swipe cue waits until a lazy illustration has appeared and its scene action is finished. Reduced motion uses a static cue.
+
+Independent local Chromium checks verified Equation High-Low and Wall Go II matches and Hidden Word’s private three-seat reveal with native WebRTC plus a local STUN fixture. Auction Bingo’s full practice and two-seat privacy checks used the mock loopback transport. These offline and loopback tests do not cover public signaling, cross-network connections, or exact broadcast rules.

@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540">
+ <title>The arithmetic salon</title>
+ <desc>A fan-made illustration of four number cards across a rosewood desk, between metal dials set to one and twenty.</desc>
+ <defs>
+  <linearGradient id="wood" x1="0" x2="1" y2="1"><stop stop-color="#211822"/><stop offset=".55" stop-color="#50293a"/><stop offset="1" stop-color="#251c2a"/></linearGradient>
+  <linearGradient id="paper" x2="1" y2="1"><stop stop-color="#fff1d9"/><stop offset="1" stop-color="#d9a57e"/></linearGradient>
+  <linearGradient id="metal" x1="0" x2=".8" y2="1"><stop stop-color="#f4c697"/><stop offset=".31" stop-color="#975951"/><stop offset=".68" stop-color="#d2a177"/><stop offset="1" stop-color="#a06158"/></linearGradient>
+  <radialGradient id="light"><stop stop-color="#d38b6d" stop-opacity=".27"/><stop offset="1" stop-color="#d38b6d" stop-opacity="0"/></radialGradient>
+  <pattern id="grain" width="29" height="11" patternUnits="userSpaceOnUse" patternTransform="rotate(21)"><path d="M0 2h29M0 7h29" stroke="#f6b490" stroke-opacity=".06"/><path d="M3 9h12m6-5h8" stroke="#180d18" stroke-opacity=".5"/></pattern>
+  <pattern id="card-grain" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path stroke="#e2a782" stroke-opacity=".25" d="M0 0h9M0 4h9"/></pattern>
+  <g id="card">
+   <rect x="-45" y="-68" width="90" height="138" rx="11" fill="#170e17" opacity=".63"/>
+   <rect x="-45" y="-75" width="90" height="138" rx="11" fill="url(#paper)" stroke="#ecc193" stroke-width="2"/>
+   <rect x="-39" y="-69" width="78" height="126" rx="7" fill="none" stroke="#996452" stroke-width="1"/>
+   <path d="M-32-53v-9h9m46 0h9v9m0 94v9h-9m-46 0h-9v-9M-15 33h30m-23 5H8" fill="none" stroke="#9f6755"/>
+   <path fill="#a16658" d="m0-48 5 5-5 5-5-5Z"/>
+  </g>
+  <g id="dial">
+   <circle cy="8" r="101" fill="#180e1b" opacity=".7"/>
+   <circle r="98" fill="url(#metal)" stroke="#e5b18e" stroke-width="1.7"/>
+   <circle r="92" fill="none" stroke="#50323a" stroke-width="2"/>
+   <circle r="86" stroke="#4b2b34" stroke-width="4"/>
+   <circle r="81" fill="none" stroke="#edbd8c" stroke-width="2.5" stroke-dasharray="2.2 11"/>
+   <circle r="72" fill="none" stroke="#e5aa88" stroke-opacity=".5"/>
+   <path d="M0-70v13M70 0H56M0 70V57m-70-57h13" stroke="#f0c198" stroke-width="1.6"/>
+  </g>
+ </defs>
+ <rect width="960" height="540" fill="url(#wood)"/>
+ <rect width="960" height="540" fill="url(#grain)"/>
+ <ellipse cx="463" cy="235" rx="523" ry="340" fill="url(#light)"/>
+ <g fill="none" stroke="#b57c65">
+  <rect x="34" y="37" width="892" height="466" rx="18" stroke-opacity=".77" stroke-width="2"/>
+  <rect x="45" y="48" width="870" height="444" rx="13" stroke-opacity=".54"/>
+  <path d="M63 108V77q0-12 12-12h77m656 0h77q12 0 12 12v31M63 432v31q0 12 12 12h77m656 0h77q12 0 12-12v-31" stroke-width="1.4"/>
+  <path d="M79 158h802M79 402h802" stroke-opacity=".51"/>
+  <path d="M83 169h794M83 391h794" stroke-dasharray="1 5" stroke-opacity=".43"/>
+  <path d="M356 105h248M356 444h248" stroke-opacity=".57"/>
+ </g>
+ <g fill="#daa784">
+  <path d="m300 105 8-8 8 8-8 8zm344 0 8-8 8 8-8 8zM300 444l8-8 8 8-8 8zm344 0 8-8 8 8-8 8z"/>
+  <circle cx="56" cy="58" r="2.5"/><circle cx="904" cy="58" r="2.5"/><circle cx="56" cy="481" r="2.5"/><circle cx="904" cy="481" r="2.5"/>
+ </g>
+ <g font-family="Georgia,serif" text-anchor="middle">
+  <text x="480" y="91" fill="#efcaa8" font-size="22" letter-spacing="6">ARITHMETIC SALON</text>
+  <text x="480" y="466" fill="#ddaa8a" font-size="16" letter-spacing="5">FOUR CARDS / TWO TARGETS</text>
+  <g transform="translate(164 283)">
+   <use href="#dial" fill="#3a3048"/>
+   <text y="25" fill="#ffdfb0" font-size="79">1</text><text y="49" fill="#e1ac91" font-size="14" letter-spacing="3">LOW</text>
+   <path d="m-5-65 5 13 5-13Z" fill="#f3c797">
+    <animateTransform attributeName="transform" type="rotate" begin="indefinite" data-cover-at="0.35s" dur="1.1s" values="-65;12;0" keyTimes="0;0.72;1" fill="remove"/>
+   </path>
+  </g>
+  <g transform="translate(796 283)">
+   <use href="#dial" fill="#69384a"/>
+   <text y="25" fill="#ffdfb0" font-size="75">20</text><text y="49" fill="#e9b5a0" font-size="14" letter-spacing="3">HIGH</text>
+   <path d="m-5-65 5 13 5-13Z" fill="#f3c797">
+    <animateTransform attributeName="transform" type="rotate" begin="indefinite" data-cover-at="0.48s" dur="1.1s" values="65;-12;0" keyTimes="0;0.72;1" fill="remove"/>
+   </path>
+  </g>
+  <g transform="translate(314 261) rotate(-12)">
+   <g><animateTransform attributeName="transform" type="translate" begin="indefinite" data-cover-at="0.18s" dur="0.8s" values="-18 27;5 -5;0 0" keyTimes="0;0.78;1" fill="remove"/>
+   <use href="#card"/>
+   <rect x="-45" y="-75" width="90" height="138" rx="11" fill="#62354a" stroke="#e4aa83"/>
+   <rect x="-42" y="-72" width="84" height="132" rx="8" fill="url(#card-grain)"/>
+   <rect x="-38" y="-68" width="76" height="124" rx="5" fill="none" stroke="#dea781"/>
+   <path d="M0-47 27-6 0 35-27-6z" fill="#572b41" stroke="#efbd8c"/>
+   <path d="m0-23 5 12 13 5-13 5-5 12-5-12-13-5 13-5Z" fill="#edd09e"/></g>
+  </g>
+  <g transform="translate(427 270) rotate(-4)"><use href="#card"/><text y="19" font-size="61" fill="#4b2c38">4</text></g>
+  <g transform="translate(539 270) rotate(4)"><use href="#card"/><text y="19" font-size="61" fill="#4b2c38">8</text></g>
+  <g transform="translate(648 261) rotate(12)"><use href="#card"/><text y="19" font-size="61" fill="#4b2c38">2</text></g>
+  <g fill="#efc6a1" font-size="23"><text x="371" y="360">+</text><text x="485" y="369">−</text><text x="601" y="360">÷</text></g>
+ </g>
+ <g fill="none" stroke="#e0aa86"><path d="M461 376h40m-34 7h28"/><path d="M92 438h82m612 0h82m-772 9h58m650 0h58" stroke-opacity=".57"/></g>
+</svg>

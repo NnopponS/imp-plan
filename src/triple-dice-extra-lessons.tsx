@@ -7,6 +7,6 @@ const DiceLesson=lazy(()=>loadTable(()=>import('./triple-dice-ui')).then(m=>({de
 export const extraLessons={
  tripleDice:{
   frames:diceLessonFrames,
-  render:(step:number)=><TableLoadBoundary title="Triple Dice"><Suspense fallback={<span>Opening tray…</span>}><DiceLesson step={step} embedded/></Suspense></TableLoadBoundary>,
+  render:(step:number)=><TableLoadBoundary title="Triple Dice"><Suspense fallback={<span data-lesson-pending role="status">Opening tray…</span>}><DiceLesson step={step} embedded/></Suspense></TableLoadBoundary>,
  },
 }

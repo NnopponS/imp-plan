@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 380">
+ <defs>
+  <radialGradient id="suede"><stop stop-color="#53634a"/><stop offset=".72" stop-color="#344834"/><stop offset="1" stop-color="#233629"/></radialGradient>
+  <pattern id="grain" width="13" height="11" patternUnits="userSpaceOnUse"><path d="m0 11 13-11m-13 3 4-3m5 11 4-3M0 0l13 11" fill="none" stroke="#c1aa71" stroke-opacity=".16" stroke-width=".45"/></pattern>
+  <pattern id="gate" width="80" height="52" patternUnits="userSpaceOnUse"><path d="m0 26 40-26 40 26-40 26zM31 26l9-6 9 6-9 6z" fill="none" stroke="#b49a68" stroke-opacity=".15"/></pattern>
+ </defs>
+ <rect width="720" height="380" fill="#2e251c"/>
+ <rect x="10" y="9" width="700" height="362" rx="30" fill="url(#suede)" stroke="#ad8659" stroke-width="2"/>
+ <rect x="10" y="9" width="700" height="362" rx="30" fill="url(#grain)"/>
+ <rect x="21" y="20" width="678" height="340" rx="21" fill="url(#gate)" stroke="#c7a26f" stroke-dasharray="3 5" stroke-opacity=".64"/>
+ <ellipse cx="360" cy="190" rx="230" ry="120" fill="#d8c08d" opacity=".028"/>
+ <g fill="#c09a62" stroke="#3e3022" stroke-width="2"><path id="stud" d="M26 19l8 7-8 7-8-7z"/><use href="#stud" transform="translate(668)"/><use href="#stud" transform="translate(0 328)"/><use href="#stud" transform="translate(668 328)"/></g>
+</svg>

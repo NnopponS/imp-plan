@@ -1,0 +1,18 @@
+.w2-lesson{display:block;width:min(100%,580px);height:auto;margin:auto}
+.w2-lesson-path{fill:none;stroke-width:3;stroke-dasharray:4 4;stroke-linecap:round;opacity:.8;animation:w2-teach-path .55s ease-out both}
+.w2-lesson-straight{animation:w2-teach-straight .9s ease-in-out both}
+.w2-lesson-turn{animation:w2-teach-turn 1s ease-in-out both}
+.w2-lesson-breach{animation:w2-teach-breach .9s ease-in-out both}
+.w2-lesson-built{animation:w2-teach-path .3s .8s both}
+.w2-lesson-broken{opacity:.24;animation:w2-teach-break .65s ease-in-out both}
+@keyframes w2-teach-path{from{opacity:0}to{opacity:.85}}
+@keyframes w2-teach-straight{from{transform:translateX(-80px)}to{transform:translateX(0)}}
+@keyframes w2-teach-turn{0%{transform:translate(-40px,-33px)}52%{transform:translate(0,-33px)}100%{transform:translate(0,0)}}
+@keyframes w2-teach-breach{from{transform:translateX(-40px)}to{transform:translateX(0)}}
+@keyframes w2-teach-break{0%,44%{opacity:1}to{opacity:.24}}
+.w2-lesson-draft{animation:w2-teach-draft .22s ease-out both}
+.w2-lesson-room{animation:w2-teach-room .35s ease-out both}
+@keyframes w2-teach-draft{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+@keyframes w2-teach-room{from{fill:#3c3342}}
+[data-motion-off] .w2-lesson *{animation:none!important}
+@media (prefers-reduced-motion:reduce){.w2-lesson *{animation:none!important}}

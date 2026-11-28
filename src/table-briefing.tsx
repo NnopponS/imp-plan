@@ -101,16 +101,25 @@ function SwipeCue({motionOff,finished,canEnter}:{motionOff:boolean;finished:bool
  const el=useRef<HTMLDivElement>(null)
  const [ready,setReady]=useState(false)
  useEffect(()=>{
-  if(motionOff)return
-  let active=true
-  const timer=window.setTimeout(()=>{
-   const scene=el.current?.parentElement?.querySelector('.brief-scene-object')
-   const movements=scene?.getAnimations({subtree:true}).filter(a=>a.playState==='running'&&Number(a.effect?.getComputedTiming().endTime)<=2000)??[]
-   Promise.allSettled(movements.map(a=>a.finished)).then(()=>{if(active)setReady(true)})
-  },650)
-  return ()=>{active=false;window.clearTimeout(timer)}
+  const scene=el.current?.parentElement?.querySelector('.brief-scene-object')
+  let timer:number|undefined,revision=0
+  function update(){
+   const current=++revision
+   window.clearTimeout(timer)
+   if(scene?.querySelector('[data-lesson-pending], [role="alert"]')){setReady(false);return}
+   if(motionOff){setReady(true);return}
+   setReady(false)
+   timer=window.setTimeout(()=>{
+    const movements=scene?.getAnimations({subtree:true}).filter(a=>a.playState==='running'&&Number(a.effect?.getComputedTiming().endTime)<=2000)??[]
+    Promise.allSettled(movements.map(a=>a.finished)).then(()=>{if(current===revision)setReady(true)})
+   },650)
+  }
+  const observer=new MutationObserver(update)
+  if(scene)observer.observe(scene,{childList:true,subtree:true})
+  update()
+  return ()=>{revision++;window.clearTimeout(timer);observer.disconnect()}
  },[motionOff])
- return <div ref={el} aria-hidden="true" className="brief-cue" data-ready={motionOff||ready||undefined} data-finished={finished||undefined}>
+ return <div ref={el} aria-hidden="true" className="brief-cue" data-ready={ready||undefined} data-finished={finished||undefined}>
   {finished?<><span>{canEnter?'Enter match':'End of guide'}</span><span>{canEnter?'↓':'◆'}</span></>:<>
    <svg className="brief-cue-trail" width="45" height="18" viewBox="0 0 45 18" fill="none"><path d="M4 11h30m-4-4 5 4-5 4" stroke="currentColor" strokeDasharray="2 3" strokeLinecap="round"/><g className="brief-cue-hand"><path d="M8 13 5 9q-1-2 1-2l3 2V4q0-2 2-2t2 2v3l4 1q2 0 2 2l-1 4-2 2h-5Z" fill="#543c29" stroke="currentColor" strokeWidth="1.2"/></g></svg>
    <span className="brief-touch-hint">Swipe right</span><span className="brief-key-hint">Drag right</span>

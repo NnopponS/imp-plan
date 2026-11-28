@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="390" viewBox="0 0 1200 390">
+ <defs>
+  <linearGradient id="wall" x2="1" y2=".2"><stop stop-color="#142b30"/><stop offset=".7" stop-color="#1c4144"/><stop offset="1" stop-color="#285957"/></linearGradient>
+  <pattern id="rule" width="31" height="31" patternUnits="userSpaceOnUse"><path d="M0 31V0H31" fill="none" stroke="#dfc99b" stroke-opacity=".14"/></pattern>
+ </defs>
+ <path d="M0 0h1200v390H0z" fill="url(#wall)"/><path d="M0 0h1200v390H0z" fill="url(#rule)"/>
+ <g fill="none" stroke="#cfab76">
+  <path d="M26 34 48 12h1104l22 22v322l-22 22H48l-22-22Z"/>
+  <path d="M51 43h1098v304H51Z" opacity=".27"/>
+  <g transform="translate(927 193)">
+   <circle r="146" opacity=".44"/><circle r="129" stroke-width="1.5" stroke-dasharray="1 8"/><circle r="101" opacity=".46"/>
+   <circle r="70" stroke-width="3"/><circle r="61" opacity=".6"/>
+   <path d="M0-150v300M-150 0h300M-103-103 103 103m0-206L-103 103" opacity=".38"/>
+   <path d="M0-46v24m0 44v24M-46 0h24m44 0h24" opacity=".85"/>
+   <path d="m0-16 16 16L0 16-16 0Z" fill="#d1ad74"/>
+   <path d="M0-141 9-129 0-118l-9-12Zm140 141-12-9-12 9 12 9ZM0 141l9-12L0 118l-9 11ZM-140 0l12-9 12 9-12 9Z" fill="#b7885c"/>
+  </g>
+  <path d="M680 95h102l36 18m-126 178h98l29-18M1017 93l25-16h65m-90 216 25 20h65" stroke-dasharray="3 6"/>
+ </g>
+ <g fill="#f1d7a7" font-family="monospace" font-size="12" letter-spacing="4" opacity=".66">
+  <text x="732" y="81">WIDE</text><text x="719" y="311">NARROW</text><text x="1112" y="82" text-anchor="end">01</text><text x="1112" y="319" text-anchor="end">03</text>
+ </g>
+</svg>

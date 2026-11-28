@@ -1,0 +1,76 @@
+.ab-board{--ab-ink:#362b23;--ab-paper:#efddba;--ab-brass:#c8a16b;border:1px solid #8c6b50;background:#393b29;color:#f3dfb7;border-radius:8px;overflow:hidden}
+.ab-banner{min-width:0;display:flex;align-items:center;justify-content:space-between;padding:.7rem clamp(.6rem,3vw,1.35rem);gap:.55rem;background:linear-gradient(116deg,#473728,#292a1f 74%);border-bottom:1px solid #a68554}
+.room[data-game="auctionBingo"] .ab-banner p,.room[data-game="auctionBingo"] .ab-desk p{color:#f3dfb7}
+.ab-banner p,.ab-overline{margin:0 0 .18rem;font:700 .65rem/1.3 system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase}
+.ab-banner strong{font:normal 1.26rem/1.3 Georgia,serif}
+.ab-round-stamps{display:flex;gap:4px}
+.ab-round-stamps i{width:8px;aspect-ratio:1;display:block;transform:rotate(45deg);border:1px solid #ab8d68}
+.ab-round-stamps i[data-round="passed"]{background:#86704b}
+.ab-round-stamps i[data-round="current"]{background:#f5d79a}
+.ab-time{min-width:38px;text-align:right;font:normal 1.32rem/1 Georgia,serif;font-variant-numeric:tabular-nums;color:#fbe4b5}
+.ab-time small{font-size:.7em;margin-left:2px}
+.ab-work{min-width:0;display:grid;grid-template-columns:minmax(145px,.75fr) minmax(0,1.25fr);align-items:stretch}
+.ab-desk{display:flex;min-width:0;flex-direction:column;align-items:center;justify-content:center;padding:1rem .6rem;gap:.6rem;background:#292a20 center/cover no-repeat;color:#f5e2b9;text-align:center}
+.ab-card-frame{position:relative;width:min(210px,100%)}
+.ab-card{width:100%;aspect-ratio:1;box-sizing:border-box;list-style:none;padding:5px;margin:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px;border:3px double #9d6b47;background:#f2dbad;box-shadow:0 5px 13px #15150d8f}
+.ab-card li{display:grid;place-items:center;aspect-ratio:1;border:1px solid #b18e64;background:#e2c79c}
+.ab-card li .ab-shape{width:52%;max-width:35px}
+.ab-card li:not([data-filled]) .ab-shape path{fill:transparent;stroke:#6a5743;stroke-dasharray:2 1}
+.ab-card li[data-filled]{background:#f7eacb;border-color:#73533f;box-shadow:inset 0 0 0 2px #aa885c49}
+.ab-card-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.ab-card-lines path{stroke:#fff0b1;stroke-width:4;opacity:.78;stroke-linecap:round;filter:drop-shadow(0 0 3px #4d3125)}
+.ab-card-note{margin:0;font:.75rem/1.4 system-ui,sans-serif}
+.ab-shape{width:20px;height:auto;display:inline-block;flex:none;vertical-align:middle}
+.ab-shape path,.ab-demo-glyph{stroke-width:1.4;stroke-linejoin:round}
+.ab-desk .ab-shape,.ab-controls .ab-shape{overflow:visible}
+.ab-shape[data-ab-shape="triangle"] path,.ab-demo-glyph[data-ab-shape="triangle"]{fill:#b56751;stroke:#6c3b32}
+.ab-shape[data-ab-shape="circle"] path,.ab-demo-glyph[data-ab-shape="circle"]{fill:#508575;stroke:#1f5143}
+.ab-shape[data-ab-shape="star"] path,.ab-demo-glyph[data-ab-shape="star"]{fill:#c99043;stroke:#74522a}
+.ab-shape-counts{display:flex;gap:.65rem;padding:0;margin:0;list-style:none}
+.ab-shape-counts li{display:flex;align-items:center;gap:.2rem}
+.ab-controls{min-width:0;padding:clamp(.65rem,2.5vw,1.18rem);background:radial-gradient(ellipse at 50% 20%,#fff2d6,#e5cda7);color:var(--ab-ink)}
+.ab-controls h3{margin:0 0 .3rem;font:normal clamp(1.2rem,4vw,1.55rem) Georgia,serif;color:#453224}
+.ab-controls p{margin:.15rem 0 .55rem;font:.83rem/1.42 system-ui,sans-serif}
+.ab-lots,.ab-coins{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.3rem;margin:.35rem 0 .55rem}
+.room[data-game="auctionBingo"] .ab-board button{min-width:0;min-height:44px;border:1px solid #967653;background:#f8e5be;color:#412c22;box-shadow:none;font:600 .81rem/1.25 system-ui,sans-serif;border-radius:4px;padding:.28rem .34rem}
+.room[data-game="auctionBingo"] .ab-board button:not(:disabled):hover{background:#f8ecca;color:#2e261b;border-color:#755239}
+.room[data-game="auctionBingo"] .ab-board button:focus-visible{outline:3px solid #265f4d;outline-offset:2px}
+.room[data-game="auctionBingo"] .ab-board button[aria-pressed=true]{box-shadow:inset 0 0 0 2px #496655;background:#d9e0bd;border-color:#647259;color:#223b26}
+.room[data-game="auctionBingo"] .ab-board button.ab-primary{background:#345646;color:#fff2ce;border-color:#253c30;padding-inline:.7rem}
+.room[data-game="auctionBingo"] .ab-board button.ab-primary:not(:disabled):hover{background:#426e57;color:#fff7e1;border-color:#2c5745}
+.ab-lots button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.2rem}
+.ab-market,.ab-standings{list-style:none;padding:0;margin:0 0 .55rem}
+.ab-market li{display:grid;grid-template-columns:minmax(91px,.7fr) minmax(0,1fr);align-items:center;gap:.35rem;padding:.25rem 0;border-bottom:1px solid #ad8d63;color:#422f23;font:.78rem/1.3 system-ui,sans-serif;overflow-wrap:anywhere}
+.ab-market strong{display:flex;align-items:center;gap:.3rem}
+.ab-purse-head,.ab-actions{display:flex;align-items:baseline;justify-content:space-between;gap:.35rem;flex-wrap:wrap}
+.ab-purse-head p{margin-bottom:0;font-weight:700}
+.ab-purse-head strong{font:600 .79rem/1 system-ui,sans-serif}
+.ab-coins{grid-template-columns:repeat(5,minmax(0,1fr));list-style:none;padding:0;margin:.4rem 0 .55rem}
+.ab-coins li>*{display:grid;min-height:44px;place-items:center;width:100%;box-sizing:border-box}
+.ab-coins span{border:1px dashed #b28d64;color:#795d46;border-radius:50%}
+.room[data-game="auctionBingo"] .ab-board .ab-coins button{border-radius:50%;border:3px double #946e49;font:700 1.1rem/1 Georgia,serif;background:radial-gradient(circle,#f6da96,#b9854a)}
+.room[data-game="auctionBingo"] .ab-board .ab-coins button[aria-pressed=true]{background:#d5dcb9;border-color:#526956}
+.ab-controls p.ab-status,.ab-controls p.ab-footnote{margin:.5rem 0 0}
+.ab-controls p.ab-status{color:#3e5135;font-weight:700}
+.ab-standings li+li{margin-top:.3rem}
+.room[data-game="auctionBingo"] .ab-standings button{width:100%;display:flex;align-items:center;justify-content:space-between;gap:.28rem;flex-wrap:wrap;text-align:left;overflow-wrap:anywhere}
+.ab-standings button span:last-child{font-size:.72rem}
+.ab-no-stakes{margin:0;padding:.5rem .7rem;font:.72rem/1.3 system-ui,sans-serif;color:#f0d7ae;background:#322b22;border-top:1px solid #a08054}
+.ab-demo{max-width:100%;width:100%;height:auto;display:block;border:1px solid #a47d59;border-radius:4px}
+.ab-demo-motion{animation:ab-demo-in 340ms both}
+.ab-ticket-fall{animation:ab-ticket-in 550ms 130ms both}
+.ab-coin-drop{animation:ab-coin-into-seal 460ms both}
+.ab-wax-stamp{transform-box:fill-box;transform-origin:center;animation:ab-stamp 350ms 610ms both}
+.ab-split-chip{animation:ab-split-tickets 470ms both}
+.ab-split-chip[data-discarded] .ab-demo-glyph{opacity:.45}
+@keyframes ab-coin-into-seal{0%{transform:translateY(-45px);opacity:0}40%{opacity:1}72%{transform:translateY(-7px);opacity:1}100%{transform:translateY(3px);opacity:0}}
+@keyframes ab-stamp{0%{transform:scale(1.6);opacity:0}70%{transform:scale(.94);opacity:1}}
+@keyframes ab-split-tickets{0%{transform:translate(var(--ab-from-x),-52px) scale(.65);opacity:0}22%{opacity:1}72%{transform:translate(calc(var(--ab-from-x)*.09),-7px)}}
+
+.ab-demo-line{stroke-dasharray:1;animation:ab-line-in 600ms 100ms both}
+@keyframes ab-demo-in{from{opacity:.25;transform:translateY(3px)}}
+@keyframes ab-ticket-in{from{transform:translateY(-18px);opacity:.15}}
+@keyframes ab-line-in{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@media(max-width:590px){.ab-work{grid-template-columns:1fr}.ab-desk{grid-row:2;padding:.65rem}.ab-card-frame{width:min(145px,100%)}.ab-round-stamps i{width:5px}.ab-round-stamps{gap:3px}.ab-controls{padding:.65rem}}
+@media(prefers-reduced-motion:reduce){.ab-demo *{animation:none!important}}
+[data-game-motion="off"] .ab-demo *,.briefing[data-reduced-motion="true"] .ab-demo *{animation:none!important}

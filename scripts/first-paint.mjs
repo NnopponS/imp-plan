@@ -8,7 +8,7 @@ const artDirectory=new URL('../public/art/',import.meta.url)
 const artUrl='/art/'
 const featured=['blind','morris','auction','point','remove','knight','hex','rectangles','cubes','exile']
 const customCovers={
- blind:'secret-chamber.svg',colorLink:'color-link-board.svg',wallGo:'wall-go-chamber.svg',
+ blind:'secret-chamber.svg',colorLink:'color-link-board.svg',wallGo:'wall-go-chamber.svg',wallGo2:'wall-go2-chamber.svg',
  flags:'season-three-flags.svg',threeRow:'season-one-three-row.svg',montage:'montage-chamber.svg',heavy13:'heavy13-chamber.svg',
 }
 const venueCopy={

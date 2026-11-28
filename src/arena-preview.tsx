@@ -453,8 +453,45 @@ function TripleDicePreview(){
   <path d="M73 79h50m-29-1 5 6 9-9" className="ap-rose-fill ap-draw" style={time(1170)}/>
  </>
 }
+function WallGo2Preview(){
+ return <><Grid x={69} y={33} cols={7} rows={7} cell={9}/>
+  <path d="M82.5 73.5h18" className="ap-gold-line ap-draw" style={time(420)}/>
+  <path d="M118.5 46.5v9h-9" className="ap-secondary-line ap-draw" style={time(680)}/>
+  <rect x="97.5" y="70.5" width="6" height="6" rx="1" className="ap-gold-fill ap-pop" style={time(890)}/>
+  <circle cx="109.5" cy="55.5" r="3.5" className="ap-jade-fill ap-pop" style={time(1140)}/>
+  <path d="M105 51v9m0 9v9" className="ap-rose-fill ap-draw" strokeWidth="2" style={time(1320)}/>
+ </>
+}
+function AuctionBingoPreview(){
+ return <g>
+  <path d="M78 42h48v48H78zM78 58h48M78 74h48M94 42v48m16-48v48" className="ap-secondary-line"/>
+  <path d="m86 46 4 7h-8z" className="ap-rose-fill ap-pop" style={time(250)}/>
+  <circle cx="102" cy="50" r="4" className="ap-gold-line ap-pop" style={time(530)}/>
+  <path d="m118 45 1 3 4 1-3 2 1 4-3-2-3 2 1-4-3-2 4-1z" className="ap-gold-line ap-pop" style={time(810)}/>
+  <path d="M81 55h43" className="ap-gold-line ap-draw" style={time(1200)}/>
+  <path d="M132 66h19v12h-19z m0 0 9.5 7 9.5-7" className="ap-rose-fill ap-pop" style={time(400)}/>
+ </g>
+}
+function EquationHighLowPreview(){
+ return <>
+  <circle cx="73" cy="62" r="15" className="ap-gold-line ap-pop" style={time(190)}/>
+  <circle cx="131" cy="62" r="15" className="ap-gold-line ap-pop" style={time(430)}/>
+  <path className="ap-gold-line ap-draw" style={time(650)} d="M70 59l3-3v12m-4 0h8m46-11h6v5h-6v5h6m4-10h6v10h-6z"/>
+  <path className="ap-rose-fill ap-pop" style={time(950)} d="M94 50h16v24H94z"/>
+  <path className="ap-gold-line ap-draw" style={time(1230)} d="M97 62h10m-5-5v10m-17 16h34m-18 0v8"/>
+ </>
+}
+function HiddenWordPreview(){
+ return <>
+  <path d="M50 55h52v27H50zm0 1 26 16 26-16M51 81l16-13m35 13-17-12" className="ap-secondary-line"/>
+  <path d="m76 67 6 5-6 5-6-5Z" className="ap-rose-fill ap-pop" style={time(290)}/>
+  <path d="M119 48h17v40h-17m0-33h12m-12 9h12m-12 9h12" className="ap-gold-line ap-draw" style={time(500)}/>
+  <path d="M98 61a13 13 0 1 1 26 0 13 13 0 0 1-26 0Zm3 12-8 12m18-32v16m-7-8h14" className="ap-gold-line ap-pop" style={time(925)}/>
+ </>
+}
 const previewScenes={
- bigSmall:{ms:2150,draw:BigSmall},
+ equationHighLow:{ms:2110,draw:EquationHighLowPreview},
+ bigSmall:{ms:2150,draw:BigSmall},wallGo2:{ms:2100,draw:WallGo2Preview},
  blind:{ms:2240,draw:()=> <Gomoku/>},morris:{ms:1920,draw:Morris},
  auction:{ms:2100,draw:Auction},point:{ms:2060,draw:()=> <Gomoku point/>},
  remove:{ms:1900,draw:Remove},knight:{ms:1920,draw:Knight},
@@ -467,5 +504,5 @@ const previewScenes={
  fragments:{ms:2280,draw:Fragments},spot:{ms:1930,draw:Spot},scale:{ms:2190,draw:Scale},
  fence:{ms:1850,draw:Fence},tower:{ms:1990,draw:Tower},piece:{ms:2030,draw:PieceFit},
  memoryPoker:{ms:2050,draw:Poker},wallGo:{ms:2130,draw:WallGo},
- montage:{ms:2350,draw:Montage},heavy13:{ms:2360,draw:Heavy},colorLink:{ms:2040,draw:ColorLink},symmetry:{ms:2170,draw:Symmetry},gradation:{ms:2200,draw:Gradation},threeRow:{ms:2230,draw:ThreeRow},flags:{ms:2200,draw:Flags},coopPuzzle:{ms:2040,draw:RelayPreview},tripleDice:{ms:2080,draw:TripleDicePreview},
+ montage:{ms:2350,draw:Montage},heavy13:{ms:2360,draw:Heavy},colorLink:{ms:2040,draw:ColorLink},symmetry:{ms:2170,draw:Symmetry},gradation:{ms:2200,draw:Gradation},threeRow:{ms:2230,draw:ThreeRow},flags:{ms:2200,draw:Flags},coopPuzzle:{ms:2040,draw:RelayPreview},tripleDice:{ms:2080,draw:TripleDicePreview},auctionBingo:{ms:2100,draw:AuctionBingoPreview},hiddenWord:{ms:1980,draw:HiddenWordPreview},
 } satisfies Record<Game,{ms:number;draw:()=>ReactNode}>

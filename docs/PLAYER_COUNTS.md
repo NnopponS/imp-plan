@@ -26,6 +26,10 @@
 | Triple Dice | 2–8 | 1 human + 1–7 bots | Simultaneous draws; the possible forecast bands depend on table size. |
 | Big Small | 2 | 1 human + 1 bot | An asymmetric duel with alternating roles; no large-room wrapper. |
 | Gradation | 2–16 | 1 human + 1 bot | Two sides rotate who locks their tray each round. In larger teams some members may only watch the reveal. |
+| Wall Go II | 2–3 | 1 human + 1–2 bots | Native two- and three-seat territory; squares and circles move differently. |
+| Auction Bingo | 2–16 | 1 human + 1–15 bots | Seven shared auctions with private choices and a geometric card. |
+| Equation High-Low | 2–8 | 1 human + 1–7 bots | One private number per seat, shared wagers and high/low payouts. |
+| Hidden Word | 3–16 | 1 human + 2–15 bots | Every seat sets a word twice and privately guesses others’ words. |
 | Word Tower | 2–8 humans | 1 human | A shared word board under a short four-minute clock. |
 
 The default party starts on Blind Gomoku with two places. Select Tournament to seat 3–4 on alternating two-player boards, or choose another game before inviting a larger group. Switching game or variant does not kick anyone; if there are too many existing seats, the host must remove extras (including any offline reserved seats) before switching. Existing players can still reconnect to locked/full tables using their token.
