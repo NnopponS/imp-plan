@@ -22,7 +22,7 @@ test('narrow ivory briefing keeps its action visible and its rules readable on h
  await page.getByRole('button',{name:'Start match',exact:true}).click()
  const modal=page.getByRole('dialog',{name:'Blind Gomoku'})
  await expect(modal.getByRole('button',{name:'Enter match',exact:true})).toBeInViewport({ratio:1})
- const steps=modal.locator('.brief-theater-rules button')
+ const steps=modal.getByRole('group',{name:'Lesson pages'}).getByRole('button')
  for(const i of [0,1]){
   const step=steps.nth(i)
   await step.hover()

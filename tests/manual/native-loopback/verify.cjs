@@ -101,6 +101,12 @@ async function main() {
     await expect(shelf).toHaveCount(0);
     await expect(activeTable(guest)).toContainText(title);
   }
+  if(process.argv.includes('--gradation')){
+    stage='checking native Gradation allocation privacy';
+    await require('./gradation.cjs')(host,guest,pick,button,connected);
+    assert.equal(errors.length,0);
+    return;
+  }
   await pick('Balance Mancala'); await button(guest,'Details').tap();
   const details = guest.getByRole('dialog',{name:'Balance Mancala'});
   await expect(details.locator('[data-game-preview="mancala"]')).toBeVisible();

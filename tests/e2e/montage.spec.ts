@@ -86,6 +86,7 @@ test('Montage solo finishes a slower, unscored gallery at 320 pixels',async({pag
  await card.getByRole('button',{name:'Practice Montage'}).click()
  await page.getByRole('button',{name:'Details',exact:true}).click()
  const details=page.getByRole('dialog',{name:'Montage',exact:true})
+ await details.getByText('Full rules',{exact:true}).click()
  await expect(details.getByText('One gallery round in solo practice.',{exact:false})).toBeVisible()
  await details.getByRole('button',{name:'Back to lobby',exact:true}).click()
  await startMatch(page)

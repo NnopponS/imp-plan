@@ -31,7 +31,7 @@ Game cards show an original insignia and their setting in the show, such as a Ma
 
 ## Playable catalog
 
-**Playable alpha: 33 fan adaptations out of 64 indexed entries.** The index includes main, prize, prison, exile, final, and unaired entries. An indexed entry is not necessarily playable. Rules marked as fan adaptations are not verified broadcast reproductions.
+**Playable alpha: 37 fan adaptations out of 64 indexed entries.** The index includes main, prize, prison, exile, final, and unaired entries. An indexed entry is not necessarily playable. Rules marked as fan adaptations are not verified broadcast reproductions. Use the illustrated pre-match guide to learn the table one step at a time. Swipe right to advance or use keyboard arrows; the match clock starts only when you enter.
 
 | Season | Playable / indexed | Playable entries |
 | --- | ---: | --- |

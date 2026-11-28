@@ -1,5 +1,8 @@
+import {bigSmallBot} from './big-small'
+import {diceBands,diceBot,diceDeal,diceRounds,diceView,type Die} from './triple-dice'
 import {flagsWindow} from './flags'
-import {playFlags} from './engine'
+import {gradationBot,gradationView} from './gradation'
+import {playRelay,playGradation,playFlags} from './engine'
 import {botThreeRow,threeRowView} from './three-row'
 import {symmetryAxes,symmetryTime} from './symmetry'
 import {colorLinkBot,colorLinkRaceBotDelay,linkCells,linkPairLimit} from './color-link'
@@ -12,7 +15,7 @@ import {isPuzzle} from './puzzles'
 import {z} from 'zod'
 import {appearancePreset,legacyAppearance,legacyAppearanceCount,wardrobeVersion} from './wardrobe-look'
 export {appearancePreset} from './wardrobe-look'
-import {start,move,titles,heavy13Slot,playHeavy13,playColorLink,playThreeRow,schedule,view,timeout,blindCoverAction,botAction,botLevels,isDuel,minSeats,secretBotIntentKey,simultaneous,redealMemoryDuel,syncTimeHold,openMontageRound,submitMontageBuzz,type State,type Game,type GameView} from './engine'
+import {start,move,titles,heavy13Slot,playBigSmall,playHeavy13,playColorLink,playThreeRow,playTripleDice,schedule,view,timeout,blindCoverAction,botAction,botLevels,isDuel,minSeats,secretBotIntentKey,simultaneous,redealMemoryDuel,syncTimeHold,openMontageRound,submitMontageBuzz,type State,type Game,type GameView} from './engine'
 const codeAlphabet='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
 export const roomCode=()=>Array.from(crypto.getRandomValues(new Uint8Array(6)),x=>codeAlphabet[x&31]).join('')
 export const validCode=(x:string)=>/^[A-HJ-NP-Z2-9]{6}$/.test(x)
@@ -25,7 +28,7 @@ export function nickname(value:string):string|null{
  const n=[...new Intl.Segmenter('en',{granularity:'grapheme'}).segment(s)].length
  return n>=1&&n<=24?s:null
 }
-const settings=z.strictObject({game:z.enum(['blind','morris','auction','point','remove','knight','hex','rectangles','mancala','cubes','bagh','secret','grass1','grass3','exile','divine','equations','codeLock','pyramid','fragments','spot','scale','fence','tower','piece','memoryPoker','wallGo','montage','heavy13','colorLink','symmetry','threeRow','flags']),seconds:z.number().int().min(10).max(900),size:z.union([z.literal(5),z.literal(6),z.literal(8)]).optional(),closed:z.boolean().optional(),divineSide:z.union([z.literal(3),z.literal(5),z.literal(7)]).optional(),divineHard:z.boolean().optional(),fragmentStrict:z.boolean().optional(),fragmentCount:z.union([z.literal(8),z.literal(12),z.literal(16),z.literal(24)]).optional(),capacity:z.number().int().min(1).max(16),locked:z.boolean(),botLevel:z.enum(botLevels).optional(),memoryPokerPeek:z.boolean().optional(),memoryPokerMode:z.enum(['fan','episode']).optional(),auctionMode:z.enum(['sealed','hold']).optional(),symmetryAxis:z.enum(symmetryAxes).optional(),flagsMode:z.enum(['recall','names']).optional()})
+const settings=z.strictObject({game:z.enum(['blind','morris','auction','point','remove','knight','hex','rectangles','mancala','cubes','bagh','secret','grass1','grass3','exile','divine','equations','codeLock','pyramid','fragments','spot','scale','fence','tower','piece','memoryPoker','wallGo','montage','heavy13','colorLink','symmetry','threeRow','flags','coopPuzzle','gradation','bigSmall','tripleDice']),seconds:z.number().int().min(10).max(900),size:z.union([z.literal(5),z.literal(6),z.literal(8)]).optional(),closed:z.boolean().optional(),divineSide:z.union([z.literal(3),z.literal(5),z.literal(7)]).optional(),divineHard:z.boolean().optional(),fragmentStrict:z.boolean().optional(),fragmentCount:z.union([z.literal(8),z.literal(12),z.literal(16),z.literal(24)]).optional(),capacity:z.number().int().min(1).max(16),locked:z.boolean(),botLevel:z.enum(botLevels).optional(),memoryPokerPeek:z.boolean().optional(),memoryPokerMode:z.enum(['fan','episode']).optional(),auctionMode:z.enum(['sealed','hold']).optional(),symmetryAxis:z.enum(symmetryAxes).optional(),coopReflect:z.boolean().optional(),gradationMarked:z.boolean().optional(),flagsMode:z.enum(['recall','names']).optional()})
 const montageMatch=z.string().regex(/^[a-f0-9]{32}$/)
 const montageRound=z.number().int().min(1).max(montageRules.rounds)
 const heavyMatch=z.string().regex(/^[a-f0-9]{32}$/)
@@ -37,12 +40,28 @@ const linkAction=z.discriminatedUnion('type',[
  z.strictObject({type:z.literal('challenge')}),
  z.strictObject({type:z.literal('proof'),paths:z.array(z.array(linkCoordinate).min(2).max(linkCells)).max(linkPairLimit)})
 ])
+const relayFit={piece:z.number().int().min(0).max(32),anchor:z.number().int().min(0).max(99),orientation:z.number().int().min(0).max(7)}
+const relayAction=z.discriminatedUnion('kind',[
+ z.strictObject({kind:z.literal('mark'),...relayFit}),z.strictObject({kind:z.literal('place'),...relayFit}),
+ z.strictObject({kind:z.literal('undo'),piece:relayFit.piece})
+])
 const threeRowAction=z.discriminatedUnion('kind',[
  z.strictObject({kind:z.literal('threeRowPlace'),cell:z.number().int().min(0).max(24),mark:z.enum(['A','B'])}),
  z.strictObject({kind:z.literal('threeRowVote'),suspect:z.string().regex(/^[a-f0-9]{32}$/)})
 ])
+const bigSmallDirection=z.enum(['big','small'])
+const bigSmallAction=z.discriminatedUnion('kind',[
+ z.strictObject({kind:z.literal('seal'),card:z.number().int().min(0).max(10),call:bigSmallDirection}),
+ z.strictObject({kind:z.literal('predict'),prediction:bigSmallDirection,stake:z.number().int().min(0).max(3)}),
+ z.strictObject({kind:z.literal('advance')}),
+])
+const diceSlot=z.number().int().min(0).max(3)
 const schema=z.discriminatedUnion('kind',[
+ z.strictObject({kind:z.literal('big-small'),match:heavyMatch,step:z.number().int().min(0).max(59),action:bigSmallAction}),
  z.strictObject({kind:z.literal('ready')}),
+ z.strictObject({kind:z.literal('relay'),match:heavyMatch,turn:z.number().int().min(0).max(68),action:relayAction}),
+ z.strictObject({kind:z.literal('gradation-lock'),match:heavyMatch,round:z.number().int().min(1).max(6),order:z.array(z.number().int().min(1).max(7)).length(7),target:z.number().int().min(0).max(6).nullable()}),
+ z.strictObject({kind:z.literal('dice-lock'),match:heavyMatch,round:z.number().int().min(1).max(diceRounds),positions:z.tuple([diceSlot,diceSlot,diceSlot]).refine(items=>new Set(items).size===3),prediction:z.enum(diceBands)}),
  z.strictObject({kind:z.literal('flags-lock'),match:heavyMatch,choices:z.array(z.number().int().min(-1).max(19)).min(1).max(12)}),
  z.strictObject({kind:z.literal('three-row'),match:heavyMatch,turns:z.number().int().min(0).max(12),action:threeRowAction}),
  z.strictObject({kind:z.literal('config'),settings}),
@@ -75,13 +94,13 @@ export const holdAuctionRules='Start with ten minutes for nineteen rounds. Press
 export const isHoldAuction=(config:Pick<Settings,'game'|'auctionMode'>)=>config.game==='auction'&&config.auctionMode==='hold'
 export type Command=z.infer<typeof schema>
 export type Settings=z.infer<typeof settings>
-export const humanOnly=(g:Game)=>g==='knight'||g==='divine'||g==='codeLock'||g==='pyramid'||g==='fragments'||g==='spot'||g==='scale'||g==='fence'||g==='tower'||g==='piece'||g==='memoryPoker'||g==='montage'||g==='symmetry'||g==='flags'||isPuzzle(g)
+export const humanOnly=(g:Game)=>g==='knight'||g==='divine'||g==='codeLock'||g==='pyramid'||g==='fragments'||g==='spot'||g==='scale'||g==='fence'||g==='tower'||g==='piece'||g==='memoryPoker'||g==='montage'||g==='symmetry'||g==='flags'||g==='coopPuzzle'||isPuzzle(g)
 // Room limits for the available fan tables, not contestant counts from the show.
 const partyMaximum={
  blind:4,morris:4,point:4,equations:4,wallGo:4,bagh:2,
  auction:16,remove:16,knight:16,hex:16,rectangles:16,cubes:16,exile:16,
  grass1:12,grass3:16,mancala:8,secret:16,divine:16,codeLock:16,pyramid:16,
- fragments:8,spot:16,scale:6,fence:16,tower:8,piece:4,memoryPoker:16,montage:16,heavy13:7,colorLink:2,symmetry:16,threeRow:4,flags:16,
+ fragments:8,spot:16,scale:6,fence:16,tower:8,piece:4,memoryPoker:16,montage:16,heavy13:7,colorLink:2,symmetry:16,threeRow:4,flags:16,coopPuzzle:16,gradation:16,bigSmall:2,tripleDice:8,
 } as const satisfies Record<Game,number>
 type SeatMode=Pick<Settings,'game'|'memoryPokerMode'|'auctionMode'>
 /** Occupied seats for this room (participants plus any supported bots); fixtures still use two participants. */
@@ -89,7 +108,7 @@ export function seatRules(settings:SeatMode,solo=false):{min:number,max:number,f
  const {game}=settings,episode=isEpisodePoker(settings),duel=isDuel(game)
  if(episode)return {min:2,max:2,fixtureSize:2}
  const min=solo?minSeats(game,true):Math.max(2,minSeats(game))
- const max=solo?(humanOnly(game)?1:duel?2:partyMaximum[game]):partyMaximum[game]
+ const max=solo?(humanOnly(game)?1:duel||game==='gradation'?2:partyMaximum[game]):partyMaximum[game]
  return duel?{min,max,fixtureSize:2}:{min,max}
 }
 export const defaults:Settings={game:'blind',seconds:25,capacity:2,locked:false,botLevel:'normal'}
@@ -198,13 +217,41 @@ export class Host{
   const result=this.apply(seat,rev,c)
   prior.set(request,result)
   if(prior.size>128)prior.delete(prior.keys().next().value!)
+  const privateGradation=c.kind==='gradation-lock'&&this.game?.gradation?.phase==='arrange'
+  const privateDice=c.kind==='dice-lock'&&this.game?.tripleDice?.phase==='select'
   const privateFlags=c.kind==='flags-lock'&&this.game?.flags?.phase==='answer'
   const privateHeavy=c.kind==='heavy-lock'&&this.game?.heavy13?.phase==='select'
   const privateRow=c.kind==='three-row'&&c.action.kind==='threeRowVote'&&this.game?.threeRow&&threeRowView(this.game.threeRow).phase==='vote'
-  if(result===null&&!privateFlags&&!privateHeavy&&!privateRow&&c.kind!=='time-hold'&&!(c.kind==='memory-lock'&&this.game?.memoryDuel?.phase==='select'))this.rev++
+  if(result===null&&!privateGradation&&!privateDice&&!privateFlags&&!privateHeavy&&!privateRow&&c.kind!=='time-hold'&&!(c.kind==='memory-lock'&&this.game?.memoryDuel?.phase==='select'))this.rev++
   return result
  }
  private apply(s:PrivateSeat,rev:number,c:Command):string|null{
+  if(c.kind==='relay'){
+   const p=this.game?.coopPuzzle
+   if(!p||rev>this.rev||this.match!==c.match||p.turns!==c.turn)return 'That relay turn is over.'
+   const next=playRelay(this.game!,s.id,c.action,this.clock())
+   if(!next)return 'That relay action is not available.'
+   this.setGame(next);return null
+  }
+  if(c.kind==='gradation-lock'){
+   if(!this.game?.gradation||c.match!==this.match||rev>this.rev||c.round!==this.game.round)return 'That round has closed.'
+   const next=playGradation(this.game,s.id,c.order,c.target,this.clock())
+   if(!next)return 'Only the current allocator can seal a complete tray before its clock runs out.'
+   this.setGame(next);return null
+  }
+  if(c.kind==='big-small'){
+   if(!this.game?.bigSmall||c.match!==this.match||c.step!==this.game.bigSmall.step||rev>this.rev)return 'That Big Small position has ended.'
+   const next=playBigSmall(this.game,s.id,c.action)
+   if(!next)return 'That action is not available for your role.'
+   this.setGame(next);return null
+  }
+  if(c.kind==='dice-lock'){
+   const current=this.game?.tripleDice
+   if(!current||c.match!==this.match||c.round!==current.round||rev>this.rev)return 'This choice no longer matches the current dice round.'
+   const next=playTripleDice(this.game!,s.id,c.positions,c.prediction,this.clock())
+   if(!next)return 'That choice is invalid, already sealed, or too late.'
+   this.setGame(next);return null
+  }
   if(c.kind==='flags-lock'){
    if(!this.game?.flags||c.match!==this.match||rev>this.rev)return 'This dispatch no longer matches the current game.'
    const next=playFlags(this.game,s.id,c.choices,this.clock())
@@ -330,8 +377,8 @@ export class Host{
    // A carried limit belongs to the previous table; a deliberate new limit is honored.
    const capacity=reseat||(gameChanged||variantChanged)&&changes.capacity===this.settings.capacity?(fixtureSize?Math.max(min,roster.length):max):seatCapacity(changes,this.solo)
    if(capacity<roster.length)return 'Capacity cannot be below the current roster.'
-   const seconds=changes.game==='flags'?flagsWindow/1000:changes.game==='symmetry'?symmetryTime/1000:changes.game==='colorLink'&&gameChanged?45:(changes.game==='wallGo'||changes.game==='heavy13')&&this.settings.game!==changes.game?25:changes.game==='fence'||changes.game==='tower'||changes.game==='piece'?240:changes.game==='scale'?300:changes.game==='spot'?90:changes.game==='fragments'?20:changes.game==='pyramid'?45:changes.game==='codeLock'?180:changes.game==='divine'?(this.settings.game!=='divine'?600:Math.max(60,changes.seconds)):changes.game==='knight'?Math.max(180,Math.min(480,changes.seconds)):changes.game==='hex'?20:changes.game==='rectangles'?45:changes.game==='cubes'?25:changes.game==='exile'?90:changes.game==='secret'&&this.settings.game!=='secret'?90:Math.min(90,changes.seconds)
-   this.settings={...changes,flagsMode:changes.game==='flags'?changes.flagsMode??'recall':undefined,symmetryAxis:changes.game==='symmetry'?changes.symmetryAxis:undefined,auctionMode:changes.game==='auction'?changes.auctionMode:undefined,memoryPokerMode:changes.game==='memoryPoker'?changes.memoryPokerMode:undefined,botLevel:changes.botLevel??'normal',capacity,seconds,closed:changes.size===5||!changes.size?false:changes.closed}
+   const seconds=changes.game==='coopPuzzle'?20:changes.game==='gradation'&&gameChanged?45:changes.game==='tripleDice'&&gameChanged?45:changes.game==='flags'?flagsWindow/1000:changes.game==='symmetry'?symmetryTime/1000:changes.game==='colorLink'&&gameChanged?45:(changes.game==='wallGo'||changes.game==='heavy13')&&this.settings.game!==changes.game?25:changes.game==='fence'||changes.game==='tower'||changes.game==='piece'?240:changes.game==='scale'?300:changes.game==='spot'?90:changes.game==='fragments'?20:changes.game==='pyramid'?45:changes.game==='codeLock'?180:changes.game==='divine'?(this.settings.game!=='divine'?600:Math.max(60,changes.seconds)):changes.game==='knight'?Math.max(180,Math.min(480,changes.seconds)):changes.game==='hex'?20:changes.game==='rectangles'?45:changes.game==='cubes'?25:changes.game==='exile'?90:changes.game==='secret'&&this.settings.game!=='secret'?90:Math.min(90,changes.seconds)
+   this.settings={...changes,coopReflect:changes.game==='coopPuzzle'?!!changes.coopReflect:undefined,gradationMarked:changes.game==='gradation'?(changes.gradationMarked??false):undefined,flagsMode:changes.game==='flags'?changes.flagsMode??'recall':undefined,symmetryAxis:changes.game==='symmetry'?changes.symmetryAxis:undefined,auctionMode:changes.game==='auction'?changes.auctionMode:undefined,memoryPokerMode:changes.game==='memoryPoker'?changes.memoryPokerMode:undefined,botLevel:changes.botLevel??'normal',capacity,seconds,closed:changes.size===5||!changes.size?false:changes.closed}
    if(this.solo){
     if(changes.game==='divine')this.settings.divineSide??=3
     this.seats=roster
@@ -381,9 +428,9 @@ export class Host{
   this.secretBotRejected.clear()
   const [gameSeed,botSeed]=crypto.getRandomValues(new Uint32Array(2))
   this.botSeed=botSeed
-  const {game,seconds,size,closed,divineSide,divineHard,fragmentStrict,fragmentCount,memoryPokerPeek,symmetryAxis,flagsMode}=this.settings
+  const {game,seconds,size,closed,divineSide,divineHard,fragmentStrict,fragmentCount,memoryPokerPeek,symmetryAxis,flagsMode,coopReflect,gradationMarked}=this.settings
   const seats=isDuel(game)?this.fixtures[this.fixture].sides:this.seats.map(s=>s.id)
-  this.setGame(start(game,seats,seconds*1000,this.clock(),{seed:gameSeed,size,closed,divineSide,divineHard,fragmentStrict,fragmentCount,memoryPokerPeek,symmetryAxis,flagsMode,memoryDuelDeal:isEpisodePoker(this.settings)?liveMemoryDeal():undefined,holdAuction:isHoldAuction(this.settings),solo:this.solo}))
+  this.setGame(start(game,seats,seconds*1000,this.clock(),{seed:gameSeed,diceDeal:game==='tripleDice'?diceDeal(seats.length,()=>(secureIndex(6)+1) as Die):undefined,size,closed,divineSide,divineHard,fragmentStrict,fragmentCount,memoryPokerPeek,symmetryAxis,flagsMode,coopReflect,gradationMarked,memoryDuelDeal:isEpisodePoker(this.settings)?liveMemoryDeal():undefined,holdAuction:isHoldAuction(this.settings),solo:this.solo}))
   this.publishedHold=this.game?.timeHold?this.game:null
   this.holdUpdates.clear()
  }
@@ -433,9 +480,11 @@ export class Host{
    this.publishedHold=this.game;this.holdUpdates.clear();this.rev++;return true
   }
   if(this.game.done)return false
+  if(this.game.gradation)return this.tickGradation(this.game,now)
   if(this.game.heavy13)return this.tickHeavy13(this.game,now)
+  if(this.game.tripleDice)return this.tickTripleDice(this.game,now)
   if(this.game.threeRow)return this.tickThreeRow(this.game,now)
-  if(!this.game.colorLink&&!this.game.wallGo&&!this.game.montage&&this.game.game!=='piece'&&!this.game.seats.every(id=>this.seats.find(s=>s.id===id)?.online)&&!simultaneous(this.game.game))return false
+  if(!this.game.coopPuzzle&&!this.game.colorLink&&!this.game.wallGo&&!this.game.montage&&this.game.game!=='piece'&&!this.game.seats.every(id=>this.seats.find(s=>s.id===id)?.online)&&!simultaneous(this.game.game))return false
   const past=this.game
   let g=past.memoryDuel?.phase==='tie'&&now>=past.deadline?redealMemoryDuel(past,liveMemoryDeal(),now):timeout(past,now)
   if(g===past&&g.piece&&!this.seats.find(s=>s.id===past.seats[past.turn])?.online){
@@ -450,6 +499,12 @@ export class Host{
     const v=view(g,s.id), rejected=this.secretBotRejected.get(s.id), contact=v.secret?.phase==='contact'?v.secret:null
     const index=contact?v.seats.indexOf(s.id):-1
     if(contact&&rejected)for(const key of rejected)if(key<0&&secretBotIntentKey(contact,index,-key)!==key)rejected.delete(key)
+    if(v.bigSmall){
+     const action=bigSmallBot(v.bigSmall,s.id,this.botSeed,this.settings.botLevel??'normal')
+     const next=action&&playBigSmall(g,s.id,action)
+     if(next){g=next;break}
+     continue
+    }
     if(v.colorLink){
      const action=colorLinkBot(v.colorLink,s.id,this.botSeed,this.settings.botLevel??'normal')
      const next=action&&playColorLink(g,s.id,action,now)
@@ -476,6 +531,39 @@ export class Host{
   }
   if(g===past)return false
   this.setGame(g);this.rev++;return true
+ }
+ private tickGradation(past:State,now:number){
+  let next=timeout(past,now)
+  if(next===past&&past.gradation?.phase==='arrange'&&now>=this.botDue){
+   for(const bot of this.seats.filter(s=>s.bot)){
+    const plan=gradationBot(gradationView(next.gradation!,bot.id),bot.id,this.botSeed,this.settings.botLevel??'normal')
+    if(plan)next=playGradation(next,bot.id,plan.order,plan.target,now)??next
+   }
+  }
+  if(next===past)return false
+  this.setGame(next)
+  if(past.gradation?.phase==='arrange'&&next.gradation?.phase==='arrange')return false
+  this.rev++;return true
+ }
+ private tickTripleDice(past:State,now:number){
+  let next=timeout(past,now)
+  if(next!==past){this.setGame(next);this.rev++;return true}
+  if(now<this.botDue||past.tripleDice!.phase!=='select')return false
+  for(const [i,s] of this.seats.entries()){
+   if(!s.bot||!past.seats.includes(s.id))continue
+   const projected=diceView(next.tripleDice!,s.id)
+   const seed=this.botSeed^Math.imul(i+1,0x9e3779b9)^Math.imul(projected.round,0x85ebca6b)
+   const action=diceBot(projected,seed,this.settings.botLevel??'normal',s.id)
+   if(!action)continue
+   const state=playTripleDice(next,s.id,[...action.positions],action.prediction,now)
+   if(!state)continue
+   next=state
+   if(next.tripleDice!.phase!=='select')break
+  }
+  if(next===past)return false
+  this.setGame(next)
+  if(next.tripleDice!.phase==='select')return false
+  this.rev++;return true
  }
  private tickThreeRow(past:State,now:number){
   let next=timeout(past,now)
@@ -519,6 +607,10 @@ export class Host{
  }
 }
 export function explain(game:Game,count:number) {
+ if(game==='coopPuzzle')return 'Share one tiling frame. One player places or removes a piece; teammates can leave suggestions. Solo practice or 2–16 human seats.'
+ if(game==='gradation')return 'Seven gates, two sides. Practice faces one bot. Parties of 2–16 alternate seats between Copper and Jade; each side changes allocator every round. In groups over ten, not every teammate seals in one match.'
+ if(game==='bigSmall')return 'Exactly two seats. Seal a card, predict its rank, then compare stacks. Solo practice seats one bot. Chips are fictional.'
+ if(game==='tripleDice')return 'Eight rounds for 2–8 seats, with private forecasts and a shared reveal. Practice starts with one bot; five or more seats unlock more forecast bands.'
  if(game==='flags')return 'Study twelve named flag cards for forty seconds, then submit once within sixty seconds. Solo practice or 2–16 humans, no bots.'
  if(game==='threeRow')return 'One shared 5 × 5 table for 3–4 seats. Place engraved marks, then seal a suspect ballot. Practice fills to three seats with bots.'
  if(game==='symmetry')return 'All players get the same tray and mirror axis, but build on private 7 × 7 boards. Four minutes; no bots.'

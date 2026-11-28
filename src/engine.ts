@@ -1,3 +1,7 @@
+import {relayStart,relayStep,relayTick,relayFilled,type Relay,type RelayAction} from './coop-puzzle'
+import {gradationStart,gradationLock,gradationTick,gradationView,type Gradation} from './gradation'
+import {bigSmallStart,bigSmallStep,bigSmallView,type BigSmallAction,type BigSmallState} from './big-small'
+import {diceStart,diceLock,diceTick,diceView,type DiceBand,type DiceState} from './triple-dice'
 import {flagsStart,flagsStep,flagsTick,flagsView,type FlagsMode,type FlagsState} from './flags'
 import {applyThreeRow,createThreeRow,threeRowView,tickThreeRow,type ThreeRowAction,type ThreeRowState} from './three-row'
 import {compareSymmetryScores,symmetryStart,symmetryStep,symmetryTime,symmetryTimeout,symmetryView,type SymmetryAxis,type SymmetryBoard} from './symmetry'
@@ -24,11 +28,15 @@ import {buyer,candidates,clue,contactAction,guessAction,initSecret,secretScore,s
 import {balance,compare,makeMancala,pitType,plant,sow,total,type Mancala} from './mancala'
 import {puzzleRounds,countRectangles,hexLines,isPuzzle,puzzle as makePuzzle,type PuzzleGame} from './puzzles'
 import {deal,lowestUnique,tourRoute,tourLegal,type Card,type TourSize} from './season-two'
-export type Game='blind'|'morris'|'auction'|'point'|'remove'|'knight'|PuzzleGame|GrassGame|'mancala'|'bagh'|'secret'|'divine'|'equations'|'codeLock'|'pyramid'|'fragments'|'spot'|'scale'|'fence'|'tower'|'piece'|'memoryPoker'|'wallGo'|'montage'|'heavy13'|'colorLink'|'symmetry'|'threeRow'|'flags'
+export type Game='blind'|'morris'|'auction'|'point'|'remove'|'knight'|PuzzleGame|GrassGame|'mancala'|'bagh'|'secret'|'divine'|'equations'|'codeLock'|'pyramid'|'fragments'|'spot'|'scale'|'fence'|'tower'|'piece'|'memoryPoker'|'wallGo'|'montage'|'heavy13'|'colorLink'|'symmetry'|'threeRow'|'flags'|'coopPuzzle'|'gradation'|'bigSmall'|'tripleDice'
 export const botLevels=['easy','normal','hard'] as const
 export type BotLevel=typeof botLevels[number]
-export const titles={blind:'Blind Gomoku',morris:'Nine Men’s Morris',auction:'Time Auction',point:'Point Gomoku',remove:'Remove One',knight:'Knight’s Tour',hex:'Hexagon',rectangles:'Count the Rectangles',cubes:'Count the Cubes',exile:'Exile Rectangle Counting',mancala:'Balance Mancala',bagh:'Bagh Chal',secret:'Secret Number',grass1:'Laying Grass',grass3:'Lay the Grass',divine:'Divine Test',equations:'Equation Lights',codeLock:'Secret Code',pyramid:'Equation Pyramid',fragments:'Fragments of Memory',spot:'Spot the Difference',scale:'Scale Game',fence:'Loop Fence Puzzle',tower:'Word Tower',piece:'Piece Puzzle',memoryPoker:'Memory Poker',wallGo:'Wall Go',montage:'Montage',heavy13:'Heavy 13',colorLink:'Color Link',symmetry:'Symmetrical Puzzle',threeRow:'Four-Player Three in a Row',flags:'Flags Around the World'}
+export const titles={blind:'Blind Gomoku',morris:'Nine Men’s Morris',auction:'Time Auction',point:'Point Gomoku',remove:'Remove One',knight:'Knight’s Tour',hex:'Hexagon',rectangles:'Count the Rectangles',cubes:'Count the Cubes',exile:'Exile Rectangle Counting',mancala:'Balance Mancala',bagh:'Bagh Chal',secret:'Secret Number',grass1:'Laying Grass',grass3:'Lay the Grass',divine:'Divine Test',equations:'Equation Lights',codeLock:'Secret Code',pyramid:'Equation Pyramid',fragments:'Fragments of Memory',spot:'Spot the Difference',scale:'Scale Game',fence:'Loop Fence Puzzle',tower:'Word Tower',piece:'Piece Puzzle',memoryPoker:'Memory Poker',wallGo:'Wall Go',montage:'Montage',heavy13:'Heavy 13',colorLink:'Color Link',symmetry:'Symmetrical Puzzle',threeRow:'Four-Player Three in a Row',flags:'Flags Around the World',gradation:'Gradation',coopPuzzle:'Cooperative Puzzle',bigSmall:'Big Small',tripleDice:'Triple Dice'}
 export const tutorials={
+ coopPuzzle:'Fill the entire rectangular frame with the tray pieces: each covers three to five squares. Choose a piece, turn it, and aim its top-left corner; flipping is only allowed when enabled in setup. On your twenty-second turn, place one piece without overlap or remove one placed piece; everyone may suggest a fit without spending a turn. The team scores one point per covered square and clears the frame only when every square is filled, before five minutes or the turn limit of twenty plus three per player.',
+ gradation:'Arrange the seven weights in secret, using each number once. Seal both trays to open the gates from left to right; the larger weight earns one point and a tie earns neither side a point. Win three gates in a row for one extra point, once per side per round. If marked gates are on, secretly choose one gate to earn an extra point if you win it. The higher total after five rounds wins; play one extra round if tied, then share a draw.',
+ bigSmall:'Start with ten fictional chips and cards numbered 0–10. When the dealer shows a reference, the duelist seals an unused card and calls Big or Small. The bettor predicts its rank relative to the reference and stakes up to three chips. At reveal, the duelist earns the gap for a correct call, and the bettor gains or loses their stake for a correct or wrong prediction; equal cards refund the stake. Swap roles each round; play eighteen rounds or stop at an empty stack, with most chips winning and a two-round tiebreak for equal stacks.',
+ tripleDice:'Two dice are open, one is private to you, and one stays blind. Choose three dice from your tray. Forecast your base points and seal. Triple beats straight, double, then high dice. Base is seats minus rank, averaging ties; a correct forecast adds three, a miss subtracts one, and points stop at zero. Highest total after eight rounds wins; points have no value outside the game.',
  flags:'Study twelve named flags for forty seconds. In Recall, select up to twelve of the previously seen flags from twenty options. In Name match, pair the study names to the twenty flags; in either mode you have sixty seconds. Seal once: hits add one, mistakes subtract one, scores cannot go below zero, and higher score then faster seal wins with exact ties shared.',
  threeRow:'Stamp an empty square and make a line of three Laurels for three Ally points. Saboteur scores three for a Thorn line or no Laurel line after twelve turns; each Ally may bluff with Thorn twice. Every seat seals a private ballot for another player. A strict majority of Allies must find the Saboteur for two Ally points; otherwise Saboteur gets two.',
  symmetry:'Rotate the tiles and place all of them on your private board. Do not overlap. The whole shape must be connected edge to edge, and the occupied cells must match across the marked mirror line. You have four minutes. Fastest full solve wins; otherwise, most tiles in a connected symmetric shape wins. Exact ties share a rank.',
@@ -68,7 +76,7 @@ export const tutorials={
 export const mills=[[0,1,2],[3,4,5],[6,7,8],[9,10,11],[12,13,14],[15,16,17],[18,19,20],[21,22,23],[0,9,21],[3,10,18],[6,11,15],[1,4,7],[16,19,22],[8,12,17],[5,13,20],[2,14,23]]
 export const points=[[0,0],[3,0],[6,0],[1,1],[3,1],[5,1],[2,2],[3,2],[4,2],[0,3],[1,3],[2,3],[4,3],[5,3],[6,3],[2,4],[3,4],[4,4],[1,5],[3,5],[5,5],[0,6],[3,6],[6,6]]
 const neighbors=(a:number,b:number)=>mills.some(m=>Math.abs(m.indexOf(a)-m.indexOf(b))===1&&m.includes(a)&&m.includes(b))
-export type State={game:Game,flags:FlagsState|null,threeRow:ThreeRowState|null,timeHold:TimeHold|null,seats:string[],board:string[],blindCovers:(BlindCover|null)[]|null,turn:number,capture:boolean,placed:number[],winner:string|null,done:boolean,round:number,deadline:number,window:number,bids:Record<string,number>,scores:number[],credits:number[],last:number[]|null,plies:number,quiet:number,history:Record<string,number>,publicMoves:number[],hands:Record<string,Card[]>,seed:number,paths:Record<string,number[]>,knightBestPaths:Record<string,number[]>,tour:number[],size:TourSize,closed:boolean,reached:Record<string,number>,reveal:{round:number,winner:string|null}|null,puzzleStage:'study'|'answer',spent:number[],opened:number,mancala:Mancala|null,bagh:Bagh|null,secret:Secret|null,grass:Grass|null,divine:Divine|null,equations:Equations|null,codeLock:CodeLock|null,pyramid:Pyramid|null,fragments:Fragments|null,spot:Spot|null,scale:Scale|null,fence:Fence|null,tower:Tower|null,piece:Piece|null,memoryPoker:MemoryPoker|null,memoryDuel:MemoryDuelState|null,wallGo:WallGo|null,montage:Montage|null,heavy13:Heavy13|null,colorLink:ColorLink|null,symmetry:Readonly<Record<string,SymmetryBoard>>|null}
+export type State={game:Game,coopPuzzle:Relay|null,gradation:Gradation|null,bigSmall:BigSmallState|null,tripleDice:DiceState|null,flags:FlagsState|null,threeRow:ThreeRowState|null,timeHold:TimeHold|null,seats:string[],board:string[],blindCovers:(BlindCover|null)[]|null,turn:number,capture:boolean,placed:number[],winner:string|null,done:boolean,round:number,deadline:number,window:number,bids:Record<string,number>,scores:number[],credits:number[],last:number[]|null,plies:number,quiet:number,history:Record<string,number>,publicMoves:number[],hands:Record<string,Card[]>,seed:number,paths:Record<string,number[]>,knightBestPaths:Record<string,number[]>,tour:number[],size:TourSize,closed:boolean,reached:Record<string,number>,reveal:{round:number,winner:string|null}|null,puzzleStage:'study'|'answer',spent:number[],opened:number,mancala:Mancala|null,bagh:Bagh|null,secret:Secret|null,grass:Grass|null,divine:Divine|null,equations:Equations|null,codeLock:CodeLock|null,pyramid:Pyramid|null,fragments:Fragments|null,spot:Spot|null,scale:Scale|null,fence:Fence|null,tower:Tower|null,piece:Piece|null,memoryPoker:MemoryPoker|null,memoryDuel:MemoryDuelState|null,wallGo:WallGo|null,montage:Montage|null,heavy13:Heavy13|null,colorLink:ColorLink|null,symmetry:Readonly<Record<string,SymmetryBoard>>|null}
 type BoardAction=number|{from:number,to:number}
 export type Action=BoardAction|string
 export const blindCoverIds=[0,1,2,3,4,5,6] as const
@@ -78,11 +86,11 @@ export function blindCoverAction(cell:number,cover:BlindCover){
  if(!Number.isInteger(cell)||cell<0||cell>=blindCellCount||!blindCoverIds.includes(cover))throw new RangeError('Invalid Blind Gomoku cell or cover.')
  return blindCoverBase+cell*blindCoverIds.length+cover
 }
-export const isDuel=(g:Game)=>g==='blind'||g==='morris'||g==='point'||g==='bagh'||g==='equations'||g==='wallGo'||g==='colorLink'
-export const minSeats=(g:Game,solo=false)=>g==='montage'?(solo?1:2):g==='knight'||g==='divine'||g==='codeLock'||g==='pyramid'||g==='fragments'||g==='spot'||g==='scale'||g==='fence'||g==='tower'||g==='piece'||g==='memoryPoker'||g==='symmetry'||g==='flags'||isPuzzle(g)?1:g==='remove'||g==='secret'||g==='threeRow'?3:2
-export const simultaneous=(g:Game)=>!isDuel(g)&&g!=='mancala'&&g!=='piece'&&g!=='montage'&&g!=='heavy13'&&g!=='threeRow'&&!isGrass(g)
-export function start(game:Game,seats:string[],window:number,now:number,options:{seed?:number,size?:TourSize,closed?:boolean,divineSide?:DivineSide,divineHard?:boolean,solo?:boolean,fragmentStrict?:boolean,fragmentCount?:FragmentCount,memoryPokerPeek?:boolean,memoryDuelDeal?:MemoryDuelDeal,holdAuction?:boolean,symmetryAxis?:SymmetryAxis,flagsMode?:FlagsMode}={}):State{
- if(new Set(seats).size!==seats.length||seats.length<minSeats(game,options.solo)||seats.length>(game==='threeRow'?4:game==='heavy13'?7:game==='mancala'?8:game==='grass1'?12:16)||(isDuel(game)&&seats.length!==2))throw Error('Invalid seats')
+export const isDuel=(g:Game)=>g==='blind'||g==='morris'||g==='point'||g==='bagh'||g==='equations'||g==='wallGo'||g==='colorLink'||g==='bigSmall'
+export const minSeats=(g:Game,solo=false)=>g==='montage'?(solo?1:2):g==='knight'||g==='divine'||g==='codeLock'||g==='pyramid'||g==='fragments'||g==='spot'||g==='scale'||g==='fence'||g==='tower'||g==='piece'||g==='memoryPoker'||g==='symmetry'||g==='flags'||g==='coopPuzzle'||isPuzzle(g)?1:g==='remove'||g==='secret'||g==='threeRow'?3:2
+export const simultaneous=(g:Game)=>!isDuel(g)&&g!=='mancala'&&g!=='piece'&&g!=='coopPuzzle'&&g!=='montage'&&g!=='heavy13'&&g!=='threeRow'&&!isGrass(g)
+export function start(game:Game,seats:string[],window:number,now:number,options:{seed?:number,size?:TourSize,closed?:boolean,divineSide?:DivineSide,divineHard?:boolean,solo?:boolean,fragmentStrict?:boolean,fragmentCount?:FragmentCount,memoryPokerPeek?:boolean,memoryDuelDeal?:MemoryDuelDeal,holdAuction?:boolean,symmetryAxis?:SymmetryAxis,flagsMode?:FlagsMode,coopReflect?:boolean,gradationMarked?:boolean,diceDeal?:DiceState['deal']}={}):State{
+ if(new Set(seats).size!==seats.length||seats.length<minSeats(game,options.solo)||seats.length>(game==='threeRow'?4:game==='heavy13'?7:game==='mancala'||game==='tripleDice'?8:game==='grass1'?12:16)||(isDuel(game)&&seats.length!==2))throw Error('Invalid seats')
  const {size=5,closed=false,seed=31337}=options
  const symmetry=game==='symmetry'?startSymmetryBoards(seats,seed,now,options.symmetryAxis):null
  const tour=game==='knight'?tourRoute(size,closed,seed):[]
@@ -91,10 +99,14 @@ export function start(game:Game,seats:string[],window:number,now:number,options:
  const hands=game==='remove'?Object.fromEntries(deal(seats.length,seed).map((cards,i)=>[seats[i],cards])):{}
  const timeHold=game==='auction'&&options.holdAuction?timeHoldStart(seats,now):null
  const heavy13=game==='heavy13'?heavy13Start(seats,now,{lockMs:window,actionMs:window,marker:(seed>>>0)%seats.length}):null
+ const coopPuzzle=game==='coopPuzzle'?relayStart(seats,seed,now,options.coopReflect):null
+ const gradation=game==='gradation'?gradationStart(seats,seed,now,window,options.gradationMarked):null
+ const tripleDice=game==='tripleDice'?diceStart(seats,now,window,seed,options.diceDeal):null
  const flags=game==='flags'?flagsStart(seats,seed,now,options.flagsMode):null
  const threeRow=game==='threeRow'?createThreeRow(seats,now,seed,window):null
- const result:State={flags,threeRow,symmetry,colorLink:game==='colorLink'?colorLinkStart(seats,now,window):null,heavy13,timeHold,montage:game==='montage'?montageStart(seats,seed,now,options.solo?'practice':'match'):null,wallGo:game==='wallGo'?wallGoStart(seats):null,memoryDuel,memoryPoker:game==='memoryPoker'&&!memoryDuel?memoryPokerStart(seed,seats,now,options.memoryPokerPeek):null,piece:game==='piece'?pieceStart(seed):null,tower:game==='tower'?towerStart(seed,seats.length):null,fence:game==='fence'?fenceStart(seed,seats):null,scale:game==='scale'?scaleStart(seed):null,spot:game==='spot'?spotStart(seed,seats):null,fragments:game==='fragments'?fragmentStart(seed,options.fragmentStrict??false,options.fragmentCount??12):null,pyramid:game==='pyramid'?pyramidStart(seed,1):null,codeLock:game==='codeLock'?codeStart(seats.length,seed,options.solo??false):null,equations:game==='equations'?equationStart():null,divine:game==='divine'?divineInit(options.divineSide??7,seed,options.divineHard??false,seats):null,grass:isGrass(game)?grassStart(game,seats.length,seed):null,bagh:game==='bagh'?baghInit():null,secret:game==='secret'?initSecret(seats.length,seed):null,mancala:game==='mancala'?makeMancala(seats.length):null,game,seats,blindCovers:game==='blind'?Array(blindCellCount).fill(null):null,board:Array(game==='blind'?blindCellCount:game==='morris'?24:game==='point'?169:0).fill(''),turn:0,capture:false,placed:[0,0],winner:null,done:false,round:1,deadline:memoryDuel?.deadline??now+(game==='memoryPoker'?memoryPokerStudy:game==='hex'?30000:game==='fragments'?45000:game==='spot'?spotWindow:game==='scale'?scaleWindow:game==='fence'?fenceTime:game==='tower'?towerTime:game==='piece'?pieceTime:game==='symmetry'?symmetryTime:window),window,puzzleStage:game==='hex'?'study':'answer',opened:now,spent:seats.map(()=>0),bids:{},scores:seats.map(()=>game==='remove'?5*720720:game==='knight'?720720:0),credits:seats.map(()=>60000),last:null,plies:0,quiet:0,history:{},publicMoves:[],hands,seed,paths:Object.fromEntries(seats.map(id=>[id,tour.slice(0,1)])),knightBestPaths:game==='knight'?Object.fromEntries(seats.map(id=>[id,tour.slice(0,1)])):{},tour,size,closed,reached:isPuzzle(game)?{}:Object.fromEntries(seats.map(id=>[id,now])),reveal:null}
- return flags?syncFlags(result,flags):threeRow?syncThreeRow(result,threeRow):result
+ const bigSmall=game==='bigSmall'?bigSmallStart(seats,seed):null
+ const result:State={coopPuzzle,gradation,bigSmall,tripleDice,flags,threeRow,symmetry,colorLink:game==='colorLink'?colorLinkStart(seats,now,window):null,heavy13,timeHold,montage:game==='montage'?montageStart(seats,seed,now,options.solo?'practice':'match'):null,wallGo:game==='wallGo'?wallGoStart(seats):null,memoryDuel,memoryPoker:game==='memoryPoker'&&!memoryDuel?memoryPokerStart(seed,seats,now,options.memoryPokerPeek):null,piece:game==='piece'?pieceStart(seed):null,tower:game==='tower'?towerStart(seed,seats.length):null,fence:game==='fence'?fenceStart(seed,seats):null,scale:game==='scale'?scaleStart(seed):null,spot:game==='spot'?spotStart(seed,seats):null,fragments:game==='fragments'?fragmentStart(seed,options.fragmentStrict??false,options.fragmentCount??12):null,pyramid:game==='pyramid'?pyramidStart(seed,1):null,codeLock:game==='codeLock'?codeStart(seats.length,seed,options.solo??false):null,equations:game==='equations'?equationStart():null,divine:game==='divine'?divineInit(options.divineSide??7,seed,options.divineHard??false,seats):null,grass:isGrass(game)?grassStart(game,seats.length,seed):null,bagh:game==='bagh'?baghInit():null,secret:game==='secret'?initSecret(seats.length,seed):null,mancala:game==='mancala'?makeMancala(seats.length):null,game,seats,blindCovers:game==='blind'?Array(blindCellCount).fill(null):null,board:Array(game==='blind'?blindCellCount:game==='morris'?24:game==='point'?169:0).fill(''),turn:0,capture:false,placed:[0,0],winner:null,done:false,round:1,deadline:memoryDuel?.deadline??now+(game==='memoryPoker'?memoryPokerStudy:game==='hex'?30000:game==='fragments'?45000:game==='spot'?spotWindow:game==='scale'?scaleWindow:game==='fence'?fenceTime:game==='tower'?towerTime:game==='piece'?pieceTime:game==='symmetry'?symmetryTime:window),window,puzzleStage:game==='hex'?'study':'answer',opened:now,spent:seats.map(()=>0),bids:{},scores:seats.map(()=>game==='remove'?5*720720:game==='knight'?720720:0),credits:seats.map(()=>60000),last:null,plies:0,quiet:0,history:{},publicMoves:[],hands,seed,paths:Object.fromEntries(seats.map(id=>[id,tour.slice(0,1)])),knightBestPaths:game==='knight'?Object.fromEntries(seats.map(id=>[id,tour.slice(0,1)])):{},tour,size,closed,reached:isPuzzle(game)?{}:Object.fromEntries(seats.map(id=>[id,now])),reveal:null}
+ return coopPuzzle?syncRelay(result,coopPuzzle):gradation?syncGradation(result,gradation):bigSmall?syncBigSmall(result,bigSmall):tripleDice?syncDice(result,tripleDice):flags?syncFlags(result,flags):threeRow?syncThreeRow(result,threeRow):result
 }
 export function schedule(ids:string[]):string[][] {
  const ring=[...ids]; if(ring.length%2)ring.push('')
@@ -110,7 +122,7 @@ const complete=(g:State,winner:string|null)=>({...g,winner,done:true})
 const own=(g:State,seat:string)=>g.board.reduce<number[]>((ls,v,i)=>v===seat?[...ls,i]:ls,[])
 function legal(g:State,seat:string):BoardAction[]{
  if(g.done)return []
- if(g.flags||g.threeRow||g.grass||g.divine||g.equations||g.codeLock||g.pyramid||g.fragments||g.spot||g.scale||g.fence||g.tower||g.piece||g.memoryPoker||g.memoryDuel||g.wallGo||g.montage||g.heavy13||g.colorLink||g.symmetry)return []
+ if(g.coopPuzzle||g.gradation||g.bigSmall||g.tripleDice||g.flags||g.threeRow||g.grass||g.divine||g.equations||g.codeLock||g.pyramid||g.fragments||g.spot||g.scale||g.fence||g.tower||g.piece||g.memoryPoker||g.memoryDuel||g.wallGo||g.montage||g.heavy13||g.colorLink||g.symmetry)return []
  if(g.bagh)return g.seats[g.turn]===seat?baghActions(g.bagh,g.turn):[]
  if(g.mancala){
   if(g.seats[g.turn]!==seat)return []
@@ -305,6 +317,30 @@ function settleSymmetry(g:State):State{
   return (result.solved?result.placed:result.partial)*720720
  })},winner)
 }
+function syncRelay(g:State,p:Relay):State{
+ return {...g,coopPuzzle:p,round:p.turns+1,turn:p.turns%g.seats.length,deadline:p.deadline,done:p.reason!==null,scores:g.seats.map(()=>relayFilled(p)*720720)}
+}
+export function playRelay(g:State,seat:string,a:RelayAction,now:number){
+ const next=g.coopPuzzle&&relayStep(g.coopPuzzle,seat,a,now)
+ return next?syncRelay(g,next):null
+}
+function syncGradation(g:State,gradation:Gradation):State{
+ const v=gradationView(gradation),winners=v.winner===null?[]:v.teams[v.winner]
+ return {...g,gradation,round:v.round,deadline:v.deadline??g.deadline,done:v.phase==='done',winner:winners.length===1?winners[0]:null,
+  scores:g.seats.map((_,i)=>v.totals[i%2]*720720)}
+}
+export function playGradation(g:State,seat:string,order:number[],target:number|null,now:number):State|null{
+ const next=g.gradation&&gradationLock(g.gradation,seat,order,target,now)
+ return next?syncGradation(g,next):null
+}
+function syncDice(g:State,dice:DiceState):State{
+ return {...g,tripleDice:dice,round:dice.round,deadline:dice.deadline??g.deadline,
+  done:dice.phase==='done',winner:dice.leaders.length===1?dice.leaders[0]:null,scores:dice.totals.map(p=>p*720720)}
+}
+export function playTripleDice(g:State,seat:string,positions:number[],prediction:DiceBand,now:number):State|null{
+ const next=g.tripleDice&&diceLock(g.tripleDice,seat,positions,prediction,now)
+ return next?syncDice(g,next):null
+}
 function syncFlags(g:State,flags:FlagsState):State{
  const v=flagsView(flags,'')
  return {...g,flags,deadline:v.deadline??g.deadline,done:v.phase==='done',winner:v.leaders.length===1?v.leaders[0]:null,scores:g.seats.map(id=>(v.results?.find(row=>row.seat===id)?.points??0)*720720)}
@@ -323,7 +359,21 @@ export function playThreeRow(g:State,seat:string,action:ThreeRowAction,now:numbe
  const result=g.threeRow&&applyThreeRow(g.threeRow,seat,action,now)
  return result?syncThreeRow(g,result):null
 }
+function syncBigSmall(g:State,bigSmall:BigSmallState):State{
+ const v=bigSmallView(bigSmall)
+ const actor=v.phase==='predict'?v.bettor:v.duelist
+ return {...g,bigSmall,round:v.round,turn:actor===g.seats[1]?1:0,deadline:0,done:v.phase==='finished',winner:v.winner,
+  scores:v.chips.map(n=>n*720720),reveal:v.latest?{round:v.history.length,winner:v.winner}:null}
+}
+export function playBigSmall(g:State,seat:string,action:BigSmallAction):State|null{
+ const next=g.bigSmall&&bigSmallStep(g.bigSmall,seat,action)
+ return next?syncBigSmall(g,next):null
+}
 export function timeout(g:State,now:number):State {
+ if(g.coopPuzzle){const next=relayTick(g.coopPuzzle,now);return next!==g.coopPuzzle?syncRelay(g,next):g}
+ if(g.gradation){const next=gradationTick(g.gradation,now);return next===g.gradation?g:syncGradation(g,next)}
+ if(g.bigSmall)return g
+ if(g.tripleDice){const next=diceTick(g.tripleDice,now);return next!==g.tripleDice?syncDice(g,next):g}
  if(g.flags){const next=flagsTick(g.flags,now);return next!==g.flags?syncFlags(g,next):g}
  if(g.threeRow){const next=tickThreeRow(g.threeRow,now);return next&&next!==g.threeRow?syncThreeRow(g,next):g}
  if(g.symmetry){
@@ -366,7 +416,7 @@ export function timeout(g:State,now:number):State {
 }
 export function move(old:State,seat:string,a:Action,now:number,expectedMemoryDeal?:number):State|null{
  const idx=old.seats.indexOf(seat)
- if(idx<0||old.done||old.timeHold||old.montage||old.heavy13||old.colorLink||old.threeRow||old.flags)return null
+ if(idx<0||old.done||old.coopPuzzle||old.bigSmall||old.timeHold||old.montage||old.heavy13||old.colorLink||old.threeRow||old.flags||old.gradation||old.tripleDice)return null
  if(old.symmetry){
   if(typeof a!=='number')return null
   const board=symmetryStep(old.symmetry[seat],a,now)
@@ -578,13 +628,13 @@ export function view(g:State,seat:string,now=g.timeHold?.lastHostAt??g.memoryDue
  const knightElapsedMs=knightResultPath?.length===g.size*g.size?Math.max(0,g.reached[seat]-g.opened):undefined
  const flagView=g.flags?flagsView(g.flags,seat):null
  if(flagView?.phase==='study'&&flagView.deadline!==null&&now>=flagView.deadline)flagView.study=[]
- return {flags:flagView,threeRow:g.threeRow?threeRowView(g.threeRow,seat):null,symmetry,...(knightResultPath===undefined?{}:{knightResultPath}),...(knightElapsedMs===undefined?{}:{knightElapsedMs}),colorLink:g.colorLink?colorLinkView(g.colorLink):null,heavy13:g.heavy13?{...heavy13View(g.heavy13,seat),slot:heavy13Slot(g.heavy13)}:null,timeHold:g.timeHold?timeHoldView(g.timeHold,seat,now):null,puzzle,montage:g.montage?montageView(g.montage,seat):null,wallGo:g.wallGo?wallGoView(g.wallGo):null,memoryDuel:g.memoryDuel?memoryDuelView(g.memoryDuel,seat,now):null,memoryPoker:g.memoryPoker?memoryPokerView(g.memoryPoker,seat):null,piece:g.piece?pieceView(g.piece):null,tower:g.tower?towerView(g.tower,g.done):null,fence:g.fence?fenceView(g.fence,seat,g.done):null,scale:g.scale?scaleView(g.scale,g.done):null,spot:g.spot?spotView(g.spot,seat,g.done):null,fragments:g.fragments?fragmentView(g.fragments,g.round,g.done):null,pyramid:g.pyramid?pyramidView(g.pyramid,seat):null,codeLock:g.codeLock?codeView(g.codeLock,g.seats.indexOf(seat),g.done):null,equations:g.equations?equationView(g.equations,g.seats.indexOf(seat)):null,divine:g.divine?divineView(g.divine,seat):null,grass:g.grass,bagh:g.bagh,secret:g.secret?secretView(g.secret,g.seats.indexOf(seat),g.done):null,mancala:g.mancala,game:g.game,seats:g.seats,board:g.board.map(v=>g.game==='blind'&&!g.done&&v?'?':v),blindCovers:g.blindCovers?.slice()??null,turn:g.seats[g.turn],capture:g.capture,done:g.done,winner:g.winner,round:g.round,deadline:g.heavy13?g.heavy13.deadline:g.montage?g.montage.nextAt:!g.timeHold&&(simultaneous(g.game)||g.game==='piece'||g.wallGo&&!g.done)?g.deadline:null,mine:g.timeHold?null:g.bids[seat]??null,submitted:g.timeHold?0:Object.keys(g.bids).length,credits:g.timeHold?[]:g.credits,scores:scores.map(s=>s/720720),last:g.timeHold?null:g.last,legal:legal(g,seat),hand:g.game==='remove'&&!g.done?g.hands[seat]??[]:[],path:g.game==='knight'?g.paths[seat]??[]:[],size:g.size,closed:g.closed,reveal:g.reveal}
+ return {coopPuzzle:g.coopPuzzle,gradation:g.gradation?gradationView(g.gradation,seat):null,bigSmall:g.bigSmall?bigSmallView(g.bigSmall,seat):null,tripleDice:g.tripleDice?diceView(g.tripleDice,seat):null,flags:flagView,threeRow:g.threeRow?threeRowView(g.threeRow,seat):null,symmetry,...(knightResultPath===undefined?{}:{knightResultPath}),...(knightElapsedMs===undefined?{}:{knightElapsedMs}),colorLink:g.colorLink?colorLinkView(g.colorLink):null,heavy13:g.heavy13?{...heavy13View(g.heavy13,seat),slot:heavy13Slot(g.heavy13)}:null,timeHold:g.timeHold?timeHoldView(g.timeHold,seat,now):null,puzzle,montage:g.montage?montageView(g.montage,seat):null,wallGo:g.wallGo?wallGoView(g.wallGo):null,memoryDuel:g.memoryDuel?memoryDuelView(g.memoryDuel,seat,now):null,memoryPoker:g.memoryPoker?memoryPokerView(g.memoryPoker,seat):null,piece:g.piece?pieceView(g.piece):null,tower:g.tower?towerView(g.tower,g.done):null,fence:g.fence?fenceView(g.fence,seat,g.done):null,scale:g.scale?scaleView(g.scale,g.done):null,spot:g.spot?spotView(g.spot,seat,g.done):null,fragments:g.fragments?fragmentView(g.fragments,g.round,g.done):null,pyramid:g.pyramid?pyramidView(g.pyramid,seat):null,codeLock:g.codeLock?codeView(g.codeLock,g.seats.indexOf(seat),g.done):null,equations:g.equations?equationView(g.equations,g.seats.indexOf(seat)):null,divine:g.divine?divineView(g.divine,seat):null,grass:g.grass,bagh:g.bagh,secret:g.secret?secretView(g.secret,g.seats.indexOf(seat),g.done):null,mancala:g.mancala,game:g.game,seats:g.seats,board:g.board.map(v=>g.game==='blind'&&!g.done&&v?'?':v),blindCovers:g.blindCovers?.slice()??null,turn:g.seats[g.turn],capture:g.capture,done:g.done,winner:g.winner,round:g.round,deadline:g.gradation?g.gradation.deadline:g.heavy13?g.heavy13.deadline:g.montage?g.montage.nextAt:!g.timeHold&&(simultaneous(g.game)||g.game==='piece'||g.wallGo&&!g.done)?g.deadline:null,mine:g.timeHold?null:g.bids[seat]??null,submitted:g.timeHold?0:Object.keys(g.bids).length,credits:g.timeHold?[]:g.credits,scores:scores.map(s=>s/720720),last:g.timeHold?null:g.last,legal:legal(g,seat),hand:g.game==='remove'&&!g.done?g.hands[seat]??[]:[],path:g.game==='knight'?g.paths[seat]??[]:[],size:g.size,closed:g.closed,reveal:g.reveal}
 }
 export type GameView=ReturnType<typeof view>
 /** Uses the current seat's view, public move order, and a dedicated policy seed.
  * The policy never receives the seed used to deal hidden information. */
 export function botAction(v:GameView,seat:string,observed:number[]=[],seed=0,level:BotLevel='normal',rejected?:ReadonlySet<number>):Action|undefined{
- if(v.done||v.flags||v.timeHold||v.montage||v.symmetry||v.threeRow||!v.seats.includes(seat))return
+ if(v.done||v.coopPuzzle||v.gradation||v.bigSmall||v.tripleDice||v.flags||v.timeHold||v.montage||v.symmetry||v.threeRow||!v.seats.includes(seat))return
  if(v.heavy13)return heavy13Bot(v.heavy13,seed,level)
  if(v.wallGo)return wallGoBot(v.wallGo,seat,seed,level,rejected)
  const index=v.seats.indexOf(seat)

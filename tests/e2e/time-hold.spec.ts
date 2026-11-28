@@ -52,7 +52,7 @@ test('optional hold/release is sealed on the wire in both directions until the s
   await expect(host.getByRole('button',{name:'Add bot'})).toBeDisabled()
   await click(host.getByRole('button',{name:'Start match'}))
   const brief=host.getByRole('dialog')
-  await expect(brief.getByRole('img',{name:'The timekeepers’ cabinet'})).toBeVisible()
+  await expect(brief.getByRole('img',{name:'Example hold: 0 seconds'})).toBeVisible()
   await advance(9_000)
   await expect(board(observer)).toHaveCount(0)
   await click(brief.getByRole('button',{name:'Enter match'}))

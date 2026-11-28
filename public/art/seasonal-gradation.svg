@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" width="960" height="540" role="img" aria-labelledby="title"><title id="title">The tide cabinet: seven weighted gates in a brass measuring instrument</title>
+<defs>
+<linearGradient id="sky" x2="0" y2="1"><stop stop-color="#183e3e"/><stop offset=".6" stop-color="#638a74"/><stop offset="1" stop-color="#d3bd85"/></linearGradient>
+<linearGradient id="frame" x2=".7" y2="1"><stop stop-color="#f1d18a"/><stop offset=".35" stop-color="#a77c48"/><stop offset=".6" stop-color="#e0ba78"/><stop offset="1" stop-color="#896042"/></linearGradient>
+<linearGradient id="tile" x2="1" y2=".4"><stop stop-color="#ba7955"/><stop offset=".45" stop-color="#e3bb83"/><stop offset="1" stop-color="#b77b50"/></linearGradient>
+<pattern id="etch" width="7" height="7" patternUnits="userSpaceOnUse"><path d="m-2 2 4-4m-3 10 8-8m-2 9 5-5" fill="none" stroke="#453f2b" opacity=".23" stroke-width=".8"/></pattern>
+<pattern id="water" width="43" height="13" patternUnits="userSpaceOnUse"><path d="M0 6q9-4 15 0t13 0 15 0M7 10h6m12-8h9" fill="none" stroke="#aac3a4" opacity=".5"/></pattern>
+<g id="bolt"><circle r="3.6" fill="#c3a771" stroke="#4c4b32"/><path d="m-2 2 4-4" stroke="#57503b"/></g>
+<g id="flourish" fill="none" stroke="#d3ba7d" stroke-width="1.2"><path d="M0 0q32-1 41 14t27 10M8 6q17 0 23 9-10 2-16-2m32 7q4-9 14-9-4 8-13 10M3 1q2 7 13 10"/><path d="m3 3 3 3m22 5 5 1m14 10 6 1"/></g>
+</defs><path fill="url(#sky)" d="M0 0h960v540H0z"/>
+<circle cx="710" cy="107" r="70" fill="#dacb99" opacity=".65"/><circle cx="710" cy="107" r="78" fill="none" stroke="#cfbc8d" stroke-dasharray="188 8 3 5"/>
+<g fill="none" stroke="#d4c89c" stroke-width="1" opacity=".54"><path d="M42 131q65-19 122-7t131-7m360-27q60-17 109-4t143-9M108 81q47-18 95-7t112-3m192 31q47-8 80-5"/><path d="M82 117h53m485-53h36m116 58h78m-29-11h50m-550 11h48"/></g>
+<path d="m0 240 63-34 37 8 59-52 36 14 50-38 62 36 59-56 58 36 55-24 87 55 68-30 64 28 45-38 65 30 52-61 45 35 45-22 50 21v130H0Z" fill="#678574"/>
+<path d="m0 248 68-21 36 8 53-40 38 12 57-41 47 33 74-54 45 34 60-19 75 45 74-23 52 17 56-40 67 31 58-52 39 30 45-5 26 4v122H0Z" fill="url(#etch)"/>
+<path d="M0 246q130-60 253-10t240-15q162-44 255 4t212-15v340H0z" fill="#32605a"/><path d="M0 248q130-60 253-10t240-15q162-44 255 4t212-15v340H0z" fill="url(#water)"/>
+<path d="M0 432q178-42 300-17t258 15q185-48 402-32v142H0z" fill="#23453f"/>
+<g transform="translate(64 63) rotate(-3 416 200)" stroke="#403a2b" stroke-linejoin="round">
+<path d="m22 72 28-20 700-6 29 19 22 284-20 17-728 10-29-18Z" fill="#503e31" stroke-width="5"/>
+<path d="m17 68 31-19 699-6 30 18 18 282-28 18-721 6-25-21Z" fill="url(#frame)" stroke-width="3"/>
+<path d="m29 73 26-14 682-6 29 16 17 268-25 13-707 8-18-18Z" fill="url(#etch)" stroke="#655139" stroke-width="1.5"/>
+<path d="m50 86 691-10 15 242-695 14Z" fill="#28504b" stroke-width="3"/>
+<path d="m58 92 675-10 15 229-678 15Z" fill="url(#etch)" stroke="#b99b65"/>
+<path d="m60 309 683-13 6 15-678 15Z" fill="#162f2e"/><g transform="translate(79 113)">
+ <path d="M4 163V27Q6 11 35 2q28 6 35 23l4 137z" fill="#182f2e" stroke="#ddc389" stroke-width="2"/>
+ <path d="M11 157V30Q18 15 35 10q17 4 28 18l4 129Z" fill="#41615a" stroke="#8c9474"/>
+ <path d="M15 34h42m-42 4 42-2M17 46h24m-25 7h38m-36 11h28" fill="none" stroke="#77907b"/>
+ <path d="m21 98-3 52H52l1-50Z" fill="#263d39"/><path d="M35 21v29m-3-29v29" fill="none" stroke="#c6ac70" stroke-width="1.5"/>
+ <g><animateTransform attributeName="transform" type="translate" begin="indefinite" data-cover-at="0.17s" dur="1.3s" values="0 0;0 -9;0 0" keyTimes="0;.4;1"/>
+ <path d="m13 77 9-13h24l11 11 2 64-9 8-35-2Z" fill="url(#tile)" stroke-width="2"/>
+ <path d="m13 77 10 4 33-5m-33 6 1 56m25 .5 6-6m-31-52 8-12m2 15-4-4" fill="none" stroke="#846447"/>
+ <ellipse cx="34" cy="63" rx="6" ry="9" fill="none" stroke="#d1b677" stroke-width="3"/>
+ <text x="37" y="127" fill="#382e26" stroke="none" font-family="Georgia,serif" text-anchor="middle" font-size="42">6</text></g>
+ <path d="m16 174 41-1 5 8-5 7-42 1-4-8z" fill="#cdae70"/><text x="36" y="185" fill="#3b3c2d" stroke="none" font-family="Georgia,serif" text-anchor="middle" font-size="11">I</text></g><g transform="translate(173 112)">
+ <path d="M4 163V27Q6 11 35 2q28 6 35 23l4 137z" fill="#182f2e" stroke="#ddc389" stroke-width="2"/>
+ <path d="M11 157V30Q18 15 35 10q17 4 28 18l4 129Z" fill="#41615a" stroke="#8c9474"/>
+ <path d="M15 34h42m-42 4 42-2M17 46h24m-25 7h38m-36 11h28" fill="none" stroke="#77907b"/>
+ <path d="m21 98-3 52H52l1-50Z" fill="#263d39"/><path d="M35 21v29m-3-29v29" fill="none" stroke="#c6ac70" stroke-width="1.5"/>
+ <g><animateTransform attributeName="transform" type="translate" begin="indefinite" data-cover-at="0.26s" dur="1.3s" values="0 0;0 -9;0 0" keyTimes="0;.4;1"/>
+ <path d="m13 77 9-13h24l11 11 2 64-9 8-35-2Z" fill="url(#tile)" stroke-width="2"/>
+ <path d="m13 77 10 4 33-5m-33 6 1 56m25 .5 6-6m-31-52 8-12m2 15-4-4" fill="none" stroke="#846447"/>
+ <ellipse cx="34" cy="63" rx="6" ry="9" fill="none" stroke="#d1b677" stroke-width="3"/>
+ <text x="37" y="127" fill="#382e26" stroke="none" font-family="Georgia,serif" text-anchor="middle" font-size="42">3</text></g>
+ <path d="m16 174 41-1 5 8-5 7-42 1-4-8z" fill="#cdae70"/><text x="36" y="185" fill="#3b3c2d" stroke="none" font-family="Georgia,serif" text-anchor="middle" font-size="11">II</text></g><g transform="translate(267 111)">
+ <path d="M4 163V27Q6 11 35 2q28 6 35 23l4 137z" fill="#182f2e" stroke="#ddc389" stroke-width="2"/>
+ <path d="M11 157V30Q18 15 35 10q17 4 28 18l4 129Z" fill="#41615a" stroke="#8c9474"/>
+ <path d="M15 34h42m-42 4 42-2M17 46h24m-25 7h38m-36 11h28" fill="none" stroke="#77907b"/>
+ <path d="m21 98-3 52H52l1-50Z" fill="#263d39"/><path d="M35 21v29m-3-29v29" fill="none" stroke="#c6ac70" stroke-width="1.5"/>
+ <g><animateTransform attributeName="transform" type="translate" begin="indefinite" data-cover-at="0.35s" dur="1.3s" values="0 0;0 -9;0 0" keyTimes="0;.4;1"/>
+ <path d="m13 77 9-13h24l11 11 2 64-9 8-35-2Z" fill="url(#tile)" stroke-width="2"/>
+ <path d="m13 77 10 4 33-5m-33 6 1 56m25 .5 6-6m-31-52 8-12m2 15-4-4" fill="none" stroke="#846447"/>
+ <ellipse cx="34" cy="63" rx="6" ry="9" fill="none" stroke="#d1b677" stroke-width="3"/>
+ <text x="37" y="127" fill="#382e26" stroke="none" font-family="Georgia,serif" text-anchor="middle" font-size="42">5</text></g>
+ <path d="m16 174 41-1 5 8-5 7-42 1-4-8z" fill="#cdae70"/><text x="36" y="185" fill="#3b3c2d" stroke="none" font-family="Georgia,serif" text-anchor="middle" font-size="11">III</text></g><g transform="translate(361 110)">
+ <path d="M4 163V27Q6 11 35 2q28 6 35 23l4 137z" fill="#182f2e" stroke="#ddc389" stroke-width="2"/>
+ <path d="M11 157V30Q18 15 35 10q17 4 28 18l4 129Z" fill="#41615a" stroke="#8c9474"/>
+ <path d="M15 34h42m-42 4 42-2M17 46h24m-25 7h38m-36 11h28" fill="none" stroke="#77907b"/>
+ <path d="m21 98-3 52H52l1-50Z" fill="#263d39"/><path d="M35 21v29m-3-29v29" fill="none" stroke="#c6ac70" stroke-width="1.5"/>
+ <g><animateTransform attributeName="transform" type="translate" begin="indefinite" data-cover-at="0.44s" dur="1.3s" values="0 0;0 -9;0 0" keyTimes="0;.4;1"/>
+ <path d="m13 77 9-13h24l11 11 2 64-9 8-35-2Z" fill="url(#tile)" stroke-width="2"/>
+ <path d="m13 77 10 4 33-5m-33 6 1 56m25 .5 6-6m-31-52 8-12m2 15-4-4" fill="none" stroke="#846447"/>
+ <ellipse cx="34" cy="63" rx="6" ry="9" fill="none" stroke="#d1b677" stroke-width="3"/>
+ <text x="37" y="127" fill="#382e26" stroke="none" font-family="Georgia,serif" text-anchor="middle" font-size="42">2</text></g>
+ <path d="m16 174 41-1 5 8-5 7-42 1-4-8z" fill="#cdae70"/><text x="36" y="185" fill="#3b3c2d" stroke="none" font-family="Georgia,serif" text-anchor="middle" font-size="11">IV</text></g><g transform="translate(455 109)">
+ <path d="M4 163V27Q6 11 35 2q28 6 35 23l4 137z" fill="#182f2e" stroke="#ddc389" stroke-width="2"/>
+ <path d="M11 157V30Q18 15 35 10q17 4 28 18l4 129Z" fill="#41615a" stroke="#8c9474"/>
+ <path d="M15 34h42m-42 4 42-2M17 46h24m-25 7h38m-36 11h28" fill="none" stroke="#77907b"/>
+ <path d="m21 98-3 52H52l1-50Z" fill="#263d39"/><path d="M35 21v29m-3-29v29" fill="none" stroke="#c6ac70" stroke-width="1.5"/>
+ <g><animateTransform attributeName="transform" type="translate" begin="indefinite" data-cover-at="0.53s" dur="1.3s" values="0 0;0 -9;0 0" keyTimes="0;.4;1"/>
+ <path d="m13 77 9-13h24l11 11 2 64-9 8-35-2Z" fill="url(#tile)" stroke-width="2"/>
+ <path d="m13 77 10 4 33-5m-33 6 1 56m25 .5 6-6m-31-52 8-12m2 15-4-4" fill="none" stroke="#846447"/>
+ <ellipse cx="34" cy="63" rx="6" ry="9" fill="none" stroke="#d1b677" stroke-width="3"/>
+ <text x="37" y="127" fill="#382e26" stroke="none" font-family="Georgia,serif" text-anchor="middle" font-size="42">7</text></g>
+ <path d="m16 174 41-1 5 8-5 7-42 1-4-8z" fill="#cdae70"/><text x="36" y="185" fill="#3b3c2d" stroke="none" font-family="Georgia,serif" text-anchor="middle" font-size="11">V</text></g><g transform="translate(549 108)">
+ <path d="M4 163V27Q6 11 35 2q28 6 35 23l4 137z" fill="#182f2e" stroke="#ddc389" stroke-width="2"/>
+ <path d="M11 157V30Q18 15 35 10q17 4 28 18l4 129Z" fill="#41615a" stroke="#8c9474"/>
+ <path d="M15 34h42m-42 4 42-2M17 46h24m-25 7h38m-36 11h28" fill="none" stroke="#77907b"/>
+ <path d="m21 98-3 52H52l1-50Z" fill="#263d39"/><path d="M35 21v29m-3-29v29" fill="none" stroke="#c6ac70" stroke-width="1.5"/>
+ <g><animateTransform attributeName="transform" type="translate" begin="indefinite" data-cover-at="0.62s" dur="1.3s" values="0 0;0 -9;0 0" keyTimes="0;.4;1"/>
+ <path d="m13 77 9-13h24l11 11 2 64-9 8-35-2Z" fill="url(#tile)" stroke-width="2"/>
+ <path d="m13 77 10 4 33-5m-33 6 1 56m25 .5 6-6m-31-52 8-12m2 15-4-4" fill="none" stroke="#846447"/>
+ <ellipse cx="34" cy="63" rx="6" ry="9" fill="none" stroke="#d1b677" stroke-width="3"/>
+ <text x="37" y="127" fill="#382e26" stroke="none" font-family="Georgia,serif" text-anchor="middle" font-size="42">1</text></g>
+ <path d="m16 174 41-1 5 8-5 7-42 1-4-8z" fill="#cdae70"/><text x="36" y="185" fill="#3b3c2d" stroke="none" font-family="Georgia,serif" text-anchor="middle" font-size="11">VI</text></g><g transform="translate(643 107)">
+ <path d="M4 163V27Q6 11 35 2q28 6 35 23l4 137z" fill="#182f2e" stroke="#ddc389" stroke-width="2"/>
+ <path d="M11 157V30Q18 15 35 10q17 4 28 18l4 129Z" fill="#41615a" stroke="#8c9474"/>
+ <path d="M15 34h42m-42 4 42-2M17 46h24m-25 7h38m-36 11h28" fill="none" stroke="#77907b"/>
+ <path d="m21 98-3 52H52l1-50Z" fill="#263d39"/><path d="M35 21v29m-3-29v29" fill="none" stroke="#c6ac70" stroke-width="1.5"/>
+ <g><animateTransform attributeName="transform" type="translate" begin="indefinite" data-cover-at="0.71s" dur="1.3s" values="0 0;0 -9;0 0" keyTimes="0;.4;1"/>
+ <path d="m13 77 9-13h24l11 11 2 64-9 8-35-2Z" fill="url(#tile)" stroke-width="2"/>
+ <path d="m13 77 10 4 33-5m-33 6 1 56m25 .5 6-6m-31-52 8-12m2 15-4-4" fill="none" stroke="#846447"/>
+ <ellipse cx="34" cy="63" rx="6" ry="9" fill="none" stroke="#d1b677" stroke-width="3"/>
+ <text x="37" y="127" fill="#382e26" stroke="none" font-family="Georgia,serif" text-anchor="middle" font-size="42">4</text></g>
+ <path d="m16 174 41-1 5 8-5 7-42 1-4-8z" fill="#cdae70"/><text x="36" y="185" fill="#3b3c2d" stroke="none" font-family="Georgia,serif" text-anchor="middle" font-size="11">VII</text></g><use href="#bolt" x="39" y="72"/><use href="#bolt" x="754" y="69"/><use href="#bolt" x="52" y="342"/><use href="#bolt" x="767" y="334"/></g><g fill="none" stroke="#958663" stroke-width="2"><path d="M13 14h934v512H13z"/><path d="M20 20h920v499H20z" stroke="#bbaa77" stroke-width=".8"/></g><use href="#flourish" x="25" y="27"/><use href="#flourish" transform="translate(935 514) rotate(180)"/>
+<g transform="translate(815 385) rotate(12)"><circle cx="0" cy="0" r="52" fill="#142c28" opacity=".7" transform="translate(4 6)"/><circle r="50" fill="url(#frame)" stroke="#483f30" stroke-width="3"/><circle r="43" fill="#ddd0a0" stroke="#766c4d"/><circle r="35" fill="none" stroke="#887955" stroke-width="4" stroke-dasharray="1.2 4.9"/><path d="M-25 15A30 30 0 0 1 27-13" fill="none" stroke="#835344" stroke-width="2"/><path d="m0 4-4-3 23-26-14 28z" fill="#823e32"/><circle r="4" fill="#494735"/><path d="m-10 17 7-5 6 1 7-4M-8 23H9" fill="none" stroke="#776b4c"/></g>
+<path d="M130 478q187 14 374-5m31 6q66 1 120-8" fill="none" stroke="#91a68d" opacity=".6"/>
+</svg>

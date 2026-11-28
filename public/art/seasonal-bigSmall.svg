@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540">
+<title>Big Small comparison table</title>
+<desc>Ivory numeral card, engraved burgundy seal, and stacks of brass counters on a forest-green felt tray.</desc>
+<defs>
+ <linearGradient id="wood" x2=".8" y2="1"><stop stop-color="#483121"/><stop offset=".48" stop-color="#1d1614"/><stop offset="1" stop-color="#492c20"/></linearGradient>
+ <radialGradient id="felt"><stop stop-color="#466456"/><stop offset="1" stop-color="#192b24"/></radialGradient>
+ <linearGradient id="ivory" x2=".72" y2="1"><stop stop-color="#ffefc8"/><stop offset="1" stop-color="#c9a775"/></linearGradient>
+ <linearGradient id="wine" x2=".68" y2="1"><stop stop-color="#9e5353"/><stop offset="1" stop-color="#48252b"/></linearGradient>
+ <pattern id="grain" width="13" height="13" patternUnits="userSpaceOnUse"><path d="M0 0l13 13M13 0 0 13" stroke="#e9d3a2" stroke-opacity=".11" stroke-width=".8"/></pattern>
+ <g id="corner" fill="none" stroke="#c79b5e"><path d="M0 39V2h38M6 31V8h24M12 26V14h12M2 2l19 19m-6 0h6v-6" stroke-width="1.5"/><circle cx="28" cy="28" r="2.1"/></g>
+ <g id="disc">
+  <ellipse rx="35" ry="15" cy="5" fill="#8e5c32" stroke="#3c291d" stroke-width="2"/>
+  <ellipse rx="35" ry="13" fill="#ca9452" stroke="#f0cd81" stroke-width="2"/>
+  <ellipse rx="26" ry="9" fill="#ac743b" stroke="#efd091" stroke-dasharray="2 3"/>
+  <path d="m0-6 10 6L0 6-10 0z" fill="#ead293" stroke="#82502c"/>
+ </g>
+ <g id="cardframe" fill="none" stroke="currentColor">
+  <rect x="10" y="10" width="134" height="194" rx="7" stroke-width="2"/>
+  <path d="M19 29V19h12m91 0h12v10m0 157v10h-12m-91 0H19v-10M17 104h8m103 0h8" stroke-width="1.25"/>
+  <path d="M22 34V22h12m80 0h16v12m0 146v12h-16m-80 0H22v-12" stroke-width=".7"/>
+ </g>
+</defs>
+<rect width="960" height="540" fill="url(#wood)"/>
+<path d="M0 28Q236 47 470 22T960 23M0 482q275-35 511-2t449-12M0 501q167-31 373-5t587 4M0 511q198-26 417 0t543 0" fill="none" stroke="#ba8354" opacity=".2"/>
+<rect x="74" y="52" width="812" height="436" rx="47" fill="#110f0c" stroke="#9b7049" stroke-width="2"/>
+<rect x="85" y="62" width="790" height="412" rx="41" fill="url(#felt)" stroke="#c19b63" stroke-width="2"/>
+<rect x="90" y="68" width="780" height="400" rx="37" fill="url(#grain)"/>
+<rect x="107" y="84" width="746" height="369" rx="29" fill="none" stroke="#ceaa6c" stroke-opacity=".7" stroke-width="1.3"/>
+<rect x="113" y="90" width="734" height="357" rx="26" fill="none" stroke="#c69e5f" stroke-opacity=".72" stroke-dasharray="2 5"/>
+<use href="#corner" x="124" y="106"/><use href="#corner" transform="translate(835 106) scale(-1 1)"/>
+<use href="#corner" transform="translate(124 428) scale(1 -1)"/><use href="#corner" transform="translate(835 428) scale(-1 -1)"/>
+<g fill="none" stroke="#c5a66e" opacity=".42"><ellipse cx="480" cy="267" rx="223" ry="143"/><ellipse cx="480" cy="267" rx="213" ry="134" stroke-dasharray="2 5"/><path d="M275 266h410M480 123v288M293 190h374M293 344h374"/></g>
+<g transform="translate(307 160) rotate(-12 77 107)">
+ <ellipse cx="79" cy="208" rx="86" ry="30" fill="#0d1e13" opacity=".4"/>
+ <rect width="154" height="214" rx="11" fill="#241d18" transform="translate(0 7)"/>
+ <rect width="154" height="214" rx="11" fill="url(#ivory)" stroke="#c09358" stroke-width="2.5"/>
+ <use href="#cardframe" color="#8b633f"/>
+ <text x="77" y="140" fill="#28463a" font-family="Georgia,serif" font-weight="bold" font-size="108" text-anchor="middle">4</text>
+ <path d="m77 32 4 5-4 5-4-5zM77 171l4 5-4 5-4-5z" fill="#815c37"/>
+</g>
+<g transform="translate(503 143) rotate(12 77 107)">
+ <g>
+  <animateTransform data-cover-at="0.14s" attributeName="transform" type="translate" values="0 -22;0 4;0 -2;0 0" keyTimes="0;.55;.8;1" begin="indefinite" dur="0.68s" fill="freeze"/>
+  <ellipse cx="85" cy="218" rx="89" ry="28" fill="#0f1d13" opacity=".45"/>
+  <rect width="154" height="214" rx="11" fill="#342322" transform="translate(0 8)"/>
+  <rect width="154" height="214" rx="11" fill="url(#wine)" stroke="#d3a571" stroke-width="2.5"/>
+  <rect x="12" y="12" width="130" height="190" rx="7" fill="url(#grain)"/>
+  <use href="#cardframe" color="#edc787"/>
+  <g fill="none" stroke="#f1cc8c"><path d="m77 46 45 61-45 61-45-61zM77 57l37 50-37 50-37-50z"/><circle cx="77" cy="107" r="23" stroke-dasharray="2 3"/><path d="M77 87v40m-10-30 10-10 10 10m-20 20 10 10 10-10" stroke-width="2"/></g>
+ </g>
+</g>
+<g fill="none" stroke="#dfc489" stroke-width="2.3"><path d="M479 199v31m-9-22 9-9 9 9m-9 91v34m-9-10 9 10 9-10m-21-64h24m-24 13h24"/></g>
+<g transform="translate(214 332)"><ellipse cy="13" rx="49" ry="22" fill="#121b13" opacity=".55"/><use href="#disc" y="6"/><use href="#disc"/><use href="#disc" y="-6"/><use href="#disc" y="-12"/></g>
+<g transform="translate(721 366)"><ellipse cy="13" rx="63" ry="20" fill="#121b13" opacity=".55"/><use href="#disc" x="-29" y="3"/><use href="#disc" x="-29" y="-3"/><use href="#disc" x="27" y="5"/><use href="#disc" x="27" y="-1"/><use href="#disc" x="27" y="-7"/><use href="#disc" x="27" y="-13"/>
+ <g transform="translate(5 -23)"><g><animateTransform data-cover-at="0.39s" attributeName="transform" type="translate" values="0 -13;0 2;0 0" keyTimes="0;.68;1" begin="indefinite" dur="0.43s" fill="freeze"/><use href="#disc"/></g></g>
+</g>
+<g stroke="#cfaa74" fill="none" opacity=".58"><path d="M360 431h92m56 0h92m-312-317h148m88 0h148"/><path d="m480 428 5 3-5 3-5-3zM480 109l6 5-6 5-6-5z" fill="#e2bd83"/></g>
+</svg>

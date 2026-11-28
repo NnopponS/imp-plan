@@ -1,0 +1,21 @@
+.mancala-lesson{display:block;width:min(100%,34rem);max-height:min(50dvh,21rem);margin-inline:auto}
+.mcl-paper{fill:#e5cf9e;stroke:#a87c40}
+.mcl-wood{fill:#ac754a;stroke:#603718;stroke-width:2}
+.mcl-ring,.mcl-arrow{fill:none;stroke:#59351f;stroke-width:1.25;stroke-dasharray:2 2}
+.mcl-arrow{stroke-width:1.9;stroke-dasharray:none}
+.mcl-pit ellipse{fill:#643d33;stroke:#331f15;stroke-width:1}
+.mcl-pit[data-pit-type='1'] ellipse{fill:#4b6172}
+.mcl-pit[data-pit-type='2'] ellipse{fill:#4b5e41}
+.mcl-pit[data-pit-type='3'] ellipse{fill:#815822}
+.mcl-pit[data-pit-type='4'] ellipse{fill:#463432}
+.mcl-pit[data-pick=true] ellipse,.mcl-pit[data-last=true] ellipse{stroke:#fff0ba;stroke-width:2}
+.mcl-pit text,.mcl-score text{text-anchor:middle;font:650 5px system-ui,sans-serif;fill:#1e140b}
+.mcl-stone circle{stroke:#543717;stroke-width:.6;fill:#f5d593}.mcl-stone[data-owner='1'] circle{fill:#ef9b77}
+.mcl-stone text{font-size:3.2px}
+.mcl-stone[data-stone-transfer=true]{animation:mancala-lesson-sow .52s var(--sow-delay) ease-out both}
+.mcl-score rect{fill:#efddb7;stroke:#90633a;stroke-width:.7}
+.mcl-score [data-lesson-low=true] rect{stroke:#85432d;stroke-width:1.5}
+.mcl-score .mcl-value{font:700 13px Georgia,serif}
+@keyframes mancala-lesson-sow{0%{transform:translate(var(--sow-x),var(--sow-y))}100%{transform:translate(0,0)}}
+[data-motion-off=true] .mcl-stone{animation:none!important}
+@media(prefers-reduced-motion:reduce){.mcl-stone{animation:none!important}}

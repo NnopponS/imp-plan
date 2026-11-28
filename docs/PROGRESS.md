@@ -114,3 +114,10 @@ The 32nd playable fan adaptation adds a shared 5 × 5 engraved print block for 3
 ### S3-22: Flags Around the World
 
 Adds a flag memory table for solo practice and 2–16 humans, without bots. Recall and Name match share the same 40-second study and 60-second answer windows. The host only reveals standings after all submissions or timeout; numbered markers complement the descriptive flags. This is a fan adaptation, not broadcast verification. All flag assets are served locally and the atlas cover and table illustrations are original.
+
+
+### Four parallel fan tables and visual briefings
+
+37 of 64 catalog entries playable in this candidate (11 / 9 / 17). Adds Cooperative Puzzle (S1-02), Triple Dice (S2-08), Big Small (S2-13), and Gradation (S3-16). Each has original table artwork and game-specific worked examples. The pre-match guide shows one caption per step; swipes and arrow keys progress without advancing the actual game. Full rules stay available on demand. Use the game-linked rule sheets for player limits and the distinction between fan and broadcast rules.
+
+Browser privacy tests use loopback unless stated. Native PeerJS/STUN loopback was checked separately for a shared Cooperative Puzzle placement and undo. This is not proof of public cross-network play.

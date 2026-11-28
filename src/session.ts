@@ -123,7 +123,7 @@ export async function hostRoom(name:string,listener:Listener,options:ConnectOpti
     if(err)rejected(err)
     update();return
    }
-   if(privateHold||err||(m.command.kind==='memory-lock'||m.command.kind==='heavy-lock'||m.command.kind==='three-row'||m.command.kind==='flags-lock')&&h.rev===before){
+   if(privateHold||err||(m.command.kind==='memory-lock'||m.command.kind==='heavy-lock'||m.command.kind==='three-row'||m.command.kind==='flags-lock'||m.command.kind==='gradation-lock'||m.command.kind==='dice-lock')&&h.rev===before){
     if(err)rejected(err)
     sendState(key)
    }else update()
@@ -146,7 +146,7 @@ export async function hostRoom(name:string,listener:Listener,options:ConnectOpti
   if(c.kind==='time-hold'){
    if(error&&c.action==='hold')holdRejection=request
    ownUpdate(c.action==='hold'?error:'')
-  }else if((c.kind==='memory-lock'||c.kind==='heavy-lock'||c.kind==='heavy-act'||c.kind==='three-row'||c.kind==='flags-lock')&&h.rev===before)ownUpdate(error)
+  }else if((c.kind==='memory-lock'||c.kind==='heavy-lock'||c.kind==='heavy-act'||c.kind==='three-row'||c.kind==='flags-lock'||c.kind==='gradation-lock'||c.kind==='dice-lock')&&h.rev===before)ownUpdate(error)
   else update(error)
   return request
  },close:()=>{

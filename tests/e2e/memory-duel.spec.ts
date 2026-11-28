@@ -48,7 +48,7 @@ test('episode-style two-human duel waits for Enter, seals picks, redeals a tie a
   await host.getByRole('button',{name:'Start match',exact:true}).click()
   const briefing=host.getByRole('dialog')
   await expect(briefing.getByText('Episode-style duel',{exact:false}).first()).toBeVisible()
-  await expect(briefing.getByText(/twenty seconds/i).first()).toBeVisible()
+  await expect(briefing.getByRole('region',{name:'How to play'}).getByText('20 seconds to study',{exact:true})).toBeVisible()
   await time(host,25_000)
   await expect(host.getByRole('timer')).toHaveCount(0)
   await expect(guest.getByRole('timer')).toHaveCount(0)

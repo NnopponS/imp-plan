@@ -1,0 +1,9 @@
+.relay-film{margin:0;display:grid;place-items:center;min-width:0}.relay-film svg{display:block;width:min(100%,440px);height:auto}
+.relay-film-place{animation:relay-land 1.65s ease both}.relay-film-turn{transform-box:fill-box;transform-origin:center;animation:relay-pivot 1.65s ease both}.relay-film-marker{animation:relay-pencil 1.3s ease both}.relay-film-baton{animation:relay-handoff 1.45s ease both}.relay-film-close{animation:relay-seat 1.3s ease both}
+@keyframes relay-land{0%,38%{transform:translate(-45px,-4px);opacity:0}62%{opacity:1}100%{transform:none}}
+@keyframes relay-pivot{0%,15%{transform:rotate(-90deg)}70%,100%{transform:none}}
+@keyframes relay-pencil{0%,20%{opacity:0}50%{opacity:1}75%{opacity:.5}100%{opacity:1}}
+@keyframes relay-handoff{0%,30%{transform:none}100%{transform:translateX(55px)}}
+@keyframes relay-seat{0%,20%{opacity:0;transform:translate(15px,2px)}100%{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.relay-film svg *{animation:none!important}}
+[data-game-motion=off] .relay-film svg *,[data-motion-off=true] .relay-film svg *{animation:none!important}

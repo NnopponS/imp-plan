@@ -5,7 +5,7 @@ import {PlayerPortrait} from './player-wardrobe'
 import './match-play.css'
 
 type ActiveSnapshot=Snapshot&{game:GameView}
-const hasTurn=(g:GameView)=>isDuel(g.game)||g.game==='mancala'||g.game==='grass1'||g.game==='grass3'||g.game==='piece'
+const hasTurn=(g:GameView)=>isDuel(g.game)||g.game==='mancala'||g.game==='grass1'||g.game==='grass3'||g.game==='piece'||g.game==='coopPuzzle'
 
 export function useBoardFocus(match:string|undefined,finishedMatch:string|undefined){
  const [chosen,setChosen]=useState<string>()
@@ -43,8 +43,8 @@ export function useBoardFocus(match:string|undefined,finishedMatch:string|undefi
  }}
 }
 
-function MatchSeat({seat,you,watching,turn}:{seat:Seat;you:boolean;watching:boolean;turn:boolean}){
- const detail=watching?'Watching':!seat.online?'Offline':you?'You':seat.bot?'Bot':turn?'To move':'Opponent'
+function MatchSeat({seat,you,watching,turn,teammate=false}:{seat:Seat;you:boolean;watching:boolean;turn:boolean;teammate?:boolean}){
+ const detail=watching?'Watching':!seat.online?'Offline':you?'You':seat.bot?'Bot':turn?'To move':teammate?'Teammate':'Opponent'
  return <div className="match-seat" data-match-role={you?'self':'opponent'} data-turn-seat={turn||undefined}>
   <span className="match-seat-portrait" aria-hidden="true">
    {seat.appearance===undefined?<span className="match-seat-initial">{seat.name.slice(0,1).toLocaleUpperCase()}</span>:<PlayerPortrait look={seat.appearance} decorative/>}
@@ -62,12 +62,13 @@ export function MatchInstruments({snap,title,active,control}:{snap:ActiveSnapsho
  const byId=new Map(snap.seats.map(seat=>[seat.id,seat]))
  const self=byId.get(you)
  const rivals=game.seats.filter(id=>id!==you).map(id=>byId.get(id)).filter((seat):seat is Seat=>!!seat)
+ const yourTeam=game.gradation?.teams.find(side=>side.includes(you))
  const turn=active&&hasTurn(game)?game.turn:undefined
  return <div className="match-instruments">
   {!control.focused?<section className="match-seats" aria-label="At this table" data-crowded={rivals.length>2||undefined}>
    {self&&<MatchSeat seat={self} you watching={!game.seats.includes(you)} turn={you===turn}/>}
-   {rivals.length>0&&<div className="match-opponents" role="group" aria-label="Opponents" tabIndex={rivals.length>1?0:undefined}>
-    {rivals.map(seat=><MatchSeat key={seat.id} seat={seat} you={false} watching={false} turn={seat.id===turn}/>)}
+   {rivals.length>0&&<div className="match-opponents" role="group" aria-label={game.coopPuzzle?'Teammates':yourTeam&&game.seats.length>2?'Other seats':'Opponents'} tabIndex={rivals.length>1?0:undefined}>
+    {rivals.map(seat=><MatchSeat key={seat.id} seat={seat} you={false} watching={false} teammate={!!game.coopPuzzle||!!yourTeam?.includes(seat.id)} turn={seat.id===turn}/>)}
    </div>}
   </section>:<div className="match-focus-title" aria-hidden="true"><small>BOARD VIEW</small><strong>{title}</strong></div>}
   <button type="button" className="board-focus-switch" ref={control.button} aria-pressed={control.focused}

@@ -131,7 +131,7 @@ it('matches audited table limits for all choices, rather than falling back to a 
   blind:[2,4],morris:[2,4],point:[2,4],equations:[2,4],wallGo:[2,4],bagh:[2,2],
   auction:[2,16],remove:[3,16],knight:[2,16],hex:[2,16],rectangles:[2,16],cubes:[2,16],exile:[2,16],
   grass1:[2,12],grass3:[2,16],mancala:[2,8],secret:[3,16],divine:[2,16],codeLock:[2,16],pyramid:[2,16],
-  fragments:[2,8],spot:[2,16],scale:[2,6],fence:[2,16],tower:[2,8],piece:[2,4],memoryPoker:[2,16],montage:[2,16],heavy13:[2,7],colorLink:[2,2],symmetry:[2,16],threeRow:[3,4],flags:[2,16]
+  fragments:[2,8],spot:[2,16],scale:[2,6],fence:[2,16],tower:[2,8],piece:[2,4],memoryPoker:[2,16],montage:[2,16],heavy13:[2,7],colorLink:[2,2],symmetry:[2,16],threeRow:[3,4],tripleDice:[2,8],flags:[2,16],coopPuzzle:[2,16],gradation:[2,16],bigSmall:[2,2]
  } as const satisfies Record<Game,readonly [number,number]>
  for(const game of Object.keys(gameRules) as Game[]){
   const [min,max]=gameRules[game]
@@ -151,6 +151,7 @@ it('matches audited table limits for all choices, rather than falling back to a 
  }
  expect(seatRules({game:'memoryPoker',memoryPokerMode:'episode'})).toMatchObject({min:2,max:2})
  expect(seatRules({game:'auction',auctionMode:'hold'})).toMatchObject({min:2,max:16})
+ expect(seatRules({game:'gradation'},true)).toEqual({min:2,max:2})
 })
 
 it('leaves a too-large party and disconnected reservations intact until the host removes a seat',()=>{

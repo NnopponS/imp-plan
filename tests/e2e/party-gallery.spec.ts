@@ -63,7 +63,7 @@ test('a keyboard host curates the table and a separate phone guest sees only the
   await preview.tap()
   const briefing=guest.getByRole('dialog',{name:'Balance Mancala'})
   await expect(briefing).toBeVisible()
-  await expect(briefing.locator('[data-game-preview="mancala"]')).toBeVisible()
+  await expect(briefing.getByRole('img',{name:/Balance Mancala/})).toBeVisible()
   await guest.getByRole('button',{name:'Back to lobby'}).tap()
   await expect(preview).toBeFocused()
   await guest.getByRole('button',{name:'Ready up'}).tap()

@@ -1,4 +1,4 @@
-import {useEffect,useId,useState,type CSSProperties} from 'react'
+import {useId,type CSSProperties} from 'react'
 import {base} from './brand'
 import {hexCells,hexLines,puzzle} from './puzzles'
 
@@ -36,40 +36,17 @@ function HexBoard({step}:{step:number}){
  </svg>
 }
 
-export function HexBriefing({motionOff}:{motionOff:boolean}){
- const [step,setStep]=useState(0)
- const [cycle,setCycle]=useState(0)
- const [playing,setPlaying]=useState(true)
- const running=playing&&!motionOff
- useEffect(()=>{
-  if(!running)return
-  const veil=window.setTimeout(()=>setStep(1),3000)
-  const finish=window.setTimeout(()=>{setStep(2);setPlaying(false)},4500)
-  return ()=>{window.clearTimeout(veil);window.clearTimeout(finish)}
- },[cycle,running])
+export function HexLesson({step}:{step:number}){
  const frame=frames[step]
  return <section className="hex-brief-film" aria-label="Hexagon rule example">
-  <div className="hex-brief-shot" data-hex-step={frame.key} data-demo-playing={running||undefined}>
+  <div className="hex-brief-shot" data-hex-step={frame.key}>
    <img src={base+'art/hex-live-landscape.webp'} className="hex-shot-art" width={1400} height={780} alt=""/>
    <div className="hex-brief-slate">
-    <span>Worked example</span>
-    <strong>{step===0?<>30 <small>SEC</small></>:<b data-testid="hex-example-target">{target}</b>}</strong>
     <span>{step===0?'Study window':'Target sum'}</span>
-    <span className="hex-brief-proof">{step===2?total:step===1?'Numbers hidden':'Numbers visible'}</span>
+    <strong>{step===0?<>30 <small>SEC</small></>:<b data-testid="hex-example-target">{target}</b>}</strong>
+    {step===2&&<span className="hex-brief-proof">{total}</span>}
    </div>
    <HexBoard step={step}/>
-  </div>
-  <div className="hex-brief-guide">
-    <div className="hex-brief-controls">
-     <div className="hex-brief-frames" role="group" aria-label="Example steps">
-      {frames.map((f,i)=><button key={f.key} type="button" aria-pressed={step===i} onClick={()=>{setPlaying(false);setStep(i)}}><span aria-hidden="true">0{i+1}</span>{f.name}</button>)}
-     </div>
-     {!motionOff&&<button type="button" className="hex-brief-replay" aria-label={running?'Pause example':'Replay example'} title={running?'Pause example':'Replay example'} onClick={()=>{if(running)setPlaying(false);else {setStep(0);setCycle(v=>v+1);setPlaying(true)}}}>
-      <svg width="19" height="19" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d={running?'M7 5v10m6-10v10':'M16 10a6 6 0 1 1-2-4.5L17 8m0-4v4h-4'} stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/></svg>
-     </button>}
-    </div>
-    <p className="hex-brief-description" aria-live={running?'off':'polite'}>{frame.description}</p>
-    <p className="hex-brief-rules">Correct line: +1 point. New board after 4 of 8 targets.</p>
   </div>
  </section>
 }

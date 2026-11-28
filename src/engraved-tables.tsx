@@ -5,10 +5,10 @@ import './engraved-tables.css'
 type Material='lacquer'|'brass'|'felt'|'oak'|'ink'|'vellum'
 export const tableMaterial={
  blind:'lacquer',point:'lacquer',morris:'lacquer',bagh:'lacquer',mancala:'lacquer',wallGo:'lacquer',
- scale:'brass',auction:'brass',codeLock:'brass',heavy13:'brass',fence:'brass',
- threeRow:'oak',memoryPoker:'felt',remove:'felt',secret:'felt',
+ gradation:'brass',scale:'brass',auction:'brass',codeLock:'brass',heavy13:'brass',fence:'brass',tripleDice:'brass',
+ coopPuzzle:'oak',threeRow:'oak',memoryPoker:'felt',remove:'felt',secret:'felt',
  grass1:'oak',grass3:'oak',piece:'oak',tower:'oak',pyramid:'oak',
- flags:'ink',symmetry:'ink',colorLink:'ink',hex:'ink',knight:'ink',cubes:'ink',rectangles:'ink',exile:'ink',equations:'ink',
+ bigSmall:'ink',flags:'ink',symmetry:'ink',colorLink:'ink',hex:'ink',knight:'ink',cubes:'ink',rectangles:'ink',exile:'ink',equations:'ink',
  montage:'vellum',divine:'vellum',fragments:'vellum',spot:'vellum',
 } as const satisfies Record<Game,Material>
 

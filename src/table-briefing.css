@@ -178,3 +178,63 @@
  .hex-brief-guide{display:grid;align-content:center;padding-inline:10px}
  .briefing.briefing-theater .hex-brief-frames button{flex-direction:column;gap:2px}
 }
+
+/* A page of the field guide: one illustration and one sentence. */
+.brief-reader{min-width:0;outline-offset:-3px}
+.brief-reader:focus-visible,.brief-reference summary:focus-visible{outline:2px solid #ffe1a0}
+.brief-page{display:grid;grid-template-columns:minmax(0,1.28fr) minmax(0,.92fr);min-width:0;touch-action:pan-y pinch-zoom}
+.brief-page img,.brief-page svg{user-select:none;-webkit-user-drag:none}
+.brief-page .brief-theater-scene{grid-template-rows:1fr;padding:8px;min-height:210px}
+.brief-page .brief-theater-scene[data-entrance]{grid-template-rows:auto 1fr;padding-block-start:0}
+.brief-page .brief-scene-object{padding:0;min-height:0}
+.brief-page .brief-scene-object>svg,.brief-page .brief-scene-object>figure,.brief-page .brief-scene-object>.hex-brief-film{width:100%;margin:0;min-width:0}
+.brief-page .brief-scene-object>svg{max-height:232px}
+.brief-page .brief-scene-object figure>figcaption:not(.brief-visible-caption),.brief-page .montage-lesson>p{display:none}
+.brief-page .hex-brief-shot{min-height:0;padding:8px;grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr)}
+.brief-page .hex-brief-slate{margin:0}.brief-page .hex-brief-slate>strong{font-size:clamp(1.5rem,4vw,2.4rem)}
+.brief-page .hex-brief-board{width:min(100%,230px)}
+.brief-page .brief-page-copy{min-width:0;display:grid;align-content:center;padding:clamp(14px,2.5vw,28px);gap:8px;background:linear-gradient(120deg,#34281e,#2b2018)}
+.brief-page-copy h3{margin:0;font:400 clamp(1.45rem,3.3vw,2.1rem)/1.06 Georgia,serif;color:#fff0d3}
+.brief-page-copy p{margin:0;max-width:37ch;font:500 clamp(.85rem,1.7vw,.99rem)/1.43 system-ui,sans-serif;color:#f0dcbd}
+.brief-reference{padding-inline:clamp(10px,2.25vw,21px);color:#e7cba1}
+.brief-reference summary{width:fit-content;min-height:44px;cursor:pointer;align-content:center;font-size:.8rem}
+.brief-reference p{margin:0 0 9px;max-width:78ch;color:#f2e1c2;font:.83rem/1.45 system-ui,sans-serif}
+@media(max-width:600px){
+ .brief-page{grid-template-columns:minmax(0,1fr)}
+ .brief-page .brief-theater-scene{min-height:155px}
+ .brief-page .brief-page-copy{padding:12px 14px;gap:5px;border-block-start:1px solid #715236}
+ .brief-page-copy h3{font-size:1.48rem}
+ .brief-page .brief-scene-object>svg{max-height:200px}
+}
+@media(max-height:500px) and (min-width:550px){
+ .brief-page{grid-template-columns:minmax(0,1.14fr) minmax(0,1fr)}
+ .brief-page .brief-theater-scene{min-height:140px}
+ .brief-page .brief-theater-scene .rule-demo .rule-demo-board{inline-size:min(100%,166px)}
+ .brief-page .brief-page-copy{padding:8px 13px}
+ .brief-page .brief-scene-object>svg{max-height:155px}
+ .brief-page .hex-brief-film{display:block}
+}
+
+.brief-page .montage-lesson figure>figcaption{display:block}
+.brief-touch-hint{display:none}
+@media(pointer:coarse){.brief-touch-hint{display:block}.brief-key-hint{display:none}}
+
+.brief-page{cursor:grab;user-select:none}
+.brief-page:active{cursor:grabbing}
+.brief-page button{cursor:pointer}
+.brief-page .brief-theater-scene{grid-template-rows:minmax(0,1fr) auto;row-gap:3px;padding-bottom:3px}
+.brief-page .brief-theater-scene[data-entrance]{grid-template-rows:auto minmax(0,1fr) auto}
+.brief-live{display:grid;gap:7px}
+.brief-cue{min-height:23px;display:flex;align-items:center;justify-self:end;gap:3px;padding-right:6px;
+ font:600 .69rem/1.2 system-ui,sans-serif;letter-spacing:.035em;color:#e7bd83;opacity:0;pointer-events:none}
+.brief-cue[data-ready]{opacity:1;animation:brief-cue-arrive .2s ease-out both}
+.brief-cue[data-ready] .brief-cue-hand{animation:brief-swipe-hand 1.05s .05s ease-in-out 2 both}
+.brief-cue[data-finished]{color:#d7c29e}
+@keyframes brief-cue-arrive{from{opacity:0}to{opacity:1}}
+@keyframes brief-swipe-hand{0%,12%{transform:translateX(0)}68%,100%{transform:translateX(17px)}}
+.brief-marks{display:flex;align-items:center;flex-wrap:wrap;gap:0;width:fit-content;margin:0 0 -4px}
+.briefing.briefing-theater .brief-marks button{display:grid;place-items:center;border:0;border-radius:0;padding:0;min-height:28px;width:28px;background:transparent;color:#d7b384}
+.brief-marks i{display:block;width:7px;height:7px;transform:rotate(45deg);border:1px solid currentColor}
+.brief-marks [aria-current=step] i{width:9px;height:9px;background:#e8c187;box-shadow:inset 0 0 0 1px #2e221a}
+.briefing.briefing-theater .brief-marks button:hover{background:#4c3928;color:#ffe1a9}
+@media(max-width:600px){.brief-live{gap:5px}.brief-page .brief-page-copy{gap:1px;padding-block:9px}}

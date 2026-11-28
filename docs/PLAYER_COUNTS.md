@@ -22,6 +22,10 @@
 | Piece Puzzle | 2–4 humans | 1 human | One piece tray with turn control after each action. |
 | Scale Game | 2–6 humans | 1 human | Shared 12-use balance, with opportunity for two turns at full capacity. |
 | Fragments of Memory | 2–8 humans | 1 human | Rotating respondents; gets a turn each in the smallest configured question set if the round does not end early. |
+| Cooperative Puzzle | 2–16 humans | 1 human | One shared mosaic with handoff, optional reflection and timeout. |
+| Triple Dice | 2–8 | 1 human + 1–7 bots | Simultaneous draws; the possible forecast bands depend on table size. |
+| Big Small | 2 | 1 human + 1 bot | An asymmetric duel with alternating roles; no large-room wrapper. |
+| Gradation | 2–16 | 1 human + 1 bot | Two sides rotate who locks their tray each round. In larger teams some members may only watch the reveal. |
 | Word Tower | 2–8 humans | 1 human | A shared word board under a short four-minute clock. |
 
 The default party starts on Blind Gomoku with two places. Select Tournament to seat 3–4 on alternating two-player boards, or choose another game before inviting a larger group. Switching game or variant does not kick anyone; if there are too many existing seats, the host must remove extras (including any offline reserved seats) before switching. Existing players can still reconnect to locked/full tables using their token.

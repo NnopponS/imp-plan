@@ -1,0 +1,17 @@
+.point-lesson{display:block;width:min(100%,34rem);max-height:min(50dvh,21rem);margin-inline:auto;overflow:visible}
+.point-lesson-paper{fill:#e5cf9e;stroke:#a87c40;stroke-width:1}
+.point-lesson-field{fill:#f2dfb5;stroke:#745233;stroke-width:1.15}
+.point-lesson-grid{stroke:#987450;stroke-width:.34}
+.point-lesson-streak{stroke:#a4641c;stroke-linecap:round;stroke-width:7.2;opacity:.58}
+.point-lesson-stone circle{stroke:#472d1d;stroke-width:.65;fill:#c3883f}
+.point-lesson-stone[data-point-side=red] circle{fill:#86443f}
+.point-lesson-stone path{fill:none;stroke:#fff0cd;stroke-width:.57}
+.point-lesson-stone[data-point-new=true]{animation:point-lesson-press 380ms cubic-bezier(.19,.78,.22,1) both}
+.point-lesson-counter path{fill:#efd9ac;stroke:#875833;stroke-width:.65}
+.point-lesson-detail{fill:none!important;stroke:#8e663f}
+.point-lesson-counter text{text-anchor:middle;fill:#322015}
+.point-lesson-label{font:700 6px system-ui,sans-serif;letter-spacing:.65px}
+.point-lesson-total{font:700 18px Georgia,serif}
+@keyframes point-lesson-press{0%{opacity:.12;transform:translateY(-9px)}100%{opacity:1;transform:translateY(0)}}
+[data-motion-off=true] .point-lesson-stone{animation:none!important}
+@media(prefers-reduced-motion:reduce){.point-lesson-stone{animation:none!important}}
