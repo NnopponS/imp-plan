@@ -46,7 +46,9 @@ const FlagsLesson=lazy(()=>loadFlags().then(m=>({default:m.FlagsLesson})))
 const SymmetryPuzzleLesson=lazy(()=>loadSymmetry().then(m=>({default:m.SymmetryPuzzleLesson})))
 const ColorLinkLesson=lazy(()=>loadColorLink().then(m=>({default:m.ColorLinkLesson})))
 const Heavy13Lesson=lazy(()=>loadHeavy13().then(m=>({default:m.Heavy13Lesson})))
-const games=Object.keys(titles) as Game[]
+// Keep the first playable cards stable on home and across the season shelves.
+const galleryLeads:readonly Game[]=['blind','morris','auction','point']
+const games:Game[]=[...galleryLeads,...(Object.keys(titles) as Game[]).filter(game=>!galleryLeads.includes(game))]
 const catalogGame=new Map(catalog.filter(row=>row.game).map(row=>[row.game,row]))
 const route=()=>{const [page,query]=location.hash.slice(1).split('?');return {page,room:new URLSearchParams(query).get('room')??''}}
 const cleanCode=(x:string)=>x.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6)
